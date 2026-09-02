@@ -28,7 +28,7 @@ FROM python:3.13-slim-bookworm AS worker
 ARG STRIX_VERSION=1.5.3
 ENV NODE_ENV=production \
     PYTHONUNBUFFERED=1 \
-    PATH=/opt/strix/bin:/usr/local/bin:/usr/bin:/bin
+    PATH=/opt/strix/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates passwd tini \
     && rm -rf /var/lib/apt/lists/* \
