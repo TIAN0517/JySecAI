@@ -1,0 +1,20 @@
+JySecAI
+Copyright 2026 Jy 技術團隊
+
+This product includes software developed by the CyberStrikeAI contributors
+(https://github.com/Ed1s0nZ/CyberStrikeAI), used and modified under the
+Apache License, Version 2.0.
+
+JySecAI modifications include the Jy brand assets and interface, the governed
+commercial control plane under platform/, multi-engine dispatch, authorization
+policy enforcement, evidence normalization, usage entitlements, billing
+integration, deployment assets, and related documentation.
+
+Strix is an optional external runtime dependency and is not vendored into this
+repository. It is distributed by its own authors under the Apache License,
+Version 2.0. Other optional adapters and engines remain subject to their own
+licenses and notices.
+
+The JySecAI name, Jy three-dimensional mark, and Jy 技術團隊 brand identifiers
+are brand assets of Jy 技術團隊. The Apache License does not grant trademark
+rights to those identifiers.

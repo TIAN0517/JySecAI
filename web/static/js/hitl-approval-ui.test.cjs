@@ -32,8 +32,8 @@ test('超长人工审批内容在限高区域内滚动且操作按钮始终可�
     assert.match(monitor, /while \(dock\.firstChild && dock\.firstChild !== actions\)/);
     assert.match(monitor, /wrapChatHitlApprovalScrollRegion\(dock\);/);
     assert.match(monitor, /url\.length > 160[\s\S]*?requestVisitLongUrl/);
-    assert.equal(zh.hitl.requestVisitLongUrl, '允许 CyberStrikeAI 访问此地址？');
-    assert.equal(en.hitl.requestVisitLongUrl, 'Allow CyberStrikeAI to visit this address?');
+    assert.equal(zh.hitl.requestVisitLongUrl, '允许 JySecAI 访问此地址？');
+    assert.equal(en.hitl.requestVisitLongUrl, 'Allow JySecAI to visit this address?');
 });
 
 test('刷新恢复会话时先完成权威审批配置同步再允许发送', () => {
@@ -41,7 +41,9 @@ test('刷新恢复会话时先完成权威审批配置同步再允许发送', ()
     assert.match(chat, /await waitForHitlConfigReady\(hitlConversationAtSendStart\)/);
     assert.match(chat, /hitlConfigSyncConversationId = conversationId;[\s\S]{0,240}await hitlConfigSyncPromise;/);
     assert.match(chat, /await hitlConfigSyncPromise;[\s\S]{0,220}seq !== loadConversationRequestSeq/);
-    assert.match(fs.readFileSync('web/static/js/hitl.js', 'utf8'), /window\.csaiHitlDefaultReviewerReady = initHitlDefaultReviewerFromServer\(\)/);
+    const hitlPage = fs.readFileSync('web/static/js/hitl.js', 'utf8');
+    assert.match(hitlPage, /window\.csaiHitlDefaultConfigReady = initHitlDefaultReviewerFromServer\(\)/);
+    assert.match(hitlPage, /window\.csaiHitlDefaultReviewerReady = window\.csaiHitlDefaultConfigReady/);
 });
 
 test('同一会话的审批配置写入串行化以防止旧请求后到覆盖新选择', () => {

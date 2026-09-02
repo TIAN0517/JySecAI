@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"io"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -43,6 +45,16 @@ func TestEinoStreamingShell_StreamsStderrBeforeStdoutEOF(t *testing.T) {
 }
 
 func TestEinoStreamingShell_SudoFailsFast(t *testing.T) {
+	// Keep this test deterministic across local machines, containers, and CI.
+	// GitHub-hosted runners can execute as root with passwordless sudo, which
+	// would make a test against the host's real sudo environment-dependent.
+	binDir := t.TempDir()
+	fakeSudo := filepath.Join(binDir, "sudo")
+	if err := os.WriteFile(fakeSudo, []byte("#!/bin/sh\necho 'sudo: a password is required' >&2\nexit 1\n"), 0o755); err != nil {
+		t.Fatalf("write fake sudo: %v", err)
+	}
+	t.Setenv("PATH", binDir+string(os.PathListSeparator)+os.Getenv("PATH"))
+
 	shell := NewEinoStreamingShell()
 	cmd := PrepareNonInteractiveShellCommand("sudo whoami && sudo cat /etc/os-release")
 	sr, err := shell.ExecuteStreaming(context.Background(), &filesystem.ExecuteRequest{Command: cmd})

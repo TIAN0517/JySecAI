@@ -1004,7 +1004,7 @@ html[data-theme="dark"] header {
     color: var(--accent-color);
 }
 
-/* 品牌字标：CyberStrike + AI 渐变 */
+/* JySecAI 品牌字标 */
 .brand-wordmark {
     display: inline-flex;
     align-items: baseline;
@@ -1042,7 +1042,21 @@ html[data-theme="dark"] header {
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 102, 255, 0.18);
     flex-shrink: 0;
-    object-fit: cover;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(53, 221, 255, 0.28));
+}
+
+.brand-developer {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 2px;
+    padding-left: 10px;
+    border-left: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
 }
 
 .logo h1,
@@ -44600,7 +44614,7 @@ html[data-theme="dark"] .project-conversation-row:hover .project-conversation-it
 }
 
 /* ============================================================================
-   Layered chat composer: Codex-style hierarchy with CyberStrikeAI controls
+   Layered chat composer: Codex-style hierarchy with JySecAI controls
    ============================================================================ */
 
 .chat-input-container {

@@ -1,0 +1,76 @@
+name: jysecai
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    env_file: ./platform/.env.production
+    environment:
+      POSTGRES_DB: jysec
+      POSTGRES_USER: jysec
+    volumes:
+      - jysec-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jysec -d jysec"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:8-alpine
+    restart: unless-stopped
+    env_file: ./platform/.env.production
+    command: ["sh", "-ec", "exec redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\""]
+    volumes:
+      - jysec-redis:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  control-plane:
+    build:
+      context: ./platform
+      target: control-plane
+    restart: unless-stopped
+    env_file: ./platform/.env.production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8787:8787"
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,noexec,nosuid,nodev
+    security_opt:
+      - no-new-privileges:true
+
+  worker:
+    profiles: ["worker"]
+    build:
+      context: ./platform
+      target: worker
+      args:
+        STRIX_VERSION: "1.5.3"
+    restart: unless-stopped
+    env_file: ./platform/.env.production
+    depends_on:
+      control-plane:
+        condition: service_healthy
+    volumes:
+      - jysec-runs:/var/lib/jysec/runs
+      - /var/run/docker.sock:/var/run/docker.sock
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    group_add:
+      - "${DOCKER_GID:-998}"
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  jysec-postgres:
+  jysec-redis:
+  jysec-runs:
