@@ -1,6 +1,18 @@
-import type { EngineDescriptor, EngineId, PlanEntitlements, PlanId, RunProfile } from "./types.js";
+import type { AppConfig } from "../config.js";
+import {
+  engineIds,
+  type EngineCatalog,
+  type EngineDescriptor,
+  type EngineId,
+  type PlanEntitlements,
+  type PlanId,
+  type RunProfile,
+} from "./types.js";
 
-export const engineCatalog: Readonly<Record<EngineId, EngineDescriptor>> = Object.freeze({
+type EngineDefinition = Omit<EngineDescriptor, "active" | "status" | "reason">;
+type EngineAvailability = Pick<EngineDescriptor, "active" | "status" | "reason">;
+
+const engineDefinitions: Readonly<Record<EngineId, EngineDefinition>> = Object.freeze({
   strix: {
     id: "strix",
     name: "Strix Autonomous Pentest",
@@ -8,7 +20,6 @@ export const engineCatalog: Readonly<Record<EngineId, EngineDescriptor>> = Objec
     maturity: "core",
     profiles: ["quick", "standard", "deep"],
     requiredOperation: "active_scan",
-    active: true,
     connector: "worker",
     description: "Sandboxed autonomous application, API and source security validation.",
   },
@@ -19,7 +30,6 @@ export const engineCatalog: Readonly<Record<EngineId, EngineDescriptor>> = Objec
     maturity: "core",
     profiles: ["audit", "quick", "standard", "deep"],
     requiredOperation: "active_scan",
-    active: true,
     connector: "http",
     description: "Governed project, workflow, evidence and attack-chain execution plane.",
   },
@@ -30,7 +40,6 @@ export const engineCatalog: Readonly<Record<EngineId, EngineDescriptor>> = Objec
     maturity: "core",
     profiles: ["quick", "standard", "deep"],
     requiredOperation: "ai_red_team",
-    active: true,
     connector: "worker",
     description: "Repeatable LLM, RAG and prompt-security regression testing.",
   },
@@ -41,7 +50,6 @@ export const engineCatalog: Readonly<Record<EngineId, EngineDescriptor>> = Objec
     maturity: "core",
     profiles: ["standard", "deep"],
     requiredOperation: "ai_red_team",
-    active: true,
     connector: "worker",
     description: "Multi-turn and multimodal generative-AI risk campaign orchestration.",
   },
@@ -52,7 +60,6 @@ export const engineCatalog: Readonly<Record<EngineId, EngineDescriptor>> = Objec
     maturity: "core",
     profiles: ["quick", "standard", "deep"],
     requiredOperation: "ai_red_team",
-    active: true,
     connector: "worker",
     description: "Dynamic agent and RAG quality, safety and regression evaluation.",
   },
@@ -63,7 +70,6 @@ export const engineCatalog: Readonly<Record<EngineId, EngineDescriptor>> = Objec
     maturity: "core",
     profiles: ["audit", "standard", "deep"],
     requiredOperation: "ai_red_team",
-    active: true,
     connector: "worker",
     description: "Isolated CPU/GPU adversarial machine-learning robustness evaluation.",
   },
@@ -74,7 +80,6 @@ export const engineCatalog: Readonly<Record<EngineId, EngineDescriptor>> = Objec
     maturity: "optional",
     profiles: ["quick", "standard", "deep"],
     requiredOperation: "ai_red_team",
-    active: true,
     connector: "worker",
     description: "Agent tool-boundary, indirect-injection and permission-abuse testing.",
   },
@@ -85,13 +90,69 @@ export const engineCatalog: Readonly<Record<EngineId, EngineDescriptor>> = Objec
     maturity: "core",
     profiles: ["audit", "standard"],
     requiredOperation: "credential_audit",
-    active: true,
     connector: "worker",
     description: "Read-only SPN, Kerberos encryption, pre-authentication and event analytics.",
   },
 });
 
-const allEngines = Object.keys(engineCatalog) as EngineId[];
+const unconfigured = (reason: string): EngineAvailability => ({
+  active: false,
+  status: "unconfigured",
+  reason,
+});
+
+const ready = (reason: string): EngineAvailability => ({ active: true, status: "ready", reason });
+
+function catalogWithAvailability(availability: Readonly<Record<EngineId, EngineAvailability>>): EngineCatalog {
+  return Object.freeze(
+    Object.fromEntries(
+      engineIds.map((id) => [id, Object.freeze({ ...engineDefinitions[id], ...availability[id] })]),
+    ) as Record<EngineId, EngineDescriptor>,
+  );
+}
+
+const notEvaluated = Object.fromEntries(
+  engineIds.map((id) => [id, unconfigured("Runtime engine availability has not been evaluated.")]),
+) as Record<EngineId, EngineAvailability>;
+
+/** Static metadata catalog for policy evaluation outside an application runtime. */
+export const engineCatalog: EngineCatalog = catalogWithAvailability(notEvaluated);
+
+function adapterAvailability(endpoint: string | undefined, environmentKey: string): EngineAvailability {
+  return endpoint
+    ? ready(`${environmentKey} is configured.`)
+    : unconfigured(`${environmentKey} must be set to the adapter service URL.`);
+}
+
+/** Build the truthful catalog used by both the API response and run admission. */
+export function createRuntimeEngineCatalog(config: AppConfig): EngineCatalog {
+  const cyberstrikeToken = config.engines.cyberstrikeServiceToken?.trim();
+  return catalogWithAvailability({
+    strix: config.engines.strixEnabled
+      ? ready("JYSEC_ENGINE_STRIX_ENABLED is enabled for this deployment.")
+      : unconfigured("JYSEC_ENGINE_STRIX_ENABLED must be explicitly enabled for this deployment."),
+    cyberstrike: cyberstrikeToken
+      ? ready("CYBERSTRIKE_SERVICE_TOKEN is configured.")
+      : unconfigured("CYBERSTRIKE_SERVICE_TOKEN is required to authenticate with the workflow service."),
+    promptfoo: adapterAvailability(
+      config.engines.adapterUrls.promptfoo,
+      "JYSEC_ENGINE_PROMPTFOO_URL",
+    ),
+    pyrit: adapterAvailability(config.engines.adapterUrls.pyrit, "JYSEC_ENGINE_PYRIT_URL"),
+    giskard: adapterAvailability(config.engines.adapterUrls.giskard, "JYSEC_ENGINE_GISKARD_URL"),
+    art: adapterAvailability(config.engines.adapterUrls.art, "JYSEC_ENGINE_ART_URL"),
+    humanbound: adapterAvailability(
+      config.engines.adapterUrls.humanbound,
+      "JYSEC_ENGINE_HUMANBOUND_URL",
+    ),
+    "ad-audit": adapterAvailability(
+      config.engines.adapterUrls["ad-audit"],
+      "JYSEC_ENGINE_AD_AUDIT_URL",
+    ),
+  });
+}
+
+const allEngines = [...engineIds];
 
 export const planCatalog: Readonly<Record<PlanId, PlanEntitlements>> = Object.freeze({
   community: {

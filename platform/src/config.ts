@@ -5,6 +5,11 @@ const booleanFromEnv = z
   .default("false")
   .transform((value) => value === "true");
 
+const optionalBooleanFromEnv = z
+  .enum(["true", "false"])
+  .optional()
+  .transform((value) => (value === undefined ? undefined : value === "true"));
+
 const optionalUrlFromEnv = z.preprocess(
   (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
   z.url().optional(),
@@ -32,8 +37,16 @@ const envSchema = z
     STRIX_BIN: z.string().min(1).default("strix"),
     STRIX_LLM: z.string().optional(),
     LLM_API_KEY: z.string().optional(),
+    JYSEC_ENGINE_STRIX_ENABLED: optionalBooleanFromEnv,
     CYBERSTRIKE_BASE_URL: z.url().default("http://127.0.0.1:8080"),
     CYBERSTRIKE_SERVICE_TOKEN: z.string().optional(),
+    JYSEC_ENGINE_PROMPTFOO_URL: optionalUrlFromEnv,
+    JYSEC_ENGINE_PYRIT_URL: optionalUrlFromEnv,
+    JYSEC_ENGINE_GISKARD_URL: optionalUrlFromEnv,
+    JYSEC_ENGINE_ART_URL: optionalUrlFromEnv,
+    JYSEC_ENGINE_HUMANBOUND_URL: optionalUrlFromEnv,
+    JYSEC_ENGINE_AD_AUDIT_URL: optionalUrlFromEnv,
+    JYSEC_ENGINE_ADAPTER_TOKEN: z.string().optional(),
     STRIPE_SECRET_KEY: z.string().optional(),
     STRIPE_WEBHOOK_SECRET: z.string().optional(),
     STRIPE_PRICE_PROFESSIONAL: z.string().optional(),
@@ -128,8 +141,18 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env) {
       strixBin: parsed.STRIX_BIN,
       strixLlm: parsed.STRIX_LLM,
       llmApiKey: parsed.LLM_API_KEY,
+      strixEnabled: parsed.JYSEC_ENGINE_STRIX_ENABLED ?? parsed.NODE_ENV !== "production",
       cyberstrikeBaseUrl: parsed.CYBERSTRIKE_BASE_URL,
       cyberstrikeServiceToken: parsed.CYBERSTRIKE_SERVICE_TOKEN,
+      adapterUrls: {
+        promptfoo: parsed.JYSEC_ENGINE_PROMPTFOO_URL,
+        pyrit: parsed.JYSEC_ENGINE_PYRIT_URL,
+        giskard: parsed.JYSEC_ENGINE_GISKARD_URL,
+        art: parsed.JYSEC_ENGINE_ART_URL,
+        humanbound: parsed.JYSEC_ENGINE_HUMANBOUND_URL,
+        "ad-audit": parsed.JYSEC_ENGINE_AD_AUDIT_URL,
+      },
+      adapterToken: parsed.JYSEC_ENGINE_ADAPTER_TOKEN,
     },
     stripe: {
       secretKey: parsed.STRIPE_SECRET_KEY,

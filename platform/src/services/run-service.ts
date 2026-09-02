@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 
-import { engineCatalog, estimateRunCredits, planCatalog } from "../core/catalog.js";
+import { estimateRunCredits, planCatalog } from "../core/catalog.js";
 import { DomainError } from "../core/errors.js";
 import { evaluateRunPolicy } from "../core/policy.js";
 import type { ControlPlaneStore } from "../core/store.js";
@@ -11,6 +11,7 @@ import type {
   CreateRunInput,
   Finding,
   FindingSubmission,
+  EngineCatalog,
   RunEventType,
   RunStatus,
   SecurityRun,
@@ -85,18 +86,26 @@ function sameRunRequest(existing: SecurityRun, input: CreateRunInput, normalized
 export class RunService {
   readonly #store: ControlPlaneStore;
   readonly #dispatcher: RunDispatcher;
+  readonly #engineCatalog: EngineCatalog;
 
-  constructor(store: ControlPlaneStore, dispatcher: RunDispatcher) {
+  constructor(store: ControlPlaneStore, dispatcher: RunDispatcher, engineCatalog: EngineCatalog) {
     this.#store = store;
     this.#dispatcher = dispatcher;
+    this.#engineCatalog = engineCatalog;
   }
 
   async create(actor: ActorContext, input: CreateRunInput): Promise<SecurityRun> {
     if (!hasAnyRole(actor, runOperatorRoles)) {
       throw new DomainError("run_create_denied", "A security operator role is required", 403);
     }
-    const descriptor = engineCatalog[input.engine];
-    if (!descriptor.active) throw new DomainError("engine_disabled", "The requested engine is disabled", 409);
+    const descriptor = this.#engineCatalog[input.engine];
+    if (!descriptor.active) {
+      throw new DomainError("engine_unconfigured", "The requested engine is not configured", 409, {
+        engine: descriptor.id,
+        status: descriptor.status,
+        reason: descriptor.reason,
+      });
+    }
 
     const decision = evaluateRunPolicy({
       tenantId: actor.tenantId,
@@ -216,7 +225,7 @@ export class RunService {
     const decision = evaluateRunPolicy({
       tenantId: actor.tenantId,
       projectId: run.projectId,
-      descriptor: engineCatalog[run.engine],
+      descriptor: this.#engineCatalog[run.engine],
       profile: run.profile,
       targets: run.targets,
       authorization: run.authorization,

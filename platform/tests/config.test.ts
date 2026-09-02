@@ -28,6 +28,23 @@ describe("production configuration guardrails", () => {
     expect(config.store).toBe("postgres");
     expect(config.publicBaseUrl).toBe("https://jysec.example.com");
     expect(config.internalCallbackBaseUrl).toBe("http://control-plane:8787");
+    expect(config.engines.strixEnabled).toBe(false);
+  });
+
+  it("allows production Strix only through an explicit deployment flag", () => {
+    const config = loadConfig({
+      NODE_ENV: "production",
+      JYSEC_STORE: "postgres",
+      DATABASE_URL: "postgres://jysec:test@postgres:5432/jysec",
+      JYSEC_PUBLIC_BASE_URL: "https://jysec.example.com",
+      JYSEC_JWT_SECRET: "jwt-secret-production-value-at-least-32-bytes",
+      JYSEC_JOB_SIGNING_SECRET: "job-secret-production-value-at-least-32-bytes",
+      JYSEC_METRICS_TOKEN: "metrics-production-value-at-least-32-bytes",
+      JYSEC_DEV_AUTH: "false",
+      JYSEC_ENGINE_STRIX_ENABLED: "true",
+    });
+
+    expect(config.engines.strixEnabled).toBe(true);
   });
 
   it("accepts a remote JWKS identity provider without a shared JWT secret", () => {

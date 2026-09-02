@@ -40,6 +40,17 @@ server:
 	if cfg.Auth.SessionDurationHours != 12 {
 		t.Fatalf("SessionDurationHours = %d, want 12", cfg.Auth.SessionDurationHours)
 	}
+	assertPrivateConfigMode(t, configPath)
+
+	// Existing configurations can predate the private-permission policy.
+	// Startup must tighten them without changing their contents.
+	before, err := os.ReadFile(configPath)
+	if err != nil {
+		t.Fatalf("read generated config: %v", err)
+	}
+	if err := os.Chmod(configPath, 0644); err != nil {
+		t.Fatalf("chmod generated config: %v", err)
+	}
 
 	second, err := EnsureLocalConfig(configPath)
 	if err != nil {
@@ -47,6 +58,57 @@ server:
 	}
 	if second.Created {
 		t.Fatal("Created = true for existing config, want false")
+	}
+	assertPrivateConfigMode(t, configPath)
+	after, err := os.ReadFile(configPath)
+	if err != nil {
+		t.Fatalf("read tightened config: %v", err)
+	}
+	if string(after) != string(before) {
+		t.Fatal("EnsureLocalConfig modified existing config contents")
+	}
+}
+
+func TestEnsureMCPAuthRewritesConfigWithPrivatePermissions(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "config.yaml")
+	initial := []byte("mcp:\n  enabled: true\n  allow_global_access: true\n  auth_header: X-MCP-Token\n  auth_header_value: \"\"\n")
+	if err := os.WriteFile(path, initial, 0644); err != nil {
+		t.Fatalf("write config: %v", err)
+	}
+	if err := os.Chmod(path, 0644); err != nil {
+		t.Fatalf("chmod config: %v", err)
+	}
+
+	cfg := &Config{MCP: MCPConfig{
+		Enabled:           true,
+		AllowGlobalAccess: true,
+		AuthHeader:        "X-MCP-Token",
+	}}
+	if err := EnsureMCPAuth(path, cfg); err != nil {
+		t.Fatalf("EnsureMCPAuth: %v", err)
+	}
+	if strings.TrimSpace(cfg.MCP.AuthHeaderValue) == "" {
+		t.Fatal("EnsureMCPAuth did not generate a service credential")
+	}
+	assertPrivateConfigMode(t, path)
+	written, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("read rewritten config: %v", err)
+	}
+	if !strings.Contains(string(written), cfg.MCP.AuthHeaderValue) {
+		t.Fatal("generated service credential was not persisted")
+	}
+}
+
+func assertPrivateConfigMode(t *testing.T, path string) {
+	t.Helper()
+	info, err := os.Stat(path)
+	if err != nil {
+		t.Fatalf("stat %s: %v", path, err)
+	}
+	if got := info.Mode().Perm(); got != 0600 {
+		t.Fatalf("%s permissions = %04o, want 0600", path, got)
 	}
 }
 

@@ -69,3 +69,33 @@ jobs:
           tags: jysecai/${{ matrix.target }}:ci
           cache-from: type=gha,scope=${{ matrix.target }}
           cache-to: type=gha,mode=max,scope=${{ matrix.target }}
+
+  core-container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.core
+          target: core
+          push: false
+          tags: jysecai/core:ci
+          cache-from: type=gha,scope=core
+          cache-to: type=gha,mode=max,scope=core
+
+  compose-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - run: cp platform/production.env.example platform/.env.production
+      - run: docker compose -f compose.jysec.yml config --quiet
+      - run: >-
+          docker run --rm
+          --add-host core:127.0.0.1
+          --add-host control-plane:127.0.0.1
+          -v "$PWD/deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
+          nginx:1.29-alpine nginx -t

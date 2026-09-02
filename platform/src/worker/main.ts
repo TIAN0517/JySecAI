@@ -59,9 +59,10 @@ async function transition(
 function driverFor(run: SecurityRun, config: ReturnType<typeof loadConfig>): EngineDriver {
   if (run.engine === "strix") return new StrixCliDriver(config);
   if (run.engine === "cyberstrike") return new CyberStrikeHttpDriver(config);
-  const endpoint = process.env[adapterEnvKey(run.engine)];
+  const adapterUrls: Partial<Record<EngineId, string | undefined>> = config.engines.adapterUrls;
+  const endpoint = adapterUrls[run.engine];
   if (!endpoint) throw new Error(`${adapterEnvKey(run.engine)} is not configured`);
-  return new UniformHttpDriver(run.engine, endpoint, process.env.JYSEC_ENGINE_ADAPTER_TOKEN);
+  return new UniformHttpDriver(run.engine, endpoint, config.engines.adapterToken);
 }
 
 async function executeJob(

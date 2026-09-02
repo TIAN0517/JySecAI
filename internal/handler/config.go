@@ -1748,13 +1748,17 @@ func (h *ConfigHandler) ApplyConfig(c *gin.Context) {
 func (h *ConfigHandler) saveConfig() error {
 	h.config.NormalizeAIProviderProfiles()
 
+	if err := os.Chmod(h.configPath, privateConfigFileMode); err != nil {
+		return fmt.Errorf("收紧配置文件权限失败: %w", err)
+	}
+
 	// 读取现有配置文件并创建备份
 	data, err := os.ReadFile(h.configPath)
 	if err != nil {
 		return fmt.Errorf("读取配置文件失败: %w", err)
 	}
 
-	if err := os.WriteFile(h.configPath+".backup", data, 0644); err != nil {
+	if err := writePrivateConfigFile(h.configPath+".backup", data); err != nil {
 		h.logger.Warn("创建配置备份失败", zap.Error(err))
 	}
 
@@ -1870,7 +1874,36 @@ func writeYAMLDocument(path string, doc *yaml.Node) error {
 	if err := encoder.Close(); err != nil {
 		return err
 	}
-	return os.WriteFile(path, buf.Bytes(), 0644)
+	return writePrivateConfigFile(path, buf.Bytes())
+}
+
+const privateConfigFileMode = 0o600
+
+// writePrivateConfigFile rewrites secret-bearing configuration without
+// retaining a legacy file's broader mode. Permissions are tightened before
+// truncation, and the same rule applies to newly created backup files.
+func writePrivateConfigFile(path string, data []byte) error {
+	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, privateConfigFileMode)
+	if err != nil {
+		return err
+	}
+	closeWithError := func(writeErr error) error {
+		if closeErr := f.Close(); writeErr == nil {
+			return closeErr
+		}
+		return writeErr
+	}
+
+	if err := f.Chmod(privateConfigFileMode); err != nil {
+		return closeWithError(err)
+	}
+	if err := f.Truncate(0); err != nil {
+		return closeWithError(err)
+	}
+	if _, err := f.Write(data); err != nil {
+		return closeWithError(err)
+	}
+	return closeWithError(nil)
 }
 
 func updateAgentConfig(doc *yaml.Node, agent config.AgentConfig) {

@@ -94,9 +94,13 @@ export interface EngineDescriptor {
   profiles: readonly RunProfile[];
   requiredOperation: ScopeOperation;
   active: boolean;
+  status: "ready" | "unconfigured";
+  reason: string;
   connector: "native" | "http" | "worker";
   description: string;
 }
+
+export type EngineCatalog = Readonly<Record<EngineId, EngineDescriptor>>;
 
 export interface PlanEntitlements {
   id: PlanId;

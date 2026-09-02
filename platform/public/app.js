@@ -70,9 +70,13 @@ function renderEngines(catalog) {
   $("#engine-grid").innerHTML = catalog.engines
     .map(
       (engine, index) => `
-        <article class="engine-card" style="--accent:${palette[index % palette.length]}">
-          <header><h3>${escapeHtml(engine.name)}</h3><i class="engine-state"></i></header>
+        <article class="engine-card engine-card-${escapeHtml(engine.status)}" style="--accent:${palette[index % palette.length]}">
+          <header>
+            <h3>${escapeHtml(engine.name)}</h3>
+            <span class="engine-health"><i class="engine-state engine-state-${escapeHtml(engine.status)}"></i>${escapeHtml(engine.status)}</span>
+          </header>
           <p>${escapeHtml(engine.description)}</p>
+          ${engine.active ? "" : `<p class="engine-reason">${escapeHtml(engine.reason)}</p>`}
           <footer>
             <span class="chip">${escapeHtml(engine.category)}</span>
             <span class="chip">${escapeHtml(engine.maturity)}</span>
@@ -81,11 +85,12 @@ function renderEngines(catalog) {
         </article>`,
     )
     .join("");
-  $("#engine-value").textContent = String(catalog.engines.filter((engine) => engine.active).length);
-  $("#engine-select").innerHTML = catalog.engines
-    .filter((engine) => engine.active)
+  const activeEngines = catalog.engines.filter((engine) => engine.active);
+  $("#engine-value").textContent = String(activeEngines.length);
+  $("#engine-select").innerHTML = activeEngines
     .map((engine) => `<option value="${escapeHtml(engine.id)}">${escapeHtml(engine.name)}</option>`)
-    .join("");
+    .join("") || '<option value="">沒有已配置的引擎</option>';
+  $("#engine-select").disabled = activeEngines.length === 0;
 }
 
 function renderRuns(runs) {

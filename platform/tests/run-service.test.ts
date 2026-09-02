@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
+import { loadConfig } from "../src/config.js";
+import { createRuntimeEngineCatalog } from "../src/core/catalog.js";
 import { DomainError } from "../src/core/errors.js";
 import type { ActorContext, CreateRunInput } from "../src/core/types.js";
 import { MemoryRunDispatcher } from "../src/infra/dispatcher.js";
@@ -46,7 +48,11 @@ describe("RunService", () => {
   beforeEach(async () => {
     store = new MemoryStore();
     dispatcher = new MemoryRunDispatcher();
-    service = new RunService(store, dispatcher);
+    const config = loadConfig({
+      NODE_ENV: "test",
+      JYSEC_ENGINE_AD_AUDIT_URL: "http://ad-audit.test:8090",
+    });
+    service = new RunService(store, dispatcher, createRuntimeEngineCatalog(config));
     await store.setTenantPlan(actor.tenantId, "business");
   });
 
@@ -131,6 +137,24 @@ describe("RunService", () => {
       code: "plan_engine_denied",
       statusCode: 402,
     });
+  });
+
+  it("rejects an engine whose runtime adapter is not configured", async () => {
+    await expect(
+      service.create(
+        actor,
+        input({ engine: "promptfoo", idempotencyKey: "idem-unconfigured-promptfoo" }),
+      ),
+    ).rejects.toMatchObject<Partial<DomainError>>({
+      code: "engine_unconfigured",
+      statusCode: 409,
+      details: {
+        engine: "promptfoo",
+        status: "unconfigured",
+        reason: "JYSEC_ENGINE_PROMPTFOO_URL must be set to the adapter service URL.",
+      },
+    });
+    expect((await store.listRuns({ tenantId: actor.tenantId, limit: 20 })).items).toHaveLength(0);
   });
 
   it("does not allow an ordinary operator to approve", async () => {

@@ -33,6 +33,44 @@ describe("JySecAI HTTP API", () => {
     expect(response.json()).toMatchObject({ product: "JySecAI", developer: "Jy 技術團隊" });
   });
 
+  it("reports truthful runtime engine availability", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/v1/catalog",
+      headers: {
+        "x-jysec-tenant": "test-tenant",
+        "x-jysec-user": "owner",
+        "x-jysec-roles": "owner",
+      },
+    });
+    expect(response.statusCode).toBe(200);
+    const engines = Object.fromEntries(
+      response.json().engines.map((engine: { id: string }) => [engine.id, engine]),
+    );
+    expect(engines.strix).toMatchObject({ active: true, status: "ready" });
+    expect(engines.cyberstrike).toMatchObject({
+      active: false,
+      status: "unconfigured",
+      reason: "CYBERSTRIKE_SERVICE_TOKEN is required to authenticate with the workflow service.",
+    });
+    expect(engines.promptfoo).toMatchObject({
+      active: false,
+      status: "unconfigured",
+      reason: "JYSEC_ENGINE_PROMPTFOO_URL must be set to the adapter service URL.",
+    });
+  });
+
+  it("serves a CSP-safe governance console with a route back to the full console", async () => {
+    const response = await app.inject({ method: "GET", url: "/" });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.headers["content-security-policy"]).toContain("script-src 'self'");
+    expect(response.headers["content-security-policy"]).not.toContain("script-src 'self' 'unsafe-inline'");
+    expect(response.body).toContain('id="console-button"');
+    expect(response.body).toContain('href="/"');
+    expect(response.body).toContain("完整作戰主控台");
+  });
+
   it("keeps tenant run listings isolated", async () => {
     const auth = {
       "x-jysec-tenant": "test-tenant",

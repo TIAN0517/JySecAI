@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io/fs"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -1527,6 +1526,9 @@ func EnsureLocalConfig(path string) (EnsureLocalConfigResult, error) {
 	}
 
 	if _, err := os.Stat(path); err == nil {
+		if err := os.Chmod(path, privateConfigFileMode); err != nil {
+			return EnsureLocalConfigResult{}, fmt.Errorf("收紧配置文件权限失败: %w", err)
+		}
 		return EnsureLocalConfigResult{}, nil
 	} else if !os.IsNotExist(err) {
 		return EnsureLocalConfigResult{}, fmt.Errorf("检查配置文件失败: %w", err)
@@ -1559,7 +1561,7 @@ func EnsureLocalConfig(path string) (EnsureLocalConfigResult, error) {
 			return EnsureLocalConfigResult{}, fmt.Errorf("创建配置目录失败: %w", err)
 		}
 	}
-	if err := os.WriteFile(path, data, fs.FileMode(0600)); err != nil {
+	if err := writePrivateConfigFile(path, data); err != nil {
 		return EnsureLocalConfigResult{}, fmt.Errorf("创建配置文件失败: %w", err)
 	}
 
@@ -1567,6 +1569,35 @@ func EnsureLocalConfig(path string) (EnsureLocalConfigResult, error) {
 		Created:     true,
 		ExamplePath: examplePath,
 	}, nil
+}
+
+const privateConfigFileMode = 0o600
+
+// writePrivateConfigFile writes configuration that may contain API keys and
+// service credentials. Chmod happens before truncation so rewriting a legacy
+// 0644 file never exposes newly written secrets with its old permissions.
+func writePrivateConfigFile(path string, data []byte) error {
+	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, privateConfigFileMode)
+	if err != nil {
+		return err
+	}
+	closeWithError := func(writeErr error) error {
+		if closeErr := f.Close(); writeErr == nil {
+			return closeErr
+		}
+		return writeErr
+	}
+
+	if err := f.Chmod(privateConfigFileMode); err != nil {
+		return closeWithError(err)
+	}
+	if err := f.Truncate(0); err != nil {
+		return closeWithError(err)
+	}
+	if _, err := f.Write(data); err != nil {
+		return closeWithError(err)
+	}
+	return closeWithError(nil)
 }
 
 func PrintBootstrapAdminPassword(password string) {
@@ -1636,7 +1667,7 @@ func persistMCPAuth(path string, mcp *MCPConfig) error {
 		}
 	}
 
-	return os.WriteFile(path, []byte(strings.Join(lines, "\n")), 0644)
+	return writePrivateConfigFile(path, []byte(strings.Join(lines, "\n")))
 }
 
 // EnsureMCPAuth only provisions the privileged static service credential when

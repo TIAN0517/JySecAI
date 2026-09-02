@@ -379,12 +379,16 @@ func (h *ExternalMCPHandler) isEnabled(cfg config.ExternalMCPServerConfig) bool 
 
 // saveConfig 保存配置到文件
 func (h *ExternalMCPHandler) saveConfig() error {
+	if err := os.Chmod(h.configPath, privateConfigFileMode); err != nil {
+		return fmt.Errorf("收紧配置文件权限失败: %w", err)
+	}
+
 	data, err := os.ReadFile(h.configPath)
 	if err != nil {
 		return fmt.Errorf("读取配置文件失败: %w", err)
 	}
 
-	if err := os.WriteFile(h.configPath+".backup", data, 0644); err != nil {
+	if err := writePrivateConfigFile(h.configPath+".backup", data); err != nil {
 		h.logger.Warn("创建配置备份失败", zap.Error(err))
 	}
 

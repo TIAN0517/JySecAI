@@ -29,6 +29,34 @@ services:
       timeout: 5s
       retries: 10
 
+  core:
+    build:
+      context: .
+      dockerfile: Dockerfile.core
+      target: core
+    restart: unless-stopped
+    expose:
+      - "8080"
+    volumes:
+      - jysec-core-config:/app/config
+      - jysec-core-data:/app/data
+      - jysec-core-tmp:/app/tmp
+      - jysec-core-workspace:/app/workspace
+      - jysec-core-uploads:/app/chat_uploads
+      - jysec-core-tools:/app/tools
+      - jysec-core-agents:/app/agents
+      - jysec-core-roles:/app/roles
+      - jysec-core-skills:/app/skills
+      - jysec-core-knowledge:/app/knowledge_base
+    read_only: true
+    tmpfs:
+      - /tmp:size=256m,noexec,nosuid,nodev
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    stop_grace_period: 30s
+
   control-plane:
     build:
       context: ./platform
@@ -40,13 +68,40 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    ports:
-      - "127.0.0.1:8787:8787"
+      core:
+        condition: service_healthy
+    expose:
+      - "8787"
     read_only: true
     tmpfs:
       - /tmp:size=64m,noexec,nosuid,nodev
     security_opt:
       - no-new-privileges:true
+
+  gateway:
+    image: nginx:1.29-alpine
+    restart: unless-stopped
+    depends_on:
+      core:
+        condition: service_healthy
+      control-plane:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8787:8080"
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:size=32m,noexec,nosuid,nodev
+      - /var/run:size=4m,noexec,nosuid,nodev
+      - /tmp:size=16m,noexec,nosuid,nodev
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/healthz | grep -q '\"status\":\"ok\"'"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
 
   worker:
     profiles: ["worker"]
@@ -74,3 +129,13 @@ volumes:
   jysec-postgres:
   jysec-redis:
   jysec-runs:
+  jysec-core-config:
+  jysec-core-data:
+  jysec-core-tmp:
+  jysec-core-workspace:
+  jysec-core-uploads:
+  jysec-core-tools:
+  jysec-core-agents:
+  jysec-core-roles:
+  jysec-core-skills:
+  jysec-core-knowledge:

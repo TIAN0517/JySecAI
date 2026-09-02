@@ -11,7 +11,7 @@ import rawBody from "fastify-raw-body";
 import { z, ZodError } from "zod";
 
 import type { AppConfig } from "../config.js";
-import { engineCatalog, planCatalog } from "../core/catalog.js";
+import { createRuntimeEngineCatalog, planCatalog } from "../core/catalog.js";
 import { DomainError, errorMessage } from "../core/errors.js";
 import type { ControlPlaneStore } from "../core/store.js";
 import {
@@ -74,7 +74,8 @@ export async function buildServer(dependencies: ServerDependencies): Promise<Fas
     trustProxy: config.environment === "production",
   });
   const authenticate = buildAuthenticator(config);
-  const runs = new RunService(store, dispatcher);
+  const engineCatalog = createRuntimeEngineCatalog(config);
+  const runs = new RunService(store, dispatcher, engineCatalog);
   const billing = new BillingService(config, store);
   const metrics = new Registry();
   collectDefaultMetrics({ register: metrics, prefix: "jysec_" });
