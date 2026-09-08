@@ -223,11 +223,34 @@ export class PostgresStore implements ControlPlaneStore {
   }
 
   async listRuns(filter: ListRunsFilter): Promise<Page<SecurityRun>> {
-    const cursorDate = filter.cursor
-      ? new Date(Buffer.from(filter.cursor, "base64url").toString("utf8"))
+    const decoded = filter.cursor
+      ? Buffer.from(filter.cursor, "base64url").toString("utf8")
       : undefined;
-    if (cursorDate && Number.isNaN(cursorDate.getTime())) {
-      throw new DomainError("invalid_cursor", "Run cursor is invalid");
+    // 分页游标为 (created_at, id) 复合键，避免相同时间戳的纪录在翻页时被漏掉或重复。
+    let cursorDate: Date | undefined;
+    let cursorId: string | undefined;
+    if (decoded) {
+      const legacyDate = new Date(decoded);
+      if (!Number.isNaN(legacyDate.getTime())) {
+        cursorDate = legacyDate;
+      } else {
+        let parsed: unknown;
+        try {
+          parsed = JSON.parse(decoded);
+        } catch {
+          throw new DomainError("invalid_cursor", "Run cursor is invalid");
+        }
+        if (
+          !Array.isArray(parsed) ||
+          typeof parsed[0] !== "string" ||
+          typeof parsed[1] !== "string" ||
+          Number.isNaN(new Date(parsed[0]).getTime())
+        ) {
+          throw new DomainError("invalid_cursor", "Run cursor is invalid");
+        }
+        cursorDate = new Date(parsed[0]);
+        cursorId = parsed[1];
+      }
     }
     const values: unknown[] = [filter.tenantId];
     const clauses = ["tenant_id=$1"];
@@ -235,7 +258,10 @@ export class PostgresStore implements ControlPlaneStore {
       values.push(filter.projectId);
       clauses.push(`project_id=$${values.length}`);
     }
-    if (cursorDate) {
+    if (cursorDate && cursorId) {
+      values.push(cursorDate.toISOString(), cursorId);
+      clauses.push(`(created_at, id) < ($${values.length - 1}, $${values.length})`);
+    } else if (cursorDate) {
       values.push(cursorDate.toISOString());
       clauses.push(`created_at < $${values.length}`);
     }
@@ -249,7 +275,10 @@ export class PostgresStore implements ControlPlaneStore {
     const selected = result.rows.slice(0, filter.limit).map(rowToRun);
     const last = selected.at(-1);
     return hasMore && last
-      ? { items: selected, nextCursor: Buffer.from(last.createdAt).toString("base64url") }
+      ? {
+          items: selected,
+          nextCursor: Buffer.from(JSON.stringify([last.createdAt, last.id])).toString("base64url"),
+        }
       : { items: selected };
   }
 
