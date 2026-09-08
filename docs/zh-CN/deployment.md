@@ -1,18 +1,18 @@
 # 部署指南
 
-本文说明 JySecAI 的常见部署方式。生产环境部署前，请先阅读 [安全模型](security-model.md)，确认授权范围、认证、HITL、审计和高风险功能开关。
+本文說明 JySecAI 的常見部署方式。生產環境部署前，請先閱讀 [安全模型](security-model.md)，確認授權範圍、認證、HITL、審計和高風險功能開關。
 
-## 部署前准备
+## 部署前準備
 
-基础依赖：
+基礎依賴：
 
-- Go：用于源码运行或构建二进制。
-- Python：部分 MCP 服务或工具脚本需要 Python 运行环境。
-- SQLite：默认使用文件型数据库，无需单独服务。
-- 安全工具：`tools/` 中的 YAML 只是工具定义，实际命令如 `nmap`、`sqlmap`、`nuclei` 仍需安装到系统 PATH。
-- 模型服务：至少配置一个 `ai.channels` 通道；`provider: openai_compatible` 适用于 OpenAI 兼容 API，`provider: claude` 使用 Eino 原生 Claude 组件。
+- Go：用於原始碼執行或構建二進位制。
+- Python：部分 MCP 服務或工具指令碼需要 Python 執行環境。
+- SQLite：預設使用檔案型資料庫，無需單獨服務。
+- 安全工具：`tools/` 中的 YAML 只是工具定義，實際命令如 `nmap`、`sqlmap`、`nuclei` 仍需安裝到系統 PATH。
+- 模型服務：至少配置一個 `ai.channels` 通道；`provider: openai_compatible` 適用於 OpenAI 相容 API，`provider: claude` 使用 Eino 原生 Claude 元件。
 
-建议目录：
+建議目錄：
 
 ```text
 JySecAI-main/
@@ -25,55 +25,55 @@ JySecAI-main/
   knowledge_base/
 ```
 
-`data/`、`config.yaml`、自定义 `tools/roles/skills/agents/knowledge_base` 是最重要的持久化内容，升级前应备份。
+`data/`、`config.yaml`、自定義 `tools/roles/skills/agents/knowledge_base` 是最重要的持久化內容，升級前應備份。
 
-## 快速启动
+## 快速啟動
 
-仓库提供 `run.sh`，适合本地体验和小规模部署：
+倉庫提供 `run.sh`，適合本地體驗和小規模部署：
 
 ```bash
 chmod +x run.sh && ./run.sh
 ```
 
-默认配置中 `server.tls_enabled: true` 且 `tls_auto_self_sign: true`，访问地址通常是：
+預設配置中 `server.tls_enabled: true` 且 `tls_auto_self_sign: true`，訪問地址通常是：
 
 ```text
 https://127.0.0.1:6688/
 ```
 
-自签证书会触发浏览器安全提示，这是本地测试的正常现象。生产环境建议配置真实证书。
+自簽證書會觸發瀏覽器安全提示，這是本地測試的正常現象。生產環境建議配置真實證書。
 
-`run.sh` 是最常用的启动入口，适合：
+`run.sh` 是最常用的啟動入口，適合：
 
-- 本机体验。
-- 开发调试。
-- 小团队临时内网使用。
-- 升级后快速验证新版是否能启动。
+- 本機體驗。
+- 開發除錯。
+- 小團隊臨時內網使用。
+- 升級後快速驗證新版是否能啟動。
 
-如果需要长期运行、开机自启、日志托管或进程崩溃自动恢复，建议改用 systemd 托管二进制。
+如果需要長期執行、開機自啟、日誌託管或程序崩潰自動恢復，建議改用 systemd 託管二進位制。
 
-## 源码运行
+## 原始碼執行
 
-适合开发调试：
+適合開發除錯：
 
 ```bash
 go run ./cmd/server --config config.yaml
 ```
 
-如果依赖下载较慢，可以先配置 Go 代理：
+如果依賴下載較慢，可以先配置 Go 代理：
 
 ```bash
 go env -w GOPROXY=https://goproxy.cn,direct
 ```
 
-## 构建二进制
+## 構建二進位制
 
 ```bash
 go build -o jysecai ./cmd/server
 ./jysecai --config config.yaml
 ```
 
-交付二进制时仍需要携带：
+交付二進位制時仍需要攜帶：
 
 - `web/templates/`
 - `web/static/`
@@ -85,7 +85,7 @@ go build -o jysecai ./cmd/server
 
 ## HTTPS
 
-本地测试可以使用自签：
+本地測試可以使用自籤：
 
 ```yaml
 server:
@@ -93,7 +93,7 @@ server:
   tls_auto_self_sign: true
 ```
 
-生产环境建议使用证书文件：
+生產環境建議使用證書檔案：
 
 ```yaml
 server:
@@ -104,7 +104,7 @@ server:
   tls_key_path: /etc/letsencrypt/live/example.com/privkey.pem
 ```
 
-启用 TLS 后，同端口 HTTP 请求默认会 308 跳转到 HTTPS。若前面有反向代理负责 TLS，可以关闭应用内 TLS，在代理层处理 HTTPS。
+啟用 TLS 後，同埠 HTTP 請求預設會 308 跳轉到 HTTPS。若前面有反向代理負責 TLS，可以關閉應用內 TLS，在代理層處理 HTTPS。
 
 ## 反向代理
 
@@ -133,11 +133,11 @@ server {
 }
 ```
 
-`proxy_buffering off` 对 SSE 流式输出和 WebSocket 终端更友好。
+`proxy_buffering off` 對 SSE 流式輸出和 WebSocket 終端更友好。
 
 ## systemd
 
-示例服务：
+示例服務：
 
 ```ini
 [Unit]
@@ -156,7 +156,7 @@ Environment=GIN_MODE=release
 WantedBy=multi-user.target
 ```
 
-启用：
+啟用：
 
 ```bash
 sudo systemctl daemon-reload
@@ -164,86 +164,86 @@ sudo systemctl enable --now jysecai
 sudo journalctl -u jysecai -f
 ```
 
-## 数据与备份
+## 資料與備份
 
-重点备份：
+重點備份：
 
 - `config.yaml`
 - `data/conversations.db`
 - `data/knowledge.db`
 - `data/eino-checkpoints/`
-- 自定义 `tools/roles/skills/agents/knowledge_base`
-- 上传文件目录 `chat_uploads/`
+- 自定義 `tools/roles/skills/agents/knowledge_base`
+- 上傳檔案目錄 `chat_uploads/`
 
-SQLite 热备份时最好先停止服务，或至少复制 `*.db`、`*.db-wal`、`*.db-shm` 三类文件。
+SQLite 熱備份時最好先停止服務，或至少複製 `*.db`、`*.db-wal`、`*.db-shm` 三類檔案。
 
-## 升级
+## 升級
 
-推荐流程：
+推薦流程：
 
-1. 停止服务。
-2. 备份 `config.yaml`、`data/` 和自定义目录。
-3. 拉取或替换新版代码/二进制。
-4. 保留原配置，按新版 `config.yaml` 示例补新增字段。
-5. 启动服务，检查登录、模型测试、工具列表、知识库状态。
+1. 停止服務。
+2. 備份 `config.yaml`、`data/` 和自定義目錄。
+3. 拉取或替換新版程式碼/二進位制。
+4. 保留原配置，按新版 `config.yaml` 示例補新增欄位。
+5. 啟動服務，檢查登入、模型測試、工具列表、知識庫狀態。
 
-仓库提供 `upgrade.sh`，适合无兼容性问题的快速升级；生产环境仍建议先备份再运行。
+倉庫提供 `upgrade.sh`，適合無相容性問題的快速升級；生產環境仍建議先備份再執行。
 
-## 回滚
+## 回滾
 
-回滚时同时恢复：
+回滾時同時恢復：
 
-- 上一版本二进制或代码。
-- 升级前的 `config.yaml`。
-- 升级前的 `data/`。
+- 上一版本二進位制或程式碼。
+- 升級前的 `config.yaml`。
+- 升級前的 `data/`。
 
-如果新版已经写入数据库结构变更，单独回滚二进制可能不够，建议整体恢复备份。
+如果新版已經寫入資料庫結構變更，單獨回滾二進位制可能不夠，建議整體恢復備份。
 
-## 生产部署决策表
+## 生產部署決策表
 
-| 场景 | 推荐部署 | 关键配置 | 不建议 |
+| 場景 | 推薦部署 | 關鍵配置 | 不建議 |
 | --- | --- | --- | --- |
-| 单人本机测试 | `./run.sh` + 自签 HTTPS | `tls_auto_self_sign: true` | 暴露公网 |
-| 小团队内网 | 二进制 + systemd + 内网 HTTPS | 强密码、审计、备份、限制来源 IP | 所有人共用弱密码 |
-| 生产红队平台 | 反向代理 + 独立运行用户 + 日志采集 | 真实证书、反向代理认证、C2 按需启用 | Web 管理面直连公网 |
-| 只做知识库/对话 | 关闭 C2，禁用不需要的外部 MCP | `c2.enabled: false` | 默认开启所有高风险模块 |
-| 多工具自动化 | 独立工作目录 + HITL + 工具白名单 | `workspace_root_dir`、`hitl`、`monitor` | 让 Agent 拥有全局 Shell 权限且免审批 |
+| 單人本機測試 | `./run.sh` + 自籤 HTTPS | `tls_auto_self_sign: true` | 暴露公網 |
+| 小團隊內網 | 二進位制 + systemd + 內網 HTTPS | 強密碼、審計、備份、限制來源 IP | 所有人共用弱密碼 |
+| 生產紅隊平臺 | 反向代理 + 獨立執行使用者 + 日誌採集 | 真實證書、反向代理認證、C2 按需啟用 | Web 管理面直連公網 |
+| 只做知識庫/對話 | 關閉 C2，禁用不需要的外部 MCP | `c2.enabled: false` | 預設開啟所有高風險模組 |
+| 多工具自動化 | 獨立工作目錄 + HITL + 工具白名單 | `workspace_root_dir`、`hitl`、`monitor` | 讓 Agent 擁有全域性 Shell 許可權且免審批 |
 
-## 运行时文件分层
+## 執行時檔案分層
 
-部署时最容易出问题的是“代码、配置、运行数据混在一起”。建议按下面方式理解：
+部署時最容易出問題的是“程式碼、配置、執行資料混在一起”。建議按下面方式理解：
 
-- 可替换：二进制、`web/`、默认 `tools/roles/skills/agents/docs`。
-- 必须保留：`config.yaml`、`data/`、自定义工具/角色/技能/子代理、`knowledge_base/`、`chat_uploads/`。
-- 可清理但要谨慎：`data/eino-checkpoints/`、临时 workspace、旧 payload、旧工具执行记录。
+- 可替換：二進位制、`web/`、預設 `tools/roles/skills/agents/docs`。
+- 必須保留：`config.yaml`、`data/`、自定義工具/角色/技能/子代理、`knowledge_base/`、`chat_uploads/`。
+- 可清理但要謹慎：`data/eino-checkpoints/`、臨時 workspace、舊 payload、舊工具執行記錄。
 
-升级时如果覆盖整个目录，应先把自定义目录和 `data/` 移出或备份。很多“升级后配置丢了”的问题，本质是把运行态文件当成发布包的一部分覆盖掉。
+升級時如果覆蓋整個目錄，應先把自定義目錄和 `data/` 移出或備份。很多“升級後配置丟了”的問題，本質是把執行態檔案當成釋出包的一部分覆蓋掉。
 
-## 启动后验收清单
+## 啟動後驗收清單
 
-启动成功不代表可用，至少做下面检查：
+啟動成功不代表可用，至少做下面檢查：
 
-1. 打开 `/`，确认 HTTPS/反向代理没有跳转循环。
-2. 登录后访问 `/api/auth/validate`，确认会话可用。
-3. 系统设置中执行模型测试。
-4. 打开工具列表，确认 `tools/` 被加载，核心工具 schema 正常。
-5. 若启用知识库，访问知识库页，确认 `index-status` 正常。
-6. 若启用外部 MCP，查看外部 MCP 状态和工具是否出现在对话侧。
-7. 若启用 C2，只在授权网络启动一个测试 listener，并确认停止/删除正常。
-8. 查看审计页面，确认登录和配置读取有记录。
+1. 開啟 `/`，確認 HTTPS/反向代理沒有跳轉迴圈。
+2. 登入後訪問 `/api/auth/validate`，確認會話可用。
+3. 系統設定中執行模型測試。
+4. 開啟工具列表，確認 `tools/` 被載入，核心工具 schema 正常。
+5. 若啟用知識庫，訪問知識庫頁，確認 `index-status` 正常。
+6. 若啟用外部 MCP，檢視外部 MCP 狀態和工具是否出現在對話側。
+7. 若啟用 C2，只在授權網路啟動一個測試 listener，並確認停止/刪除正常。
+8. 檢視審計頁面，確認登入和配置讀取有記錄。
 
 ## 反向代理容易踩的坑
 
-- SSE 被缓冲：表现为 Agent 一直不输出，结束时一次性吐出。关闭 `proxy_buffering`。
-- WebSocket 失败：终端或事件流异常。检查 `Upgrade` 和 `Connection` 头。
-- HTTPS 混用：应用内 TLS 和 Nginx TLS 同时启用时，`proxy_pass` 协议必须匹配。
-- 上传失败：调大 `client_max_body_size`，并检查应用侧上传限制。
-- 308 循环：如果应用启用同端口 HTTPS 跳转，而代理又用 HTTP 回源，需要关闭应用 TLS 或改代理回源 HTTPS。
+- SSE 被緩衝：表現為 Agent 一直不輸出，結束時一次性吐出。關閉 `proxy_buffering`。
+- WebSocket 失敗：終端或事件流異常。檢查 `Upgrade` 和 `Connection` 頭。
+- HTTPS 混用：應用內 TLS 和 Nginx TLS 同時啟用時，`proxy_pass` 協議必須匹配。
+- 上傳失敗：調大 `client_max_body_size`，並檢查應用側上傳限制。
+- 308 迴圈：如果應用啟用同埠 HTTPS 跳轉，而代理又用 HTTP 回源，需要關閉應用 TLS 或改代理回源 HTTPS。
 
-## 源码锚点
+## 原始碼錨點
 
-- 服务组装和路由：`internal/app/app.go`
-- HTTPS 和自签证书：`internal/app/main_server_tls.go`
-- HTTP 到 HTTPS 跳转：`internal/app/main_server_http_redirect.go`
-- 配置结构和默认值：`internal/config/config.go`
-- 配置应用逻辑：`internal/handler/config.go`
+- 服務組裝和路由：`internal/app/app.go`
+- HTTPS 和自簽證書：`internal/app/main_server_tls.go`
+- HTTP 到 HTTPS 跳轉：`internal/app/main_server_http_redirect.go`
+- 配置結構和預設值：`internal/config/config.go`
+- 配置應用邏輯：`internal/handler/config.go`

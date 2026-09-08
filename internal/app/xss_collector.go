@@ -227,7 +227,17 @@ func handleXSSCapture(db *database.DB, cfg *config.XSSConfig, logger *zap.Logger
 	}
 }
 
+// clientIP 依可信度排序解析真实客户端 IP：
+// 1) CF-Connecting-IP：Cloudflare 在边缘设置，转发链上不可伪造（CDN 精准回显）
+// 2) X-Real-IP：本地 edge nginx 设置
+// 3) X-Forwarded-For 首段（仅兜底；存在伪造可能）
+// 4) RemoteAddr：直连场景
 func clientIP(r *http.Request) string {
+	for _, header := range []string{"CF-Connecting-IP", "X-Real-IP"} {
+		if ip := strings.TrimSpace(r.Header.Get(header)); ip != "" {
+			return ip
+		}
+	}
 	ip := strings.TrimSpace(r.Header.Get("X-Forwarded-For"))
 	if ip != "" {
 		if idx := strings.Index(ip, ","); idx >= 0 {

@@ -1,23 +1,23 @@
-# MCP 联邦
+# MCP 聯邦
 
-JySecAI 同时支持内置 MCP 工具、独立 HTTP MCP 服务和外部 MCP 联邦。MCP 是 Agent 调用工具的主要协议层。
+JySecAI 同時支援內建 MCP 工具、獨立 HTTP MCP 服務和外部 MCP 聯邦。MCP 是 Agent 呼叫工具的主要協議層。
 
-## 内置 MCP
+## 內建 MCP
 
-Web 服务内部会创建 MCP Server，并注册：
+Web 服務內部會建立 MCP Server，並註冊：
 
 - YAML 命令工具。
-- 内置安全执行工具。
-- 知识库工具。
-- 项目事实工具。
+- 內建安全執行工具。
+- 知識庫工具。
+- 專案事實工具。
 - C2 工具。
 - WebShell 工具。
-- 批量任务工具。
-- 视觉分析工具。
+- 批次任務工具。
+- 視覺分析工具。
 
-前端和 Agent 通常通过应用内部调用，不需要额外配置。
+前端和 Agent 通常透過應用內部呼叫，不需要額外配置。
 
-## HTTP MCP 服务
+## HTTP MCP 服務
 
 配置：
 
@@ -30,17 +30,17 @@ mcp:
   auth_header_value: "random-secret"
 ```
 
-生产环境必须设置 `auth_header_value`，并限制网络访问。
+生產環境必須設定 `auth_header_value`，並限制網路訪問。
 
-## Web 内 MCP 端点
+## Web 內 MCP 端點
 
-登录后可通过：
+登入後可透過：
 
 ```text
 POST /api/mcp
 ```
 
-该端点复用 Web 认证，适合内部页面或受控集成。
+該端點複用 Web 認證，適合內部頁面或受控整合。
 
 ## 外部 MCP
 
@@ -51,9 +51,9 @@ external_mcp:
   servers: {}
 ```
 
-也可以通过 Web 的 MCP 管理页面新增、启动、停止和删除。
+也可以透過 Web 的 MCP 管理頁面新增、啟動、停止和刪除。
 
-接口：
+介面：
 
 - `GET /api/external-mcp`
 - `GET /api/external-mcp/stats`
@@ -65,31 +65,31 @@ external_mcp:
 
 ## stdio
 
-stdio MCP 适合本机命令启动的工具服务。
+stdio MCP 適合本機命令啟動的工具服務。
 
-关注点：
+關注點：
 
-- 命令路径必须存在。
-- 工作目录正确。
-- 环境变量完整。
-- 进程退出会导致工具不可用。
-- 日志中查看启动失败原因。
+- 命令路徑必須存在。
+- 工作目錄正確。
+- 環境變數完整。
+- 程序退出會導致工具不可用。
+- 日誌中檢視啟動失敗原因。
 
 ## HTTP / SSE
 
-HTTP 或 SSE MCP 适合远端或长期运行服务。
+HTTP 或 SSE MCP 適合遠端或長期執行服務。
 
-关注点：
+關注點：
 
-- URL 可达。
-- 认证头正确。
-- TLS 证书可信。
-- 代理和防火墙放行。
-- 服务端协议版本兼容。
+- URL 可達。
+- 認證頭正確。
+- TLS 證書可信。
+- 代理和防火牆放行。
+- 服務端協議版本相容。
 
 ## 工具暴露策略
 
-工具过多会增加上下文成本和误选概率。多代理中可通过：
+工具過多會增加上下文成本和誤選機率。多代理中可透過：
 
 ```yaml
 multi_agent:
@@ -104,50 +104,50 @@ multi_agent:
       - tool_search
 ```
 
-让常用工具常驻，其余工具由 `tool_search` 动态解锁。
+讓常用工具常駐，其餘工具由 `tool_search` 動態解鎖。
 
-## 安全建议
+## 安全建議
 
-- 外部 MCP 只接入可信服务。
-- 远端 MCP 必须认证。
-- 高风险工具不要常驻上下文。
-- 外部 MCP 的文件系统和命令执行能力要单独评估。
-- 变更外部 MCP 后查看审计日志。
+- 外部 MCP 只接入可信服務。
+- 遠端 MCP 必須認證。
+- 高風險工具不要常駐上下文。
+- 外部 MCP 的檔案系統和命令執行能力要單獨評估。
+- 變更外部 MCP 後檢視審計日誌。
 
-## 调试
+## 除錯
 
-排查顺序：
+排查順序：
 
-1. `/api/external-mcp/stats` 查看状态。
-2. 检查服务日志。
-3. 单独运行 stdio 命令。
-4. 用 curl 测试 HTTP/SSE 地址。
-5. 检查工具是否被角色或 tool_search 策略隐藏。
+1. `/api/external-mcp/stats` 檢視狀態。
+2. 檢查服務日誌。
+3. 單獨執行 stdio 命令。
+4. 用 curl 測試 HTTP/SSE 地址。
+5. 檢查工具是否被角色或 tool_search 策略隱藏。
 
-## MCP 生命周期
+## MCP 生命週期
 
-外部 MCP 的生命周期不是简单的“添加 URL”：
+外部 MCP 的生命週期不是簡單的“新增 URL”：
 
-1. 注册配置：名称、类型、命令或 URL、环境变量。
-2. 启动连接：stdio 拉起进程，HTTP/SSE 建立客户端。
-3. 拉取工具列表：工具名、描述、schema 进入平台。
-4. 暴露给 Agent：受角色、tool_search、HITL 影响。
-5. 执行工具：参数校验、调用、记录监控。
-6. 连接恢复：进程退出或网络失败后尝试恢复。
-7. 停止/删除：从运行时和配置中移除。
+1. 註冊配置：名稱、型別、命令或 URL、環境變數。
+2. 啟動連線：stdio 拉起程序，HTTP/SSE 建立客戶端。
+3. 拉取工具列表：工具名、描述、schema 進入平臺。
+4. 暴露給 Agent：受角色、tool_search、HITL 影響。
+5. 執行工具：引數校驗、呼叫、記錄監控。
+6. 連線恢復：程序退出或網路失敗後嘗試恢復。
+7. 停止/刪除：從執行時和配置中移除。
 
-排错时要确认卡在哪一步。
+排錯時要確認卡在哪一步。
 
-## 工具命名规范
+## 工具命名規範
 
-工具名应：
+工具名應：
 
-- 稳定。
-- 小写或 snake_case。
-- 表达动作和对象。
-- 避免和内置工具重名。
+- 穩定。
+- 小寫或 snake_case。
+- 表達動作和物件。
+- 避免和內建工具重名。
 
-不建议：
+不建議：
 
 ```text
 run
@@ -156,7 +156,7 @@ scan
 tool1
 ```
 
-建议：
+建議：
 
 ```text
 burp_send_to_repeater
@@ -164,26 +164,26 @@ asset_lookup_domain
 cloud_list_public_buckets
 ```
 
-好的工具名会提升 tool_search 命中率，也降低误调用。
+好的工具名會提升 tool_search 命中率，也降低誤呼叫。
 
-## 外部 MCP 安全审查清单
+## 外部 MCP 安全審查清單
 
-接入前问：
+接入前問：
 
-- 它能读写本机文件吗？
-- 它能执行命令吗？
-- 它会访问哪些网络？
-- 它是否把请求发给第三方？
+- 它能讀寫本機檔案嗎？
+- 它能執行命令嗎？
+- 它會訪問哪些網路？
+- 它是否把請求發給第三方？
 - 它的工具描述是否可信？
-- 它的输出是否可能包含 prompt injection？
-- 它是否需要独立运行用户或容器隔离？
+- 它的輸出是否可能包含 prompt injection？
+- 它是否需要獨立執行使用者或容器隔離？
 
-只要答案不清楚，就不要放进生产环境常驻工具池。
+只要答案不清楚，就不要放進生產環境常駐工具池。
 
-## 源码锚点
+## 原始碼錨點
 
 - 外部 MCP Manager：`internal/mcp/external_manager.go`
-- 连接恢复：`internal/mcp/connection_recovery.go`
-- MCP 工具适配：`internal/einomcp/mcp_tools.go`
+- 連線恢復：`internal/mcp/connection_recovery.go`
+- MCP 工具適配：`internal/einomcp/mcp_tools.go`
 - 外部 MCP Handler：`internal/handler/external_mcp.go`
-- 工具调用通知：`internal/einomcp/tool_invoke_notify.go`
+- 工具呼叫通知：`internal/einomcp/tool_invoke_notify.go`

@@ -1,46 +1,46 @@
 # JySecAI Documentation
 
-[中文](#中文文档) | [English](#english-documentation)
+[中文](#中文文件) | [English](#english-documentation)
 
 JySecAI documentation is organized by user journey. Start with deployment, then move to the topic that matches your task.
 
-## 中文文档
+## 中文文件
 
-### 按目标开始
+### 按目標開始
 
-- **快速体验**：[部署指南](zh-CN/deployment.md) → [配置参考](zh-CN/configuration.md) → [排错指南](zh-CN/troubleshooting.md)
-- **生产部署**：[配置画像](zh-CN/configuration-profiles.md) → [安全加固](zh-CN/security-hardening.md) → [运维 Runbooks](zh-CN/runbooks.md) → [审计与监控](zh-CN/audit-and-monitoring.md)
-- **接入与自动化**：[API 参考](zh-CN/api-reference.md) → [API Recipes](zh-CN/api-recipes.md) → [MCP 联邦](zh-CN/mcp-federation.md)
-- **参与开发**：[开发者指南](zh-CN/developer-guide.md) → [测试指南](zh-CN/testing.md) → [贡献规范](zh-CN/contributing-guide.md)
+- **快速體驗**：[部署指南](zh-CN/deployment.md) → [配置參考](zh-CN/configuration.md) → [排錯指南](zh-CN/troubleshooting.md)
+- **生產部署**：[配置畫像](zh-CN/configuration-profiles.md) → [安全加固](zh-CN/security-hardening.md) → [運維 Runbooks](zh-CN/runbooks.md) → [審計與監控](zh-CN/audit-and-monitoring.md)
+- **接入與自動化**：[API 參考](zh-CN/api-reference.md) → [API Recipes](zh-CN/api-recipes.md) → [MCP 聯邦](zh-CN/mcp-federation.md)
+- **參與開發**：[開發者指南](zh-CN/developer-guide.md) → [測試指南](zh-CN/testing.md) → [貢獻規範](zh-CN/contributing-guide.md)
 
-### 核心概念与编排
+### 核心概念與編排
 
-- [架构说明](zh-CN/architecture.md)
+- [架構說明](zh-CN/architecture.md)
 - [安全模型](zh-CN/security-model.md)
-- [Agent 与角色](zh-CN/agent-and-role-guide.md)
+- [Agent 與角色](zh-CN/agent-and-role-guide.md)
 - [Skills 指南](zh-CN/skills-guide.md)
 - [Eino 多代理](zh-CN/MULTI_AGENT_EINO.md)
 - [工作流](zh-CN/workflow-graph.md)
-- [工具执行治理](zh-CN/tool-execution-governance.md)
-- [人机协同最佳实践](zh-CN/hitl-best-practices.md)
+- [工具執行治理](zh-CN/tool-execution-governance.md)
+- [人機協同最佳實踐](zh-CN/hitl-best-practices.md)
 
 ### 功能指南
 
-- [知识库](zh-CN/knowledge-base.md)
-- [RBAC 权限管理](zh-CN/rbac.md)
-- [机器人接入](zh-CN/robot.md)
-- [视觉分析](zh-CN/VISION.md)
+- [知識庫](zh-CN/knowledge-base.md)
+- [RBAC 許可權管理](zh-CN/rbac.md)
+- [機器人接入](zh-CN/robot.md)
+- [視覺分析](zh-CN/VISION.md)
 - [WebShell 管理](zh-CN/webshell.md)
-- [C2 使用说明](zh-CN/c2.md)
+- [C2 使用說明](zh-CN/c2.md)
 
-### 开发与发布
+### 開發與釋出
 
-- [开发者指南](zh-CN/developer-guide.md)
-- [插件开发](zh-CN/plugin-development.md)
-- [前端国际化](zh-CN/frontend-i18n.md)
-- [测试指南](zh-CN/testing.md)
-- [贡献规范](zh-CN/contributing-guide.md)
-- [发布流程](zh-CN/release-process.md)
+- [開發者指南](zh-CN/developer-guide.md)
+- [外掛開發](zh-CN/plugin-development.md)
+- [前端國際化](zh-CN/frontend-i18n.md)
+- [測試指南](zh-CN/testing.md)
+- [貢獻規範](zh-CN/contributing-guide.md)
+- [釋出流程](zh-CN/release-process.md)
 
 ## English Documentation
 

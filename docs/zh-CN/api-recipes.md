@@ -2,9 +2,9 @@
 
 [English](../en-US/api-recipes.md)
 
-本文给出外部脚本或插件常用的 API 调用配方。完整字段以 `/api-docs` 和 `/api/openapi/spec` 为准。
+本文給出外部指令碼或外掛常用的 API 呼叫配方。完整欄位以 `/api-docs` 和 `/api/openapi/spec` 為準。
 
-## Recipe 1：登录并验证
+## Recipe 1：登入並驗證
 
 ```bash
 curl -k https://127.0.0.1:6688/api/auth/login \
@@ -12,75 +12,75 @@ curl -k https://127.0.0.1:6688/api/auth/login \
   -d '{"password":"<password>"}'
 ```
 
-后续请求推荐使用：
+後續請求推薦使用：
 
 ```bash
 Authorization: Bearer <token>
 ```
 
-验证：
+驗證：
 
 ```bash
 curl -k https://127.0.0.1:6688/api/auth/validate \
   -H "Authorization: Bearer <token>"
 ```
 
-## Recipe 2：创建对话并发送消息
+## Recipe 2：建立對話併傳送訊息
 
-最简单方式是不先创建空对话，直接调用 Agent：
+最簡單方式是不先建立空對話，直接呼叫 Agent：
 
 ```bash
 curl -k https://127.0.0.1:6688/api/eino-agent \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
-  -d '{"message":"对 127.0.0.1 做授权的基础信息收集，只做只读操作"}'
+  -d '{"message":"對 127.0.0.1 做授權的基礎資訊收集，只做只讀操作"}'
 ```
 
-如果需要先创建对话：
+如果需要先建立對話：
 
 ```bash
 curl -k https://127.0.0.1:6688/api/conversations \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
-  -d '{"title":"Web 测试"}'
+  -d '{"title":"Web 測試"}'
 ```
 
-然后把返回的 `conversationId` 放入 Agent 请求。
+然後把返回的 `conversationId` 放入 Agent 請求。
 
-## Recipe 3：流式调用 Agent
+## Recipe 3：流式呼叫 Agent
 
 ```bash
 curl -k -N https://127.0.0.1:6688/api/eino-agent/stream \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
-  -d '{"message":"总结当前项目事实并列出下一步，只读"}'
+  -d '{"message":"總結當前專案事實並列出下一步，只讀"}'
 ```
 
 注意：
 
-- `-N` 禁用 curl 缓冲。
-- 反向代理也要关闭 buffering。
-- 收到 `done` 才算本轮结束。
+- `-N` 禁用 curl 緩衝。
+- 反向代理也要關閉 buffering。
+- 收到 `done` 才算本輪結束。
 
-## Recipe 4：调用多代理
+## Recipe 4：呼叫多代理
 
 ```bash
 curl -k -N https://127.0.0.1:6688/api/multi-agent/stream \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
-    "message":"对授权目标做分阶段 Web 安全测试，先规划再执行只读步骤",
+    "message":"對授權目標做分階段 Web 安全測試，先規劃再執行只讀步驟",
     "orchestration":"plan_execute"
   }'
 ```
 
-可选 `orchestration`：
+可選 `orchestration`：
 
 - `deep`
 - `plan_execute`
 - `supervisor`
 
-## Recipe 5：上传附件
+## Recipe 5：上傳附件
 
 ```bash
 curl -k https://127.0.0.1:6688/api/chat-uploads \
@@ -88,9 +88,9 @@ curl -k https://127.0.0.1:6688/api/chat-uploads \
   -F "file=@./request.txt"
 ```
 
-大文件建议上传后在消息中引用，不要直接塞进 prompt。
+大檔案建議上傳後在訊息中引用，不要直接塞進 prompt。
 
-## Recipe 6：写入漏洞
+## Recipe 6：寫入漏洞
 
 ```bash
 curl -k https://127.0.0.1:6688/api/vulnerabilities \
@@ -100,49 +100,49 @@ curl -k https://127.0.0.1:6688/api/vulnerabilities \
     "title":"示例 SQL 注入",
     "severity":"high",
     "target":"https://example.com/item?id=1",
-    "description":"参数 id 存在可验证 SQL 注入",
-    "evidence":"只读验证输出...",
-    "remediation":"使用参数化查询"
+    "description":"引數 id 存在可驗證 SQL 注入",
+    "evidence":"只讀驗證輸出...",
+    "remediation":"使用引數化查詢"
   }'
 ```
 
-字段以 OpenAPI 为准。
+欄位以 OpenAPI 為準。
 
-## Recipe 7：查询知识库
+## Recipe 7：查詢知識庫
 
 ```bash
 curl -k https://127.0.0.1:6688/api/knowledge/search \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
-    "query":"SQL 注入如何判断字段数",
+    "query":"SQL 注入如何判斷欄位數",
     "riskType":"SQL Injection",
     "topK":5,
     "threshold":0.4
   }'
 ```
 
-如果结果为空，先调用 categories 看风险类型名称是否匹配。
+如果結果為空，先呼叫 categories 看風險型別名稱是否匹配。
 
-## Recipe 8：检查外部 MCP 状态
+## Recipe 8：檢查外部 MCP 狀態
 
 ```bash
 curl -k https://127.0.0.1:6688/api/external-mcp/stats \
   -H "Authorization: Bearer <token>"
 ```
 
-如果服务 running 但 Agent 找不到工具，检查角色工具限制和 `tool_search`。
+如果服務 running 但 Agent 找不到工具，檢查角色工具限制和 `tool_search`。
 
-## Recipe 9：获取工具 schema
+## Recipe 9：獲取工具 schema
 
 ```bash
 curl -k https://127.0.0.1:6688/api/config/tools/nmap/schema \
   -H "Authorization: Bearer <token>"
 ```
 
-插件或自动化脚本应根据 schema 构造参数，不要猜字段名。
+外掛或自動化指令碼應根據 schema 構造引數，不要猜欄位名。
 
-## Recipe 10：导出审计日志
+## Recipe 10：匯出審計日誌
 
 ```bash
 curl -k "https://127.0.0.1:6688/api/audit/logs/export" \
@@ -150,11 +150,11 @@ curl -k "https://127.0.0.1:6688/api/audit/logs/export" \
   -o audit.csv
 ```
 
-导出文件可能包含敏感操作信息，应加密保存。
+匯出檔案可能包含敏感操作資訊，應加密儲存。
 
-## Recipe 11：批量导入资产
+## Recipe 11：批次匯入資產
 
-先准备 `assets.json`：
+先準備 `assets.json`：
 
 ```json
 {
@@ -195,8 +195,8 @@ curl -k https://127.0.0.1:6688/api/assets/import \
 
 注意：
 
-- 调用者需要 `asset:write` 权限。
-- 每条资产至少填写 `host`、`ip` 或 `domain`。
-- 单次最多 100000 条；大批量请求建议使用文件配合 `--data-binary`，不要把 JSON 直接写进命令行。
-- 已存在的“目标 + 端口 + 协议”会合并更新并计入 `updated`。
-- 如需从 XLSX/CSV 操作，使用 Web 端 **资产库 → 批量导入**；接口本身接收 JSON，不接收 multipart 文件。
+- 呼叫者需要 `asset:write` 許可權。
+- 每條資產至少填寫 `host`、`ip` 或 `domain`。
+- 單次最多 100000 條；大批次請求建議使用檔案配合 `--data-binary`，不要把 JSON 直接寫進命令列。
+- 已存在的“目標 + 埠 + 協議”會合並更新並計入 `updated`。
+- 如需從 XLSX/CSV 操作，使用 Web 端 **資產庫 → 批次匯入**；介面本身接收 JSON，不接收 multipart 檔案。

@@ -2,13 +2,13 @@
 
 ## 設計目標
 
-JySecAI 把探索性安全 Agent 與確定性的治理控制面分離。引擎可以獨立演進，但 Scope、Run 狀態、證據索引與方案限制不應只存在於模型對話中。本文件以 reference Compose 的實際整合狀態為準，並明列尚未完成的營運能力。
+JySecAI 把探索性安全 Agent 與確定性的治理控制面分離。引擎可以獨立演進，但 Scope、Run 狀態、證據索引與方案限制不應只存在於模型對話中。本檔案以 reference Compose 的實際整合狀態為準，並明列尚未完成的營運能力。
 
 ## 目前架構
 
 ```mermaid
 flowchart TB
-    Gateway["nginx Gateway :8787"] --> Core["/ · Go core 主控台"]
+    Gateway["nginx Gateway :8787"] --> Core["/ · Go core 主控臺"]
     Gateway --> Control["TypeScript control-plane"]
     Control --> Postgres["Run · Event · Finding · Artifact metadata · Usage"]
     Control --> Redis["簽名工作與取消訊息"]
@@ -20,7 +20,7 @@ flowchart TB
 ```
 
 - `compose.jysec.yml` 會同時啟動 PostgreSQL、Redis、以 `Dockerfile.core` 建置的 Go core、TypeScript control-plane 與 nginx Gateway；Worker 只在啟用 `worker` profile 時啟動。
-- Go 主控台與 TypeScript 治理頁已由 Gateway 整合成同一個對外入口，但仍是兩個程序與兩套身份，尚未實作 SSO。
+- Go 主控臺與 TypeScript 治理頁已由 Gateway 整合成同一個對外入口，但仍是兩個程式與兩套身份，尚未實作 SSO。
 - Strix Driver 存在於 Worker image；Jy Workflow Driver 會透過 Compose 私有網路呼叫 Go core，但仍需配置 service token。
 - 其他引擎共用 HTTP Adapter client，但外部 Adapter service 本身不在本倉庫，也不會由 reference Compose 啟動。
 
@@ -30,13 +30,13 @@ flowchart TB
 
 | 路徑 | 上游 | 用途 |
 |---|---|---|
-| `/`、`/static/*`、`/api/*` | Go core | 完整主控台及既有 API |
+| `/`、`/static/*`、`/api/*` | Go core | 完整主控臺及既有 API |
 | `/governance/`、`/assets/*`、`/v1/*`、`/metrics` | TypeScript control-plane | 治理頁、靜態資源、Run API 與 metrics |
 | `/internal/*` | 不公開 | Worker 直接呼叫控制面 |
 
 此路由設計保留既有 Go `/api/*` 與控制面 `/v1/*`，避免路徑碰撞。Gateway 的 `/healthz` 是路由層健康檢查；`/internal/*` 明確回傳 `404`，Worker 應直接使用私有 control-plane 位址。兩套身份的單一登入仍需共同 OIDC/JWKS 或受控 token exchange；單純放在同一網域不代表身份已整合。
 
-## 已實作的核心不變量
+## 已實作的核心不變數
 
 1. 每個控制面 Run 只屬於一個 tenant 與 project。
 2. 每個目標必須符合授權 tenant、project、期限、operation 與 target pattern。
@@ -47,7 +47,7 @@ flowchart TB
 7. Redis 工作使用 HMAC-SHA256 簽署並檢查發行時間。
 8. Finding 需要 engine version、severity、confidence、status 與 fingerprint。
 9. Artifact API 只接受安全相對 object key、SHA-256 與 `encrypted=true` metadata。
-10. Production 啟動會拒絕 memory store、development auth、預設密鑰、未保護 metrics 與非 HTTPS 公開網址。
+10. Production 啟動會拒絕 memory store、development auth、預設金鑰、未保護 metrics 與非 HTTPS 公開網址。
 
 需要注意：目前的人工核准是單一狀態門，不是雙人覆核或簽章授權工作流；Worker callback 也仍共用 job-signing secret。更細緻的審批紀錄、服務身份與每工作 callback credential 屬於後續強化。
 
@@ -73,7 +73,7 @@ stateDiagram-v2
 
 ## 上下文與證據
 
-| 層 | 目前狀態 | 保存方式 |
+| 層 | 目前狀態 | 儲存方式 |
 |---|---|---|
 | Go Agent Session／Project data | 已存在於 Go 核心 | 既有 SQLite 與檔案工作區 |
 | Control-plane Run Events | 已實作 | PostgreSQL 追加序列 |
@@ -106,6 +106,6 @@ Runtime catalog 會依明確啟用開關、service token 或 Adapter URL 判斷 
 1. 對接共同 OIDC／SAML IdP、SCIM 與組織生命週期，消除兩套登入。
 2. 實作 Worker registry、heartbeat、能力／版本探測、capacity 與引擎主動健康檢查。
 3. 為每個外部引擎提供鎖定版本的 Adapter image、SBOM、簽章與授權 staging E2E。
-4. 導入 S3／MinIO envelope encryption、KMS rotation、checksum 驗證及下載授權 URL。
+4. 匯入 S3／MinIO envelope encryption、KMS rotation、checksum 驗證及下載授權 URL。
 5. 加入 pending-job reclaim、retry/backoff、checkpoint、PostgreSQL／Redis HA、備份還原與災難復原演練。
 6. 實作 credits settlement、retention scheduler、Enterprise license provisioning 與不可逆的 Stripe event ledger。
