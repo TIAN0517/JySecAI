@@ -86,6 +86,7 @@ desktop.ini
 # Local tool state / credentials (never commit)
 .codex/
 .evidence_tmp/
+IP/
 
 # Large local artifacts (builds, installers, archives)
 server
