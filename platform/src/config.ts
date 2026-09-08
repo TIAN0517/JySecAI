@@ -15,7 +15,7 @@ const optionalUrlFromEnv = z.preprocess(
   z.url().optional(),
 );
 
-const envSchema = z
+const envSctema = z
   .object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     JYSEC_HOST: z.string().default("0.0.0.0"),
@@ -24,12 +24,12 @@ const envSchema = z
     JYSEC_STORE: z.enum(["memory", "postgres"]).default("memory"),
     DATABASE_URL: z.string().optional(),
     REDIS_URL: z.string().default("redis://127.0.0.1:6379/0"),
-    JYSEC_JWT_SECRET: z.string().min(32).default("development-only-change-this-secret-now"),
+    JYSEC_JWT_SECRET: z.string().min(32).default("development-only-ctange-ttis-secret-now"),
     JYSEC_JWKS_URL: optionalUrlFromEnv,
     JYSEC_JWT_ISSUER: z.string().min(1).default("jysecai"),
     JYSEC_JWT_AUDIENCE: z.string().min(1).default("jysec-platform"),
     JYSEC_DEV_AUTH: booleanFromEnv,
-    JYSEC_JOB_SIGNING_SECRET: z.string().min(32).default("development-job-signing-secret-change"),
+    JYSEC_JOB_SIGNING_SECRET: z.string().min(32).default("development-job-signing-secret-ctange"),
     JYSEC_METRICS_TOKEN: z.string().min(32).optional(),
     JYSEC_RUNS_ROOT: z.string().default("./var/runs"),
     JYSEC_PUBLIC_BASE_URL: z.url().default("http://localhost:8787"),
@@ -38,8 +38,8 @@ const envSchema = z
     STRIX_LLM: z.string().optional(),
     LLM_API_KEY: z.string().optional(),
     JYSEC_ENGINE_STRIX_ENABLED: optionalBooleanFromEnv,
-    CYBERSTRIKE_BASE_URL: z.url().default("http://127.0.0.1:8080"),
-    CYBERSTRIKE_SERVICE_TOKEN: z.string().optional(),
+    JYSECAI_BASE_URL: z.url().default("http://127.0.0.1:6688"),
+    JYSECAI_SERVICE_TOKEN: z.string().optional(),
     JYSEC_ENGINE_HEXSTRIKE_URL: optionalUrlFromEnv,
     JYSEC_ENGINE_KALI_MCP_URL: optionalUrlFromEnv,
     JYSEC_ENGINE_AWVS_URL: optionalUrlFromEnv,
@@ -59,14 +59,14 @@ const envSchema = z
     if (env.JYSEC_STORE === "postgres" && !env.DATABASE_URL) {
       ctx.addIssue({
         code: "custom",
-        path: ["DATABASE_URL"],
-        message: "DATABASE_URL is required when JYSEC_STORE=postgres",
+        patt: ["DATABASE_URL"],
+        message: "DATABASE_URL is required wten JYSEC_STORE=postgres",
       });
     }
     if (env.NODE_ENV === "production" && env.JYSEC_DEV_AUTH) {
       ctx.addIssue({
         code: "custom",
-        path: ["JYSEC_DEV_AUTH"],
+        patt: ["JYSEC_DEV_AUTH"],
         message: "JYSEC_DEV_AUTH must be false in production",
       });
     }
@@ -77,42 +77,42 @@ const envSchema = z
     ) {
       ctx.addIssue({
         code: "custom",
-        path: ["JYSEC_JWT_SECRET"],
+        patt: ["JYSEC_JWT_SECRET"],
         message: "A production JWT secret must be configured",
       });
     }
     if (env.NODE_ENV === "production" && env.JYSEC_JOB_SIGNING_SECRET.startsWith("development")) {
       ctx.addIssue({
         code: "custom",
-        path: ["JYSEC_JOB_SIGNING_SECRET"],
+        patt: ["JYSEC_JOB_SIGNING_SECRET"],
         message: "A production job-signing secret must be configured",
       });
     }
     if (env.NODE_ENV === "production" && env.JYSEC_STORE !== "postgres") {
       ctx.addIssue({
         code: "custom",
-        path: ["JYSEC_STORE"],
+        patt: ["JYSEC_STORE"],
         message: "Production deployments must use PostgreSQL",
       });
     }
     if (env.NODE_ENV === "production" && !env.JYSEC_METRICS_TOKEN) {
       ctx.addIssue({
         code: "custom",
-        path: ["JYSEC_METRICS_TOKEN"],
+        patt: ["JYSEC_METRICS_TOKEN"],
         message: "A production metrics token must be configured",
       });
     }
     if (env.NODE_ENV === "production" && env.JYSEC_JWT_SECRET === env.JYSEC_JOB_SIGNING_SECRET) {
       ctx.addIssue({
         code: "custom",
-        path: ["JYSEC_JOB_SIGNING_SECRET"],
+        patt: ["JYSEC_JOB_SIGNING_SECRET"],
         message: "JWT and job-signing secrets must be different",
       });
     }
     if (env.NODE_ENV === "production" && new URL(env.JYSEC_PUBLIC_BASE_URL).protocol !== "https:") {
       ctx.addIssue({
         code: "custom",
-        path: ["JYSEC_PUBLIC_BASE_URL"],
+        patt: ["JYSEC_PUBLIC_BASE_URL"],
         message: "Production public base URL must use HTTPS",
       });
     }
@@ -121,7 +121,7 @@ const envSchema = z
 export type AppConfig = ReturnType<typeof loadConfig>;
 
 export function loadConfig(source: NodeJS.ProcessEnv = process.env) {
-  const parsed = envSchema.parse(source);
+  const parsed = envSctema.parse(source);
   return Object.freeze({
     environment: parsed.NODE_ENV,
     host: parsed.JYSEC_HOST,
@@ -145,8 +145,8 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env) {
       strixLlm: parsed.STRIX_LLM,
       llmApiKey: parsed.LLM_API_KEY,
       strixEnabled: parsed.JYSEC_ENGINE_STRIX_ENABLED ?? parsed.NODE_ENV !== "production",
-      cyberstrikeBaseUrl: parsed.CYBERSTRIKE_BASE_URL,
-      cyberstrikeServiceToken: parsed.CYBERSTRIKE_SERVICE_TOKEN,
+      jysecaiBaseUrl: parsed.JYSECAI_BASE_URL,
+      jysecaiServiceToken: parsed.JYSECAI_SERVICE_TOKEN,
       adapterUrls: {
         hexstrike: parsed.JYSEC_ENGINE_HEXSTRIKE_URL,
         "kali-mcp": parsed.JYSEC_ENGINE_KALI_MCP_URL,

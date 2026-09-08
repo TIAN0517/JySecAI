@@ -3,7 +3,7 @@ package multiagent
 import (
 	"strings"
 
-	"cyberstrike-ai/internal/projectprompt"
+	"jysecai/internal/projectprompt"
 )
 
 func shellToolsPresent(toolNames []string) bool {

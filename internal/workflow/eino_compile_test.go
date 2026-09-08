@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/database"
+	"jysecai/internal/config"
+	"jysecai/internal/database"
 
 	"github.com/cloudwego/eino/compose"
 	"go.uber.org/zap"

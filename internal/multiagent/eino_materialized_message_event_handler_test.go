@@ -3,7 +3,7 @@ package multiagent
 import (
 	"testing"
 
-	"cyberstrike-ai/internal/einomcp"
+	"jysecai/internal/einomcp"
 
 	"github.com/cloudwego/eino/adk"
 	"github.com/cloudwego/eino/schema"

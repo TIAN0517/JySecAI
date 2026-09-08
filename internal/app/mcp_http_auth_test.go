@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/database"
-	"cyberstrike-ai/internal/mcp"
-	"cyberstrike-ai/internal/security"
+	"jysecai/internal/config"
+	"jysecai/internal/database"
+	"jysecai/internal/mcp"
+	"jysecai/internal/security"
 
 	"go.uber.org/zap"
 )

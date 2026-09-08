@@ -12,6 +12,7 @@ chat_uploads/
 config.yaml
 config.local.yaml
 config.yaml.backup
+.config.yaml
 *.backup
 .env
 .env.*
@@ -33,9 +34,14 @@ serverall/
 # Eino runtime task board (under skills_dir)
 skills/.eino/
 
+# Skills marketplace sync clone cache
+scripts/.marketplace-cache/
+
 # Build outputs
 cyberstrike-ai
 cyberstrike-ai.exe
+jysecai
+jysecai.exe
 *.test
 bin/
 dist/
@@ -76,3 +82,34 @@ desktop.ini
 .idea/
 .vscode/
 .aider*
+
+# Local tool state / credentials (never commit)
+.codex/
+.evidence_tmp/
+
+# Large local artifacts (builds, installers, archives)
+server
+server.exe
+server.exe.bak-*
+server.exe.prev-*
+serverall.zip
+*.zip
+!mcp-servers/dragon_v/data/**/*.zip
+OpenCode Desktop Installer.exe
+
+# Scratch scripts / test payloads at repo root
+/config.json
+/payload.json
+/glm.py
+/jysecai.py
+/k3.py
+/probe_nvidia.py
+/test_all_backends.py
+/test_claude_proxy.py
+/test_scan.py
+/verify_mixed.py
+/verify_zhipu.py
+
+# Pentest evidence dumps
+vps.*-vuln-evidence-*/
+vps.*-vuln-evidence-*.zip

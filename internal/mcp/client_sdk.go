@@ -12,14 +12,14 @@ import (
 	"sync"
 	"time"
 
-	"cyberstrike-ai/internal/config"
+	"jysecai/internal/config"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"go.uber.org/zap"
 )
 
 const (
-	clientName    = "CyberStrikeAI"
+	clientName    = "JySecAI"
 	clientVersion = "1.0.0"
 )
 

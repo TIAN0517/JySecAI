@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"cyberstrike-ai/internal/database"
+	"jysecai/internal/database"
 
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"

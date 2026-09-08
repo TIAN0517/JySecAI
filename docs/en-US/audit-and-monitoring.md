@@ -2,7 +2,7 @@
 
 [中文](../zh-CN/audit-and-monitoring.md)
 
-CyberStrikeAI has separate observability streams:
+JySecAI has separate observability streams:
 
 - Audit: who performed platform management actions.
 - Monitor: how tool executions ran.

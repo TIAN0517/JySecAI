@@ -24,8 +24,8 @@ const engineDefinitions: Readonly<Record<EngineId, EngineDefinition>> = Object.f
     connector: "worker",
     description: "Sandboxed autonomous application, API and source security validation.",
   },
-  cyberstrike: {
-    id: "cyberstrike",
+  jysecai: {
+    id: "jysecai",
     name: "Jy Workflow Orchestrator",
     category: "appsec",
     maturity: "core",
@@ -167,14 +167,14 @@ function adapterAvailability(endpoint: string | undefined, environmentKey: strin
 
 /** Build the truthful catalog used by both the API response and run admission. */
 export function createRuntimeEngineCatalog(config: AppConfig): EngineCatalog {
-  const cyberstrikeToken = config.engines.cyberstrikeServiceToken?.trim();
+  const jysecaiToken = config.engines.jysecaiServiceToken?.trim();
   return catalogWithAvailability({
     strix: config.engines.strixEnabled
       ? ready("JYSEC_ENGINE_STRIX_ENABLED is enabled for this deployment.")
       : unconfigured("JYSEC_ENGINE_STRIX_ENABLED must be explicitly enabled for this deployment."),
-    cyberstrike: cyberstrikeToken
-      ? ready("CYBERSTRIKE_SERVICE_TOKEN is configured.")
-      : unconfigured("CYBERSTRIKE_SERVICE_TOKEN is required to authenticate with the workflow service."),
+    jysecai: jysecaiToken
+      ? ready("JYSECAI_SERVICE_TOKEN is configured.")
+      : unconfigured("JYSECAI_SERVICE_TOKEN is required to authenticate with the workflow service."),
     hexstrike: adapterAvailability(config.engines.adapterUrls.hexstrike, "JYSEC_ENGINE_HEXSTRIKE_URL"),
     "kali-mcp": adapterAvailability(
       config.engines.adapterUrls["kali-mcp"],
@@ -220,7 +220,7 @@ export const planCatalog: Readonly<Record<PlanId, PlanEntitlements>> = Object.fr
     maxConcurrentRuns: 5,
     engines: [
       "strix",
-      "cyberstrike",
+      "jysecai",
       "hexstrike",
       "kali-mcp",
       "awvs",
@@ -267,7 +267,7 @@ const profileWeight: Record<RunProfile, number> = {
 
 const engineWeight: Record<EngineId, number> = {
   strix: 2,
-  cyberstrike: 1,
+  jysecai: 1,
   hexstrike: 2,
   "kali-mcp": 2,
   awvs: 2,

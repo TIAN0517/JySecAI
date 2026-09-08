@@ -2,7 +2,7 @@
 
 [返回中文文档](README.md)
 
-本文说明 CyberStrikeAI 对长时间工具、MCP 阻塞、大输出、取消和恢复上下文的治理策略。目标是让 Agent 保持标准工具语义，同时避免工具卡死、上下文爆炸、数据库膨胀或恢复时重新注入历史大输出。
+本文说明 JySecAI 对长时间工具、MCP 阻塞、大输出、取消和恢复上下文的治理策略。目标是让 Agent 保持标准工具语义，同时避免工具卡死、上下文爆炸、数据库膨胀或恢复时重新注入历史大输出。
 
 ## 设计目标
 
@@ -219,5 +219,5 @@ PY
 
 ## 当前边界
 
-- 外部 MCP 的远端 server 内部如何采集输出不由 CyberStrikeAI 控制；CyberStrikeAI 会在结果进入本系统后统一兜底、限并发和熔断。
+- 外部 MCP 的远端 server 内部如何采集输出不由 JySecAI 控制；JySecAI 会在结果进入本系统后统一兜底、限并发和熔断。
 - 超长工具输出会在截断前写入本地 `tmp/reduction/.../trunc/<id>`（或 `reduction_root_dir`），bounded result 中包含可 `read_file` 的绝对路径。

@@ -2,14 +2,14 @@
 
 [中文](../zh-CN/testing.md)
 
-Testing CyberStrikeAI means more than running Go tests. Agent, MCP, HITL, C2, WebShell, and frontend streaming all have different failure modes.
+Testing JySecAI means more than running Go tests. Agent, MCP, HITL, C2, WebShell, and frontend streaming all have different failure modes.
 
 ## Commands
 
 ```bash
 go test ./internal/...
 go test ./cmd/...
-go build -o cyberstrike-ai ./cmd/server
+go build -o jysecai ./cmd/server
 ```
 
 Run focused packages when working locally:

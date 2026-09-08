@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"cyberstrike-ai/internal/database"
+	"jysecai/internal/database"
 
 	"github.com/google/uuid"
 )

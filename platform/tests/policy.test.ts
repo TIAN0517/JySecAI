@@ -88,7 +88,7 @@ describe("evaluateRunPolicy", () => {
     const decision = evaluateRunPolicy({
       tenantId: "tenant-1",
       projectId: "project-1",
-      descriptor: engineCatalog.cyberstrike,
+      descriptor: engineCatalog.jysecai,
       profile: "audit",
       targets: ["api.example.com"],
       authorization: scope({ operations: ["passive_discovery"] }),

@@ -1,4 +1,4 @@
-const AUTH_STORAGE_KEY = 'cyberstrike-auth';
+const AUTH_STORAGE_KEY = 'jysec-auth';
 let authToken = null;
 let authTokenExpiry = null;
 let authUser = null;

@@ -1,6 +1,6 @@
 # 部署指南
 
-本文说明 CyberStrikeAI 的常见部署方式。生产环境部署前，请先阅读 [安全模型](security-model.md)，确认授权范围、认证、HITL、审计和高风险功能开关。
+本文说明 JySecAI 的常见部署方式。生产环境部署前，请先阅读 [安全模型](security-model.md)，确认授权范围、认证、HITL、审计和高风险功能开关。
 
 ## 部署前准备
 
@@ -15,7 +15,7 @@
 建议目录：
 
 ```text
-CyberStrikeAI-main/
+JySecAI-main/
   config.yaml
   data/
   tools/
@@ -38,7 +38,7 @@ chmod +x run.sh && ./run.sh
 默认配置中 `server.tls_enabled: true` 且 `tls_auto_self_sign: true`，访问地址通常是：
 
 ```text
-https://127.0.0.1:8080/
+https://127.0.0.1:6688/
 ```
 
 自签证书会触发浏览器安全提示，这是本地测试的正常现象。生产环境建议配置真实证书。
@@ -69,8 +69,8 @@ go env -w GOPROXY=https://goproxy.cn,direct
 ## 构建二进制
 
 ```bash
-go build -o cyberstrike-ai ./cmd/server
-./cyberstrike-ai --config config.yaml
+go build -o jysecai ./cmd/server
+./jysecai --config config.yaml
 ```
 
 交付二进制时仍需要携带：
@@ -113,15 +113,15 @@ Nginx 示例：
 ```nginx
 server {
     listen 443 ssl http2;
-    server_name cyberstrike.example.com;
+    server_name jysecai.example.com;
 
-    ssl_certificate /etc/letsencrypt/live/cyberstrike.example.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/cyberstrike.example.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/jysecai.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/jysecai.example.com/privkey.pem;
 
     client_max_body_size 200m;
 
     location / {
-        proxy_pass http://127.0.0.1:8080;
+        proxy_pass http://127.0.0.1:6688;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -141,13 +141,13 @@ server {
 
 ```ini
 [Unit]
-Description=CyberStrikeAI
+Description=JySecAI
 After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/opt/CyberStrikeAI
-ExecStart=/opt/CyberStrikeAI/cyberstrike-ai --config /opt/CyberStrikeAI/config.yaml
+WorkingDirectory=/opt/JySecAI
+ExecStart=/opt/JySecAI/jysecai --config /opt/JySecAI/config.yaml
 Restart=on-failure
 RestartSec=5
 Environment=GIN_MODE=release
@@ -160,8 +160,8 @@ WantedBy=multi-user.target
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable --now cyberstrikeai
-sudo journalctl -u cyberstrikeai -f
+sudo systemctl enable --now jysecai
+sudo journalctl -u jysecai -f
 ```
 
 ## 数据与备份

@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/security"
+	"jysecai/internal/config"
+	"jysecai/internal/security"
 
 	"github.com/gin-gonic/gin"
 )

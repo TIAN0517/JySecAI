@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"cyberstrike-ai/internal/config"
+	"jysecai/internal/config"
 
 	fileloader "github.com/cloudwego/eino-ext/components/document/loader/file"
 	"github.com/cloudwego/eino/components/document"

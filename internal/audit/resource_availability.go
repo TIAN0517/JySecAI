@@ -3,7 +3,7 @@ package audit
 import (
 	"strings"
 
-	"cyberstrike-ai/internal/database"
+	"jysecai/internal/database"
 )
 
 var auditActionsResourceRemoved = map[string]bool{

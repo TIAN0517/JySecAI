@@ -48,10 +48,10 @@ describe("JySecAI HTTP API", () => {
       response.json().engines.map((engine: { id: string }) => [engine.id, engine]),
     );
     expect(engines.strix).toMatchObject({ active: true, status: "ready" });
-    expect(engines.cyberstrike).toMatchObject({
+    expect(engines.jysecai).toMatchObject({
       active: false,
       status: "unconfigured",
-      reason: "CYBERSTRIKE_SERVICE_TOKEN is required to authenticate with the workflow service.",
+      reason: "JYSECAI_SERVICE_TOKEN is required to authenticate with the workflow service.",
     });
     expect(engines.promptfoo).toMatchObject({
       active: false,

@@ -43,7 +43,7 @@ JySecAI 由兩個後端應用組成；reference Compose 已用同源 Gateway 將
 - Finding 正規化，以及 Artifact object key、SHA-256、media type、size 與 `encrypted=true` metadata 驗證。
 - Go core 容器與同源 Nginx Gateway；Compose 會將 `/` 導向完整主控台，將 `/governance/`、`/assets/*`、`/v1/*` 與 `/metrics` 導向治理控制面，且不公開 `/internal/*` callback。
 - Strix CLI Driver；Worker image 會安裝鎖定版本，但執行仍需 LLM、Docker sandbox 與明確啟用設定。
-- CyberStrike／Jy Workflow HTTP Driver；Compose 已包含 Go 核心，但使用前仍須提供可被核心接受的 service token。
+- JySecAI／Jy Workflow HTTP Driver；Compose 已包含 Go 核心，但使用前仍須提供可被核心接受的 service token。
 - 選配 Stripe Checkout、Customer Portal 與訂閱 Webhook 驗證。
 - Production 組態會拒絕 memory store、development auth、預設密鑰、未保護 metrics 與非 HTTPS 公開網址。
 
@@ -158,7 +158,7 @@ JySecAI 已具備方案 catalog、建立 Run 時的 credits reservation、並發
 
 ## 開源來源與法律
 
-JySecAI 目前以 Apache-2.0 的 [CyberStrikeAI](https://github.com/Ed1s0nZ/CyberStrikeAI) 為平台基礎進行品牌與控制面擴充。Strix 以外部、可替換 Worker 方式整合，並未複製進本倉庫。Promptfoo、PyRIT、Giskard、ART、Humanbound 等由部署者依各自授權安裝。
+JySecAI 目前以 Apache-2.0 的 [JySecAI](https://github.com/Ed1s0nZ/JySecAI) 為平台基礎進行品牌與控制面擴充。Strix 以外部、可替換 Worker 方式整合，並未複製進本倉庫。Promptfoo、PyRIT、Giskard、ART、Humanbound 等由部署者依各自授權安裝。
 
 plutoxAI 公開倉庫在分析時未提供可整合的完整原始碼與明確授權，因此 JySecAI 沒有複製其程式或素材，只採用一般性的工具目錄／工作台產品觀念。
 

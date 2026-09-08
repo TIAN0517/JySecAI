@@ -102,8 +102,8 @@ RUN sed -i \
       /app/knowledge_base
 
 USER jysec
-EXPOSE 8080
+EXPOSE 6688
 HEALTHCHECK --interval=20s --timeout=5s --start-period=30s --retries=5 \
-  CMD ["curl", "-fsS", "-o", "/dev/null", "http://127.0.0.1:8080/"]
+  CMD ["curl", "-fsS", "-o", "/dev/null", "http://127.0.0.1:6688/"]
 ENTRYPOINT ["tini", "--"]
 CMD ["jysec-core", "--http", "-config", "/app/config/config.yaml"]

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# CyberStrikeAI GitHub one-click upgrade script (Release/Tag)
+# JySecAI GitHub one-click upgrade script (Release/Tag)
 #
 # Default preserves:
 # - config.yaml
@@ -14,7 +14,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
 
-BINARY_NAME="cyberstrike-ai"
+BINARY_NAME="jysecai"
 CONFIG_FILE="$ROOT_DIR/config.yaml"
 DATA_DIR="$ROOT_DIR/data"
 VENV_DIR="$ROOT_DIR/venv"
@@ -23,7 +23,7 @@ KNOWLEDGE_BASE_DIR="$ROOT_DIR/knowledge_base"
 BACKUP_BASE_DIR="$ROOT_DIR/.upgrade-backup"
 UPGRADE_TMP_DIR=""
 
-GITHUB_REPO="Ed1s0nZ/CyberStrikeAI"
+GITHUB_REPO="Ed1s0nZ/JySecAI"
 
 TAG=""
 PRESERVE_VENV=1
@@ -43,7 +43,7 @@ Options:
   --no-venv             Do not preserve venv/ (Python deps will be re-installed).
   --no-stop             Do not try to stop the running service.
   --force-stop         If no process matching current directory is found, also stop
-                        any cyberstrike-ai processes (use with caution).
+                        any jysecai processes (use with caution).
   --yes                 Do not ask for confirmation.
 
 Description:
@@ -80,7 +80,7 @@ http_get() {
 
 stop_service() {
   # Try to stop the service that is running from the current project directory.
-  # If nothing is found and --force-stop is enabled, stop all cyberstrike-ai processes.
+  # If nothing is found and --force-stop is enabled, stop all jysecai processes.
   if [[ "$STOP_SERVICE" -ne 1 ]]; then
     return 0
   fi

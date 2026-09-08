@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"cyberstrike-ai/internal/einomcp"
-	"cyberstrike-ai/internal/mcp"
+	"jysecai/internal/einomcp"
+	"jysecai/internal/mcp"
 
 	"github.com/cloudwego/eino/adk/filesystem"
 	"github.com/cloudwego/eino/schema"

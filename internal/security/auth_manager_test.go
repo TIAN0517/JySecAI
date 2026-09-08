@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"cyberstrike-ai/internal/authctx"
-	"cyberstrike-ai/internal/database"
+	"jysecai/internal/authctx"
+	"jysecai/internal/database"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"

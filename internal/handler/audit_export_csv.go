@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"cyberstrike-ai/internal/database"
+	"jysecai/internal/database"
 
 	"github.com/gin-gonic/gin"
 )

@@ -5,7 +5,7 @@ package reasoning
 import (
 	"strings"
 
-	"cyberstrike-ai/internal/config"
+	"jysecai/internal/config"
 
 	einoopenai "github.com/cloudwego/eino-ext/components/model/openai"
 )

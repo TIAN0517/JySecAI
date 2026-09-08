@@ -7,11 +7,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"cyberstrike-ai/internal/agent"
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/database"
-	copenai "cyberstrike-ai/internal/openai"
-	"cyberstrike-ai/internal/project"
+	"jysecai/internal/agent"
+	"jysecai/internal/config"
+	"jysecai/internal/database"
+	copenai "jysecai/internal/openai"
+	"jysecai/internal/project"
 
 	"github.com/bytedance/sonic"
 	einoopenai "github.com/cloudwego/eino-ext/components/model/openai"
@@ -146,7 +146,7 @@ func newEinoSummarizationMiddleware(
 	}
 	transcriptPath := ""
 	if conv := strings.TrimSpace(conversationID); conv != "" {
-		baseRoot := filepath.Join(os.TempDir(), "cyberstrike-summarization")
+		baseRoot := filepath.Join(os.TempDir(), "jysec-summarization")
 		if dbPath := strings.TrimSpace(appCfg.Database.Path); dbPath != "" {
 			// Persist with the same lifecycle as local conversation storage.
 			baseRoot = filepath.Join(filepath.Dir(dbPath), "conversation_artifacts", sanitizeEinoPathSegment(conv), "summarization")

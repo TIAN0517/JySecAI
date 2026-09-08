@@ -2,7 +2,7 @@
 
 [Back to English documentation](README.md)
 
-This document describes how CyberStrikeAI governs long-running tools, blocking MCP calls, oversized outputs, cancellation, and context restore. The goal is to preserve standard Agent/Eino tool semantics while preventing tool hangs, context blowups, oversized database records, and unsafe resume behavior.
+This document describes how JySecAI governs long-running tools, blocking MCP calls, oversized outputs, cancellation, and context restore. The goal is to preserve standard Agent/Eino tool semantics while preventing tool hangs, context blowups, oversized database records, and unsafe resume behavior.
 
 ## Goals
 
@@ -78,7 +78,7 @@ Typical flow:
 
 ## External MCP Isolation
 
-External MCP servers can hang, disconnect, or return failures. CyberStrikeAI uses three protections:
+External MCP servers can hang, disconnect, or return failures. JySecAI uses three protections:
 
 | Capability | Config | Description |
 |---|---|---|
@@ -98,7 +98,7 @@ agent:
 
 ## Output Governance
 
-CyberStrikeAI uses `multi_agent.eino_middleware.reduction_max_length_for_trunc` as the unified tool result cap. The example configuration uses 50000 bytes.
+JySecAI uses `multi_agent.eino_middleware.reduction_max_length_for_trunc` as the unified tool result cap. The example configuration uses 50000 bytes.
 
 ```yaml
 multi_agent:
@@ -217,5 +217,5 @@ Expected behavior:
 
 ## Boundaries
 
-- CyberStrikeAI cannot control how a remote external MCP server collects output internally; it caps results after they enter CyberStrikeAI and protects calls with concurrency limits and circuit breakers.
+- JySecAI cannot control how a remote external MCP server collects output internally; it caps results after they enter JySecAI and protects calls with concurrency limits and circuit breakers.
 - Oversized tool output is spilled to local `tmp/reduction/.../trunc/<id>` (or `reduction_root_dir`) before truncation; the bounded result includes an absolute path for `read_file`.

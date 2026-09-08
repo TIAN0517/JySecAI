@@ -1,8 +1,8 @@
-# CyberStrikeAI RBAC 使用与管理指南
+# JySecAI RBAC 使用与管理指南
 
 [English](../en-US/rbac.md)
 
-CyberStrikeAI 是可执行 Agent、MCP、WebShell、C2 和批量任务的安全自动化平台。RBAC 不仅控制页面是否可见，还会贯穿 HTTP API、资源查询、Agent 上下文、内置/外部 MCP 工具、后台任务和机器人执行链路。
+JySecAI 是可执行 Agent、MCP、WebShell、C2 和批量任务的安全自动化平台。RBAC 不仅控制页面是否可见，还会贯穿 HTTP API、资源查询、Agent 上下文、内置/外部 MCP 工具、后台任务和机器人执行链路。
 
 ---
 
@@ -306,7 +306,7 @@ Authorization: Bearer <token>
 创建用户示例：
 
 ```bash
-curl -X POST http://localhost:8080/api/rbac/users \
+curl -X POST http://localhost:6688/api/rbac/users \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -321,7 +321,7 @@ curl -X POST http://localhost:8080/api/rbac/users \
 创建自定义角色示例：
 
 ```bash
-curl -X POST http://localhost:8080/api/rbac/roles \
+curl -X POST http://localhost:6688/api/rbac/roles \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -335,7 +335,7 @@ curl -X POST http://localhost:8080/api/rbac/roles \
 批量授权项目示例：
 
 ```bash
-curl -X POST http://localhost:8080/api/rbac/resource-assignments \
+curl -X POST http://localhost:6688/api/rbac/resource-assignments \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{

@@ -13,7 +13,7 @@ JySecAI 可以收費營運，但「可收費」與「擁有所有上游程式碼
 
 ## Apache-2.0 義務
 
-本倉庫含有源自 CyberStrikeAI 的 Apache-2.0 程式。散布修改版時應：
+本倉庫含有源自 JySecAI 的 Apache-2.0 程式。散布修改版時應：
 
 1. 附上 Apache-2.0 授權全文。
 2. 保留原始著作權與 attribution。

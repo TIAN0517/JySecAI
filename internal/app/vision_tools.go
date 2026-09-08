@@ -1,9 +1,9 @@
 package app
 
 import (
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/mcp"
-	"cyberstrike-ai/internal/vision"
+	"jysecai/internal/config"
+	"jysecai/internal/mcp"
+	"jysecai/internal/vision"
 
 	"go.uber.org/zap"
 )

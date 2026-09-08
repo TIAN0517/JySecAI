@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"cyberstrike-ai/internal/database"
+	"jysecai/internal/database"
 
 	"github.com/gin-gonic/gin"
 )
@@ -166,6 +166,8 @@ func permissionForRequest(method, fullPath string) string {
 		return crudPermission(method, "webshell")
 	case strings.HasPrefix(path, "/c2"):
 		return crudPermission(method, "c2")
+	case strings.HasPrefix(path, "/xss"):
+		return crudPermission(method, "xss")
 	case strings.HasPrefix(path, "/chat-uploads"):
 		return crudPermission(method, "files")
 	case strings.HasPrefix(path, "/roles"):
@@ -248,6 +250,10 @@ func resourceAllowed(c *gin.Context, db *database.DB) bool {
 		return db.UserCanAccessResource(session.UserID, session.Scope, "c2_session", c.Param("id"))
 	case strings.HasPrefix(path, "/c2/tasks/:id"):
 		return db.UserCanAccessResource(session.UserID, session.Scope, "c2_task", c.Param("id"))
+	case strings.HasPrefix(path, "/xss/payloads/:id"):
+		return db.UserCanAccessXSS(database.RBACListAccess{UserID: session.UserID, Scope: session.Scope}, "xss_payloads", "xss_payload", c.Param("id"))
+	case strings.HasPrefix(path, "/xss/captures/:id"):
+		return db.UserCanAccessXSS(database.RBACListAccess{UserID: session.UserID, Scope: session.Scope}, "xss_captures", "xss_capture", c.Param("id"))
 	default:
 		return true
 	}

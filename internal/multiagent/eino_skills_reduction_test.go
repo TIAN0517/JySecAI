@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"cyberstrike-ai/internal/config"
+	"jysecai/internal/config"
 )
 
 func TestPrepareEinoAgenticSkillsStillCreatesReductionBackendWhenSkillsDisabled(t *testing.T) {

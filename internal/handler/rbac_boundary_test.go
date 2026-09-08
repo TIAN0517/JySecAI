@@ -12,10 +12,10 @@ import (
 	"testing"
 	"time"
 
-	"cyberstrike-ai/internal/authctx"
-	"cyberstrike-ai/internal/database"
-	"cyberstrike-ai/internal/mcp"
-	"cyberstrike-ai/internal/security"
+	"jysecai/internal/authctx"
+	"jysecai/internal/database"
+	"jysecai/internal/mcp"
+	"jysecai/internal/security"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"

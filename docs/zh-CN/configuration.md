@@ -1,6 +1,6 @@
 # 配置参考
 
-CyberStrikeAI 的主配置文件是 `config.yaml`。大多数配置也可以在 Web 的“系统设置”中修改，保存后再应用。生产环境中，建议把敏感值放在受控配置系统中，并限制 `config.yaml` 的文件权限。
+JySecAI 的主配置文件是 `config.yaml`。大多数配置也可以在 Web 的“系统设置”中修改，保存后再应用。生产环境中，建议把敏感值放在受控配置系统中，并限制 `config.yaml` 的文件权限。
 
 ## 基础配置
 
@@ -295,7 +295,7 @@ project:
 修改后验证：
 
 ```bash
-curl -k https://127.0.0.1:8080/api/auth/validate \
+curl -k https://127.0.0.1:6688/api/auth/validate \
   -H "Authorization: Bearer <token>"
 ```
 

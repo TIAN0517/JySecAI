@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"cyberstrike-ai/internal/database"
+	"jysecai/internal/database"
 )
 
 func TestBuildWebshellAssistantContext_WindowsExplicit(t *testing.T) {

@@ -34,5 +34,6 @@ max_iterations: 0
 ## 与上下游协作
 
 - **上游**（recon / attack-surface-enumeration）提供目标资产、技术栈线索后，本代理立即进入指纹→漏洞匹配。
-- **下游**（pentest-verification / reporting-remediation）承接你的“证据+复现步骤”。
-- 需要在线 CVE/KEV/PoC 交叉验证时，转 `vuln-intel` 技能，不重复造轮子。
+- **下游**（reporting-remediation 子代理，交付「证据+复现步骤」）；`pentest-verification` 技能可作在线交叉验证。
+- 需要在线 CVE/KEV/PoC 交叉验证时，转 **`vuln-intel` 外部 MCP**（mcp-servers/vuln_intel/），不重复造轮子。
+- **前置条件**：本代理使用 `dragon-v::*` 工具依赖外部 MCP `dragon-v`（mcp-servers/dragon_v/）；若该 server 未启用（config.yaml `external_mcp.servers.dragon-v` 的 `disabled: true`），应退回「离线检索与 payload 构造」思路并把结果整理为「待落库」条目。

@@ -171,8 +171,8 @@ export class StrixCliDriver implements EngineDriver {
   }
 }
 
-export class CyberStrikeHttpDriver implements EngineDriver {
-  readonly id = "cyberstrike" as const;
+export class JySecAIHttpDriver implements EngineDriver {
+  readonly id = "jysecai" as const;
   readonly #config: AppConfig;
 
   constructor(config: AppConfig) {
@@ -180,8 +180,8 @@ export class CyberStrikeHttpDriver implements EngineDriver {
   }
 
   async execute(run: SecurityRun, callbacks: DriverCallbacks): Promise<EngineResult> {
-    const token = this.#config.engines.cyberstrikeServiceToken;
-    if (!token) throw new Error("CYBERSTRIKE_SERVICE_TOKEN is not configured");
+    const token = this.#config.engines.jysecaiServiceToken;
+    if (!token) throw new Error("JYSECAI_SERVICE_TOKEN is not configured");
     callbacks.registerProcess(null);
     const message = [
       `Authorization ID: ${run.authorization.id}`,
@@ -193,8 +193,8 @@ export class CyberStrikeHttpDriver implements EngineDriver {
     ].join("\n");
     const orchestration = String(run.config.orchestration ?? "supervisor");
     const endpoint = orchestration === "single" ? "/api/eino-agent" : "/api/multi-agent";
-    await callbacks.progress({ phase: "cyberstrike.request", orchestration });
-    const response = await fetch(new URL(endpoint, this.#config.engines.cyberstrikeBaseUrl), {
+    await callbacks.progress({ phase: "jysecai.request", orchestration });
+    const response = await fetch(new URL(endpoint, this.#config.engines.jysecaiBaseUrl), {
       method: "POST",
       headers: {
         authorization: `Bearer ${token}`,
@@ -211,15 +211,15 @@ export class CyberStrikeHttpDriver implements EngineDriver {
       signal: AbortSignal.timeout(profileTimeoutMs[run.profile]),
     });
     const text = await response.text();
-    if (!response.ok) throw new Error(`CyberStrikeAI returned HTTP ${response.status}: ${text.slice(0, 1000)}`);
+    if (!response.ok) throw new Error(`JySecAI returned HTTP ${response.status}: ${text.slice(0, 1000)}`);
     let result: Record<string, unknown>;
     try {
       result = JSON.parse(text) as Record<string, unknown>;
     } catch {
-      throw new Error("CyberStrikeAI returned a non-JSON response");
+      throw new Error("JySecAI returned a non-JSON response");
     }
     await callbacks.progress({
-      phase: "cyberstrike.response",
+      phase: "jysecai.response",
       finalized: result.finalized,
       evidenceVerified: result.evidenceVerified,
     });

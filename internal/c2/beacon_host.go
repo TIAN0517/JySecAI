@@ -3,7 +3,7 @@ package c2
 import (
 	"strings"
 
-	"cyberstrike-ai/internal/database"
+	"jysecai/internal/database"
 
 	"go.uber.org/zap"
 )

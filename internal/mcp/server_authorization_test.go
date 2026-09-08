@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"cyberstrike-ai/internal/authctx"
+	"jysecai/internal/authctx"
 
 	"go.uber.org/zap"
 )

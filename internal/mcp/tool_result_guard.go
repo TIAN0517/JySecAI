@@ -1,6 +1,6 @@
 package mcp
 
-import "cyberstrike-ai/internal/tooloutput"
+import "jysecai/internal/tooloutput"
 
 const DefaultToolResultMaxBytes = 12000
 

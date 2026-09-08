@@ -1,5 +1,5 @@
 # ============================================
-# CyberStrikeAI 配置文件
+# JySecAI 配置文件
 # ============================================
 # 本配置文件支持通过 Web 界面进行可视化配置
 # 点击右上角"设置"按钮即可修改配置
@@ -14,7 +14,7 @@ version: "v1.7.17"
 # 服务器配置
 server:
   host: 0.0.0.0 # 监听地址，0.0.0.0 表示监听所有网络接口
-  port: 8080 # 服务端口；未启用 TLS 时为 http://localhost:8080
+  port: 6688 # 服务端口；未启用 TLS 时为 http://localhost:6688
   # 其他可信 Web 集成的精确 Origin。Chromium 浏览器插件会自动识别，无需配置；不要使用通配符。
   # cors_allowed_origins:
   #   - https://trusted-integration.example
@@ -59,15 +59,15 @@ monitor:
 # 常用模型: gpt-4, gpt-3.5-turbo, deepseek-chat, claude-3-opus 等
 # provider: 可选值 openai_compatible(默认) | claude(Eino 原生 Anthropic Messages API)
 ai:
-    default_channel: hf-cyberstrike
+    default_channel: nvidia-primary
     channels:
-      hf-cyberstrike:
-        name: HuggingFace CyberStrike
+      nvidia-primary:
+        name: NVIDIA Kimi K3 Primary
         provider: openai_compatible
-        base_url: https://m9e3aud8hqkvy0a5.us-east-2.aws.endpoints.huggingface.cloud/v1
-        api_key: 你的新 Hugging Face Token
-        model: huihui-ai/Huihui-CyberStrike-OffSec-35B-abliterated
-        max_total_tokens: 120000
+        base_url: https://integrate.api.nvidia.com/v1
+        api_key: "${NVIDIA_API_KEY}"
+        model: moonshotai/kimi-k3
+        max_total_tokens: 16384
         max_completion_tokens: 4096
         reasoning:
           mode: off
@@ -175,12 +175,12 @@ hitl:
   # 已决策审计日志保留天数（与 MCP 监控一致；省略默认 90；0 表示不自动清理）
   retention_days: 90
   # 按你环境里的真实工具名增删（与侧栏一致、小写不敏感）；不需要全局免审批可改为 []
-  tool_whitelist: [read_file, ls, list_dir, glob, grep, tool_search, upsert_project_fact, get_project_fact, list_project_facts, search_project_facts, list_vulnerabilities, get_vulnerability, get_asset, query_assets, list_knowledge_risk_types, get_tool_execution, wait_tool_execution, batch_task_list, batch_task_get, manage_webshell_list, c2_event, c2_file]
+  tool_whitelist: [read_file, ls, glob, grep, tool_search, upsert_project_fact, get_project_fact, list_project_facts, search_project_facts, list_vulnerabilities, get_vulnerability, get_asset, query_assets, list_knowledge_risk_types, get_tool_execution, wait_tool_execution, batch_task_list, batch_task_get, manage_webshell_list, c2_event, c2_file]
   # audit_agent_prompt: |  # 审批模式；留空使用内置默认，可在「人机协同」页编辑
   # audit_agent_prompt_review_edit: |  # 审查编辑模式；留空使用内置默认
 
   audit_agent_prompt: |-
-    你是 CyberStrikeAI 人机协同审计 Agent。审查 Agent 即将执行的工具调用是否会对系统造成实质性损害。
+    你是 JySecAI 人机协同审计 Agent。审查 Agent 即将执行的工具调用是否会对系统造成实质性损害。
 
     你会收到 JSON，包含 hitlMode、toolName、arguments/argumentsObj、userMessage、thinking、reasoningChain、planning 等字段。
 
@@ -230,7 +230,7 @@ hitl:
     仅输出一行 JSON，不要 markdown 代码块：
     {"decision":"approve"|"reject","comment":"实际操作：...；成功后的后果：...；命中规则：..."}
   audit_agent_prompt_review_edit: |-
-    你是 CyberStrikeAI 人机协同审计 Agent。审查 Agent 即将执行的工具调用是否会对系统造成实质性损害。
+    你是 JySecAI 人机协同审计 Agent。审查 Agent 即将执行的工具调用是否会对系统造成实质性损害。
 
     你会收到 JSON，包含 hitlMode、toolName、arguments/argumentsObj、userMessage、thinking、reasoningChain、planning 等字段。
 
@@ -352,7 +352,7 @@ multi_agent:
     zap_verbose: false # true：Debug 附带 input/output 摘要
     otel:
       enabled: true
-      service_name: cyberstrike-ai
+      service_name: jysecai
       exporter: stdout # none | stdout（开发/本机）| otlphttp（生产接 Collector）
       otlp_endpoint: localhost:4318 # otlphttp 时使用，host:port，路径固定 /v1/traces
       sample_ratio: 1.0 # 0~1，ParentBased+TraceIDRatio
@@ -387,16 +387,77 @@ security:
 mcp:
   enabled: false # 是否启用 MCP 服务器（http模式）
   host: 127.0.0.1 # MCP 服务器监听地址；需要远程访问时再显式修改并配置网络层访问控制
-  port: 8081 # MCP 服务器端口
+  port: 6689 # MCP 服务器端口
   auth_header: "X-MCP-Token" # 可选的全局服务凭证 Header；普通调用请使用用户 Authorization: Bearer Token
   auth_header_value: "" # 全局服务凭证值，仅 allow_global_access=true 时生效
   allow_global_access: false # 高风险兼容模式：静态密钥映射为全局服务身份；默认请使用用户 Bearer Token
 # 外部 MCP 配置
 external_mcp:
-  servers: {}
+  # 外部 MCP「桥接」服务器示例：工具端自行部署后在此明确声明。
+  # 命令一律支援 ${VAR} / ${VAR:-default} 环境变量展开。
+  # 注意：config 加载时会把未设 disabled 的 server 强制视为启用（internal/config/config.go normalize），
+  # 因此停用用官方字段 disabled: true；部署后把 disabled 改为 false（或用 web UI「外部 MCP」管理启用）。
+  # 技能市场导入的 skill 依赖关系见 skills/.marketplace-manifest.json。
+  servers:
+    # BloodHound MCP（来源：https://github.com/mwnickerson/bloodhound_mcp）
+    bloodhound:
+      description: "BloodHound CE graph queries (AD/Entra attack-path). Requires self-deployed bloodhound-mcp."
+      disabled: true
+      type: stdio
+      command: uv
+      args:
+        - --directory
+        - ${BLOODHOUND_MCP_DIR:-/opt/bloodhound-mcp}
+        - run
+        - main.py
+      env:
+        BLOODHOUND_DOMAIN: ${BLOODHOUND_DOMAIN:-bloodhound.example.test}
+        BLOODHOUND_SCHEME: ${BLOODHOUND_SCHEME:-http}
+        BLOODHOUND_PORT: ${BLOODHOUND_PORT:-8080}
+        BLOODHOUND_TOKEN_ID: ${BLOODHOUND_TOKEN_ID:-}
+        BLOODHOUND_TOKEN_KEY: ${BLOODHOUND_TOKEN_KEY:-}
+      timeout: 30
+      keep_alive: 15
+      max_retries: 3
+    # Ghostwriter MCP（对应 skill：timeline-ghostwriter / report-drafting 家族）
+    #   command/args 依你部署的 ghostwriter-mcp 调整
+    # ghostwriter:
+    #   description: "Ghostwriter report MCP bridge."
+    #   disabled: true
+    #   type: stdio
+    #   command: uvx
+    #   args: [ghostwriter-mcp]
+    #   env:
+    #     GHOSTWRITER_API_URL: ${GHOSTWRITER_API_URL:-http://127.0.0.1:8000}
+    #     GHOSTWRITER_API_KEY: ${GHOSTWRITER_API_KEY:-}
+    # Binary Ninja MCP / Ghidra MCP（对应 skill：reverse-engineering 家族）
+    #   同样由使用者自行部署，示例见 config.yaml 对应注释区块
 # 内置 C2：本机仅做对话/知识库时可设为 false，不启动监听器、不注册 C2 MCP 工具；省略本段时默认启用
 c2:
   enabled: true
+  # 高端自动上线：应用启动时按下方 listeners 幂等创建/启动监听器（按 name 匹配，已存在则跳过创建），
+  # 新会话首次 check_in 未携带心跳参数时注入 default_sleep_seconds/default_jitter_percent 兜底，
+  # 失联会话按 stale_session_timeout_seconds 兜底清理（0 表示沿用看门狗默认 30s）。
+  # 仅创建不启动时把 auto_start_listeners 置为 false；不需要自动上线监听器时整个 auto_checkin 段置 enabled: false。
+  auto_checkin:
+    enabled: true
+    auto_start_listeners: true
+    default_sleep_seconds: 5
+    default_jitter_percent: 0
+    stale_session_timeout_seconds: 0
+    listeners:
+      - name: auto-http-beacon
+        type: http_beacon
+        bind_host: 0.0.0.0
+        bind_port: 6690
+        callback_host: ""
+        enabled: true
+      - name: auto-websocket
+        type: websocket
+        bind_host: 0.0.0.0
+        bind_port: 6691
+        callback_host: ""
+        enabled: true
 # ============================================
 # 知识库相关配置
 # ============================================
@@ -454,7 +515,7 @@ knowledge:
 # ============================================
 # 机器人配置（企业微信、钉钉、飞书）
 # ============================================
-# 用于在手机端通过企业微信/钉钉/飞书与 CyberStrikeAI 对话，无需部署在服务器上也可使用
+# 用于在手机端通过企业微信/钉钉/飞书与 JySecAI 对话，无需部署在服务器上也可使用
 # 在系统设置 -> 机器人设置 中可配置
 robots:
   wechat: # 微信 iLink（个人微信 ClawBot，扫码绑定）
@@ -469,7 +530,7 @@ robots:
     ilink_user_id: ""
     base_url: https://ilinkai.weixin.qq.com
     bot_type: "3"
-    bot_agent: CyberStrikeAI/1.0
+    bot_agent: JySecAI/1.0
   wecom: # 企业微信
     enabled: false
     auth:
@@ -525,7 +586,7 @@ robots:
 # ============================================
 
 # 技能包目录：每个子目录仅标准 SKILL.md（Agent Skills：front matter 仅 name、description）+ 可选附属文件；无 SKILL.yaml
-# 示例：skills/cyberstrike-eino-demo/
+# 示例：skills/jysec-eino-demo/
 skills_dir: skills # Skills配置文件目录（相对于配置文件所在目录）
 # ============================================
 # 多代理子 Agent（Markdown，唯一维护处）
@@ -552,3 +613,13 @@ project:
   fact_index_path_max_runes: 10000
   fact_summary_max_runes: 24000
   default_inject_deprecated: false
+# ============================================
+# XSS 窃密/接管回连收集服务（载荷脚本回调地址，独立于主站监听）
+# ============================================
+xss:
+  enabled: false
+  bind_host: 127.0.0.1
+  bind_port: 8877
+  # public_url: http://127.0.0.1:8877 # 留空时按 http://<bind_host>:<bind_port> 推导；需远程回连时配置公网可达地址
+  # token 留空时启动自动生成并写回本文件
+  cooldown_seconds: 60

@@ -16,9 +16,9 @@ import (
 	"sync"
 	"time"
 
-	"cyberstrike-ai/internal/config"
-	openaiClient "cyberstrike-ai/internal/openai"
-	"cyberstrike-ai/internal/proxypool"
+	"jysecai/internal/config"
+	openaiClient "jysecai/internal/openai"
+	"jysecai/internal/proxypool"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -701,7 +701,7 @@ func (h *FofaHandler) Search(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "创建请求失败: " + err.Error()})
 		return
 	}
-	httpReq.Header.Set("User-Agent", "CyberStrikeAI/1.7.4")
+	httpReq.Header.Set("User-Agent", "JySecAI/1.7.4")
 	httpReq.Header.Set("Accept", "application/json")
 
 	resp, err := h.client.Do(httpReq)
@@ -1125,7 +1125,7 @@ func (h *FofaHandler) doJSONRequest(c *gin.Context, method, endpoint, apiKey, he
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "创建请求失败: " + err.Error()})
 		return false
 	}
-	httpReq.Header.Set("User-Agent", "CyberStrikeAI/1.7.4")
+	httpReq.Header.Set("User-Agent", "JySecAI/1.7.4")
 	httpReq.Header.Set("Accept", "application/json")
 	if body != nil {
 		httpReq.Header.Set("Content-Type", "application/json")

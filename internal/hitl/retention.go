@@ -3,8 +3,8 @@ package hitl
 import (
 	"time"
 
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/database"
+	"jysecai/internal/config"
+	"jysecai/internal/database"
 
 	"go.uber.org/zap"
 )

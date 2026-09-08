@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"cyberstrike-ai/internal/database"
+	"jysecai/internal/database"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -49,11 +49,11 @@ func (h *OpenAPIHandler) GetOpenAPISpec(c *gin.Context) {
 	spec := map[string]interface{}{
 		"openapi": "3.0.0",
 		"info": map[string]interface{}{
-			"title":       "CyberStrikeAI API",
+			"title":       "JySecAI API",
 			"description": "AI驱动的自动化安全测试平台API文档",
 			"version":     "1.0.0",
 			"contact": map[string]interface{}{
-				"name": "CyberStrikeAI",
+				"name": "JySecAI",
 			},
 		},
 		"servers": []map[string]interface{}{

@@ -814,5 +814,5 @@
         resolveGraphNodeType,
     };
 
-    document.addEventListener('cyberstrike-themechange', refreshTheme);
+    document.addEventListener('jysec-themechange', refreshTheme);
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -2,7 +2,7 @@
 
 [中文](../zh-CN/developer-guide.md)
 
-This guide is for contributors extending CyberStrikeAI. The project is a Go single-service application with a static frontend, SQLite persistence, Agent/MCP orchestration, and optional high-risk security subsystems.
+This guide is for contributors extending JySecAI. The project is a Go single-service application with a static frontend, SQLite persistence, Agent/MCP orchestration, and optional high-risk security subsystems.
 
 ## Project Layout
 

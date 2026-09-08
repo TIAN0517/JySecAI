@@ -9,7 +9,7 @@ import { evaluateRunPolicy } from "../core/policy.js";
 import type { DispatchJob, EngineId, RunStatus, SecurityRun } from "../core/types.js";
 import { verifyDispatchJob } from "../infra/dispatcher.js";
 import {
-  CyberStrikeHttpDriver,
+  JySecAIHttpDriver,
   type DriverCallbacks,
   type EngineDriver,
   StrixCliDriver,
@@ -58,7 +58,7 @@ async function transition(
 
 function driverFor(run: SecurityRun, config: ReturnType<typeof loadConfig>): EngineDriver {
   if (run.engine === "strix") return new StrixCliDriver(config);
-  if (run.engine === "cyberstrike") return new CyberStrikeHttpDriver(config);
+  if (run.engine === "jysecai") return new JySecAIHttpDriver(config);
   const adapterUrls: Partial<Record<EngineId, string | undefined>> = config.engines.adapterUrls;
   const endpoint = adapterUrls[run.engine];
   if (!endpoint) throw new Error(`${adapterEnvKey(run.engine)} is not configured`);

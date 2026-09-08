@@ -3,7 +3,7 @@ package multiagent
 import (
 	"testing"
 
-	"cyberstrike-ai/internal/config"
+	"jysecai/internal/config"
 )
 
 func TestAgentMaxIterations(t *testing.T) {

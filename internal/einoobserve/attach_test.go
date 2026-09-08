@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"cyberstrike-ai/internal/config"
+	"jysecai/internal/config"
 )
 
 func TestAttachAgentRunCallbacks_Disabled(t *testing.T) {

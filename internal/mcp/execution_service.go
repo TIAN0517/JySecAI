@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"cyberstrike-ai/internal/authctx"
+	"jysecai/internal/authctx"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"

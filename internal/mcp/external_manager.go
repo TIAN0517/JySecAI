@@ -9,8 +9,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"cyberstrike-ai/internal/authctx"
-	"cyberstrike-ai/internal/config"
+	"jysecai/internal/authctx"
+	"jysecai/internal/config"
 
 	"go.uber.org/zap"
 )

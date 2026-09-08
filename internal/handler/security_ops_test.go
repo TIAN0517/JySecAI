@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"cyberstrike-ai/internal/security"
+	"jysecai/internal/security"
 
 	"github.com/gin-gonic/gin"
 )

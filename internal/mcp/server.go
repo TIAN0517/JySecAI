@@ -14,8 +14,8 @@ import (
 	"sync"
 	"time"
 
-	"cyberstrike-ai/internal/authctx"
-	"cyberstrike-ai/internal/mcp/builtin"
+	"jysecai/internal/authctx"
+	"jysecai/internal/mcp/builtin"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"
@@ -464,7 +464,7 @@ func (s *Server) handleInitialize(msg *Message) *Message {
 			Sampling: map[string]interface{}{},
 		},
 		ServerInfo: ServerInfo{
-			Name:    "CyberStrikeAI",
+			Name:    "JySecAI",
 			Version: "1.0.0",
 		},
 	}

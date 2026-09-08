@@ -88,7 +88,7 @@ stateDiagram-v2
 | 層級 | 引擎 | 說明 |
 |---|---|---|
 | Driver 已實作 | Strix | Worker 會啟動 CLI；仍需 LLM、Docker sandbox 與授權 target E2E |
-| Driver 已實作、服務分離 | Jy Workflow／CyberStrike | Compose 供應私有 Go core；仍須配置可用 service token |
+| Driver 已實作、服務分離 | Jy Workflow／JySecAI | Compose 供應私有 Go core；仍須配置可用 service token |
 | Adapter client only | Promptfoo、PyRIT、Giskard、ART、Humanbound、AD Audit | 本倉庫只有 `/v1/jobs/execute` client 與資料契約 |
 
 Runtime catalog 會依明確啟用開關、service token 或 Adapter URL 判斷 `ready`／`unconfigured`，避免未配置引擎直接出現在建立任務選單。然而目前的 `ready` 是設定就緒，不是主動 liveness、版本、capacity 或 sandbox 健康證明。

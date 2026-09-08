@@ -8,8 +8,8 @@ import (
 	"regexp"
 	"strings"
 
-	"cyberstrike-ai/internal/audit"
-	"cyberstrike-ai/internal/config"
+	"jysecai/internal/audit"
+	"jysecai/internal/config"
 
 	"gopkg.in/yaml.v3"
 

@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"cyberstrike-ai/internal/database"
-	"cyberstrike-ai/internal/security"
+	"jysecai/internal/database"
+	"jysecai/internal/security"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"

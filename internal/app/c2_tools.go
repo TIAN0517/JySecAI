@@ -9,12 +9,12 @@ import (
 	"strings"
 	"time"
 
-	"cyberstrike-ai/internal/agent"
-	"cyberstrike-ai/internal/authctx"
-	"cyberstrike-ai/internal/c2"
-	"cyberstrike-ai/internal/database"
-	"cyberstrike-ai/internal/mcp"
-	"cyberstrike-ai/internal/mcp/builtin"
+	"jysecai/internal/agent"
+	"jysecai/internal/authctx"
+	"jysecai/internal/c2"
+	"jysecai/internal/database"
+	"jysecai/internal/mcp"
+	"jysecai/internal/mcp/builtin"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"

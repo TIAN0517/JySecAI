@@ -14,7 +14,7 @@
 默认配置常见地址：
 
 ```text
-https://127.0.0.1:8080/
+https://127.0.0.1:6688/
 ```
 
 如果使用自签证书，浏览器会提示不受信任，需要手动继续访问。
@@ -205,10 +205,10 @@ knowledge:
 lsof -i :8080
 
 # 本机 HTTPS 是否通
-curl -k -I https://127.0.0.1:8080/
+curl -k -I https://127.0.0.1:6688/
 
 # 静态资源是否通
-curl -k -I https://127.0.0.1:8080/static/logo.png
+curl -k -I https://127.0.0.1:6688/static/logo.png
 
 # 查看数据库文件
 ls -lh data/

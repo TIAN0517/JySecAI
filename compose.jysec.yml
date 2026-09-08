@@ -36,7 +36,7 @@ services:
       target: core
     restart: unless-stopped
     expose:
-      - "8080"
+      - "6688"
     volumes:
       - jysec-core-config:/app/config
       - jysec-core-data:/app/data

@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"strings"
 
-	"cyberstrike-ai/internal/agent"
-	"cyberstrike-ai/internal/audit"
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/database"
-	workflowrunner "cyberstrike-ai/internal/workflow"
+	"jysecai/internal/agent"
+	"jysecai/internal/audit"
+	"jysecai/internal/config"
+	"jysecai/internal/database"
+	workflowrunner "jysecai/internal/workflow"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"

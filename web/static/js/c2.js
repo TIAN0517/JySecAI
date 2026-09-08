@@ -831,6 +831,7 @@
         switch(pageId) {
             case 'c2-listeners':
                 C2.loadListeners();
+                C2.renderAutoCheckinStatus();
                 break;
             case 'c2-sessions':
                 C2.renderSessionToolbar();
@@ -882,6 +883,35 @@
                 C2.profiles = pdata.profiles;
             }
             C2.renderListeners();
+        });
+    };
+
+    /** 自动上线（auto_checkin）状态提示条 */
+    C2.renderAutoCheckinStatus = function() {
+        const el = document.getElementById('c2-auto-checkin-status');
+        if (!el) return;
+        el.style.display = 'none';
+        let url = '/api/config';
+        try {
+            if (typeof getActiveProjectId === 'function' && getActiveProjectId()) {
+                url += '?project_id=' + encodeURIComponent(getActiveProjectId());
+            }
+        } catch (e) {}
+        apiRequest('GET', url).then(function(data) {
+            const c2cfg = data && data.c2;
+            if (!c2cfg || !c2cfg.auto_checkin) return;
+            const on = Boolean(c2cfg.enabled && c2cfg.auto_checkin.enabled);
+            let text;
+            if (on) {
+                text = '自动上线: 开启 · ' + Number(c2cfg.auto_checkin.listener_count || 0) + ' 个监听器 · 心跳默认 ' + Number(c2cfg.auto_checkin.default_sleep_seconds || 5) + 's';
+            } else {
+                text = '自动上线: 关闭（植入体需手动拉起，或检查 config.yaml c2.auto_checkin）';
+            }
+            el.style.display = '';
+            el.className = 'c2-auto-checkin-status ' + (on ? 'c2-auto-checkin-status--on' : 'c2-auto-checkin-status--off');
+            el.innerHTML = '<span class="c2-auto-checkin-dot" aria-hidden="true"></span><span>' + escapeHtml(text) + '</span>';
+        }).catch(function() {
+            el.style.display = 'none';
         });
     };
 

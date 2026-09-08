@@ -2,7 +2,7 @@
 
 [中文](../zh-CN/deployment.md)
 
-CyberStrikeAI can run as a local testing tool, an internal team service, or a production red-team platform. Treat it as a high-privilege security system: it can execute commands, call MCP tools, manage WebShell connections, and optionally run C2 listeners.
+JySecAI can run as a local testing tool, an internal team service, or a production red-team platform. Treat it as a high-privilege security system: it can execute commands, call MCP tools, manage WebShell connections, and optionally run C2 listeners.
 
 ## Prerequisites
 
@@ -48,8 +48,8 @@ go run ./cmd/server --config config.yaml
 Binary build:
 
 ```bash
-go build -o cyberstrike-ai ./cmd/server
-./cyberstrike-ai --config config.yaml
+go build -o jysecai ./cmd/server
+./jysecai --config config.yaml
 ```
 
 The binary still needs `web/templates`, `web/static`, and the runtime resource directories.

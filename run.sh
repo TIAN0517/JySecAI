@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-# CyberStrikeAI one-click deploy and start script
+# JySecAI one-click deploy and start script
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$ROOT_DIR"
 
@@ -65,7 +65,7 @@ print_banner() {
     local show_mirrors="${1:-1}"
     echo ""
     echo "=========================================="
-    echo "  CyberStrikeAI Deploy & Start Script"
+    echo "  JySecAI Deploy & Start Script"
     echo "  (HTTPS with self-signed cert by default; plain HTTP: $0 --http)"
     echo "=========================================="
     echo ""
@@ -90,7 +90,7 @@ CONFIG_FILE="$ROOT_DIR/config.yaml"
 EXAMPLE_CONFIG_FILE="$ROOT_DIR/config.example.yaml"
 VENV_DIR="$ROOT_DIR/venv"
 REQUIREMENTS_FILE="$ROOT_DIR/requirements.txt"
-BINARY_NAME="cyberstrike-ai"
+BINARY_NAME="jysecai"
 
 # Check Python environment
 check_python() {
@@ -473,10 +473,10 @@ main() {
     success "All setup complete!"
     echo ""
     if [ "$USE_HTTPS" -eq 1 ]; then
-        info "Starting CyberStrikeAI server (HTTPS + HTTP/2, self-signed cert)..."
+        info "Starting JySecAI server (HTTPS + HTTP/2, self-signed cert)..."
         note "For plain HTTP, use: $0 --http"
     else
-        info "Starting CyberStrikeAI server (HTTP)..."
+        info "Starting JySecAI server (HTTP)..."
     fi
     echo "=========================================="
     echo ""

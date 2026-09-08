@@ -13,7 +13,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"cyberstrike-ai/internal/config"
+	"jysecai/internal/config"
 
 	"go.uber.org/zap"
 )
@@ -95,7 +95,6 @@ func (c *Client) ChatCompletion(ctx context.Context, payload interface{}, out in
 	if c.isClaude() {
 		return c.claudeNativeChatCompletion(ctx, payload, out)
 	}
-
 	baseURL := strings.TrimSuffix(c.config.BaseURL, "/")
 	if baseURL == "" {
 		baseURL = "https://api.openai.com/v1"
@@ -190,7 +189,6 @@ func (c *Client) ChatCompletionStream(ctx context.Context, payload interface{}, 
 	if c.isClaude() {
 		return c.claudeNativeChatCompletionStream(ctx, payload, onDelta)
 	}
-
 	baseURL := strings.TrimSuffix(c.config.BaseURL, "/")
 	if baseURL == "" {
 		baseURL = "https://api.openai.com/v1"
@@ -340,7 +338,6 @@ func (c *Client) ChatCompletionStreamWithToolCalls(
 	if c.isClaude() {
 		return "", nil, "", fmt.Errorf("native Claude tool-call streaming requires Eino AgenticModel")
 	}
-
 	baseURL := strings.TrimSuffix(c.config.BaseURL, "/")
 	if baseURL == "" {
 		baseURL = "https://api.openai.com/v1"
@@ -561,7 +558,6 @@ func (c *Client) ListModels(ctx context.Context) ([]string, error) {
 	if c.isClaude() {
 		return nil, fmt.Errorf("claude provider does not support models list API")
 	}
-
 	baseURL := strings.TrimSuffix(c.config.BaseURL, "/")
 	if baseURL == "" {
 		baseURL = "https://api.openai.com/v1"

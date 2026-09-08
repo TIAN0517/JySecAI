@@ -3,12 +3,12 @@
  */
 let projectsCache = [];
 let projectsCacheAll = [];
-const PROJECTS_LIST_PAGE_SIZE_KEY = 'cyberstrike.projects_list_page_size';
+const PROJECTS_LIST_PAGE_SIZE_KEY = 'jysec.projects_list_page_size';
 let currentProjectId = null;
 let currentProjectUpdatedAt = null;
 let currentProjectTab = 'facts';
 let currentProjectAssets = [];
-const PROJECT_ASSETS_PAGE_SIZE_KEY = 'cyberstrike.project_assets_page_size';
+const PROJECT_ASSETS_PAGE_SIZE_KEY = 'jysec.project_assets_page_size';
 let projectAssetsPagination = {
     page: 1,
     pageSize: (() => {
@@ -26,7 +26,7 @@ const projectNameById = {};
 let _projectsListReady = false;
 let _projectsFetchPromise = null;
 
-const PROJECT_ACTIVE_KEY = 'cyberstrike.activeProjectId';
+const PROJECT_ACTIVE_KEY = 'jysec.activeProjectId';
 const PROJECT_DESCRIPTION_MAX_LENGTH = 4000;
 const PROJECT_NAME_MAX_LENGTH = 200;
 
@@ -2595,7 +2595,7 @@ let chatProjectFolderLastQuery = '';
 const chatProjectFolderExpandedIds = new Set();
 let chatProjectFolderLastSelectionId = null;
 const CHAT_UNASSIGNED_PROJECT_FOLDER_ID = '__chat_unassigned_project__';
-const PROJECT_FOLDER_COMPLETION_SEEN_KEY = 'cyberstrike-project-folder-completion-seen';
+const PROJECT_FOLDER_COMPLETION_SEEN_KEY = 'jysec-project-folder-completion-seen';
 const chatProjectFolderContext = {
     ready: false,
     conversations: [],

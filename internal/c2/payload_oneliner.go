@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strings"
 
-	"cyberstrike-ai/internal/database"
+	"jysecai/internal/database"
 )
 
 // OnelinerKind 单行 payload 的语言/形式

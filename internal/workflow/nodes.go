@@ -6,9 +6,9 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"cyberstrike-ai/internal/agent"
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/multiagent"
+	"jysecai/internal/agent"
+	"jysecai/internal/config"
+	"jysecai/internal/multiagent"
 )
 
 func runBuiltinNode(ctx context.Context, args RunArgs, node graphNode, state *WorkflowLocalState) (map[string]any, bool, string, string) {

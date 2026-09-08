@@ -78,7 +78,7 @@ docker compose -f compose.jysec.yml --profile worker up -d --build worker
 ### 實際可用性
 
 - Strix：Worker image 已安裝 CLI，但 production 必須明確啟用，並提供 LLM 設定、Docker sandbox 與可寫 runs volume。
-- Jy Workflow：Compose 已將 `CYBERSTRIKE_BASE_URL` 指向私有 `core:8080`；仍須設定有效的 `CYBERSTRIKE_SERVICE_TOKEN`，並驗證它可被 Go 核心接受。
+- Jy Workflow：Compose 已將 `JYSECAI_BASE_URL` 指向私有 `core:8080`；仍須設定有效的 `JYSECAI_SERVICE_TOKEN`，並驗證它可被 Go 核心接受。
 - Promptfoo、PyRIT、Giskard、ART、Humanbound、AD Audit：必須自行部署符合 [Adapter 契約](jysec-adapter-contract.md) 的服務，再設定相應 `JYSEC_ENGINE_<ENGINE>_URL`。
 
 配置 URL 只代表引擎可以被排入佇列，不是健康或 E2E 證明。部署者仍應主動驗證版本、認證、網路、sandbox 與合法 staging target。

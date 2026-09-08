@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"cyberstrike-ai/internal/authctx"
-	"cyberstrike-ai/internal/database"
-	"cyberstrike-ai/internal/mcp"
-	"cyberstrike-ai/internal/mcp/builtin"
+	"jysecai/internal/authctx"
+	"jysecai/internal/database"
+	"jysecai/internal/mcp"
+	"jysecai/internal/mcp/builtin"
 
 	"go.uber.org/zap"
 )

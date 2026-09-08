@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const engineIds = [
   "strix",
-  "cyberstrike",
+  "jysecai",
   "hexstrike",
   "kali-mcp",
   "awvs",

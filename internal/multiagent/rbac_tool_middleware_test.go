@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"cyberstrike-ai/internal/authctx"
+	"jysecai/internal/authctx"
 )
 
 func TestLocalToolPermissionIsSeparateFromAgentExecution(t *testing.T) {

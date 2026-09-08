@@ -457,6 +457,51 @@ func (db *DB) initTables() error {
 		FOREIGN KEY (user_id) REFERENCES rbac_users(id) ON DELETE CASCADE
 	);`
 
+	// XSS 窃密载荷与收割记录（接管仍是实验能力，捕获的 Cookie/凭据只在本库内留存）
+	createXSSPayloadsTable := `
+	CREATE TABLE IF NOT EXISTS xss_payloads (
+		id TEXT PRIMARY KEY,
+		project_id TEXT,
+		conversation_id TEXT,
+		name TEXT NOT NULL DEFAULT '',
+		source_url TEXT NOT NULL DEFAULT '',
+		script TEXT NOT NULL,
+		status TEXT NOT NULL DEFAULT 'armed',
+		created_by TEXT,
+		created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL,
+		FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE SET NULL
+	);`
+
+	createXSSCapturesTable := `
+	CREATE TABLE IF NOT EXISTS xss_captures (
+		id TEXT PRIMARY KEY,
+		payload_id TEXT,
+		project_id TEXT,
+		conversation_id TEXT,
+		status TEXT NOT NULL DEFAULT 'new',  -- new / seized / analyzed / ignored
+		source_url TEXT NOT NULL DEFAULT '',
+		page_title TEXT NOT NULL DEFAULT '',
+		user_agent TEXT NOT NULL DEFAULT '',
+		client_ip TEXT NOT NULL DEFAULT '',
+		url_fragment TEXT NOT NULL DEFAULT '',
+		cookies_json TEXT NOT NULL DEFAULT '{}',
+		local_storage_json TEXT NOT NULL DEFAULT '{}',
+		session_storage_json TEXT NOT NULL DEFAULT '{}',
+		api_keys_json TEXT NOT NULL DEFAULT '{}',
+		seized_at DATETIME,
+		created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (payload_id) REFERENCES xss_payloads(id) ON DELETE SET NULL,
+		FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL,
+		FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE SET NULL
+	);`
+	createXSSCaptureIndex := `
+	CREATE INDEX IF NOT EXISTS idx_xss_captures_created_at ON xss_captures(created_at);`
+	createXSSPayloadIndex := `
+	CREATE INDEX IF NOT EXISTS idx_xss_payloads_created_at ON xss_payloads(created_at);`
+
 	// 创建批量任务队列表
 	createBatchTaskQueuesTable := `
 	CREATE TABLE IF NOT EXISTS batch_task_queues (
@@ -921,6 +966,19 @@ func (db *DB) initTables() error {
 		if _, err := db.Exec(ddl); err != nil {
 			return fmt.Errorf("创建%s表失败: %w", tableName, err)
 		}
+	}
+
+	if _, err := db.Exec(createXSSPayloadsTable); err != nil {
+		return fmt.Errorf("创建xss_payloads表失败: %w", err)
+	}
+	if _, err := db.Exec(createXSSCapturesTable); err != nil {
+		return fmt.Errorf("创建xss_captures表失败: %w", err)
+	}
+	if _, err := db.Exec(createXSSCaptureIndex); err != nil {
+		return fmt.Errorf("创建xss_captures索引失败: %w", err)
+	}
+	if _, err := db.Exec(createXSSPayloadIndex); err != nil {
+		return fmt.Errorf("创建xss_payloads索引失败: %w", err)
 	}
 
 	// 为已有表添加新字段（如果不存在）- 必须在创建索引之前

@@ -15,25 +15,25 @@ import (
 	"sync"
 	"time"
 
-	"cyberstrike-ai/internal/agent"
-	"cyberstrike-ai/internal/audit"
-	"cyberstrike-ai/internal/authctx"
-	"cyberstrike-ai/internal/c2"
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/database"
-	"cyberstrike-ai/internal/einoobserve"
-	"cyberstrike-ai/internal/handler"
-	"cyberstrike-ai/internal/hitl"
-	"cyberstrike-ai/internal/knowledge"
-	"cyberstrike-ai/internal/logger"
-	"cyberstrike-ai/internal/mcp"
-	"cyberstrike-ai/internal/mcp/builtin"
-	"cyberstrike-ai/internal/monitor"
-	"cyberstrike-ai/internal/multiagent"
-	"cyberstrike-ai/internal/proxypool"
-	"cyberstrike-ai/internal/robot"
-	"cyberstrike-ai/internal/security"
-	"cyberstrike-ai/internal/skillpackage"
+	"jysecai/internal/agent"
+	"jysecai/internal/audit"
+	"jysecai/internal/authctx"
+	"jysecai/internal/c2"
+	"jysecai/internal/config"
+	"jysecai/internal/database"
+	"jysecai/internal/einoobserve"
+	"jysecai/internal/handler"
+	"jysecai/internal/hitl"
+	"jysecai/internal/knowledge"
+	"jysecai/internal/logger"
+	"jysecai/internal/mcp"
+	"jysecai/internal/mcp/builtin"
+	"jysecai/internal/monitor"
+	"jysecai/internal/multiagent"
+	"jysecai/internal/proxypool"
+	"jysecai/internal/robot"
+	"jysecai/internal/security"
+	"jysecai/internal/skillpackage"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -72,6 +72,8 @@ type App struct {
 	c2Watchdog         *c2.SessionWatchdog       // C2 会话看门狗
 	c2WatchdogCancel   context.CancelFunc        // 看门狗取消函数
 	c2Handler          *handler.C2Handler        // C2 REST（与 Manager 生命周期同步）
+	xssCollector       *xssCollectorRuntime      // XSS 窃密回连收集服务（未启用时为 nil）
+	xssHandler         *handler.XSSHandler       // XSS 载荷/收割 REST（含生成入口）
 	auditSvc           *audit.Service
 	proxyPool          *proxypool.Manager
 }
@@ -168,7 +170,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	executor.RegisterTools(mcpServer)
 
 	// 注册漏洞记录工具
-	registerVulnerabilityTools(mcpServer, db, log.Logger)
+	registerVulnerabilityTools(mcpServer, db, log.Logger, xssHookFromConfig(cfg))
 	registerPocGeneratorTools(mcpServer, db, cfg, log.Logger)
 	registerAssetTools(mcpServer, db, log.Logger)
 	registerProjectFactTools(mcpServer, db, cfg, log.Logger)
@@ -348,7 +350,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		}()
 	}
 
-	// 配置文件路径必须由入口传入（与 flag -config 一致）。勿再用 os.Args[1]，否则 ./cyberstrike-ai --https 会把 --https 当成路径。
+	// 配置文件路径必须由入口传入（与 flag -config 一致）。勿再用 os.Args[1]，否则 ./jysecai --https 会把 --https 当成路径。
 	configPath = strings.TrimSpace(configPath)
 	if configPath == "" {
 		configPath = "config.yaml"
@@ -450,6 +452,14 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	c2Handler := handler.NewC2Handler(c2Manager, log.Logger)
 	c2Handler.SetAudit(auditSvc)
 
+	// ============================================================================
+	// 初始化 XSS 窃密/接管收集服务（独立监听，按配置启停）
+	// ============================================================================
+	xssCollector, err := startXSSCollector(db, &cfg.XSS, log.Logger)
+	if err != nil {
+		log.Logger.Warn("XSS 收集服务启动失败，请检查 xss 配置（端口/地址占用）", zap.Error(err))
+	}
+
 	// 创建OpenAPI处理器
 	conversationHandler := handler.NewConversationHandler(db, log.Logger)
 	conversationHandler.SetAudit(auditSvc)
@@ -483,6 +493,8 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		c2Watchdog:         c2Watchdog,
 		c2WatchdogCancel:   watchdogCancel,
 		c2Handler:          c2Handler,
+		xssCollector:       xssCollector,
+		xssHandler:         handler.NewXSSHandler(db, log.Logger, xssCollectorProviderFn(cfg, xssCollector, log.Logger)),
 		auditSvc:           auditSvc,
 		proxyPool:          proxyPoolManager,
 	}
@@ -494,7 +506,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 
 	// 设置漏洞工具注册器（内置工具，必须设置）
 	vulnerabilityRegistrar := func() error {
-		registerVulnerabilityTools(mcpServer, db, log.Logger)
+registerVulnerabilityTools(mcpServer, db, log.Logger, xssHookFromConfig(cfg))
 		registerAssetTools(mcpServer, db, log.Logger)
 		registerProjectFactTools(mcpServer, db, cfg, log.Logger)
 		registerVisionTools(mcpServer, cfg, log.Logger)
@@ -772,6 +784,14 @@ func (a *App) Shutdown() {
 	a.robotMu.Unlock()
 
 	a.shutdownC2()
+
+	// 停止 XSS 窃密回连收集服务
+	if a.xssCollector != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		a.xssCollector.shutdown(ctx)
+		cancel()
+		a.xssCollector = nil
+	}
 
 	// 停止所有外部MCP客户端
 	if a.externalMCPMgr != nil {
@@ -1354,6 +1374,17 @@ func setupRoutes(
 		c2Routes.POST("/profiles", c2Handler.CreateProfile)
 		c2Routes.PUT("/profiles/:id", c2Handler.UpdateProfile)
 		c2Routes.DELETE("/profiles/:id", c2Handler.DeleteProfile)
+
+		// XSS 窃密载荷与收割记录（收集回连由独立 xss_collector 监听，不走此路由）
+		protected.GET("/xss/config", security.RequirePermission("xss:read"), app.xssHandler.GetConfig)
+		protected.GET("/xss/payloads", security.RequirePermission("xss:read"), app.xssHandler.ListPayloads)
+		protected.POST("/xss/payloads/generate", security.RequirePermission("xss:write"), app.xssHandler.GeneratePayload)
+		protected.GET("/xss/payloads/:id", security.RequirePermission("xss:read"), app.xssHandler.GetPayload)
+		protected.DELETE("/xss/payloads/:id", security.RequirePermission("xss:delete"), app.xssHandler.DeletePayload)
+		protected.GET("/xss/captures", security.RequirePermission("xss:read"), app.xssHandler.ListCaptures)
+		protected.GET("/xss/captures/:id", security.RequirePermission("xss:read"), app.xssHandler.GetCapture)
+		protected.PUT("/xss/captures/:id/status", security.RequirePermission("xss:write"), app.xssHandler.UpdateCaptureStatus)
+		protected.DELETE("/xss/captures/:id", security.RequirePermission("xss:delete"), app.xssHandler.DeleteCapture)
 
 		// 对话附件（chat_uploads）管理
 		protected.GET("/chat-uploads", chatUploadsHandler.List)

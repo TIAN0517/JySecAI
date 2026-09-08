@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/openai"
+	"jysecai/internal/config"
+	"jysecai/internal/openai"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"

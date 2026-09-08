@@ -9,7 +9,7 @@
     <script>
         (function () {
             try {
-                var stored = localStorage.getItem('cyberstrike-theme') || 'system';
+                var stored = localStorage.getItem('jysec-theme') || 'system';
                 if (stored !== 'system' && stored !== 'light' && stored !== 'dark') {
                     stored = 'system';
                 }
@@ -327,6 +327,16 @@
                             <div class="nav-submenu-item" data-page="c2-payloads" onclick="switchPage('c2-payloads')" data-i18n="nav.c2Payloads">Payload</div>
                             <div class="nav-submenu-item" data-page="c2-events" onclick="switchPage('c2-events')" data-i18n="nav.c2Events">事件</div>
                             <div class="nav-submenu-item" data-page="c2-profiles" onclick="switchPage('c2-profiles')" data-i18n="nav.c2Profiles">流量伪装</div>
+                        </div>
+                    </div>
+                    <!-- XSS 窃密/收割入口 -->
+                    <div class="nav-item" data-page="xss" data-require-permission="xss:read">
+                        <div class="nav-item-content" data-title="XSS收割" onclick="switchPage('xss')" data-i18n="nav.xss" data-i18n-attr="data-title" data-i18n-skip-text="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 3v2m6-2v2M4 5h16M3 5h18v14H3z"></path>
+                                <path d="M7 11l2.5 2.5L14 8"></path>
+                            </svg>
+                            <span data-i18n="nav.xss">XSS收割</span>
                         </div>
                     </div>
                     <div class="nav-item" data-page="chat-files">
@@ -2978,6 +2988,7 @@
                         </div>
                     </div>
                     <div class="page-content">
+                        <div id="c2-auto-checkin-status" class="c2-auto-checkin-status" style="display:none;"></div>
                         <div id="c2-listener-grid" class="c2-listener-grid"></div>
                     </div>
                 </div>
@@ -3250,6 +3261,148 @@
                 <div id="c2-modal" class="c2-modal-overlay" style="display:none;" onclick="if(event.target===this)C2.closeModal()">
                     <div class="c2-modal" onclick="event.stopPropagation()">
                         <div id="c2-modal-content"></div>
+                    </div>
+                </div>
+
+                <!-- XSS 收割页面 -->
+                <div id="page-xss" class="page">
+                    <div class="page-header">
+                        <h2>XSS 收割</h2>
+                        <div class="page-header-actions">
+                            <button type="button" class="btn-secondary" onclick="XSS.init('true')">刷新</button>
+                            <button type="button" class="btn-primary" data-require-permission="xss:read" onclick="XSS.showConfig()">收集服务配置</button>
+                        </div>
+                    </div>
+                    <div class="page-content">
+                        <div class="xss-status-bar" id="xss-status-bar">
+                            <span id="xss-status-text">加载中…</span>
+                        </div>
+
+                        <!-- 接管载荷 -->
+                        <div class="xss-section">
+                            <div class="xss-section-head">
+                                <h3>接管载荷 <span id="xss-payload-count" class="xss-count-badge">0</span></h3>
+                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.openGenerateModal()">+ 生成载荷</button>
+                            </div>
+                            <div class="xss-table-wrap">
+                                <table class="xss-table">
+                                    <thead>
+                                        <tr>
+                                            <th>名称</th>
+                                            <th>来源</th>
+                                            <th>状态</th>
+                                            <th>创建时间</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="xss-payload-list"></tbody>
+                                </table>
+                                <div id="xss-payload-empty" class="xss-empty" hidden>尚未生成接管载荷，点击右上角「生成载荷」创建。</div>
+                            </div>
+                            <div id="xss-script-modal" class="xss-modal-overlay" style="display:none;" onclick="if(event.target===this)XSS.closeModal(this)">
+                                <div class="xss-modal" onclick="event.stopPropagation()">
+                                    <div class="xss-modal-head"><h3>注入脚本</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
+                                    <p class="xss-modal-hint">将以下脚本植入目标页面的 XSS 触发点（如 <code>&lt;script&gt;</code>、事件属性、URL 参数注入点）。目标浏览器打开后会自动回连收集服务。</p>
+                                    <textarea id="xss-script-text" class="xss-script-text" readonly spellcheck="false"></textarea>
+                                    <div class="xss-modal-actions">
+                                        <button type="button" class="btn-primary btn-sm" onclick="XSS.copyScript()">复制脚本</button>
+                                        <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)">关闭</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 回显收割 -->
+                        <div class="xss-section">
+                            <div class="xss-section-head">
+                                <h3>回显收割 <span id="xss-capture-count" class="xss-count-badge">0</span></h3>
+                            </div>
+                            <div class="xss-capture-toolbar">
+                                <label class="xss-capture-field">
+                                    <span>状态</span>
+                                    <select id="xss-capture-status" class="form-control" onchange="XSS.loadCaptures()">
+                                        <option value="">全部</option>
+                                        <option value="new">未处理</option>
+                                        <option value="seized">已接管</option>
+                                        <option value="analyzed">已分析</option>
+                                        <option value="ignored">已忽略</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="xss-table-wrap">
+                                <table class="xss-table">
+                                    <thead>
+                                        <tr>
+                                            <th>时间</th>
+                                            <th>来源 URL</th>
+                                            <th>页面</th>
+                                            <th>Cookie</th>
+                                            <th>状态</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="xss-capture-list"></tbody>
+                                </table>
+                                <div id="xss-capture-empty" class="xss-empty" hidden>暂无回显。植入载荷后目标浏览器回连即会出现在这里。</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 生成载荷模态框 -->
+                    <div id="xss-generate-modal" class="xss-modal-overlay" style="display:none;" onclick="if(event.target===this)XSS.closeModal(this)">
+                        <div class="xss-modal" onclick="event.stopPropagation()">
+                            <div class="xss-modal-head"><h3>生成接管载荷</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
+                            <div class="xss-form-group">
+                                <label>名称</label>
+                                <input type="text" id="xss-generate-name" class="form-control" placeholder="例：目标站登录页">
+                            </div>
+                            <div class="xss-form-group">
+                                <label>来源（目标触发点 URL，可选）</label>
+                                <input type="text" id="xss-generate-source" class="form-control" placeholder="https://target.example/login">
+                            </div>
+                            <div class="xss-modal-actions">
+                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.generatePayload()">生成</button>
+                                <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)">取消</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 回显详情模态框 -->
+                    <div id="xss-detail-modal" class="xss-modal-overlay" style="display:none;" onclick="if(event.target===this)XSS.closeModal(this)">
+                        <div class="xss-modal xss-modal-lg" onclick="event.stopPropagation()">
+                            <div class="xss-modal-head"><h3>回显详情</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
+                            <div id="xss-detail-body"></div>
+                        </div>
+                    </div>
+
+                    <!-- 收集服务配置模态框 -->
+                    <div id="xss-config-modal" class="xss-modal-overlay" style="display:none;" onclick="if(event.target===this)XSS.closeModal(this)">
+                        <div class="xss-modal" onclick="event.stopPropagation()">
+                            <div class="xss-modal-head"><h3>收集服务配置</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
+                            <div class="xss-form-group">
+                                <label class="xss-toggle-row">
+                                    <input type="checkbox" id="xss-config-enabled">
+                                    <span>启用收集服务（监听收割回连）</span>
+                                </label>
+                                <p class="xss-modal-hint">启用后，生成的载荷即可回连收割 Cookie / localStorage / sessionStorage。需同时配置 <code>public_url</code> 为公网/内网可达地址。</p>
+                            </div>
+                            <div class="xss-form-group">
+                                <label>监听地址</label>
+                                <input type="text" id="xss-config-bind" class="form-control" readonly>
+                            </div>
+                            <div class="xss-form-group">
+                                <label>收割地址（public_url）</label>
+                                <input type="text" id="xss-config-url" class="form-control" readonly>
+                            </div>
+                            <div class="xss-form-group">
+                                <label>冷却（秒）</label>
+                                <input type="number" id="xss-config-cooldown" class="form-control" readonly>
+                            </div>
+                            <div class="xss-modal-actions">
+                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.saveConfig()">保存</button>
+                                <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)">关闭</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -5529,14 +5682,14 @@
 }</code>
                         <strong data-i18n="externalMcpModal.httpMode">HTTP模式：</strong><br>
                         <code data-i18n="externalMcpModal.exampleHttp" style="display: block; margin: 8px 0; padding: 8px; background: var(--bg-secondary); border-radius: 4px; white-space: pre-wrap;">{
-  "cyberstrike-ai-http": {
+  "jysecai-http": {
     "transport": "http",
     "url": "http://127.0.0.1:8081/mcp"
   }
 }</code>
                         <strong data-i18n="externalMcpModal.sseMode">SSE模式：</strong><br>
                         <code data-i18n="externalMcpModal.exampleSse" style="display: block; margin: 8px 0; padding: 8px; background: var(--bg-secondary); border-radius: 4px; white-space: pre-wrap;">{
-  "cyberstrike-ai-sse": {
+  "jysecai-sse": {
     "transport": "sse",
     "url": "http://127.0.0.1:8081/mcp/sse"
   }
@@ -6877,6 +7030,7 @@
     <script src="/static/js/roles.js"></script>
     <script src="/static/js/rbac.js"></script>
     <script src="/static/js/c2.js"></script>
+    <script src="/static/js/xss.js"></script>
     <script src="/static/js/rbac-guards.js?v=20260717-1"></script>
 </body>
 </html>

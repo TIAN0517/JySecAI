@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	"cyberstrike-ai/internal/authctx"
-	"cyberstrike-ai/internal/database"
-	"cyberstrike-ai/internal/mcp"
-	"cyberstrike-ai/internal/mcp/builtin"
-	"cyberstrike-ai/internal/security"
+	"jysecai/internal/authctx"
+	"jysecai/internal/database"
+	"jysecai/internal/mcp"
+	"jysecai/internal/mcp/builtin"
+	"jysecai/internal/security"
 
 	"go.uber.org/zap"
 )

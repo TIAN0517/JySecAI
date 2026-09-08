@@ -13,19 +13,17 @@ import (
 	"sync"
 	"time"
 
-	"cyberstrike-ai/internal/agents"
-	"cyberstrike-ai/internal/audit"
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/database"
-	"cyberstrike-ai/internal/knowledge"
-	"cyberstrike-ai/internal/llm"
-	"cyberstrike-ai/internal/mcp"
-	"cyberstrike-ai/internal/mcp/builtin"
-	"cyberstrike-ai/internal/openai"
-	"cyberstrike-ai/internal/proxypool"
-	"cyberstrike-ai/internal/security"
+	"jysecai/internal/agents"
+	"jysecai/internal/audit"
+	"jysecai/internal/config"
+	"jysecai/internal/database"
+	"jysecai/internal/knowledge"
+	"jysecai/internal/mcp"
+	"jysecai/internal/mcp/builtin"
+	"jysecai/internal/openai"
+	"jysecai/internal/proxypool"
+	"jysecai/internal/security"
 
-	"github.com/cloudwego/eino/schema"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"gopkg.in/yaml.v3"
@@ -295,6 +293,7 @@ type GetConfigResponse struct {
 	Robots     config.RobotsConfig      `json:"robots,omitempty"`
 	MultiAgent config.MultiAgentPublic  `json:"multi_agent,omitempty"`
 	C2         config.C2Public          `json:"c2"`
+	XSS        config.XSSPublic         `json:"xss"`
 }
 
 // ToolConfigInfo 工具配置信息
@@ -367,13 +366,13 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		subAgentCount = len(agents.MergeYAMLAndMarkdown(h.config.MultiAgent.SubAgents, load.SubAgents))
 	}
 	multiPub := config.MultiAgentPublic{
-		Enabled:                                    h.config.MultiAgent.Enabled,
-		RobotDefaultAgentMode:                      config.NormalizeRobotAgentMode(h.config.MultiAgent),
-		BatchUseMultiAgent:                         h.config.MultiAgent.BatchUseMultiAgent,
-		SubAgentCount:                              subAgentCount,
-		Orchestration:                              config.NormalizeMultiAgentOrchestration(h.config.MultiAgent.Orchestration),
-		PlanExecuteLoopMaxIterations:               h.config.MultiAgent.PlanExecuteLoopMaxIterations,
-		SummarizationUserIntentLedgerMaxRunes:      h.config.MultiAgent.EinoMiddleware.SummarizationUserIntentLedgerMaxRunesEffective(),
+		Enabled:                               h.config.MultiAgent.Enabled,
+		RobotDefaultAgentMode:                 config.NormalizeRobotAgentMode(h.config.MultiAgent),
+		BatchUseMultiAgent:                    h.config.MultiAgent.BatchUseMultiAgent,
+		SubAgentCount:                         subAgentCount,
+		Orchestration:                         config.NormalizeMultiAgentOrchestration(h.config.MultiAgent.Orchestration),
+		PlanExecuteLoopMaxIterations:          h.config.MultiAgent.PlanExecuteLoopMaxIterations,
+		SummarizationUserIntentLedgerMaxRunes: h.config.MultiAgent.EinoMiddleware.SummarizationUserIntentLedgerMaxRunesEffective(),
 		SummarizationUserIntentLedgerEntryMaxRunes: h.config.MultiAgent.EinoMiddleware.SummarizationUserIntentLedgerEntryMaxRunesEffective(),
 		LatestUserMessageMaxRunes:                  h.config.MultiAgent.EinoMiddleware.LatestUserMessageMaxRunesEffective(),
 		LatestUserMessageHeadRunes:                 h.config.MultiAgent.EinoMiddleware.LatestUserMessageHeadRunesEffective(),
@@ -404,6 +403,7 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		Hitl:       h.config.Hitl,
 		Knowledge:  h.config.Knowledge,
 		C2:         h.config.C2.Public(),
+		XSS:        h.config.XSS.Public(),
 		Robots:     h.config.Robots,
 		MultiAgent: multiPub,
 	})
@@ -751,6 +751,7 @@ type UpdateConfigRequest struct {
 	Robots     *config.RobotsConfig        `json:"robots,omitempty"`
 	MultiAgent *config.MultiAgentAPIUpdate `json:"multi_agent,omitempty"`
 	C2         *config.C2APIUpdate         `json:"c2,omitempty"`
+	XSS        *config.XSSAPIUpdate        `json:"xss,omitempty"`
 }
 
 // AgentConfigUpdate 用于 PATCH /api/config 的 agent 段：仅 JSON 中出现的字段（指针非 nil）覆盖内存配置。
@@ -1007,6 +1008,19 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 		v := req.C2.Enabled
 		h.config.C2.Enabled = &v
 		h.logger.Info("更新C2配置", zap.Bool("enabled", v))
+		if req.C2.AutoCheckin != nil && req.C2.AutoCheckin.Enabled != nil {
+			if h.config.C2.AutoCheckin == nil {
+				h.config.C2.AutoCheckin = &config.C2AutoCheckinConfig{}
+			}
+			ev := *req.C2.AutoCheckin.Enabled
+			h.config.C2.AutoCheckin.Enabled = &ev
+			h.logger.Info("更新C2自动上线配置", zap.Bool("auto_checkin_enabled", ev))
+		}
+	}
+
+	if req.XSS != nil && req.XSS.Enabled != nil {
+		h.config.XSS.Enabled = req.XSS.Enabled
+		h.logger.Info("更新XSS收集服务配置", zap.Bool("enabled", *req.XSS.Enabled))
 	}
 
 	// 多代理标量（sub_agents 等仍由 config.yaml 维护）
@@ -1252,11 +1266,7 @@ func (h *ConfigHandler) TestOpenAI(c *gin.Context) {
 
 	baseURL := strings.TrimSuffix(strings.TrimSpace(req.BaseURL), "/")
 	if baseURL == "" {
-		if strings.EqualFold(strings.TrimSpace(req.Provider), "claude") {
-			baseURL = "https://api.anthropic.com"
-		} else {
-			baseURL = "https://api.openai.com/v1"
-		}
+		baseURL = "https://api.openai.com/v1"
 	}
 
 	// 构造一个最小的 chat completion 请求
@@ -1268,7 +1278,6 @@ func (h *ConfigHandler) TestOpenAI(c *gin.Context) {
 		"max_completion_tokens": 5,
 	}
 
-	// OpenAI-compatible 通道使用内部客户端；Claude 通道在下方直接使用 Eino agenticclaude。
 	tmpCfg := &config.OpenAIConfig{
 		Provider: req.Provider,
 		BaseURL:  baseURL,
@@ -1281,28 +1290,6 @@ func (h *ConfigHandler) TestOpenAI(c *gin.Context) {
 	defer cancel()
 
 	start := time.Now()
-	if llm.IsClaudeProvider(req.Provider) {
-		nativeModel, err := llm.NewClaudeAgenticModel(ctx, *tmpCfg, nil, 5, nil)
-		if err == nil {
-			_, err = nativeModel.Generate(ctx, []*schema.AgenticMessage{
-				schema.UserAgenticMessage("Hi"),
-			})
-		}
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{
-				"success": false,
-				"error":   "连接失败: " + err.Error(),
-			})
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{
-			"success":    true,
-			"model":      tmpCfg.Model,
-			"latency_ms": time.Since(start).Milliseconds(),
-		})
-		return
-	}
-
 	var chatResp struct {
 		ID      string `json:"id"`
 		Object  string `json:"object"`
@@ -1374,14 +1361,6 @@ func (h *ConfigHandler) ListModels(c *gin.Context) {
 	provider := strings.TrimSpace(req.Provider)
 	if provider == "" {
 		provider = "openai"
-	}
-	if strings.EqualFold(provider, "claude") {
-		c.JSON(http.StatusOK, gin.H{
-			"success":   false,
-			"supported": false,
-			"error":     "Claude (Anthropic Messages API) 不支持自动获取模型列表，请手动填写",
-		})
-		return
 	}
 
 	if strings.TrimSpace(req.APIKey) == "" {
@@ -1455,11 +1434,7 @@ func (h *ConfigHandler) TestVision(c *gin.Context) {
 
 	baseURL := strings.TrimSuffix(strings.TrimSpace(oa.BaseURL), "/")
 	if baseURL == "" {
-		if strings.EqualFold(strings.TrimSpace(oa.Provider), "claude") {
-			baseURL = "https://api.anthropic.com"
-		} else {
-			baseURL = "https://api.openai.com/v1"
-		}
+		baseURL = "https://api.openai.com/v1"
 	}
 
 	payload := map[string]interface{}{
@@ -1872,6 +1847,7 @@ func (h *ConfigHandler) saveConfig() error {
 	updateProxyPoolConfig(root, h.config.ProxyPool)
 	updateKnowledgeConfig(root, h.config.Knowledge)
 	updateC2Config(root, h.config.C2)
+	updateXSSConfig(root, h.config.XSS)
 	updateRobotsConfig(root, h.config.Robots)
 	updateHitlConfig(root, h.config.Hitl)
 	updateMultiAgentConfig(root, h.config.MultiAgent)
@@ -2244,6 +2220,51 @@ func updateC2Config(doc *yaml.Node, cfg config.C2Config) {
 	root := doc.Content[0]
 	c2Node := ensureMap(root, "c2")
 	setBoolInMap(c2Node, "enabled", cfg.EnabledEffective())
+	ac := cfg.AutoCheckin
+	if ac == nil {
+		ac = &config.C2AutoCheckinConfig{}
+	}
+	acNode := ensureMap(c2Node, "auto_checkin")
+	setBoolInMap(acNode, "enabled", ac.EnabledEffective())
+	setBoolInMap(acNode, "auto_start_listeners", ac.AutoStartListenersEffective())
+	setIntInMap(acNode, "default_sleep_seconds", ac.DefaultSleepSecondsEffective())
+	setIntInMap(acNode, "default_jitter_percent", ac.DefaultJitterPercentEffective())
+	setIntInMap(acNode, "stale_session_timeout_seconds", ac.StaleSessionTimeoutSecondsEffective())
+	setAutoListenerSequence(acNode, "listeners", ac.Listeners)
+}
+
+// updateXSSConfig 将 XSS 收集服务状态写回 yaml 的 xss 块。token 仅在内存中非空时回写，
+// 避免把配置里已经存在的密钥清空；其余字段照常持久化。
+func updateXSSConfig(doc *yaml.Node, cfg config.XSSConfig) {
+	root := doc.Content[0]
+	xssNode := ensureMap(root, "xss")
+	setBoolInMap(xssNode, "enabled", cfg.EnabledEffective())
+	setStringInMap(xssNode, "bind_host", cfg.BindHost)
+	setIntInMap(xssNode, "bind_port", cfg.BindPort)
+	setStringInMap(xssNode, "public_url", cfg.PublicURL)
+	if cfg.Token != "" {
+		setStringInMap(xssNode, "token", cfg.Token)
+	}
+	setIntInMap(xssNode, "cooldown_seconds", cfg.CooldownSeconds)
+}
+
+// setAutoListenerSequence 将自动上线监听器清单写入 yaml 节点（整体重写，保持可读性）。
+func setAutoListenerSequence(parent *yaml.Node, key string, listeners []config.C2AutoListenerConfig) {
+	_, valueNode := ensureKeyValue(parent, key)
+	valueNode.Kind = yaml.SequenceNode
+	valueNode.Tag = "!!seq"
+	valueNode.Style = 0
+	valueNode.Content = nil
+	for _, l := range listeners {
+		item := &yaml.Node{Kind: yaml.MappingNode, Tag: "!!map"}
+		setBoolInMap(item, "enabled", l.EnabledEffective())
+		setStringInMap(item, "name", l.Name)
+		setStringInMap(item, "type", l.Type)
+		setStringInMap(item, "bind_host", l.BindHost)
+		setIntInMap(item, "bind_port", l.BindPort)
+		setStringInMap(item, "callback_host", l.CallbackHost)
+		valueNode.Content = append(valueNode.Content, item)
+	}
 }
 
 func mergeHitlToolWhitelistSlice(existing, add []string) []string {

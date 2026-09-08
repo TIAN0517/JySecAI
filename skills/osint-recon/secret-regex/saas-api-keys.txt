@@ -1,0 +1,32 @@
+# SaaS & AI Platform API Keys — secret-regex patterns
+# Source: Claude-OSINT patterns, adapted for JySecAI
+# 匹配到即標記 secret-finding，交給 hitl.audit_model 複核；報告中一律遮罩輸出
+
+# ── 開發平台 ──
+GITHUB_PAT_CLASSIC = ghp_[A-Za-z0-9]{36}
+GITHUB_PAT_FINE    = github_pat_[A-Za-z0-9_]{82}
+GITHUB_OAUTH       = gho_[A-Za-z0-9]{36}
+GITLAB_PAT         = glpat-[A-Za-z0-9\-_]{20,}
+
+# ── AI / LLM 平台（JySecAI 自身也在用，掃描自身 config 時需排除）──
+OPENAI_KEY        = sk-(?:proj-)?[A-Za-z0-9_\-]{20,}T3BlbkFJ[A-Za-z0-9_\-]{20,}
+ANTHROPIC_KEY     = sk-ant-[A-Za-z0-9_\-]{32,}
+NVIDIA_NIM_KEY    = nvapi-[A-Za-z0-9_\-]{20,}      # 已知：config.yaml ai.channels 在用
+HUGGINGFACE_TOKEN = hf_[A-Za-z0-9]{30,}            # 已知：config.yaml ai.channels 在用
+GEMINI_KEY        = AIza[0-9A-Za-z\-_]{35}
+DEEPSEEK_KEY      = sk-[A-Za-z0-9]{32}
+
+# ── 雲與基礎設施 ──
+CLOUDFLARE_TOKEN  = cfat_[A-Za-z0-9_\-]{40,}
+STRIPE_SECRET     = sk_(?:live|test)_[A-Za-z0-9]{24,}
+STRIPE_WEBHOOK    = whsec_[A-Za-z0-9]{24,}
+SENDGRID_KEY      = SG\.[A-Za-z0-9_\-]{22}\.[A-Za-z0-9_\-]{43}
+SLACK_TOKEN       = xox[abposr]-[A-Za-z0-9\-]{10,}
+TELEGRAM_BOT      = [0-9]{8,10}:AA[A-Za-z0-9_\-]{33}   # 已知：config.yaml robots.telegram 在用
+
+# ── 認證痕跡 ──
+BASIC_AUTH_URL    = [a-z][a-z0-9+.\-]*:\/\/[^\/\s:@]+:[^\/\s@]+@[^\s\/]+
+JWT_SECRET_ASSIGN = (?i)jwt[_-]?secret\s*[:=]\s*['\"]?[^\s'\"]{8,}
+
+# 落盤規則：命中寫 recon/<target-slug>/secrets-findings.md，報告只留 MASK_RULE
+MASK_RULE = 前4位…後4位

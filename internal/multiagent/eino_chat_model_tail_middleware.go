@@ -1,7 +1,7 @@
 package multiagent
 
 import (
-	"cyberstrike-ai/internal/config"
+	"jysecai/internal/config"
 
 	"github.com/cloudwego/eino/adk"
 	"github.com/cloudwego/eino/schema"

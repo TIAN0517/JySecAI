@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
-	"cyberstrike-ai/internal/app"
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/database"
-	"cyberstrike-ai/internal/logger"
-	"cyberstrike-ai/internal/security"
-	"cyberstrike-ai/internal/termout"
+	"jysecai/internal/app"
+	"jysecai/internal/config"
+	"jysecai/internal/database"
+	"jysecai/internal/logger"
+	"jysecai/internal/security"
+	"jysecai/internal/termout"
 	"flag"
 	"fmt"
 	"os"
@@ -32,7 +32,10 @@ func main() {
 		os.Exit(2)
 	}
 	if !*httpsBootstrap && !*httpBootstrap {
-		v := strings.TrimSpace(os.Getenv("CYBERSTRIKE_HTTPS"))
+		v := strings.TrimSpace(os.Getenv("JYSECAI_HTTPS"))
+		if v == "" {
+			v = strings.TrimSpace(os.Getenv("CYBERSTRIKE_HTTPS"))
+		}
 		if v == "1" || strings.EqualFold(v, "true") || strings.EqualFold(v, "yes") {
 			*httpsBootstrap = true
 		}
@@ -44,7 +47,7 @@ func main() {
 		cp = "config.yaml"
 	}
 	if strings.HasPrefix(cp, "-") {
-		fmt.Fprintf(os.Stderr, "Invalid -config path %q.\nIf HTTPS is also needed, use: ./cyberstrike-ai --https -config config.yaml (-config must be followed by a yaml file path).\n", cp)
+		fmt.Fprintf(os.Stderr, "Invalid -config path %q.\nIf HTTPS is also needed, use: ./jysecai --https -config config.yaml (-config must be followed by a yaml file path).\n", cp)
 		os.Exit(2)
 	}
 	localConfig, err := config.EnsureLocalConfig(cp)
@@ -78,7 +81,7 @@ func main() {
 
 	port := cfg.Server.Port
 	if port <= 0 {
-		port = 8080
+		port = 6688
 	}
 	scheme := "http"
 	if config.MainWebUIUsesHTTPS(&cfg.Server) {
@@ -98,6 +101,12 @@ func main() {
 	}
 	if cfg.MCP.Enabled {
 		config.PrintMCPConfigJSON(cfg.MCP)
+	}
+
+	// XSS 收集服务启用且 token 为空时，自动生成随机密钥并写回配置
+	if err := config.EnsureXSSSecret(cp, cfg); err != nil {
+		fmt.Printf("Failed to configure XSS collector authentication: %v\n", err)
+		return
 	}
 
 	// 初始化日志

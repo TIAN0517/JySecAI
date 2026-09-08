@@ -2,10 +2,10 @@ package handler
 
 import (
 	"bytes"
-	"cyberstrike-ai/internal/audit"
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/database"
-	"cyberstrike-ai/internal/security"
+	"jysecai/internal/audit"
+	"jysecai/internal/config"
+	"jysecai/internal/database"
+	"jysecai/internal/security"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"

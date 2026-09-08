@@ -14,7 +14,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"cyberstrike-ai/internal/config"
+	"jysecai/internal/config"
 
 	"go.uber.org/zap"
 	xproxy "golang.org/x/net/proxy"

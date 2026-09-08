@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"cyberstrike-ai/internal/config"
+	"jysecai/internal/config"
 )
 
 func TestPrepareLatestUserMessageForModel_CapsAndPersistsOversizedInput(t *testing.T) {

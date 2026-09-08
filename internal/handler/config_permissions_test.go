@@ -6,8 +6,8 @@ import (
 	"runtime"
 	"testing"
 
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/mcp"
+	"jysecai/internal/config"
+	"jysecai/internal/mcp"
 
 	"go.uber.org/zap"
 )

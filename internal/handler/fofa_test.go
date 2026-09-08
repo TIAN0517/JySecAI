@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"cyberstrike-ai/internal/config"
+	"jysecai/internal/config"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -342,8 +342,8 @@ func TestExtractInfoCollectJSONObject(t *testing.T) {
 	}{
 		{
 			name: "plain json",
-			in:   `{"query":"title:\"CyberStrikeAI\"","warnings":[]}`,
-			want: `{"query":"title:\"CyberStrikeAI\"","warnings":[]}`,
+			in:   `{"query":"title:\"JySecAI\"","warnings":[]}`,
+			want: `{"query":"title:\"JySecAI\"","warnings":[]}`,
 		},
 		{
 			name: "fenced json",

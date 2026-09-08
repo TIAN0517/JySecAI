@@ -19,8 +19,8 @@ Debug by layer. Do not change random config before locating the failing layer.
 
 ```bash
 lsof -i :8080
-curl -k -I https://127.0.0.1:8080/
-curl -k -I https://127.0.0.1:8080/static/logo.png
+curl -k -I https://127.0.0.1:6688/
+curl -k -I https://127.0.0.1:6688/static/logo.png
 ls -lh data/
 ```
 

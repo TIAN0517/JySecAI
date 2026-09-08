@@ -3,7 +3,7 @@ package openai
 import (
 	"net/http"
 
-	"cyberstrike-ai/internal/config"
+	"jysecai/internal/config"
 )
 
 // NewEinoHTTPClient adds OpenAI-compatible request fixes and SSE sanitation.

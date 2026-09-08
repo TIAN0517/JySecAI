@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"cyberstrike-ai/internal/database"
+	"jysecai/internal/database"
 )
 
 var (

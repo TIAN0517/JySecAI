@@ -31,4 +31,4 @@ Worker 是選配 Compose profile，只會在執行 `docker compose -f compose.jy
 - [既有完整功能文件索引](docs/README.md)
 - [商用與授權邊界](COMMERCIAL.md)
 
-本分支由 Jy 技術團隊維護。既有文件內仍可能出現 CyberStrikeAI 名稱；品牌與文件整併仍在進行中。
+本分支由 Jy 技術團隊維護。既有文件內仍可能出現 JySecAI 名稱；品牌與文件整併仍在進行中。

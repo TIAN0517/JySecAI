@@ -14,9 +14,9 @@ import (
 	"sync"
 	"time"
 
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/mcp"
-	"cyberstrike-ai/internal/tooloutput"
+	"jysecai/internal/config"
+	"jysecai/internal/mcp"
+	"jysecai/internal/tooloutput"
 
 	"github.com/creack/pty"
 	"github.com/google/uuid"

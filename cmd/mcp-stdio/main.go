@@ -1,10 +1,10 @@
 package main
 
 import (
-	"cyberstrike-ai/internal/config"
-	"cyberstrike-ai/internal/logger"
-	"cyberstrike-ai/internal/mcp"
-	"cyberstrike-ai/internal/security"
+	"jysecai/internal/config"
+	"jysecai/internal/logger"
+	"jysecai/internal/mcp"
+	"jysecai/internal/security"
 	"flag"
 	"fmt"
 	"os"

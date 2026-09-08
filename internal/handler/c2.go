@@ -14,10 +14,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	"cyberstrike-ai/internal/audit"
-	"cyberstrike-ai/internal/c2"
-	"cyberstrike-ai/internal/database"
-	"cyberstrike-ai/internal/security"
+	"jysecai/internal/audit"
+	"jysecai/internal/c2"
+	"jysecai/internal/database"
+	"jysecai/internal/security"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"

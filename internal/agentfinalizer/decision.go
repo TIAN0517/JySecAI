@@ -3,9 +3,9 @@ package agentfinalizer
 import (
 	"strings"
 
-	"cyberstrike-ai/internal/database"
-	"cyberstrike-ai/internal/mcp"
-	"cyberstrike-ai/internal/multiagent"
+	"jysecai/internal/database"
+	"jysecai/internal/mcp"
+	"jysecai/internal/multiagent"
 )
 
 const (
