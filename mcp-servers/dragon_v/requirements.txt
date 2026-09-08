@@ -1,0 +1,12 @@
+# Dragon-V MCP server 依賴（mcp 與 PyYAML 已含於根 requirements.txt）
+mcp>=1.0.0
+PyYAML>=6.0.2,<7
+
+# 授權掃描工具由 subprocess 呼叫（非 Python 相依）
+#  nmap >= 7.90    https://nmap.org
+
+# hunter 鏈（dragonv_hunter_scan tool）的可選依賴；缺少時該 tool 會回傳清楚錯誤
+aiohttp>=3.9.0
+cryptography>=41.0.0
+dnspython>=2.4.0
+# pandas>=1.5.0   # deep_weaponization 需要；安裝後才支援完整 hunter 鏈

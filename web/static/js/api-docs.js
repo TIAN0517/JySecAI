@@ -2,6 +2,29 @@
 
 let apiSpec = null;
 let currentToken = null;
+const API_METHODS = Object.freeze(['get', 'post', 'put', 'delete', 'head', 'options', 'patch', 'trace']);
+const API_REQUEST_TIMEOUT_MS = 15000;
+
+function forEachApiOperation(callback) {
+    if (!apiSpec || !apiSpec.paths) return;
+    Object.entries(apiSpec.paths).forEach(([path, pathItem]) => {
+        if (!pathItem || typeof pathItem !== 'object') return;
+        API_METHODS.forEach(method => {
+            const operation = pathItem[method];
+            if (operation && typeof operation === 'object') callback(path, method, operation);
+        });
+    });
+}
+
+async function fetchWithTimeout(input, init = {}, timeoutMs = API_REQUEST_TIMEOUT_MS) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        return await fetch(input, { cache: 'no-store', ...init, signal: controller.signal });
+    } finally {
+        clearTimeout(timeoutId);
+    }
+}
 
 function _t(key, opts) {
     return typeof window.t === 'function' ? window.t(key, opts) : key;
@@ -101,7 +124,7 @@ async function loadAPISpec() {
     try {
         const url = '/api/openapi/spec';
         const headers = currentToken ? { 'Authorization': `Bearer ${currentToken}` } : {};
-        const response = await fetch(url, { headers });
+        const response = await fetchWithTimeout(url, { headers });
         if (!response.ok) {
             if (response.status === 401) {
                 showError(_t('apiDocs.errorLoginRequired'));
@@ -180,13 +203,10 @@ function renderAuthInfo() {
 // 渲染侧边栏
 function renderSidebar() {
     const groups = new Set();
-    Object.keys(apiSpec.paths).forEach(path => {
-        Object.keys(apiSpec.paths[path]).forEach(method => {
-            const endpoint = apiSpec.paths[path][method];
+    forEachApiOperation((path, method, endpoint) => {
             if (endpoint.tags && endpoint.tags.length > 0) {
                 endpoint.tags.forEach(tag => groups.add(tag));
             }
-        });
     });
     
     const groupList = document.getElementById('api-group-list');
@@ -217,12 +237,10 @@ function renderSidebar() {
 // 渲染API端点
 function renderEndpoints(filterGroup = null) {
     const main = document.getElementById('api-docs-main');
-    main.innerHTML = '';
+    main.replaceChildren();
     
     const endpoints = [];
-    Object.keys(apiSpec.paths).forEach(path => {
-        Object.keys(apiSpec.paths[path]).forEach(method => {
-            const endpoint = apiSpec.paths[path][method];
+    forEachApiOperation((path, method, endpoint) => {
             const tags = endpoint.tags || [];
             if (!filterGroup || filterGroup === 'all' || tags.includes(filterGroup)) {
                 endpoints.push({
@@ -231,7 +249,6 @@ function renderEndpoints(filterGroup = null) {
                     ...endpoint
                 });
             }
-        });
     });
     
     // 按分组排序
@@ -247,9 +264,9 @@ function renderEndpoints(filterGroup = null) {
         return;
     }
     
-    endpoints.forEach(endpoint => {
-        main.appendChild(createEndpointCard(endpoint));
-    });
+    const fragment = document.createDocumentFragment();
+    endpoints.forEach(endpoint => fragment.appendChild(createEndpointCard(endpoint)));
+    main.appendChild(fragment);
 }
 
 // 创建API端点卡片
@@ -704,7 +721,7 @@ async function testAPI(method, path, operationId) {
         }
         
         // 发送请求
-        const response = await fetch(actualPath, options);
+        const response = await fetchWithTimeout(actualPath, options, 30000);
         const responseText = await response.text();
         
         let responseData;

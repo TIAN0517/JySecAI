@@ -3,6 +3,9 @@ import { z } from "zod";
 export const engineIds = [
   "strix",
   "cyberstrike",
+  "hexstrike",
+  "kali-mcp",
+  "awvs",
   "promptfoo",
   "pyrit",
   "giskard",
@@ -93,6 +96,7 @@ export interface EngineDescriptor {
   maturity: "core" | "optional" | "experimental";
   profiles: readonly RunProfile[];
   requiredOperation: ScopeOperation;
+  supportedOperations: readonly ScopeOperation[];
   active: boolean;
   status: "ready" | "unconfigured";
   reason: string;

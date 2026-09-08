@@ -59,22 +59,24 @@ monitor:
 # 常用模型: gpt-4, gpt-3.5-turbo, deepseek-chat, claude-3-opus 等
 # provider: 可选值 openai_compatible(默认) | claude(Eino 原生 Anthropic Messages API)
 ai:
-  default_channel: qwen-max
-  channels:
-    qwen-max:
-      name: Qwen Max
-      provider: openai_compatible
-      base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
-      api_key: sk-xxxxxxx
-      model: qwen3-max
-      max_total_tokens: 120000
-      max_completion_tokens: 32768
+    default_channel: hf-cyberstrike
+    channels:
+      hf-cyberstrike:
+        name: HuggingFace CyberStrike
+        provider: openai_compatible
+        base_url: https://m9e3aud8hqkvy0a5.us-east-2.aws.endpoints.huggingface.cloud/v1
+        api_key: 你的新 Hugging Face Token
+        model: huihui-ai/Huihui-CyberStrike-OffSec-35B-abliterated
+        max_total_tokens: 120000
+        max_completion_tokens: 4096
+        reasoning:
+          mode: off
       # Eino 路径模型推理：DeepSeek/OpenAI 为 thinking / reasoning_effort；Claude 4.6+ 为 adaptive + output_config.effort（仅显式配置 effort 时下发）；3.7 为 enabled+budget_tokens:10000（文档示例），effort 不映射，自定义预算用 extra_request_fields
-      reasoning:
-        mode: on # auto | on | off；off：OpenAI/Claude 不附加推理字段，DeepSeek 发送 thinking.type=disabled（其默认开启思考）
-        effort: high # low | medium | high | max | xhigh（最高档：OpenAI 常用 xhigh，部分网关用 max，原样下发）；空表示不指定
-        allow_client_reasoning: true # false 时忽略对话请求体 reasoning，仅以下方为准
-        profile: openai_compat # auto | deepseek_compat | openai_compat | output_config_effort
+      # reasoning:
+      #   mode: on # auto | on | off；off：OpenAI/Claude 不附加推理字段，DeepSeek 发送 thinking.type=disabled（其默认开启思考）
+      #   effort: high # low | medium | high | max | xhigh（最高档：OpenAI 常用 xhigh，部分网关用 max，原样下发）；空表示不指定
+      #   allow_client_reasoning: true # false 时忽略对话请求体 reasoning，仅以下方为准
+      #   profile: openai_compat # auto | deepseek_compat | openai_compat | output_config_effort
         # extra_request_fields: {} # 可选：管理员自定义根级 JSON 片段（高级）
     # qwen-plus:
     #   name: Qwen Plus Fallback
@@ -115,6 +117,29 @@ quake:
 shodan:
   base_url: https://api.shodan.io # 可选，留空则使用默认
   api_key: "" # Shodan API Key；也可通过 SHODAN_API_KEY 环境变量配置
+# SOCKS5 轮换代理池（仅用于 FOFA / ZoomEye / Quake / Shodan 出站 API）
+proxy_pool:
+  enabled: true
+  strategy: round_robin # round_robin | random
+  health_check_url: https://api.ipify.org
+  connect_timeout_seconds: 8
+  request_timeout_seconds: 15
+  failure_threshold: 2
+  cooldown_seconds: 60
+  proxies:
+    - {name: s5-154, url: "socks5://202.160.76.154:11085", enabled: true}
+    - {name: s5-155, url: "socks5://202.160.76.155:11084", enabled: true}
+    - {name: s5-156, url: "socks5://202.160.76.156:11083", enabled: true}
+    - {name: s5-157, url: "socks5://202.160.76.157:11082", enabled: true}
+    - {name: s5-165, url: "socks5://202.160.76.165:11081", enabled: true}
+    - {name: s5-166, url: "socks5://202.160.76.166:11086", enabled: true}
+    - {name: s5-167, url: "socks5://202.160.76.167:1080", enabled: true}
+    - {name: s5-168, url: "socks5://202.160.76.168:1080", enabled: true}
+    - {name: s5-169, url: "socks5://202.160.76.169:1080", enabled: true}
+    - {name: s5-173, url: "socks5://202.160.76.173:1080", enabled: true}
+    - {name: s5-221, url: "socks5://202.160.76.221:1080", enabled: true}
+    - {name: s5-223, url: "socks5://202.160.76.223:1080", enabled: true}
+
 # Agent 配置
 # 达到最大迭代次数时，AI 会自动总结测试结果
 agent:

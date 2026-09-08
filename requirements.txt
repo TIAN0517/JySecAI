@@ -15,3 +15,4 @@ impacket>=0.11.0
 
 # MCP (Model Context Protocol) SDK
 mcp>=1.0.0
+PyYAML>=6.0.2,<7

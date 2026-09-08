@@ -22,6 +22,7 @@ import (
 	"cyberstrike-ai/internal/mcp"
 	"cyberstrike-ai/internal/mcp/builtin"
 	"cyberstrike-ai/internal/openai"
+	"cyberstrike-ai/internal/proxypool"
 	"cyberstrike-ai/internal/security"
 
 	"github.com/cloudwego/eino/schema"
@@ -91,15 +92,23 @@ type ConfigHandler struct {
 	knowledgeInitializer       KnowledgeInitializer       // 知识库初始化器（可选）
 	appUpdater                 AppUpdater                 // App更新器（可选）
 	robotRestarter             RobotRestarter             // 机器人连接重启器（可选），ApplyConfig 时重启钉钉/飞书
+	proxyPool                  *proxypool.Manager
 	audit                      *audit.Service
 	db                         *database.DB
 	logger                     *zap.Logger
 	mu                         sync.RWMutex
 	lastEmbeddingConfig        *config.EmbeddingConfig // 上一次的嵌入模型配置（用于检测变更）
+	configApplyHooks           []func(*config.Config)  // 配置应用后通知的外部回调节点（如 FOFA 只读快照）
 }
 
 func (h *ConfigHandler) SetDB(db *database.DB) {
 	h.db = db
+}
+
+func (h *ConfigHandler) SetProxyPoolManager(manager *proxypool.Manager) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	h.proxyPool = manager
 }
 
 func (h *ConfigHandler) validateRobotServiceAccounts(robots config.RobotsConfig) error {
@@ -211,6 +220,16 @@ func (h *ConfigHandler) SetRetrieverUpdater(updater RetrieverUpdater) {
 	h.retrieverUpdater = updater
 }
 
+// AddConfigApplyHook 注册配置应用后的回调（在 ConfigHandler 写锁内调用，
+// 回调可用以同步只读快照），例如 FofaHandler.ApplyConfig。
+func (h *ConfigHandler) AddConfigApplyHook(fn func(*config.Config)) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	if fn != nil {
+		h.configApplyHooks = append(h.configApplyHooks, fn)
+	}
+}
+
 // SetKnowledgeInitializer 设置知识库初始化器
 func (h *ConfigHandler) SetKnowledgeInitializer(initializer KnowledgeInitializer) {
 	h.mu.Lock()
@@ -267,6 +286,7 @@ type GetConfigResponse struct {
 	ZoomEye    config.SpaceSearchConfig `json:"zoomeye"`
 	Quake      config.SpaceSearchConfig `json:"quake"`
 	Shodan     config.SpaceSearchConfig `json:"shodan"`
+	ProxyPool  config.ProxyPoolConfig   `json:"proxy_pool"`
 	MCP        config.MCPConfig         `json:"mcp"`
 	Tools      []ToolConfigInfo         `json:"tools"`
 	Agent      config.AgentConfig       `json:"agent"`
@@ -377,6 +397,7 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		ZoomEye:    h.config.ZoomEye,
 		Quake:      h.config.Quake,
 		Shodan:     h.config.Shodan,
+		ProxyPool:  h.config.ProxyPool,
 		MCP:        h.config.MCP,
 		Tools:      tools,
 		Agent:      h.config.Agent,
@@ -721,6 +742,7 @@ type UpdateConfigRequest struct {
 	ZoomEye    *config.SpaceSearchConfig   `json:"zoomeye,omitempty"`
 	Quake      *config.SpaceSearchConfig   `json:"quake,omitempty"`
 	Shodan     *config.SpaceSearchConfig   `json:"shodan,omitempty"`
+	ProxyPool  *config.ProxyPoolConfig     `json:"proxy_pool,omitempty"`
 	MCP        *config.MCPConfig           `json:"mcp,omitempty"`
 	Tools      []ToolEnableStatus          `json:"tools,omitempty"`
 	Agent      *AgentConfigUpdate          `json:"agent,omitempty"`
@@ -838,6 +860,25 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 	if req.Shodan != nil {
 		h.config.Shodan = *req.Shodan
 		h.logger.Info("更新Shodan配置", zap.String("base_url", h.config.Shodan.BaseURL))
+	}
+	if req.ProxyPool != nil {
+		next := *req.ProxyPool
+		if err := next.NormalizeAndValidate(); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		if h.proxyPool != nil {
+			if err := h.proxyPool.Update(next); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+		}
+		h.config.ProxyPool = next
+		h.logger.Info("更新 SOCKS5 代理池配置",
+			zap.Bool("enabled", next.Enabled),
+			zap.String("strategy", next.Strategy),
+			zap.Int("proxies", len(next.Proxies)),
+		)
 	}
 
 	// 更新MCP配置
@@ -1482,6 +1523,50 @@ func (h *ConfigHandler) TestVision(c *gin.Context) {
 	})
 }
 
+// TestProxyPool checks every configured SOCKS5 endpoint with a bounded HTTPS
+// request. The request body may contain an unsaved draft from the settings UI.
+func (h *ConfigHandler) TestProxyPool(c *gin.Context) {
+	var draft config.ProxyPoolConfig
+	if err := c.ShouldBindJSON(&draft); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid proxy pool config: " + err.Error()})
+		return
+	}
+	if err := draft.NormalizeAndValidate(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	results, err := proxypool.CheckAll(c.Request.Context(), draft)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	healthy := 0
+	for _, result := range results {
+		if result.Healthy {
+			healthy++
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": healthy == len(results) && len(results) > 0,
+		"healthy": healthy,
+		"total":   len(results),
+		"results": results,
+	})
+}
+
+func (h *ConfigHandler) GetProxyPoolStatus(c *gin.Context) {
+	h.mu.RLock()
+	manager := h.proxyPool
+	enabled := h.config.ProxyPool.Enabled
+	strategy := h.config.ProxyPool.Strategy
+	h.mu.RUnlock()
+	if manager == nil {
+		c.JSON(http.StatusOK, gin.H{"enabled": enabled, "strategy": strategy, "results": []proxypool.EndpointStatus{}})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"enabled": enabled, "strategy": strategy, "results": manager.Status()})
+}
+
 // ApplyConfig 应用配置（重新加载并重启相关服务）
 func (h *ConfigHandler) ApplyConfig(c *gin.Context) {
 	// 先检查是否需要动态初始化知识库（在锁外执行，避免阻塞其他请求）
@@ -1694,6 +1779,14 @@ func (h *ConfigHandler) ApplyConfig(c *gin.Context) {
 		h.logger.Info("AttackChainHandler配置已更新")
 	}
 
+	// 通知依赖配置的外部处理器（如 FOFA 空间测绘查询所需的 key/base_url/OpenAI 快照），
+	// 当前仍持有 h.mu 写锁，回调中复制只读快照保证一致性与无数据竞争。
+	for _, hook := range h.configApplyHooks {
+		if hook != nil {
+			hook(h.config)
+		}
+	}
+
 	// 更新检索器配置（如果知识库启用）
 	if h.config.Knowledge.Enabled && h.retrieverUpdater != nil {
 		retrievalConfig := knowledge.RetrievalConfigFromYAML(h.config.Knowledge.Retrieval)
@@ -1776,6 +1869,7 @@ func (h *ConfigHandler) saveConfig() error {
 	updateSpaceSearchConfig(root, "zoomeye", h.config.ZoomEye)
 	updateSpaceSearchConfig(root, "quake", h.config.Quake)
 	updateSpaceSearchConfig(root, "shodan", h.config.Shodan)
+	updateProxyPoolConfig(root, h.config.ProxyPool)
 	updateKnowledgeConfig(root, h.config.Knowledge)
 	updateC2Config(root, h.config.C2)
 	updateRobotsConfig(root, h.config.Robots)
@@ -2069,6 +2163,31 @@ func updateSpaceSearchConfig(doc *yaml.Node, key string, cfg config.SpaceSearchC
 	node := ensureMap(root, key)
 	setStringInMap(node, "base_url", cfg.BaseURL)
 	setStringInMap(node, "api_key", cfg.APIKey)
+}
+
+func updateProxyPoolConfig(doc *yaml.Node, cfg config.ProxyPoolConfig) {
+	root := doc.Content[0]
+	node := ensureMap(root, "proxy_pool")
+	setBoolInMap(node, "enabled", cfg.Enabled)
+	setStringInMap(node, "strategy", cfg.Strategy)
+	setStringInMap(node, "health_check_url", cfg.HealthCheckURL)
+	setIntInMap(node, "connect_timeout_seconds", cfg.ConnectTimeoutSeconds)
+	setIntInMap(node, "request_timeout_seconds", cfg.RequestTimeoutSeconds)
+	setIntInMap(node, "failure_threshold", cfg.FailureThreshold)
+	setIntInMap(node, "cooldown_seconds", cfg.CooldownSeconds)
+
+	_, proxiesNode := ensureKeyValue(node, "proxies")
+	proxiesNode.Kind = yaml.SequenceNode
+	proxiesNode.Tag = "!!seq"
+	proxiesNode.Style = 0
+	proxiesNode.Content = nil
+	for _, endpoint := range cfg.Proxies {
+		entryNode := &yaml.Node{Kind: yaml.MappingNode, Tag: "!!map"}
+		setStringInMap(entryNode, "name", endpoint.Name)
+		setStringInMap(entryNode, "url", endpoint.URL)
+		setBoolInMap(entryNode, "enabled", endpoint.Enabled)
+		proxiesNode.Content = append(proxiesNode.Content, entryNode)
+	}
 }
 
 func updateKnowledgeConfig(doc *yaml.Node, cfg config.KnowledgeConfig) {

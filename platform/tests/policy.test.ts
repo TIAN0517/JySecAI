@@ -83,4 +83,18 @@ describe("evaluateRunPolicy", () => {
     expect(decision.allowed).toBe(true);
     expect(decision.approvalRequired).toBe(false);
   });
+
+  it("accepts passive discovery when the selected engine advertises it", () => {
+    const decision = evaluateRunPolicy({
+      tenantId: "tenant-1",
+      projectId: "project-1",
+      descriptor: engineCatalog.cyberstrike,
+      profile: "audit",
+      targets: ["api.example.com"],
+      authorization: scope({ operations: ["passive_discovery"] }),
+      now,
+    });
+
+    expect(decision.allowed).toBe(true);
+  });
 });

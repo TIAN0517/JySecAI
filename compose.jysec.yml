@@ -103,6 +103,23 @@ services:
       timeout: 5s
       retries: 5
 
+  scanner-adapter:
+    profiles: ["scanner-integrations"]
+    build:
+      context: ./platform
+      target: scanner-adapter
+    restart: unless-stopped
+    env_file: ./platform/.env.production
+    expose:
+      - "8790"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,noexec,nosuid,nodev
+    security_opt:
+      - no-new-privileges:true
+
   worker:
     profiles: ["worker"]
     build:

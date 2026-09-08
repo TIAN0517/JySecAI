@@ -30,6 +30,7 @@ import (
 	"cyberstrike-ai/internal/mcp/builtin"
 	"cyberstrike-ai/internal/monitor"
 	"cyberstrike-ai/internal/multiagent"
+	"cyberstrike-ai/internal/proxypool"
 	"cyberstrike-ai/internal/robot"
 	"cyberstrike-ai/internal/security"
 	"cyberstrike-ai/internal/skillpackage"
@@ -72,6 +73,7 @@ type App struct {
 	c2WatchdogCancel   context.CancelFunc        // 看门狗取消函数
 	c2Handler          *handler.C2Handler        // C2 REST（与 Manager 生命周期同步）
 	auditSvc           *audit.Service
+	proxyPool          *proxypool.Manager
 }
 
 // New 创建新应用
@@ -82,6 +84,10 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
+	proxyPoolManager, err := proxypool.New(cfg.ProxyPool, log.Logger)
+	if err != nil {
+		return nil, fmt.Errorf("initialize SOCKS5 proxy pool: %w", err)
+	}
 
 	// CORS中间件
 	router.Use(corsMiddleware(cfg.Server.CORSAllowedOrigins))
@@ -163,6 +169,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 
 	// 注册漏洞记录工具
 	registerVulnerabilityTools(mcpServer, db, log.Logger)
+	registerPocGeneratorTools(mcpServer, db, cfg, log.Logger)
 	registerAssetTools(mcpServer, db, log.Logger)
 	registerProjectFactTools(mcpServer, db, cfg, log.Logger)
 	registerVisionTools(mcpServer, cfg, log.Logger)
@@ -412,6 +419,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	registerWebshellManagementTools(mcpServer, db, webshellHandler, log.Logger)
 	configHandler := handler.NewConfigHandler(configPath, cfg, mcpServer, executor, agent, attackChainHandler, externalMCPMgr, log.Logger)
 	configHandler.SetDB(db)
+	configHandler.SetProxyPoolManager(proxyPoolManager)
 	configHandler.SetAudit(auditSvc)
 	agentHandler.SetHitlToolWhitelistSaver(configHandler)
 	agentHandler.SetHitlAuditStrategySaver(configHandler)
@@ -423,7 +431,11 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	skillsHandler := handler.NewSkillsHandler(cfg, configPath, log.Logger)
 	skillsHandler.SetAudit(auditSvc)
 	fofaHandler := handler.NewFofaHandler(cfg, log.Logger)
+	fofaHandler.SetProxyPoolManager(proxyPoolManager)
+	configHandler.AddConfigApplyHook(fofaHandler.ApplyConfig)
 	terminalHandler := handler.NewTerminalHandler(log.Logger)
+	securityOpsHandler := handler.NewSecurityOpsHandler(log.Logger)
+	securityOpsHandler.SetAudit(auditSvc)
 	if db != nil {
 		skillsHandler.SetDB(db) // 设置数据库连接以便获取调用统计
 	}
@@ -472,6 +484,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		c2WatchdogCancel:   watchdogCancel,
 		c2Handler:          c2Handler,
 		auditSvc:           auditSvc,
+		proxyPool:          proxyPoolManager,
 	}
 	// 飞书/钉钉长连接（无需公网），启用时在后台启动；后续前端应用配置时会通过 RestartRobotConnections 重启
 	app.startRobotConnections()
@@ -581,6 +594,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		markdownAgentsHandler,
 		fofaHandler,
 		terminalHandler,
+		securityOpsHandler,
 		app.c2Handler,
 		auditHandler,
 		auditSvc,
@@ -883,6 +897,7 @@ func setupRoutes(
 	markdownAgentsHandler *handler.MarkdownAgentsHandler,
 	fofaHandler *handler.FofaHandler,
 	terminalHandler *handler.TerminalHandler,
+	securityOpsHandler *handler.SecurityOpsHandler,
 	c2Handler *handler.C2Handler,
 	auditHandler *handler.AuditHandler,
 	auditSvc *audit.Service,
@@ -1020,6 +1035,18 @@ func setupRoutes(
 		protected.PUT("/batch-tasks/:queueId/schedule", agentHandler.UpdateBatchQueueSchedule)
 		protected.PUT("/batch-tasks/:queueId/schedule-enabled", agentHandler.SetBatchQueueScheduleEnabled)
 		protected.DELETE("/batch-tasks/:queueId", agentHandler.DeleteBatchQueue)
+
+		// Governed Web security operations. The control plane keeps target scope,
+		// approval, execution and evidence in one audit trail.
+		protected.GET("/security-ops/catalog", securityOpsHandler.Catalog)
+		protected.GET("/security-ops/runs", securityOpsHandler.ListRuns)
+		protected.POST("/security-ops/runs", securityOpsHandler.CreateRun)
+		protected.GET("/security-ops/runs/:runId", securityOpsHandler.GetRun)
+		protected.GET("/security-ops/runs/:runId/events", securityOpsHandler.ListEvents)
+		protected.GET("/security-ops/runs/:runId/artifacts", securityOpsHandler.ListArtifacts)
+		protected.GET("/security-ops/projects/:projectId/findings", securityOpsHandler.ListFindings)
+		protected.POST("/security-ops/runs/:runId/approve", security.RequirePermission("hitl:write"), securityOpsHandler.ApproveRun)
+		protected.POST("/security-ops/runs/:runId/cancel", securityOpsHandler.CancelRun)
 		protected.PUT("/batch-tasks/:queueId/tasks/:taskId", agentHandler.UpdateBatchTask)
 		protected.POST("/batch-tasks/:queueId/tasks/:taskId/run", agentHandler.RunSingleBatchTask)
 		protected.POST("/batch-tasks/:queueId/tasks", agentHandler.AddBatchTask)
@@ -1061,6 +1088,8 @@ func setupRoutes(
 		protected.POST("/config/test-openai", configHandler.TestOpenAI)
 		protected.POST("/config/test-vision", configHandler.TestVision)
 		protected.POST("/config/list-models", configHandler.ListModels)
+		protected.GET("/config/proxy-pool/status", configHandler.GetProxyPoolStatus)
+		protected.POST("/config/test-proxy-pool", configHandler.TestProxyPool)
 
 		// 系统设置 - 终端（执行命令，提高运维效率）
 		protected.POST("/terminal/run", terminalHandler.RunCommand)

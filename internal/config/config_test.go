@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -106,6 +107,12 @@ func assertPrivateConfigMode(t *testing.T, path string) {
 	info, err := os.Stat(path)
 	if err != nil {
 		t.Fatalf("stat %s: %v", path, err)
+	}
+	if runtime.GOOS == "windows" {
+		// Windows has no POSIX mode bits: os.Chmod only toggles the read-only
+		// attribute and Mode().Perm() always reports 0666/0444. The 0600
+		// contract is enforced on POSIX platforms where it is representable.
+		return
 	}
 	if got := info.Mode().Perm(); got != 0600 {
 		t.Fatalf("%s permissions = %04o, want 0600", path, got)

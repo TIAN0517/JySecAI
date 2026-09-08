@@ -90,6 +90,7 @@
           <button class="icon-button" id="close-dialog" type="button" aria-label="關閉">×</button>
         </header>
         <div class="form-grid">
+          <label><span>授權操作</span><select name="operation" id="operation-select" required></select></label>
           <label><span>專案 ID</span><input name="projectId" value="jy-demo" required maxlength="160" /></label>
           <label><span>安全引擎</span><select name="engine" id="engine-select" required></select></label>
           <label><span>執行模式</span><select name="profile"><option value="audit">唯讀稽核</option><option value="quick">快速</option><option value="standard" selected>標準</option><option value="deep">深度</option></select></label>

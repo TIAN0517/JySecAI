@@ -101,11 +101,6 @@ function targetMatchesPattern(target: NormalizedTarget, rawPattern: string): boo
   return domainPatternMatches(target.hostname, pattern.replace(/:\d+$/u, ""));
 }
 
-function operationAllowed(scope: AuthorizationScope, required: ScopeOperation): boolean {
-  if (scope.operations.includes(required)) return true;
-  return required === "active_scan" && scope.operations.includes("exploit_validation");
-}
-
 export function evaluateRunPolicy(input: {
   tenantId: string;
   projectId: string;
@@ -123,8 +118,11 @@ export function evaluateRunPolicy(input: {
   if (scope.projectId !== input.projectId) reasons.push("authorization project mismatch");
   if (new Date(scope.validFrom).getTime() > now.getTime()) reasons.push("authorization is not active yet");
   if (new Date(scope.validUntil).getTime() <= now.getTime()) reasons.push("authorization has expired");
-  if (!operationAllowed(scope, input.descriptor.requiredOperation)) {
-    reasons.push(`authorization does not permit ${input.descriptor.requiredOperation}`);
+  const supportedAuthorization = scope.operations.some((operation) =>
+    input.descriptor.supportedOperations.includes(operation),
+  );
+  if (!supportedAuthorization) {
+    reasons.push(`authorization does not permit an operation supported by ${input.descriptor.id}`);
   }
   if (!input.descriptor.profiles.includes(input.profile)) {
     reasons.push(`engine ${input.descriptor.id} does not support profile ${input.profile}`);

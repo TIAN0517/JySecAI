@@ -31,7 +31,7 @@
             }
         })();
     </script>
-    <link rel="stylesheet" href="/static/css/style.css?v=20260819-4">
+    <link rel="stylesheet" href="/static/css/style.css?v=20260907-1">
     <link rel="stylesheet" href="/static/css/chat-plan-progress.css?v=20260813-4">
     <link rel="stylesheet" href="/static/css/c2.css">
     <link rel="stylesheet" href="/static/vendor/xterm.css">
@@ -41,6 +41,7 @@
     <div id="login-overlay" class="login-overlay" style="display: none;">
         <div class="login-card">
             <div class="login-brand">
+                <img src="/static/logo.png" alt="JySecAI Logo" class="brand-logo login-brand-logo" width="72" height="72">
                 <h2 class="login-title">
                     <span data-i18n="login.titlePrefix">登录</span>
                     <span class="brand-wordmark brand-wordmark--sm" aria-label="JySecAI">
@@ -264,6 +265,16 @@
                                 <path d="M9 12l2 2 4-4"></path>
                             </svg>
                             <span data-i18n="nav.vulnerabilities">漏洞管理</span>
+                        </div>
+                    </div>
+                    <div class="nav-item" data-page="security-ops" data-require-permission="tasks:read">
+                        <div class="nav-item-content" data-title="Web 安全扫描" onclick="switchPage('security-ops')">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="m20 20-4-4"></path>
+                                <path d="M8 11h6M11 8v6"></path>
+                            </svg>
+                            <span>Web 安全扫描</span>
                         </div>
                     </div>
                     <div class="nav-item" data-page="tasks">
@@ -2834,6 +2845,87 @@
                     </div>
                 </div>
 
+                <!-- Web 安全扫描工作台 -->
+                <div id="page-security-ops" class="page security-ops-page">
+                    <div class="page-header">
+                        <div>
+                            <h2>Web 安全扫描</h2>
+                            <p class="security-ops-subtitle">在授权范围内统一执行审查、主动扫描与利用验证</p>
+                        </div>
+                        <div class="page-header-actions">
+                            <span id="security-ops-health" class="security-ops-health">控制面连接中</span>
+                            <button class="btn-secondary" type="button" onclick="refreshSecurityOps()">刷新</button>
+                        </div>
+                    </div>
+                    <div class="page-content security-ops-content">
+                        <section class="security-ops-compose">
+                            <div class="security-ops-mode-grid" role="tablist" aria-label="扫描模式">
+                                <button type="button" class="security-ops-mode active" data-operation="passive_discovery" onclick="selectSecurityOpsMode('passive_discovery')">
+                                    <strong>审查</strong><span>低影响资产与暴露面发现</span>
+                                </button>
+                                <button type="button" class="security-ops-mode" data-operation="active_scan" onclick="selectSecurityOpsMode('active_scan')">
+                                    <strong>扫描</strong><span>主动探测、漏洞扫描与证据收集</span>
+                                </button>
+                                <button type="button" class="security-ops-mode security-ops-mode-danger" data-operation="exploit_validation" onclick="selectSecurityOpsMode('exploit_validation')">
+                                    <strong>利用验证</strong><span>受审批控制的可利用性验证</span>
+                                </button>
+                            </div>
+
+                            <form id="security-ops-form" class="security-ops-form" onsubmit="submitSecurityOpsRun(event)">
+                                <div class="security-ops-form-grid">
+                                    <label><span>项目 ID</span><input name="projectId" required maxlength="160" placeholder="例如 web-audit-2026"></label>
+                                    <label><span>授权编号</span><input name="authorizationId" required minlength="8" maxlength="160" placeholder="例如 AUTH-2026-001"></label>
+                                    <label><span>扫描引擎</span><select name="engine" id="security-ops-engine" required onchange="syncSecurityOpsEngine()"></select></label>
+                                    <label><span>执行深度</span><select name="profile" id="security-ops-profile" required></select></label>
+                                    <label class="security-ops-span-2"><span>目标（每行一个 URL、域名或 IP）</span><textarea name="targets" required rows="3" placeholder="https://app.example.com"></textarea></label>
+                                    <label class="security-ops-span-2"><span>授权范围（每行一个精确域名、*.子域或 CIDR）</span><textarea name="patterns" required rows="3" placeholder="app.example.com&#10;*.example.com&#10;10.20.0.0/24"></textarea></label>
+                                    <label class="security-ops-span-2"><span>任务目标</span><textarea name="objective" required minlength="3" maxlength="12000" rows="3" placeholder="说明检查目标、允许的验证方式与停止条件"></textarea></label>
+                                    <label><span>授权人</span><input name="approvedBy" required maxlength="320" placeholder="姓名或工单审批人"></label>
+                                    <label><span>授权有效天数</span><input name="validDays" type="number" min="1" max="90" value="7" required></label>
+                                </div>
+                                <label class="security-ops-attestation">
+                                    <input name="attested" type="checkbox" required>
+                                    <span>我确认拥有上述目标及范围的书面测试授权，并接受所有操作进入审计日志。</span>
+                                </label>
+                                <div id="security-ops-mode-warning" class="security-ops-warning" hidden>
+                                    利用验证可能向目标发送验证载荷。任务创建后仍需具有审批权限的人员批准，才会进入执行队列。
+                                </div>
+                                <div class="security-ops-submit-row">
+                                    <span id="security-ops-engine-hint" class="security-ops-hint"></span>
+                                    <button id="security-ops-submit" class="btn-primary" data-require-permission="tasks:write" type="submit">创建审查任务</button>
+                                </div>
+                            </form>
+                        </section>
+
+                        <section class="security-ops-results">
+                            <div class="security-ops-section-head">
+                                <div><h3>运行记录</h3><span id="security-ops-run-count">0 条</span></div>
+                                <label>项目筛选 <input id="security-ops-project-filter" placeholder="项目 ID" onkeydown="if(event.key==='Enter') refreshSecurityOpsRuns()"></label>
+                            </div>
+                            <div id="security-ops-runs" class="security-ops-run-list"><div class="loading-spinner">加载中…</div></div>
+                        </section>
+
+                        <section id="security-ops-detail" class="security-ops-detail" hidden>
+                            <div class="security-ops-section-head">
+                                <div><h3>运行详情</h3><span id="security-ops-detail-id"></span></div>
+                                <button type="button" class="btn-secondary" onclick="closeSecurityOpsDetail()">关闭</button>
+                            </div>
+                            <div class="security-ops-detail-grid">
+                                <div><h4>事件</h4><div id="security-ops-events" class="security-ops-event-list"></div></div>
+                                <div><h4>制品与证据</h4><div id="security-ops-artifacts" class="security-ops-event-list"></div></div>
+                            </div>
+                        </section>
+
+                        <section class="security-ops-results">
+                            <div class="security-ops-section-head">
+                                <div><h3>项目发现</h3><span id="security-ops-finding-count">输入项目 ID 后刷新</span></div>
+                                <button type="button" class="btn-secondary" onclick="refreshSecurityOpsFindings()">加载发现</button>
+                            </div>
+                            <div id="security-ops-findings" class="security-ops-finding-list"></div>
+                        </section>
+                    </div>
+                </div>
+
                 <!-- 任务管理页面 -->
                 <div id="page-tasks" class="page">
                     <div class="page-header">
@@ -4039,6 +4131,53 @@
                                             <small class="form-hint">仅保存在服务器配置中（config.yaml）。</small>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="settings-subsection">
+                                    <h4>SOCKS5 代理池</h4>
+                                    <p class="form-hint">仅用于 FOFA、ZoomEye、Quake、Shodan 的服务端出站请求；按请求轮替，失败节点会暂时熔断。</p>
+                                    <div class="settings-form">
+                                        <div class="form-group">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" id="proxy-pool-enabled" class="modern-checkbox" />
+                                                <span class="checkbox-custom"></span>
+                                                <span class="checkbox-text">启用 SOCKS5 代理池</span>
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="proxy-pool-strategy">轮替策略</label>
+                                            <select id="proxy-pool-strategy">
+                                                <option value="round_robin">Round-robin（稳定）</option>
+                                                <option value="random">随机</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="proxy-pool-health-url">HTTPS 健康检查 URL</label>
+                                            <input type="url" id="proxy-pool-health-url" placeholder="https://api.ipify.org" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="proxy-pool-connect-timeout">连接超时（秒）</label>
+                                            <input type="number" id="proxy-pool-connect-timeout" min="1" max="120" value="8" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="proxy-pool-request-timeout">检查超时（秒）</label>
+                                            <input type="number" id="proxy-pool-request-timeout" min="1" max="300" value="15" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="proxy-pool-failure-threshold">熔断失败次数</label>
+                                            <input type="number" id="proxy-pool-failure-threshold" min="1" max="20" value="2" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="proxy-pool-cooldown">熔断冷却（秒）</label>
+                                            <input type="number" id="proxy-pool-cooldown" min="1" max="3600" value="60" />
+                                        </div>
+                                    </div>
+                                    <div id="proxy-pool-list"></div>
+                                    <div class="settings-actions" style="justify-content:flex-start; gap:8px;">
+                                        <button type="button" class="btn-secondary" onclick="addProxyPoolRow()" data-require-permission="config:write">添加代理</button>
+                                        <button type="button" class="btn-secondary" id="proxy-pool-test-button" onclick="testProxyPool()">测试全部</button>
+                                    </div>
+                                    <div id="proxy-pool-test-result" class="form-hint" aria-live="polite"></div>
                                 </div>
 
                                 <div class="settings-actions">
@@ -6717,7 +6856,7 @@
     <script src="/static/js/chat.js?v=20260819-5"></script>
     <script src="/static/js/chat-plan-progress.js?v=20260815-1"></script>
     <script src="/static/js/hitl.js?v=20260819-1"></script>
-    <script src="/static/js/settings.js?v=20260717-1"></script>
+    <script src="/static/js/settings.js?v=20260907-1"></script>
     <script src="/static/js/audit-datetime-picker.js"></script>
     <script src="/static/js/audit.js"></script>
     <script src="/static/js/wechat-robot.js"></script>
@@ -6732,6 +6871,7 @@
     <script src="/static/js/webshell.js"></script>
     <script src="/static/js/chat-files.js"></script>
     <script src="/static/js/tasks.js"></script>
+    <script src="/static/js/security-ops.js?v=20260907-1"></script>
     <script src="/static/js/workflow-package-client.js"></script>
     <script src="/static/js/workflows.js"></script>
     <script src="/static/js/roles.js"></script>

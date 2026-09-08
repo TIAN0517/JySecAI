@@ -12,6 +12,8 @@ let alwaysVisibleBuiltinToolNames = new Set();
 let toolStateMap = new Map();
 let activeRobotEditor = '';
 let robotAuthDrafts = {};
+let proxyPoolDraft = [];
+let proxyPoolProbeResults = {};
 
 function settingsT(key, fallback) {
     if (typeof window.t === 'function') {
@@ -31,6 +33,189 @@ function settingsEscapeAttr(text) {
 
 function settingsEscapeJsStringAttr(text) {
     return settingsEscapeAttr(settingsEscapeJsString(text));
+}
+
+function proxyPoolNumber(id, fallback, min, max) {
+    const parsed = parseInt(document.getElementById(id)?.value || '', 10);
+    const value = Number.isNaN(parsed) ? fallback : parsed;
+    return Math.min(max, Math.max(min, value));
+}
+
+function normalizeProxyPoolDraftEntry(entry, index) {
+    return {
+        name: String(entry?.name || `s5-${index + 1}`).trim(),
+        url: String(entry?.url || '').trim(),
+        enabled: entry?.enabled !== false
+    };
+}
+
+function proxyPoolURLKey(raw) {
+    let value = String(raw || '').trim();
+    if (!value.includes('://')) value = `socks5://${value}`;
+    try {
+        const parsed = new URL(value);
+        return `${parsed.protocol}//${parsed.host}`.toLowerCase();
+    } catch {
+        return value.toLowerCase();
+    }
+}
+
+function fillProxyPoolConfigFromCurrent(raw) {
+    const cfg = raw || {};
+    const setChecked = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.checked = value === true;
+    };
+    const setValue = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.value = String(value);
+    };
+    setChecked('proxy-pool-enabled', cfg.enabled === true);
+    setValue('proxy-pool-strategy', cfg.strategy || 'round_robin');
+    setValue('proxy-pool-health-url', cfg.health_check_url || 'https://api.ipify.org');
+    setValue('proxy-pool-connect-timeout', cfg.connect_timeout_seconds || 8);
+    setValue('proxy-pool-request-timeout', cfg.request_timeout_seconds || 15);
+    setValue('proxy-pool-failure-threshold', cfg.failure_threshold || 2);
+    setValue('proxy-pool-cooldown', cfg.cooldown_seconds || 60);
+    proxyPoolDraft = Array.isArray(cfg.proxies)
+        ? cfg.proxies.map(normalizeProxyPoolDraftEntry)
+        : [];
+    proxyPoolProbeResults = {};
+    renderProxyPoolRows();
+}
+
+function renderProxyPoolRows() {
+    const list = document.getElementById('proxy-pool-list');
+    if (!list) return;
+    list.innerHTML = '';
+    proxyPoolDraft.forEach((entry, index) => {
+        const row = document.createElement('div');
+        row.className = 'settings-form';
+        row.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;align-items:end;margin:10px 0;';
+
+        const nameGroup = document.createElement('div');
+        nameGroup.className = 'form-group';
+        const nameLabel = document.createElement('label');
+        nameLabel.textContent = '名称';
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.value = entry.name || '';
+        nameInput.addEventListener('input', () => { proxyPoolDraft[index].name = nameInput.value; });
+        nameGroup.append(nameLabel, nameInput);
+
+        const urlGroup = document.createElement('div');
+        urlGroup.className = 'form-group';
+        const urlLabel = document.createElement('label');
+        urlLabel.textContent = 'SOCKS5 URL';
+        const urlInput = document.createElement('input');
+        urlInput.type = 'text';
+        urlInput.placeholder = 'socks5://IP:PORT';
+        urlInput.value = entry.url || '';
+        urlInput.addEventListener('input', () => {
+			const previousKey = proxyPoolURLKey(entry.url);
+            proxyPoolDraft[index].url = urlInput.value;
+			delete proxyPoolProbeResults[previousKey];
+			delete proxyPoolProbeResults[proxyPoolURLKey(entry.url)];
+        });
+        urlGroup.append(urlLabel, urlInput);
+
+        const enabledLabel = document.createElement('label');
+        enabledLabel.className = 'checkbox-label';
+        enabledLabel.style.marginBottom = '12px';
+        const enabled = document.createElement('input');
+        enabled.type = 'checkbox';
+        enabled.className = 'modern-checkbox';
+        enabled.checked = entry.enabled !== false;
+        enabled.addEventListener('change', () => { proxyPoolDraft[index].enabled = enabled.checked; });
+        const enabledCustom = document.createElement('span');
+        enabledCustom.className = 'checkbox-custom';
+        const enabledText = document.createElement('span');
+        enabledText.className = 'checkbox-text';
+        enabledText.textContent = '启用';
+        enabledLabel.append(enabled, enabledCustom, enabledText);
+
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'btn-secondary';
+        removeButton.style.marginBottom = '4px';
+        removeButton.textContent = '删除';
+        removeButton.addEventListener('click', () => removeProxyPoolRow(index));
+        row.append(nameGroup, urlGroup, enabledLabel, removeButton);
+
+		const probe = proxyPoolProbeResults[proxyPoolURLKey(entry.url)];
+        if (probe) {
+            const status = document.createElement('small');
+            status.className = 'form-hint';
+            status.style.gridColumn = '1 / -1';
+            status.style.color = probe.healthy ? 'var(--success-color, #22c55e)' : 'var(--danger-color, #ef4444)';
+            status.textContent = probe.healthy
+                ? `可用 · 出口 ${probe.exit_ip || '-'} · ${probe.last_latency_ms || 0} ms`
+                : `不可用 · ${probe.error || '连接失败'}`;
+            row.appendChild(status);
+        }
+        list.appendChild(row);
+    });
+    if (!proxyPoolDraft.length) {
+        const empty = document.createElement('p');
+        empty.className = 'form-hint';
+        empty.textContent = '尚未添加代理。';
+        list.appendChild(empty);
+    }
+}
+
+function addProxyPoolRow() {
+    proxyPoolDraft.push({name: `s5-${proxyPoolDraft.length + 1}`, url: '', enabled: true});
+    renderProxyPoolRows();
+}
+
+function removeProxyPoolRow(index) {
+    proxyPoolDraft.splice(index, 1);
+    renderProxyPoolRows();
+}
+
+function readProxyPoolFromForm() {
+    return {
+        enabled: document.getElementById('proxy-pool-enabled')?.checked === true,
+        strategy: document.getElementById('proxy-pool-strategy')?.value || 'round_robin',
+        health_check_url: document.getElementById('proxy-pool-health-url')?.value.trim() || 'https://api.ipify.org',
+        connect_timeout_seconds: proxyPoolNumber('proxy-pool-connect-timeout', 8, 1, 120),
+        request_timeout_seconds: proxyPoolNumber('proxy-pool-request-timeout', 15, 1, 300),
+        failure_threshold: proxyPoolNumber('proxy-pool-failure-threshold', 2, 1, 20),
+        cooldown_seconds: proxyPoolNumber('proxy-pool-cooldown', 60, 1, 3600),
+        proxies: proxyPoolDraft.map(normalizeProxyPoolDraftEntry)
+    };
+}
+
+async function testProxyPool() {
+    const button = document.getElementById('proxy-pool-test-button');
+    const resultEl = document.getElementById('proxy-pool-test-result');
+    if (button) button.disabled = true;
+    if (resultEl) resultEl.textContent = '正在并行测试全部 SOCKS5 代理…';
+    try {
+        const response = await apiFetch('/api/config/test-proxy-pool', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(readProxyPoolFromForm())
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || '代理池测试失败');
+        proxyPoolProbeResults = {};
+		(payload.results || []).forEach((result) => { proxyPoolProbeResults[proxyPoolURLKey(result.url)] = result; });
+        renderProxyPoolRows();
+        if (resultEl) {
+            resultEl.textContent = payload.success
+                ? `全部通过：${payload.healthy}/${payload.total}`
+                : `部分失败：${payload.healthy}/${payload.total}`;
+            resultEl.style.color = payload.success ? 'var(--success-color, #22c55e)' : 'var(--danger-color, #ef4444)';
+        }
+    } catch (error) {
+        if (resultEl) {
+            resultEl.textContent = error.message || '代理池测试失败';
+            resultEl.style.color = 'var(--danger-color, #ef4444)';
+        }
+    } finally {
+        if (button) button.disabled = false;
+    }
 }
 
 const settingsCustomSelects = new Map();
@@ -781,6 +966,7 @@ async function loadConfig(loadTools = true, options = {}) {
             if (keyEl) keyEl.value = cfg.api_key || '';
             if (baseUrlEl) baseUrlEl.value = cfg.base_url || '';
         });
+		fillProxyPoolConfigFromCurrent(currentConfig.proxy_pool || {});
 
         // 填充人机协同配置
         const hitl = currentConfig.hitl || {};
@@ -2018,6 +2204,7 @@ async function applySettings() {
                 api_key: document.getElementById('shodan-api-key')?.value.trim() || '',
                 base_url: document.getElementById('shodan-base-url')?.value.trim() || ''
             },
+			proxy_pool: readProxyPoolFromForm(),
             hitl: {
                 ...prevHitl,
                 audit_model: {

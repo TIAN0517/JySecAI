@@ -65,6 +65,26 @@ function toast(message) {
   setTimeout(() => element.classList.remove("show"), 3200);
 }
 
+const operationLabels = {
+  passive_discovery: "被動探索",
+  active_scan: "主動掃描",
+  exploit_validation: "漏洞重驗",
+  credential_audit: "憑證稽核",
+  source_review: "原始碼審查",
+  ai_red_team: "AI 紅隊測試",
+};
+
+function updateOperationOptions() {
+  const engineId = $("#engine-select").value;
+  const engine = state.catalog?.engines.find((item) => item.id === engineId);
+  const operations = engine?.supportedOperations || [engine?.requiredOperation || "active_scan"];
+  const current = $("#operation-select").value;
+  $("#operation-select").innerHTML = operations
+    .map((operation) => `<option value="${escapeHtml(operation)}">${escapeHtml(operationLabels[operation] || operation)}</option>`)
+    .join("");
+  if (operations.includes(current)) $("#operation-select").value = current;
+}
+
 function renderEngines(catalog) {
   const palette = ["#35ddff", "#8d5cff", "#4de8a2", "#ffcb68"];
   $("#engine-grid").innerHTML = catalog.engines
@@ -91,6 +111,7 @@ function renderEngines(catalog) {
     .map((engine) => `<option value="${escapeHtml(engine.id)}">${escapeHtml(engine.name)}</option>`)
     .join("") || '<option value="">沒有已配置的引擎</option>';
   $("#engine-select").disabled = activeEngines.length === 0;
+  updateOperationOptions();
 }
 
 function renderRuns(runs) {
@@ -257,7 +278,7 @@ async function submitRun(form) {
   const now = new Date();
   const validUntil = new Date(now.getTime() + Number(values.get("validDays")) * 86_400_000);
   const engine = String(values.get("engine"));
-  const operation = state.catalog.engines.find((item) => item.id === engine)?.requiredOperation || "active_scan";
+  const operation = String(values.get("operation") || "active_scan");
   const payload = {
     projectId: String(values.get("projectId")),
     engine,
@@ -275,7 +296,7 @@ async function submitRun(form) {
       approvedBy: String(values.get("approvedBy")),
       attested: true,
     },
-    config: {},
+    config: { autoValidate: operation === "exploit_validation" },
     idempotencyKey: crypto.randomUUID(),
   };
   return api("/v1/runs", { method: "POST", body: JSON.stringify(payload) });
@@ -357,6 +378,7 @@ function bindUI() {
   $("#cancel-dialog").addEventListener("click", () => runDialog.close());
   $("#refresh-button").addEventListener("click", () => refreshOperations().catch((error) => toast(errorText(error))));
   $("#connection-button").addEventListener("click", openConnectionDialog);
+  $("#engine-select").addEventListener("change", updateOperationOptions);
   $("#billing-button").addEventListener("click", () => {
     renderPlans();
     $("#billing-dialog").showModal();

@@ -200,6 +200,16 @@ func formatEinoRetryExhaustedMessage(summary string, totalRetries int) string {
 // wrapper, prefer the original last model error so summarization/model issues are
 // diagnosable from the frontend without opening server logs.
 func EinoClientRunErrorMessage(err error) string {
+	raw := einoClientRawRunErrorMessage(err)
+	if strings.Contains(strings.ToLower(raw), `"auto" tool choice requires --enable-auto-tool-choice and --tool-call-parser to be set`) {
+		return "模型服务未启用当前请求所需的自动工具调用支持，本次模型调用失败。此错误来自模型服务端；重启平台界面无法解决。\n原始错误：\n" + raw
+	}
+	return raw
+}
+
+// Keep provider errors and retry/phase context intact for diagnostic display.
+// Formatting here does not change requests, retries, or tool execution.
+func einoClientRawRunErrorMessage(err error) string {
 	if err == nil {
 		return ""
 	}

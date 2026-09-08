@@ -153,6 +153,17 @@ func (c *lazySDKClient) Initialize(ctx context.Context) error {
 	return nil
 }
 
+func (c *lazySDKClient) Ping(ctx context.Context) error {
+	c.mu.RLock()
+	inner := c.inner
+	c.mu.RUnlock()
+	if inner == nil {
+		c.setStatus("error")
+		return fmt.Errorf("未连接")
+	}
+	return inner.Ping(ctx)
+}
+
 func (c *lazySDKClient) ListTools(ctx context.Context) ([]Tool, error) {
 	c.mu.RLock()
 	inner := c.inner
@@ -227,6 +238,13 @@ func (c *sdkClient) Initialize(ctx context.Context) error {
 	// sdkClient 由 createSDKClient 在 Connect 成功后才创建，因此 Initialize 时已经连接
 	// 此方法仅用于满足 ExternalMCPClient 接口，实际连接在 createSDKClient 中完成
 	return nil
+}
+
+func (c *sdkClient) Ping(ctx context.Context) error {
+	if c.session == nil {
+		return fmt.Errorf("未连接")
+	}
+	return c.session.Ping(ctx, nil)
 }
 
 func (c *sdkClient) ListTools(ctx context.Context) ([]Tool, error) {

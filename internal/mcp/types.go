@@ -13,6 +13,8 @@ type ExternalMCPClient interface {
 	Initialize(ctx context.Context) error
 	ListTools(ctx context.Context) ([]Tool, error)
 	CallTool(ctx context.Context, name string, args map[string]interface{}) (*ToolResult, error)
+	// Ping 发送 MCP ping 请求，用于主动健康检查（返回连接的传输层错误时表示断连）。
+	Ping(ctx context.Context) error
 	Close() error
 	IsConnected() bool
 	GetStatus() string

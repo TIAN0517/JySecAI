@@ -17,7 +17,10 @@ import os
 from typing import Any
 
 import yaml
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.mcpserver import MCPServer as FastMCP
+except ImportError:
+    from mcp.server.fastmcp import FastMCP
 
 # 延迟导入，避免未安装时影响 MCP 启动
 _claude_sdk_available = False

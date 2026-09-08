@@ -314,12 +314,12 @@ func entryResultRecover(ctx context.Context, toolName string, logger *zap.Logger
 }
 
 func (s *ExecutionService) Wait(ctx context.Context, executionID string, timeout time.Duration) (*ExecutionSnapshot, error) {
-	entry := s.getEntry(executionID)
-	if entry == nil {
+	snapshot, entry := s.snapshotEntry(executionID)
+	if snapshot == nil {
 		return s.getPersistedSnapshot(executionID)
 	}
-	if isExecutionTerminal(entry.exec.Status) {
-		return &ExecutionSnapshot{Execution: cloneToolExecution(entry.exec)}, nil
+	if isExecutionTerminal(snapshot.Status) {
+		return &ExecutionSnapshot{Execution: snapshot}, nil
 	}
 
 	var timeoutCh <-chan time.Time
@@ -332,20 +332,45 @@ func (s *ExecutionService) Wait(ctx context.Context, executionID string, timeout
 
 	select {
 	case <-entry.done:
-		return &ExecutionSnapshot{Execution: cloneToolExecution(entry.exec)}, nil
+		// 完成后的最终执行记录同样要在锁内快照，避免与 finishEntry 的写并发。
+		snapshot, _ = s.snapshotEntry(executionID)
+		if snapshot == nil {
+			return s.getPersistedSnapshot(executionID)
+		}
+		return &ExecutionSnapshot{Execution: snapshot}, nil
 	case <-timeoutCh:
-		return &ExecutionSnapshot{Execution: cloneToolExecution(entry.exec)}, ErrExecutionWaitTimeout
+		return &ExecutionSnapshot{Execution: snapshot}, ErrExecutionWaitTimeout
 	case <-ctxDone(ctx):
-		return &ExecutionSnapshot{Execution: cloneToolExecution(entry.exec)}, ctx.Err()
+		return &ExecutionSnapshot{Execution: snapshot}, ctx.Err()
 	}
 }
 
 func (s *ExecutionService) Get(executionID string) (*ExecutionSnapshot, error) {
-	entry := s.getEntry(executionID)
-	if entry != nil {
-		return &ExecutionSnapshot{Execution: cloneToolExecution(entry.exec)}, nil
+	snapshot, _ := s.snapshotEntry(executionID)
+	if snapshot != nil {
+		return &ExecutionSnapshot{Execution: snapshot}, nil
 	}
 	return s.getPersistedSnapshot(executionID)
+}
+
+// snapshotEntry 在锁内复制一份 execution 快照并返回条目句柄。
+// entry.exec 会由 worker 在锁内就地更新，外部读取必须先加锁快照，
+// 否则会与 markEntryRunning / finishEntry 的写操作产生数据竞争。
+func (s *ExecutionService) snapshotEntry(executionID string) (*ToolExecution, *executionEntry) {
+	if s == nil {
+		return nil, nil
+	}
+	id := strings.TrimSpace(executionID)
+	if id == "" {
+		return nil, nil
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	entry := s.entries[id]
+	if entry == nil || entry.exec == nil {
+		return nil, nil
+	}
+	return cloneToolExecution(entry.exec), entry
 }
 
 func (s *ExecutionService) AppendPartialOutput(executionID, chunk string) bool {

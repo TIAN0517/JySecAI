@@ -1,0 +1,25 @@
+info:
+  name: vllm
+  author: 腾讯朱雀实验室
+  desc: 一个高性能开源引擎，用于高效推理和服务大语言模型，优化速度和内存使用。
+  severity: info
+  metadata:
+    product: vllm
+    vendor: vllm-project
+http:
+  - method: GET
+    path: /version
+    matchers:
+      - body="{\"version\":\""
+    extractor:
+      part: ''
+      group: ''
+      regex: ''
+version:
+  - method: GET
+    path: /version
+    matchers: null
+    extractor:
+      part: body
+      group: '1'
+      regex: '{"version":"(\d+\.\d+\.?\d+?)'

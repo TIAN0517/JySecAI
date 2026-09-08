@@ -11,6 +11,7 @@
 | 服务 | 说明 |
 |------|------|
 | [reverse_shell](reverse_shell/) | 反向 Shell：开启/停止监听、与已连接目标交互执行命令，完整交互流程。 |
+| [vuln_intel](vuln_intel/) | 只读关联 NVD、CISA KEV、EPSS、OSV、ExploitDB/SearchSploit 与公开 PoC。 |
 
 ## 使用方式
 

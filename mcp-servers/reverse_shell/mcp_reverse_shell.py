@@ -17,7 +17,10 @@ import threading
 import time
 from typing import Any
 
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.mcpserver import MCPServer as FastMCP
+except ImportError:
+    from mcp.server.fastmcp import FastMCP
 
 # ---------------------------------------------------------------------------
 # 反向 Shell 状态（单例：一个监听器、一个已连接客户端）

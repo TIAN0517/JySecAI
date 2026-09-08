@@ -24,6 +24,20 @@ HEALTHCHECK --interval=20s --timeout=4s --start-period=15s --retries=5 \
   CMD ["node", "-e", "fetch('http://127.0.0.1:8787/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
 CMD ["node", "dist/main.js"]
 
+FROM node:24-bookworm-slim AS scanner-adapter
+ENV NODE_ENV=production \
+    JYSEC_SCANNER_ADAPTER_HOST=0.0.0.0 \
+    JYSEC_SCANNER_ADAPTER_PORT=8790
+WORKDIR /app
+COPY --from=build --chown=node:node /app/package.json /app/package-lock.json ./
+COPY --from=build --chown=node:node /app/node_modules ./node_modules
+COPY --from=build --chown=node:node /app/dist ./dist
+USER node
+EXPOSE 8790
+HEALTHCHECK --interval=20s --timeout=4s --start-period=10s --retries=5 \
+  CMD ["node", "-e", "fetch('http://127.0.0.1:8790/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+CMD ["node", "dist/scanner-adapter/main.js"]
+
 FROM python:3.13-slim-bookworm AS worker
 ARG STRIX_VERSION=1.5.3
 ENV NODE_ENV=production \

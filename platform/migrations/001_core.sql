@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS jy_security_runs (
     profile TEXT NOT NULL,
     targets JSONB NOT NULL,
     objective TEXT NOT NULL,
-    authorization JSONB NOT NULL,
+    "authorization" JSONB NOT NULL,
     config JSONB NOT NULL DEFAULT '{}'::jsonb,
     status TEXT NOT NULL,
     status_reason TEXT,

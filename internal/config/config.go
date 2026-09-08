@@ -27,6 +27,7 @@ type Config struct {
 	ZoomEye     SpaceSearchConfig     `yaml:"zoomeye,omitempty" json:"zoomeye,omitempty"`
 	Quake       SpaceSearchConfig     `yaml:"quake,omitempty" json:"quake,omitempty"`
 	Shodan      SpaceSearchConfig     `yaml:"shodan,omitempty" json:"shodan,omitempty"`
+	ProxyPool   ProxyPoolConfig       `yaml:"proxy_pool,omitempty" json:"proxy_pool,omitempty"`
 	Agent       AgentConfig           `yaml:"agent"`
 	Hitl        HitlConfig            `yaml:"hitl,omitempty" json:"hitl,omitempty"`
 	Security    SecurityConfig        `yaml:"security"`
@@ -50,6 +51,103 @@ type Config struct {
 type EnsureLocalConfigResult struct {
 	Created     bool
 	ExamplePath string
+}
+
+// ProxyPoolConfig controls the SOCKS5 pool used by network-space search APIs.
+// It is deliberately scoped to reconnaissance API traffic so LLM and other
+// credential-bearing requests are never routed through third-party proxies.
+type ProxyPoolConfig struct {
+	Enabled               bool                `yaml:"enabled" json:"enabled"`
+	Strategy              string              `yaml:"strategy,omitempty" json:"strategy,omitempty"`
+	HealthCheckURL        string              `yaml:"health_check_url,omitempty" json:"health_check_url,omitempty"`
+	ConnectTimeoutSeconds int                 `yaml:"connect_timeout_seconds,omitempty" json:"connect_timeout_seconds,omitempty"`
+	RequestTimeoutSeconds int                 `yaml:"request_timeout_seconds,omitempty" json:"request_timeout_seconds,omitempty"`
+	FailureThreshold      int                 `yaml:"failure_threshold,omitempty" json:"failure_threshold,omitempty"`
+	CooldownSeconds       int                 `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
+	Proxies               []SOCKS5ProxyConfig `yaml:"proxies,omitempty" json:"proxies,omitempty"`
+}
+
+type SOCKS5ProxyConfig struct {
+	Name    string `yaml:"name,omitempty" json:"name,omitempty"`
+	URL     string `yaml:"url" json:"url"`
+	Enabled bool   `yaml:"enabled" json:"enabled"`
+}
+
+func (c *ProxyPoolConfig) NormalizeAndValidate() error {
+	if c == nil {
+		return nil
+	}
+	c.Strategy = strings.ToLower(strings.TrimSpace(c.Strategy))
+	if c.Strategy == "" {
+		c.Strategy = "round_robin"
+	}
+	if c.Strategy != "round_robin" && c.Strategy != "random" {
+		return fmt.Errorf("proxy_pool.strategy must be round_robin or random")
+	}
+	c.HealthCheckURL = strings.TrimSpace(c.HealthCheckURL)
+	if c.HealthCheckURL == "" {
+		c.HealthCheckURL = "https://api.ipify.org"
+	}
+	healthURL, err := url.Parse(c.HealthCheckURL)
+	if err != nil || healthURL.Scheme != "https" || healthURL.Hostname() == "" {
+		return fmt.Errorf("proxy_pool.health_check_url must be a valid HTTPS URL")
+	}
+	if c.ConnectTimeoutSeconds <= 0 {
+		c.ConnectTimeoutSeconds = 8
+	}
+	if c.RequestTimeoutSeconds <= 0 {
+		c.RequestTimeoutSeconds = 15
+	}
+	if c.FailureThreshold <= 0 {
+		c.FailureThreshold = 2
+	}
+	if c.CooldownSeconds <= 0 {
+		c.CooldownSeconds = 60
+	}
+
+	seen := make(map[string]struct{}, len(c.Proxies))
+	for i := range c.Proxies {
+		entry := &c.Proxies[i]
+		entry.Name = strings.TrimSpace(entry.Name)
+		entry.URL = strings.TrimSpace(entry.URL)
+		if entry.URL == "" {
+			return fmt.Errorf("proxy_pool.proxies[%d].url is required", i)
+		}
+		if !strings.Contains(entry.URL, "://") {
+			entry.URL = "socks5://" + entry.URL
+		}
+		proxyURL, parseErr := url.Parse(entry.URL)
+		if parseErr != nil ||
+			(proxyURL.Scheme != "socks5" && proxyURL.Scheme != "socks5h") ||
+			proxyURL.Hostname() == "" || proxyURL.Port() == "" ||
+			proxyURL.Path != "" || proxyURL.RawPath != "" || proxyURL.RawQuery != "" || proxyURL.Fragment != "" {
+			return fmt.Errorf("proxy_pool.proxies[%d].url must be socks5://host:port", i)
+		}
+		port, portErr := strconv.Atoi(proxyURL.Port())
+		if portErr != nil || port < 1 || port > 65535 {
+			return fmt.Errorf("proxy_pool.proxies[%d].url has an invalid port", i)
+		}
+		canonical := strings.ToLower(proxyURL.Scheme) + "://" + proxyURL.Host
+		if _, exists := seen[canonical]; exists {
+			return fmt.Errorf("proxy_pool contains duplicate proxy %s", proxyURL.Host)
+		}
+		seen[canonical] = struct{}{}
+		if entry.Name == "" {
+			entry.Name = proxyURL.Host
+		}
+	}
+	if c.Enabled {
+		enabled := 0
+		for _, entry := range c.Proxies {
+			if entry.Enabled {
+				enabled++
+			}
+		}
+		if enabled == 0 {
+			return fmt.Errorf("proxy_pool.enabled requires at least one enabled proxy")
+		}
+	}
+	return nil
 }
 
 const (
@@ -1447,6 +1545,9 @@ func Load(path string) (*Config, error) {
 	}
 	cfg.NormalizeAIProviderProfiles()
 	cfg.ApplyDefaultAIChannel()
+	if err := cfg.ProxyPool.NormalizeAndValidate(); err != nil {
+		return nil, err
+	}
 	if err := validateOpenAIOutputLimits(cfg.OpenAI); err != nil {
 		return nil, err
 	}

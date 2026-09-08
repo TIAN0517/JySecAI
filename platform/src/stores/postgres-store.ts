@@ -163,7 +163,7 @@ export class PostgresStore implements ControlPlaneStore {
       const inserted = await client.query<Row>(
         `INSERT INTO jy_security_runs (
            id, tenant_id, project_id, actor_user_id, engine, profile, targets, objective,
-           authorization, config, status, estimated_credits, reserved_credits,
+           "authorization", config, status, estimated_credits, reserved_credits,
            idempotency_key, created_at, updated_at
          ) VALUES ($1,$2,$3,$4,$5,$6,$7::jsonb,$8,$9::jsonb,$10::jsonb,$11,$12,$13,$14,$15,$16)
          ON CONFLICT (tenant_id, idempotency_key) DO NOTHING

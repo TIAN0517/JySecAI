@@ -11,6 +11,8 @@ This directory contains **standalone MCP (Model Context Protocol) servers**. The
 | Server | Description |
 |--------|-------------|
 | [reverse_shell](reverse_shell/) | Reverse shell listener: start/stop listener, send commands to connected targets, full interactive workflow. |
+| [vuln_intel](vuln_intel/) | Read-only NVD, CISA KEV, EPSS, OSV, ExploitDB/SearchSploit, and public PoC correlation. |
+| [redteam_knowledge](redteam_knowledge/) | Read-only MITRE ATT&CK, LOLBAS, GTFOBins, and Atomic Red Team technique correlation. |
 
 ## How to use
 
