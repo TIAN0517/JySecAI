@@ -49,6 +49,24 @@ STATE_TEXT = {
 }
 LOG_TAG = {"success": "ok", "error": "err", "warning": "warn"}
 
+# 後端引擎訊息的繁中對照(僅顯示層翻譯,不動測試覆蓋的後端)
+TRANSLATIONS = {
+    "Existing listener: JySecAI title heuristic only; not readiness or ownership.":
+        "偵測到服務已在執行(非本面板啟動)。可直接開啟主控台使用,或先按「停止」再重新啟動。",
+    "Local port is occupied by an unidentified listener.":
+        "服務埠被其他程式占用,無法啟動。",
+    "Local service command accepted.":
+        "指令已受理,執行中…",
+    "Configuration loaded; endpoint not checked yet.":
+        "設定已載入;尚未檢查服務狀態。",
+    "No owned process; not checked yet.":
+        "目前沒有本面板管理的服務程序。",
+    "Owned process exited.":
+        "服務已停止。",
+    "Local server executable is missing or not executable.":
+        "找不到 jysecai.exe(需要先編譯或放到專案目錄)。",
+}
+
 
 def _build_runtime(root_dir):
     return desktop_runtime.DesktopRuntime(root_dir)
@@ -163,6 +181,7 @@ class Panel:
         try:
             for _ in range(200):
                 level, message = self.rt.events.get_nowait()
+                message = TRANSLATIONS.get(message, message)
                 self._append_log(level, message)
         except Exception:
             pass
