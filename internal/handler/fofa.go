@@ -78,7 +78,9 @@ func (h *FofaHandler) SetProxyPoolManager(manager *proxypool.Manager) {
 		h.client = &http.Client{Timeout: 60 * time.Second}
 		return
 	}
-	h.client = manager.Client(60 * time.Second)
+	// 情蒐查詢一律走住宅輪替組（residential）：台灣目標需要真實住宅出口，
+	// 避免機房 IP 被 FOFA/目標端風控。residential 組不可用時退回直連。
+	h.client = manager.ClientGroup(60*time.Second, "residential")
 }
 
 func NewFofaHandler(cfg *config.Config, logger *zap.Logger) *FofaHandler {

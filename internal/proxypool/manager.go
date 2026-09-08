@@ -106,15 +106,22 @@ func (m *Manager) Client(timeout time.Duration) *http.Client {
 	return &http.Client{Transport: &rotatingTransport{manager: m}, Timeout: timeout}
 }
 
+// ClientGroup 回傳僅使用指定群組（dc / residential）端點的 HTTP Client。
+// 群組內沒有可用端點時退回直連，行為與 Client() 的 disabled 路徑一致。
+func (m *Manager) ClientGroup(timeout time.Duration, group string) *http.Client {
+	return &http.Client{Transport: &rotatingTransport{manager: m, group: group}, Timeout: timeout}
+}
+
 type rotatingTransport struct {
 	manager *Manager
+	group   string
 }
 
 func (t *rotatingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	if t == nil || t.manager == nil {
 		return http.DefaultTransport.RoundTrip(req)
 	}
-	endpoint, transport, enabled, err := t.manager.nextTransport()
+	endpoint, transport, enabled, err := t.manager.nextTransport(t.group)
 	if err != nil {
 		return nil, err
 	}
@@ -171,7 +178,7 @@ func (t *trackedReadCloser) Read(p []byte) (int, error) {
 	return n, err
 }
 
-func (m *Manager) nextTransport() (config.SOCKS5ProxyConfig, *http.Transport, bool, error) {
+func (m *Manager) nextTransport(group string) (config.SOCKS5ProxyConfig, *http.Transport, bool, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	if !m.cfg.Enabled {
@@ -182,6 +189,10 @@ func (m *Manager) nextTransport() (config.SOCKS5ProxyConfig, *http.Transport, bo
 	eligible := make([]config.SOCKS5ProxyConfig, 0, len(m.cfg.Proxies))
 	for _, endpoint := range m.cfg.Proxies {
 		if !endpoint.Enabled {
+			continue
+		}
+		// 群組分流：group 為空 = 不限（相容既有 Client() 呼叫）。
+		if group != "" && endpoint.ProxyGroupEffective() != group {
 			continue
 		}
 		state := m.states[endpoint.URL]

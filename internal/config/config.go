@@ -72,6 +72,18 @@ type SOCKS5ProxyConfig struct {
 	Name    string `yaml:"name,omitempty" json:"name,omitempty"`
 	URL     string `yaml:"url" json:"url"`
 	Enabled bool   `yaml:"enabled" json:"enabled"`
+	// Group 分流標籤：residential=住宅輪替（情蒐/掃描）, dc=機房（長連線/大流量）。
+	// 空值視為 dc；Manager.Client(group) 依此過濾。
+	Group string `yaml:"group,omitempty" json:"group,omitempty"`
+}
+
+// ProxyGroupEffective 回傳正規化後的群組標籤（dc 或 residential）。
+func (c SOCKS5ProxyConfig) ProxyGroupEffective() string {
+	g := strings.ToLower(strings.TrimSpace(c.Group))
+	if g == "residential" {
+		return "residential"
+	}
+	return "dc"
 }
 
 func (c *ProxyPoolConfig) NormalizeAndValidate() error {
