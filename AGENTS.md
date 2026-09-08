@@ -33,7 +33,7 @@
 - Health check every 15s auto-reconnects enabled servers
 
 ## Skills marketplace
-- 48 skills in `skills/` (26 bundled + 22 imported from SpecterOps/trailofbits); import records in `skills/.marketplace-manifest.json`
+- 49 skills in `skills/` (27 bundled + 22 imported from SpecterOps); import records in `skills/.marketplace-manifest.json`
 - Sync tool: `python scripts/sync-skill-marketplaces.py --preset starter|c2|recon|bloodhound|timeline|code-review|audit` (also `--source`, `--import PATH`, `--dry-run`, `--update`); cache in `scripts/.marketplace-cache/`
 - Eino loader scans first-level `*/SKILL.md` only; one invalid first-level SKILL.md fails the whole list
 - Docs: `docs/zh-CN/skills-marketplace.md` / `docs/en-US/skills-marketplace.md`
@@ -58,7 +58,7 @@
 
 ## Known gotchas
 - `workspace_root_dir` in config: never set to `/tmp` or system paths; uses `tmp/workspace` or `projects/{id}`/`conversations/{id}` isolation
-- HITL `default_mode: off` in production will be rejected by the app (see `config.yaml` production section)
+- `hitl.default_mode: off` is the shipped default and is NOT rejected anywhere in the code; production deployments should switch to `approval` or `review_edit` themselves
 - MCP auth: if `cfg.MCP.Enabled` and `auth_header_value` is empty, `config.EnsureMCPAuth` generates a random key and writes it back to config
 - `go.sum` may diverge; `go mod tidy` will fix, but watch for indirect dep version bumps
 - TS `node --check public/app.js` in CI — this is a syntax-only check, not full runtime test
