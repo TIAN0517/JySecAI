@@ -114,3 +114,16 @@ OpenCode Desktop Installer.exe
 # Pentest evidence dumps
 vps.*-vuln-evidence-*/
 vps.*-vuln-evidence-*.zip
+
+# Local logs, test runs and scratch configs
+logs/
+*.out
+config_*.yaml
+tw*.py
+*_config.py
+test_*.sh
+qq_section.txt
+scripts/hourly-verify.sh
+data_manager.py
+demo_data_manager.py
+BUILD_INSTRUCTIONS.txt

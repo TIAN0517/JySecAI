@@ -1,6 +1,7 @@
 package config
 
 import (
+	"bytes"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
@@ -1544,6 +1545,7 @@ func Load(path string) (*Config, error) {
 	if err != nil {
 		return nil, fmt.Errorf("读取配置文件失败: %w", err)
 	}
+	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 
 	var cfg Config
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
@@ -1959,6 +1961,7 @@ func loadInlineSecurityToolsFromYAML(configPath string) ([]ToolConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("读取配置文件失败: %w", err)
 	}
+	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 	var partial struct {
 		Security struct {
 			Tools []ToolConfig `yaml:"tools"`
@@ -2036,6 +2039,7 @@ func LoadToolFromFile(path string) (*ToolConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("读取文件失败: %w", err)
 	}
+	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 
 	var tool ToolConfig
 	if err := yaml.Unmarshal(data, &tool); err != nil {
@@ -2106,6 +2110,7 @@ func LoadRoleFromFile(path string) (*RoleConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("读取文件失败: %w", err)
 	}
+	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 
 	var role RoleConfig
 	if err := yaml.Unmarshal(data, &role); err != nil {

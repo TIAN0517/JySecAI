@@ -1457,6 +1457,7 @@ func setupRoutes(
 
 	// 静态文件
 	router.Static("/static", "./web/static")
+	router.StaticFile("/favicon.ico", "./web/static/favicon.ico")
 	router.LoadHTMLGlob("web/templates/*")
 
 	// 前端页面

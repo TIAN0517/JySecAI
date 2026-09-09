@@ -10,15 +10,24 @@ import (
 // ExtractSkillMDFrontMatterYAML returns the YAML source inside the first --- ... --- block and the markdown body.
 func ExtractSkillMDFrontMatterYAML(raw []byte) (fmYAML string, body string, err error) {
 	text := strings.TrimPrefix(string(raw), "\ufeff")
+	text = strings.ReplaceAll(text, "\r\n", "\n")
+	text = strings.ReplaceAll(text, "\r", "\n")
 	if strings.TrimSpace(text) == "" {
 		return "", "", fmt.Errorf("SKILL.md is empty")
 	}
 	lines := strings.Split(text, "\n")
-	if len(lines) < 2 || strings.TrimSpace(lines[0]) != "---" {
+	startIdx := 0
+	for startIdx < len(lines) && strings.TrimSpace(lines[startIdx]) == "" {
+		startIdx++
+	}
+	if startIdx >= len(lines) || strings.TrimSpace(lines[startIdx]) != "---" {
 		return "", "", fmt.Errorf("SKILL.md must start with YAML front matter (---) per Agent Skills standard")
 	}
+	for startIdx < len(lines) && strings.TrimSpace(lines[startIdx]) == "---" {
+		startIdx++
+	}
 	var fmLines []string
-	i := 1
+	i := startIdx
 	for i < len(lines) {
 		if strings.TrimSpace(lines[i]) == "---" {
 			break

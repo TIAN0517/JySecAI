@@ -132,17 +132,25 @@ _FRONT_DELIM = re.compile(r"^---[ \t]*$")
 
 
 def split_frontmatter(text: str):
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
     lines = text.splitlines()
-    if not lines or not _FRONT_DELIM.match(lines[0]):
+    if not lines:
         return None, lines
+    start_idx = 0
+    while start_idx < len(lines) and not lines[start_idx].strip():
+        start_idx += 1
+    if start_idx >= len(lines) or not _FRONT_DELIM.match(lines[start_idx]):
+        return None, lines
+    while start_idx < len(lines) and _FRONT_DELIM.match(lines[start_idx]):
+        start_idx += 1
     body_start = None
-    for i in range(1, len(lines)):
+    for i in range(start_idx, len(lines)):
         if _FRONT_DELIM.match(lines[i]):
             body_start = i
             break
     if body_start is None:
         return None, lines
-    return lines[1:body_start], lines[body_start + 1:]
+    return lines[start_idx:body_start], lines[body_start + 1:]
 
 
 def frontmatter_get(fm: list, key: str):
@@ -164,6 +172,8 @@ def inject_provenance(skill_md: Path, marketplace: str, relpath: str) -> None:
     fm, body = split_frontmatter(raw)
     if fm is None:
         return  # not a SKILL.md — leave untouched
+    if any("marketplace:" in ln for ln in fm):
+        return  # already injected
     marker = f"  marketplace: {marketplace}\n  source: {relpath}\n"
     new_lines = list(fm)
     md_idx = next(
@@ -208,6 +218,21 @@ def sanitize_name(name: str) -> str:
     return re.sub(r"[^A-Za-z0-9._-]+", "-", name).strip(".-") or "unnamed"
 
 
+KNOWN_MCP_SERVERS = {
+    "bloodhound",
+    "reverse-shell",
+    "vuln-intel",
+    "redteam-knowledge",
+    "dragon-v",
+    "pent-claude-agent",
+    "ghostwriter",
+    "binary-ninja",
+    "ghidra",
+    "shodan",
+    "nmap",
+}
+
+
 def skill_mcp_deps(skill_dir: Path) -> list:
     """Best-effort scan for the MCP servers a skill mentions."""
     names = set()
@@ -215,11 +240,12 @@ def skill_mcp_deps(skill_dir: Path) -> list:
         if not f.is_file():
             continue
         try:
-            text = f.read_text(encoding="utf-8", errors="ignore")
+            text = f.read_text(encoding="utf-8", errors="ignore").lower()
         except Exception:
             continue
-        for m in re.finditer(r"(?i)\b(mcp)?[-_ ]?([a-zA-Z]+[-_ ]?mcp)\b|/\b(bloodhound|ghostwriter|binary[ -]ninja|ghidra)\b", text):
-            names.add(m.group(0).lower())
+        for server in KNOWN_MCP_SERVERS:
+            if server in text:
+                names.add(server)
     return sorted(names)[:8]
 
 

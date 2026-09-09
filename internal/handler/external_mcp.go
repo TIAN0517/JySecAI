@@ -270,8 +270,13 @@ func (h *ExternalMCPHandler) StartExternalMCP(c *gin.Context) {
 	if h.config.ExternalMCP.Servers == nil {
 		h.config.ExternalMCP.Servers = make(map[string]config.ExternalMCPServerConfig)
 	}
-	cfg := h.config.ExternalMCP.Servers[name]
+	cfg, exists := h.config.ExternalMCP.Servers[name]
+	if !exists || (cfg.Command == "" && cfg.URL == "") {
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("外部MCP服务 %q 未配置或缺少命令/URL", name)})
+		return
+	}
 	cfg.ExternalMCPEnable = true
+	cfg.Disabled = false
 	h.config.ExternalMCP.Servers[name] = cfg
 
 	// 保存到配置文件
@@ -326,6 +331,7 @@ func (h *ExternalMCPHandler) StopExternalMCP(c *gin.Context) {
 	}
 	cfg := h.config.ExternalMCP.Servers[name]
 	cfg.ExternalMCPEnable = false
+	cfg.Disabled = true
 	h.config.ExternalMCP.Servers[name] = cfg
 
 	// 保存到配置文件
@@ -456,9 +462,7 @@ func updateExternalMCPConfig(doc *yaml.Node, cfg config.ExternalMCPConfig) {
 			setIntInMap(serverNode, "timeout", serverCfg.Timeout)
 		}
 		// 官方标准字段
-		if serverCfg.Disabled {
-			setBoolInMap(serverNode, "disabled", true)
-		}
+		setBoolInMap(serverNode, "disabled", serverCfg.Disabled)
 		if len(serverCfg.AutoApprove) > 0 {
 			setStringArrayInMap(serverNode, "autoApprove", serverCfg.AutoApprove)
 		}

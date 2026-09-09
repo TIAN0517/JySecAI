@@ -419,6 +419,61 @@ external_mcp:
       timeout: 30
       keep_alive: 15
       max_retries: 3
+    # Dragon-V 离线利用库与扫描
+    dragon-v:
+      description: "Dragon-V: offline CVE, fingerprints, payloads and authorized pentest chain."
+      disabled: true
+      type: stdio
+      command: ${JYSECAI_PYTHON:-python}
+      args:
+        - mcp-servers/dragon_v/dragon_v_mcp_server.py
+      timeout: 180
+      keep_alive: 30
+      max_retries: 5
+    # Reverse Shell 交互监听
+    reverse-shell:
+      description: "Reverse shell: start/stop TCP listener, run commands on connected target."
+      disabled: true
+      type: stdio
+      command: ${JYSECAI_PYTHON:-python}
+      args:
+        - mcp-servers/reverse_shell/mcp_reverse_shell.py
+      timeout: 60
+      keep_alive: 15
+      max_retries: 3
+    # Vuln Intel 漏洞情报检索
+    vuln-intel:
+      description: "Vulnerability intelligence: CVE/KEV/EPSS lookup."
+      disabled: true
+      type: stdio
+      command: ${JYSECAI_PYTHON:-python}
+      args:
+        - mcp-servers/vuln_intel/mcp_vuln_intel.py
+      timeout: 60
+      keep_alive: 15
+      max_retries: 3
+    # Redteam Knowledge 红队知识库
+    redteam-knowledge:
+      description: "Redteam knowledge: ATT&CK techniques, playbooks, and bypass references."
+      disabled: true
+      type: stdio
+      command: ${JYSECAI_PYTHON:-python}
+      args:
+        - mcp-servers/redteam_knowledge/mcp_redteam_knowledge.py
+      timeout: 60
+      keep_alive: 15
+      max_retries: 3
+    # Pent Claude Agent 渗透助手
+    pent-claude-agent:
+      description: "Pentest execution agent bridge."
+      disabled: true
+      type: stdio
+      command: ${JYSECAI_PYTHON:-python}
+      args:
+        - mcp-servers/pent_claude_agent/mcp_pent_claude_agent.py
+      timeout: 120
+      keep_alive: 15
+      max_retries: 3
     # Ghostwriter MCP（对应 skill：timeline-ghostwriter / report-drafting 家族）
     #   command/args 依你部署的 ghostwriter-mcp 调整
     # ghostwriter:

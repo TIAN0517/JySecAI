@@ -1904,6 +1904,7 @@ func loadYAMLDocument(path string) (*yaml.Node, error) {
 	if err != nil {
 		return nil, err
 	}
+	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 
 	if len(bytes.TrimSpace(data)) == 0 {
 		return newEmptyYAMLDocument(), nil

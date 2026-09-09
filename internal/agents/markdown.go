@@ -112,12 +112,17 @@ func WantsMarkdownOrchestrator(filename string, kindField string, raw string) bo
 
 // SplitFrontMatter 分离 YAML front matter 与正文（--- ... ---）。
 func SplitFrontMatter(content string) (frontYAML string, body string, err error) {
-	s := strings.TrimSpace(content)
+	s := strings.TrimPrefix(content, "\ufeff")
+	s = strings.TrimSpace(s)
 	if !strings.HasPrefix(s, "---") {
 		return "", s, nil
 	}
 	rest := strings.TrimPrefix(s, "---")
 	rest = strings.TrimLeft(rest, "\r\n")
+	for strings.HasPrefix(rest, "---") {
+		rest = strings.TrimPrefix(rest, "---")
+		rest = strings.TrimLeft(rest, "\r\n")
+	}
 	end := strings.Index(rest, "\n---")
 	if end < 0 {
 		return "", "", fmt.Errorf("agents: 缺少结束的 --- 分隔符")
