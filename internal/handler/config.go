@@ -310,10 +310,8 @@ type ToolConfigInfo struct {
 // GetConfig 获取当前配置
 func (h *ConfigHandler) GetConfig(c *gin.Context) {
 	h.mu.RLock()
-	defer h.mu.RUnlock()
 
-	// 获取工具列表（包含内部和外部工具）
-	// 首先从配置文件获取工具
+	// 获取工具列表（从配置文件与内置MCP服务器获取）
 	configToolMap := make(map[string]bool)
 	tools := make([]ToolConfigInfo, 0, len(h.config.Security.Tools))
 
@@ -328,7 +326,6 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		tools = append(tools, info)
 	}
 
-	// 从MCP服务器获取所有已注册的工具（包括直接注册的工具，如知识检索工具）
 	if h.mcpServer != nil {
 		mcpTools := h.mcpServer.GetAllTools()
 		for _, mcpTool := range mcpTools {
@@ -342,15 +339,6 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 				Enabled:     true,
 				IsExternal:  false,
 			})
-		}
-	}
-
-	// 获取外部MCP工具（走缓存，持锁期间通常不阻塞）
-	if h.externalMCPMgr != nil {
-		ctx := context.Background()
-		externalTools := h.getExternalMCPTools(ctx)
-		for _, toolInfo := range externalTools {
-			tools = append(tools, toolInfo)
 		}
 	}
 
@@ -388,7 +376,7 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		),
 	}
 
-	c.JSON(http.StatusOK, GetConfigResponse{
+	resp := GetConfigResponse{
 		AI:         h.config.AI,
 		OpenAI:     h.config.OpenAI,
 		Vision:     h.config.Vision,
@@ -406,7 +394,18 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		XSS:        h.config.XSS.Public(),
 		Robots:     h.config.Robots,
 		MultiAgent: multiPub,
-	})
+	}
+	h.mu.RUnlock()
+
+	// 获取外部MCP工具（走缓存，在锁外执行，避免外部MCP慢阻塞全局配置锁）
+	if h.externalMCPMgr != nil {
+		ctx, cancel := context.WithTimeout(c.Request.Context(), 1*time.Second)
+		defer cancel()
+		externalTools := h.getExternalMCPTools(ctx)
+		resp.Tools = append(resp.Tools, externalTools...)
+	}
+
+	c.JSON(http.StatusOK, resp)
 }
 
 // GetToolsResponse 获取工具列表响应（分页）

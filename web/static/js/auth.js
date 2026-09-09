@@ -329,6 +329,13 @@ async function refreshAppData(showTaskErrors = false) {
             console.warn('刷新对话模式配置失败:', error);
         }
     }
+    if (typeof loadConfig === 'function') {
+        try {
+            await loadConfig(false, { silent: true });
+        } catch (error) {
+            console.warn('刷新系统设置配置失败:', error);
+        }
+    }
     await Promise.allSettled([
         loadConversations(),
         loadActiveTasks(showTaskErrors),

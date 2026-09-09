@@ -1584,11 +1584,7 @@ func (m *ExternalMCPManager) connectClient(name string, serverCfg config.Externa
 
 	// 连接成功，触发工具数量刷新和工具列表缓存刷新
 	m.triggerToolCountRefresh()
-	m.mu.RLock()
-	if client, exists := m.clients[name]; exists {
-		m.refreshToolCache(name, client)
-	}
-	m.mu.RUnlock()
+	go m.refreshToolCache(name, client)
 
 	return nil
 }

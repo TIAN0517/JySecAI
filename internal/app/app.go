@@ -514,10 +514,13 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 
 	// 设置漏洞工具注册器（内置工具，必须设置）
 	vulnerabilityRegistrar := func() error {
-registerVulnerabilityTools(mcpServer, db, log.Logger, xssHookFromConfig(cfg))
+		registerVulnerabilityTools(mcpServer, db, log.Logger, xssHookFromConfig(cfg))
 		registerAssetTools(mcpServer, db, log.Logger)
 		registerProjectFactTools(mcpServer, db, cfg, log.Logger)
 		registerVisionTools(mcpServer, cfg, log.Logger)
+		registerPocGeneratorTools(mcpServer, db, cfg, log.Logger)
+		registerSentinelTools(mcpServer, db, sentinelHandler, log.Logger)
+		registerAWVSTools(mcpServer, db, awvsHandler, log.Logger)
 		return nil
 	}
 	configHandler.SetVulnerabilityToolRegistrar(vulnerabilityRegistrar)
