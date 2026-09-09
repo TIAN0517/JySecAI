@@ -74,6 +74,7 @@ type App struct {
 	c2Handler          *handler.C2Handler        // C2 REST（与 Manager 生命周期同步）
 	xssCollector       *xssCollectorRuntime      // XSS 窃密回连收集服务（未启用时为 nil）
 	xssHandler         *handler.XSSHandler       // XSS 载荷/收割 REST（含生成入口）
+	sentinelHandler    *handler.SentinelHandler  // 零零哨兵 (Surface Watch) 暴露面巡检
 	auditSvc           *audit.Service
 	proxyPool          *proxypool.Manager
 }
@@ -438,6 +439,8 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	terminalHandler := handler.NewTerminalHandler(log.Logger)
 	securityOpsHandler := handler.NewSecurityOpsHandler(log.Logger)
 	securityOpsHandler.SetAudit(auditSvc)
+	awvsHandler := handler.NewAWVSHandler(db, log.Logger, "", "")
+	sentinelHandler := handler.NewSentinelHandler(db, log.Logger)
 	if db != nil {
 		skillsHandler.SetDB(db) // 设置数据库连接以便获取调用统计
 	}
@@ -495,6 +498,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		c2Handler:          c2Handler,
 		xssCollector:       xssCollector,
 		xssHandler:         handler.NewXSSHandler(db, log.Logger, xssCollectorProviderFn(cfg, xssCollector, log.Logger)),
+		sentinelHandler:    sentinelHandler,
 		auditSvc:           auditSvc,
 		proxyPool:          proxyPoolManager,
 	}
@@ -614,6 +618,8 @@ registerVulnerabilityTools(mcpServer, db, log.Logger, xssHookFromConfig(cfg))
 		mcpServer,
 		authManager,
 		openAPIHandler,
+		awvsHandler,
+		sentinelHandler,
 	)
 
 	return app, nil
@@ -925,6 +931,8 @@ func setupRoutes(
 	mcpServer *mcp.Server,
 	authManager *security.AuthManager,
 	openAPIHandler *handler.OpenAPIHandler,
+	awvsHandler *handler.AWVSHandler,
+	sentinelHandler *handler.SentinelHandler,
 ) {
 	// API路由
 	api := router.Group("/api")
@@ -1293,6 +1301,30 @@ func setupRoutes(
 		protected.POST("/vulnerabilities", vulnerabilityHandler.CreateVulnerability)
 		protected.PUT("/vulnerabilities/:id", vulnerabilityHandler.UpdateVulnerability)
 		protected.DELETE("/vulnerabilities/:id", vulnerabilityHandler.DeleteVulnerability)
+		protected.POST("/vulnerabilities/:id/generate-poc", vulnerabilityHandler.GeneratePoc)
+		protected.POST("/vulnerabilities/batch-generate-poc", vulnerabilityHandler.BatchGeneratePoc)
+
+		// AWVS 聯動管理
+		awvsRoutes := protected.Group("/awvs")
+		{
+			awvsRoutes.GET("/status", awvsHandler.GetStatus)
+			awvsRoutes.GET("/targets", awvsHandler.ListTargets)
+			awvsRoutes.POST("/targets", awvsHandler.CreateTarget)
+			awvsRoutes.POST("/scan", awvsHandler.StartScan)
+			awvsRoutes.POST("/sync", awvsHandler.SyncVulnerabilities)
+			awvsRoutes.POST("/config", awvsHandler.UpdateConfig)
+		}
+
+		// 零零哨兵 (Surface Watch) 暴露面巡检
+		sentinelRoutes := protected.Group("/sentinel")
+		{
+			sentinelRoutes.POST("/scan", sentinelHandler.StartScan)
+			sentinelRoutes.GET("/status/:id", sentinelHandler.GetScanStatus)
+			sentinelRoutes.GET("/latest", sentinelHandler.GetLatestScan)
+			sentinelRoutes.GET("/history", sentinelHandler.ListScans)
+			sentinelRoutes.POST("/sync/assets", sentinelHandler.SyncToAssets)
+			sentinelRoutes.POST("/sync/vulnerabilities", sentinelHandler.SyncToVulnerabilities)
+		}
 
 		// 项目管理与事实黑板
 		protected.GET("/projects/dashboard-summary", projectHandler.GetDashboardSummary)

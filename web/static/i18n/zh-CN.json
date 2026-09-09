@@ -83,6 +83,7 @@
     "assetOverview": "资产概览",
     "assetLibrary": "资产库",
     "infoCollect": "信息收集",
+    "sentinel": "暴露面哨兵",
     "tasks": "任务管理",
     "projects": "项目管理",
     "vulnerabilities": "漏洞管理",

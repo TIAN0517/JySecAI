@@ -37,6 +37,7 @@
     <link rel="stylesheet" href="/static/css/style.css?v=20260907-1">
     <link rel="stylesheet" href="/static/css/chat-plan-progress.css?v=20260813-4">
     <link rel="stylesheet" href="/static/css/c2.css">
+    <link rel="stylesheet" href="/static/css/sentinel.css">
     <link rel="stylesheet" href="/static/vendor/xterm.css">
     <script src="/static/js/router.js?v=20260819-3"></script>
 </head>
@@ -259,6 +260,7 @@
                             <div class="nav-submenu-item" data-page="asset-overview" onclick="switchPage('asset-overview')" data-i18n="nav.assetOverview">资产概览</div>
                             <div class="nav-submenu-item" data-page="asset-library" onclick="switchPage('asset-library')" data-i18n="nav.assetLibrary">资产库</div>
                             <div class="nav-submenu-item" data-page="info-collect" onclick="switchPage('info-collect')" data-i18n="nav.infoCollect">信息收集</div>
+                            <div class="nav-submenu-item" data-page="sentinel" onclick="switchPage('sentinel')" data-i18n="nav.sentinel" data-require-permission="asset:read">暴露面哨兵</div>
                         </div>
                     </div>
                     <div class="nav-item" data-page="vulnerabilities">
@@ -2234,6 +2236,199 @@
                     </div>
                 </div>
 
+                <!-- 暴露面哨兵 (Surface Watch) 页面 -->
+                <div id="page-sentinel" class="page">
+                    <div class="sentinel-container">
+                        <!-- 顶层主操作与输入卡片 -->
+                        <div class="sentinel-header">
+                            <div class="sentinel-brand-row">
+                                <div class="sentinel-brand">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                        <circle cx="12" cy="11" r="3"/>
+                                    </svg>
+                                    <div>
+                                        <h2 class="sentinel-title">暴露面哨兵 · Surface Watch</h2>
+                                        <p class="sentinel-subtitle">零零哨兵 · 主动式攻击面测绘、30种数据库指纹识别与非侵入式暴露面巡检</p>
+                                    </div>
+                                </div>
+                                <div class="sentinel-actions-row">
+                                    <button type="button" class="btn-secondary" id="sentinel-sync-assets-btn" data-require-permission="asset:write" onclick="syncSentinelToAssets()" disabled title="将探测发现的主机与端口批量合并同步至系统资产库">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                                        <span>同步至资产库</span>
+                                    </button>
+                                    <button type="button" class="btn-secondary" id="sentinel-sync-vulns-btn" data-require-permission="vulnerability:write" onclick="syncSentinelToVulns()" disabled title="将未授权数据库、暴露登录口与关键风险去重入库至漏洞管理">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                                        <span>同步至漏洞库</span>
+                                    </button>
+                                    <button type="button" class="btn-secondary" id="sentinel-export-btn" data-require-permission="asset:read" onclick="exportSentinelReport()" disabled title="导出当前巡检报告 JSON 快照">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                        <span>导出 JSON 报告</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <form id="sentinel-scan-form" class="sentinel-form">
+                                <div class="sentinel-input-wrap">
+                                    <input type="text" id="sentinel-target-input" class="sentinel-input" placeholder="输入主域名（如 example.com）或公网 IPv4 地址..." autocomplete="off">
+                                    <div class="sentinel-hint">
+                                        <span>规则：输入根域名/二级域名或公网 IPv4。严禁内网保留地址（RFC1918/Loopback）与顶级域名。</span>
+                                        <span id="sentinel-input-error" style="color: #ef4444; margin-left: 8px; font-weight: 500;"></span>
+                                    </div>
+                                </div>
+                                <button type="submit" id="sentinel-submit-btn" data-require-permission="asset:write" class="btn-primary" style="height: 44px; padding: 0 22px; font-weight: 600;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76A6 6 0 1 0 8.23 16.67"></path><path d="M19.07 4.93A10 10 0 0 0 6.99 3.34"></path></svg>
+                                    <span>开始检测</span>
+                                </button>
+                            </form>
+
+                            <div id="sentinel-finish-meta" style="font-size: 12px; color: var(--text-muted); padding-top: 4px; border-top: 1px dashed var(--border-color);">
+                                暂无巡检记录，请输入目标开始扫描。
+                            </div>
+                        </div>
+
+                        <!-- 4 维 KPI 统计指标卡 -->
+                        <div class="sentinel-kpi-grid">
+                            <div class="sentinel-kpi-card">
+                                <div class="sentinel-kpi-label">
+                                    <span>存活主机 / 主域</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-color);"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                                </div>
+                                <div class="sentinel-kpi-value" id="sentinel-kpi-hosts">0</div>
+                                <div class="sentinel-kpi-sub">共解析 0</div>
+                            </div>
+                            <div class="sentinel-kpi-card">
+                                <div class="sentinel-kpi-label">
+                                    <span>登录入口 / 认证</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#f59e0b;"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                                </div>
+                                <div class="sentinel-kpi-value" id="sentinel-kpi-logins">0</div>
+                                <div class="sentinel-kpi-sub">页 · 接口 · 邮箱</div>
+                            </div>
+                            <div class="sentinel-kpi-card">
+                                <div class="sentinel-kpi-label">
+                                    <span>暴露数据库</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#8b5cf6;"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                                </div>
+                                <div class="sentinel-kpi-value" id="sentinel-kpi-databases">0</div>
+                                <div class="sentinel-kpi-sub">默认口 · 横幅</div>
+                            </div>
+                            <div class="sentinel-kpi-card">
+                                <div class="sentinel-kpi-label">
+                                    <span>高危发现项</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#ef4444;"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                                </div>
+                                <div class="sentinel-kpi-value" id="sentinel-kpi-high" style="color:#ef4444;">0</div>
+                                <div class="sentinel-kpi-sub">中危 0</div>
+                            </div>
+                        </div>
+
+                        <!-- 选项卡导航 (6个功能视图) -->
+                        <div class="sentinel-nav-tabs">
+                            <button type="button" class="sentinel-tab-btn active" data-tab="overview" onclick="switchSentinelTab('overview')">暴露面总览</button>
+                            <button type="button" class="sentinel-tab-btn" data-tab="logins" onclick="switchSentinelTab('logins')">登录页与认证</button>
+                            <button type="button" class="sentinel-tab-btn" data-tab="labs" onclick="switchSentinelTab('labs')">测试 / 样例与 SPA</button>
+                            <button type="button" class="sentinel-tab-btn" data-tab="databases" onclick="switchSentinelTab('databases')">30 种数据库</button>
+                            <button type="button" class="sentinel-tab-btn" data-tab="assets" onclick="switchSentinelTab('assets')">资产与开放端口</button>
+                            <button type="button" class="sentinel-tab-btn" data-tab="findings" onclick="switchSentinelTab('findings')">全部发现</button>
+                        </div>
+
+                        <!-- 视图 1：暴露面总览 -->
+                        <div class="sentinel-tab-pane active" data-pane="overview">
+                            <div class="sentinel-perimeter-aside">
+                                <strong>💡 零零哨兵防御指引：</strong>
+                                本系统采用基于 DNS 字典 + crt.sh 证书透明度日志 + 非侵入式探针技术。
+                                下方仅突出展示中危及以上的重点暴露面，包含未授权数据库、对外开放管理后台、Swagger 调试接口与敏感信息泄露。
+                            </div>
+                            <div id="sentinel-overview-findings" style="display:flex; flex-direction:column; gap:12px;">
+                                <div style="padding:24px;text-align:center;color:var(--text-muted);border:1px dashed var(--border-color);border-radius:8px;">暂无巡检数据，请先在上方的输入框发起检测。</div>
+                            </div>
+                        </div>
+
+                        <!-- 视图 2：登录页与认证 -->
+                        <div class="sentinel-tab-pane" data-pane="logins">
+                            <div style="font-weight:600;font-size:15px;color:var(--text-primary);">登录入口相关风险</div>
+                            <div id="sentinel-logins-findings" style="display:flex; flex-direction:column; gap:12px;">
+                                <p style="color:var(--text-muted);font-size:13px;">未发现对外登录页。</p>
+                            </div>
+                            <div style="font-weight:600;font-size:15px;color:var(--text-primary);margin-top:12px;">命中的认证路径清单</div>
+                            <div class="sentinel-table-wrap" id="sentinel-logins-paths">
+                                <p style="color:var(--text-muted);font-size:13px;padding:16px;">没有匹配的路径。</p>
+                            </div>
+                        </div>
+
+                        <!-- 视图 3：测试 / 样例与 SPA 回退抑制 -->
+                        <div class="sentinel-tab-pane" data-pane="labs">
+                            <div class="sentinel-perimeter-aside">
+                                <strong>🎯 SPA 随机 404 回退抑制机制：</strong>
+                                单页应用（React / Vue / Angular）常在未配置 404 路由时将任意未知路径 200 回退至 index.html，导致传统扫描器产生大量误报。哨兵在检测前预先请求随机 404 基准，自动剔除回退页面并标注为 <code>spa 回退</code> 且降级为提示级别。
+                            </div>
+                            <div style="font-weight:600;font-size:15px;color:var(--text-primary);">测试 / 演示环境风险</div>
+                            <div id="sentinel-labs-findings" style="display:flex; flex-direction:column; gap:12px;">
+                                <p style="color:var(--text-muted);font-size:13px;">未发现在线的测试或样例系统。</p>
+                            </div>
+                            <div style="font-weight:600;font-size:15px;color:var(--text-primary);margin-top:12px;">测试 / 示例相关探测清单</div>
+                            <div class="sentinel-table-wrap" id="sentinel-labs-paths">
+                                <p style="color:var(--text-muted);font-size:13px;padding:16px;">没有匹配的路径。</p>
+                            </div>
+                        </div>
+
+                        <!-- 视图 4：30 种常见与国产数据库 -->
+                        <div class="sentinel-tab-pane" data-pane="databases">
+                            <div style="font-weight:600;font-size:15px;color:var(--text-primary);">检测到的公网数据库开放 / 握手暴露</div>
+                            <div class="sentinel-table-wrap" id="sentinel-databases-table-wrap">
+                                <p style="color:var(--text-muted);font-size:13px;padding:16px;">本轮未命中数据库默认口。</p>
+                            </div>
+                            <div style="font-weight:600;font-size:15px;color:var(--text-primary);margin-top:12px;">内置支持检测的 30 种数据库引擎库</div>
+                            <div class="sentinel-checklist-grid" id="sentinel-db-checklist"></div>
+                        </div>
+
+                        <!-- 视图 5：资产与开放端口 -->
+                        <div class="sentinel-tab-pane" data-pane="assets">
+                            <div style="font-weight:600;font-size:15px;color:var(--text-primary);">发现的子域与主机资产</div>
+                            <div class="sentinel-table-wrap" id="sentinel-assets-table-wrap">
+                                <p style="color:var(--text-muted);font-size:13px;padding:16px;">暂无资产数据。</p>
+                            </div>
+                            <div style="font-weight:600;font-size:15px;color:var(--text-primary);margin-top:12px;">探测到的开放网络端口</div>
+                            <div class="sentinel-table-wrap" id="sentinel-ports-table-wrap">
+                                <p style="color:var(--text-muted);font-size:13px;padding:16px;">本轮未发现开放端口。</p>
+                            </div>
+                        </div>
+
+                        <!-- 视图 6：全部发现与过滤器 -->
+                        <div class="sentinel-tab-pane" data-pane="findings">
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; background:var(--card-bg); padding:12px 16px; border-radius:8px; border:1px solid var(--border-color);">
+                                <div style="display:flex; flex-direction:column; gap:8px;">
+                                    <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                                        <span style="font-size:12px; color:var(--text-secondary); font-weight:600; margin-right:4px;">严重度:</span>
+                                        <button type="button" class="sentinel-tab-btn sentinel-sev-btn active" data-val="all" onclick="setFindingFilter('sev', 'all')" style="padding:4px 10px;font-size:12px;">全部</button>
+                                        <button type="button" class="sentinel-tab-btn sentinel-sev-btn" data-val="high" onclick="setFindingFilter('sev', 'high')" style="padding:4px 10px;font-size:12px;color:#dc3545;">高危</button>
+                                        <button type="button" class="sentinel-tab-btn sentinel-sev-btn" data-val="medium" onclick="setFindingFilter('sev', 'medium')" style="padding:4px 10px;font-size:12px;color:#d97706;">中危</button>
+                                        <button type="button" class="sentinel-tab-btn sentinel-sev-btn" data-val="low" onclick="setFindingFilter('sev', 'low')" style="padding:4px 10px;font-size:12px;color:#0284c7;">低危</button>
+                                        <button type="button" class="sentinel-tab-btn sentinel-sev-btn" data-val="info" onclick="setFindingFilter('sev', 'info')" style="padding:4px 10px;font-size:12px;">信息</button>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                                        <span style="font-size:12px; color:var(--text-secondary); font-weight:600; margin-right:4px;">类型:</span>
+                                        <button type="button" class="sentinel-tab-btn sentinel-cat-btn active" data-val="all" onclick="setFindingFilter('cat', 'all')" style="padding:4px 10px;font-size:12px;">全部</button>
+                                        <button type="button" class="sentinel-tab-btn sentinel-cat-btn" data-val="login" onclick="setFindingFilter('cat', 'login')" style="padding:4px 10px;font-size:12px;">登录页</button>
+                                        <button type="button" class="sentinel-tab-btn sentinel-cat-btn" data-val="database" onclick="setFindingFilter('cat', 'database')" style="padding:4px 10px;font-size:12px;">数据库</button>
+                                        <button type="button" class="sentinel-tab-btn sentinel-cat-btn" data-val="test" onclick="setFindingFilter('cat', 'test')" style="padding:4px 10px;font-size:12px;">测试系统</button>
+                                        <button type="button" class="sentinel-tab-btn sentinel-cat-btn" data-val="sample" onclick="setFindingFilter('cat', 'sample')" style="padding:4px 10px;font-size:12px;">样例系统</button>
+                                        <button type="button" class="sentinel-tab-btn sentinel-cat-btn" data-val="port" onclick="setFindingFilter('cat', 'port')" style="padding:4px 10px;font-size:12px;">开放端口</button>
+                                    </div>
+                                </div>
+                                <div id="sentinel-findings-count" style="font-size:13px; color:var(--text-muted); font-family:monospace;">
+                                    0 条 · 当前显示 0 条
+                                </div>
+                            </div>
+
+                            <div id="sentinel-findings-list" style="display:flex; flex-direction:column; gap:12px;">
+                                <div style="padding:32px;text-align:center;color:var(--text-muted);border:1px dashed var(--border-color);border-radius:8px;">暂无发现项数据</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 项目管理页面 -->
                 <div id="page-projects" class="page projects-page">
                     <div class="page-header">
@@ -2601,6 +2796,14 @@
                     <div class="page-header">
                         <h2 data-i18n="vulnerability.title">漏洞管理</h2>
                         <div class="page-header-actions">
+                            <button class="btn-secondary" type="button" data-require-permission="vulnerability:write" onclick="openAwvsModal()" style="border-color: #3b82f6; color: #2563eb; font-weight: 500;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                                <span>AWVS 聯動</span>
+                            </button>
+                            <button class="btn-secondary" type="button" data-require-permission="vulnerability:write" onclick="openBatchPocModal()" style="border-color: #8b5cf6; color: #7c3aed; font-weight: 500;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                <span>批量產出 POC</span>
+                            </button>
                             <button class="btn-secondary" data-require-permission="vulnerability:read" onclick="exportVulnerabilityReports()" data-i18n="vulnerabilityPage.batchExport">批量导出</button>
                             <button class="btn-secondary btn-delete" data-require-permission="vulnerability:delete" onclick="batchDeleteVulnerabilityReports()" data-i18n="vulnerabilityPage.batchDelete">批量删除</button>
                             <button class="btn-secondary" onclick="refreshVulnerabilities()" data-i18n="common.refresh">刷新</button>
@@ -6996,6 +7199,181 @@
         </div>
     </div>
 
+    <!-- AWVS 聯動管理彈窗 -->
+    <div id="awvs-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="awvs-modal-title" style="display: none;">
+        <div class="modal-content" style="max-width: 920px; max-height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color, #e5e7eb); padding: 16px 20px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 24px;">🛡️</span>
+                    <div>
+                        <h3 id="awvs-modal-title" style="margin: 0; font-size: 18px; font-weight: 600;">AWVS (Acunetix) 漏洞掃描器聯動</h3>
+                        <p style="margin: 2px 0 0; font-size: 13px; color: var(--text-secondary, #6b7280);">一鍵測試連線、發起掃描與同步 AWVS 發現的漏洞至本系統</p>
+                    </div>
+                </div>
+                <button type="button" class="modal-close" onclick="closeAwvsModal()" aria-label="关闭" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-secondary);">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 20px; overflow-y: auto; flex: 1;">
+                <!-- 連線狀態面板 -->
+                <div style="background: var(--bg-card, #f9fafb); border: 1px solid var(--border-color, #e5e7eb); border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span id="awvs-status-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 12px; font-size: 13px; font-weight: 500; background: #e0f2fe; color: #0284c7;">
+                                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #0284c7;"></span>
+                                <span>檢查連線中…</span>
+                            </span>
+                            <span id="awvs-user-info" style="font-size: 13px; color: var(--text-secondary);"></span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" class="btn-secondary btn-small" onclick="checkAwvsStatus(true)">🔄 測試連線</button>
+                            <button type="button" class="btn-primary btn-small" onclick="syncAwvsVulnerabilities()" id="awvs-sync-btn" style="background: #2563eb; color: #fff;">📥 同步 AWVS 漏洞至本系統</button>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px;">
+                        <div>
+                            <label style="display: block; color: var(--text-secondary); margin-bottom: 4px;">伺服器位址 (URL)</label>
+                            <input type="text" id="awvs-url-input" class="modern-input" placeholder="https://localhost:3443" style="width: 100%; font-family: monospace; font-size: 13px;">
+                        </div>
+                        <div>
+                            <label style="display: block; color: var(--text-secondary); margin-bottom: 4px;">API Key (X-Auth)</label>
+                            <div style="display: flex; gap: 6px;">
+                                <input type="password" id="awvs-key-input" class="modern-input" placeholder="留空則保持後端已配置金鑰" style="flex: 1; font-family: monospace; font-size: 13px;">
+                                <button type="button" class="btn-secondary btn-small" onclick="saveAwvsConfig()">保存設置</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="awvs-sync-result" style="margin-top: 10px; font-size: 13px; display: none;"></div>
+                </div>
+
+                <!-- 快速新增目標與發起掃描 -->
+                <div style="margin-bottom: 20px; background: var(--bg-card, #fff); border: 1px solid var(--border-color, #e5e7eb); border-radius: 8px; padding: 16px;">
+                    <h4 style="margin: 0 0 12px; font-size: 15px; font-weight: 600;">➕ 新增掃描目標並觸發</h4>
+                    <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
+                        <div style="flex: 2; min-width: 220px;">
+                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">目標網址 (Target Address)</label>
+                            <input type="url" id="awvs-new-target-address" class="modern-input" placeholder="https://target.example.com" style="width: 100%;">
+                        </div>
+                        <div style="flex: 1; min-width: 180px;">
+                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">掃描策略 (Profile)</label>
+                            <select id="awvs-new-target-profile" class="modern-select" style="width: 100%;">
+                                <option value="11111111-1111-1111-1111-111111111111">Full Scan (全量掃描)</option>
+                                <option value="11111111-1111-1111-1111-111111111112">Critical / High Risk (高危優先)</option>
+                                <option value="11111111-1111-1111-1111-111111111113">SQL Injection (SQL 注入)</option>
+                                <option value="11111111-1111-1111-1111-111111111116">XSS (跨站腳本)</option>
+                                <option value="11111111-1111-1111-1111-111111111129">OWASP Top 10</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn-primary" onclick="addAndScanAwvsTarget()" style="white-space: nowrap; height: 38px;">🚀 新增並發起掃描</button>
+                    </div>
+                </div>
+
+                <!-- AWVS 目標列表 -->
+                <div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <h4 style="margin: 0; font-size: 15px; font-weight: 600;">📋 AWVS 目標列表 (<span id="awvs-targets-count">0</span>)</h4>
+                        <button type="button" class="btn-secondary btn-small" onclick="loadAwvsTargets()">刷新列表</button>
+                    </div>
+                    <div style="overflow-x: auto; border: 1px solid var(--border-color, #e5e7eb); border-radius: 8px;">
+                        <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                            <thead>
+                                <tr style="background: var(--bg-hover, #f3f4f6); text-align: left;">
+                                    <th style="padding: 10px 14px;">目標網址</th>
+                                    <th style="padding: 10px 14px;">漏洞統計</th>
+                                    <th style="padding: 10px 14px;">最新狀態</th>
+                                    <th style="padding: 10px 14px; text-align: right;">操作按鈕</th>
+                                </tr>
+                            </thead>
+                            <tbody id="awvs-targets-tbody">
+                                <tr><td colspan="4" style="text-align: center; padding: 20px; color: var(--text-secondary);">載入目標中…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 12px 20px; border-top: 1px solid var(--border-color, #e5e7eb); display: flex; justify-content: flex-end;">
+                <button type="button" class="btn-secondary" onclick="closeAwvsModal()">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POC / EXP 草稿預覽與導出彈窗 -->
+    <div id="poc-preview-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="poc-preview-title" style="display: none;">
+        <div class="modal-content" style="max-width: 850px; max-height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color, #e5e7eb); padding: 16px 20px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 22px;">⚡</span>
+                    <div>
+                        <h3 id="poc-preview-title" style="margin: 0; font-size: 17px; font-weight: 600;">POC / EXP 草稿預覽</h3>
+                        <p id="poc-preview-meta" style="margin: 2px 0 0; font-size: 13px; color: var(--text-secondary, #6b7280);"></p>
+                    </div>
+                </div>
+                <button type="button" class="modal-close" onclick="closePocPreviewModal()" aria-label="关闭" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-secondary);">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 20px; overflow-y: auto; flex: 1;">
+                <div id="poc-preview-path" style="background: var(--bg-hover, #f3f4f6); padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 12px; margin-bottom: 14px; word-break: break-all; color: var(--text-secondary);"></div>
+                <pre id="poc-preview-content" style="white-space: pre-wrap; font-family: 'Fira Code', Consolas, Monaco, monospace; font-size: 13px; line-height: 1.6; background: var(--bg-card, #1e1e1e); color: #e2e8f0; padding: 16px; border-radius: 8px; max-height: 480px; overflow-y: auto; border: 1px solid var(--border-color, #333); margin: 0;"></pre>
+            </div>
+            <div class="modal-footer" style="padding: 14px 20px; border-top: 1px solid var(--border-color, #e5e7eb); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn-primary" onclick="copyPocContent()" id="poc-copy-btn" style="background: #7c3aed; color: #fff;">
+                        <span>📋 複製內容</span>
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="downloadPocMarkdown()" id="poc-dl-btn">
+                        <span>💾 下載 .md 檔案</span>
+                    </button>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn-secondary" onclick="verifyPocWithAgent()" style="border-color: #2563eb; color: #2563eb;">
+                        <span>💬 帶入 AI 對話驗證</span>
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="closePocPreviewModal()">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量產出 POC 彈窗 -->
+    <div id="batch-poc-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="batch-poc-title" style="display: none;">
+        <div class="modal-content" style="max-width: 650px;">
+            <div class="modal-header" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color, #e5e7eb); padding: 16px 20px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 22px;">⚡</span>
+                    <h3 id="batch-poc-title" style="margin: 0; font-size: 17px; font-weight: 600;">批量產出 POC / EXP 草稿</h3>
+                </div>
+                <button type="button" class="modal-close" onclick="closeBatchPocModal()" aria-label="关闭" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <p style="margin-top: 0; color: var(--text-secondary); font-size: 14px;">系統將自動為符合條件的漏洞生成標準 POC/EXP 驗證指南文件，並寫入 <code>data/poc_drafts/</code>。</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                    <div>
+                        <label style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px;">嚴重程度</label>
+                        <select id="batch-poc-severity" class="modern-select" style="width: 100%;">
+                            <option value="">全部嚴重度</option>
+                            <option value="critical">嚴重 (Critical)</option>
+                            <option value="high">高危 (High)</option>
+                            <option value="medium">中危 (Medium)</option>
+                            <option value="low">低危 (Low)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px;">生成上限 (條數)</label>
+                        <input type="number" id="batch-poc-limit" class="modern-input" value="30" min="1" max="100" style="width: 100%;">
+                    </div>
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+                        <input type="checkbox" id="batch-poc-only-missing" class="modern-checkbox" checked>
+                        <span>僅處理尚未生成 POC 的漏洞 (避免重複覆蓋)</span>
+                    </label>
+                </div>
+                <div id="batch-poc-status" style="display: none; padding: 12px; border-radius: 6px; font-size: 13px; margin-top: 10px;"></div>
+            </div>
+            <div class="modal-footer" style="padding: 12px 20px; border-top: 1px solid var(--border-color, #e5e7eb); display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn-secondary" onclick="closeBatchPocModal()">取消</button>
+                <button type="button" class="btn-primary" onclick="runBatchGeneratePoc()" id="batch-poc-run-btn" style="background: #7c3aed; color: #fff;">開始批量生成</button>
+            </div>
+        </div>
+    </div>
+
     <script src="/static/vendor/i18next.min.js"></script>
     <script src="/static/js/i18n.js"></script>
     <script src="/static/js/theme.js"></script>
@@ -7005,6 +7383,7 @@
     <script src="/static/js/notifications.js"></script>
     <script src="/static/js/info-collect.js?v=20260717-1"></script>
     <script src="/static/js/assets.js?v=20260717-7"></script>
+    <script src="/static/js/sentinel.js"></script>
     <script src="/static/js/agents.js"></script>
     <script src="/static/js/dashboard.js"></script>
     <script src="/static/js/chat-scroll.js?v=20260815-1"></script>

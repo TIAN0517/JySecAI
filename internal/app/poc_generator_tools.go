@@ -5,22 +5,18 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"regexp"
-	"sort"
 	"strings"
-	"time"
 
 	"jysecai/internal/config"
 	"jysecai/internal/database"
 	"jysecai/internal/mcp"
 	"jysecai/internal/mcp/builtin"
+	"jysecai/internal/poc"
 
 	"go.uber.org/zap"
 )
 
 const pocDraftDirName = "poc_drafts"
-
-var pocFilenameCleanRe = regexp.MustCompile(`[^\p{L}\p{N}\-_]+`)
 
 // pocGeneratorOptions 是 generate_poc_draft 的執行參數。
 type pocGeneratorOptions struct {
@@ -228,167 +224,23 @@ func fmtVulnTitle(v *database.Vulnerability) string {
 	return title
 }
 
-// pocFilenameFor 生成安全的草稿文件名。
+// Forwarding wrappers to internal/poc to ensure single source of truth and full test compatibility:
 func pocFilenameFor(v *database.Vulnerability) string {
-	slug := pocFilenameCleanRe.ReplaceAllString(strings.ToLower(v.Title), "-")
-	slug = strings.Trim(slug, "-")
-	if slug == "" {
-		slug = "vuln"
-	}
-	if len(slug) > 60 {
-		slug = slug[:60]
-	}
-	return fmt.Sprintf("%s-%s.md", v.ID, slug)
+	return poc.PocFilenameFor(v)
 }
 
-// pocContextFacts 收集与漏洞相关的项目事实（攻击链/利用/POC 上下文）。
 func pocContextFacts(db *database.DB, vuln *database.Vulnerability, projectID string) []*database.ProjectFact {
-	if db == nil || strings.TrimSpace(projectID) == "" {
-		return nil
-	}
-	facts, err := db.ListProjectFactsForIndex(projectID, false)
-	if err != nil {
-		return nil
-	}
-	related := make([]*database.ProjectFact, 0)
-	for _, f := range facts {
-		cat := strings.ToLower(strings.TrimSpace(f.Category))
-		if cat != "finding" && cat != "chain" && cat != "exploit" && cat != "poc" && cat != "note" {
-			continue
-		}
-		if strings.TrimSpace(f.RelatedVulnerabilityID) != "" && strings.TrimSpace(f.RelatedVulnerabilityID) != vuln.ID {
-			continue
-		}
-		related = append(related, f)
-	}
-	sort.SliceStable(related, func(i, j int) bool {
-		return related[i].FactKey < related[j].FactKey
-	})
-	if len(related) > 10 {
-		related = related[:10]
-	}
-	return related
+	return poc.PocContextFacts(db, vuln, projectID)
 }
 
-// buildPocDraftMarkdown 根据漏洞记录与相关项目事实生成 POC/EXP 草稿。
 func buildPocDraftMarkdown(v *database.Vulnerability, facts []*database.ProjectFact) string {
-	var b strings.Builder
-	b.WriteString(fmt.Sprintf("# POC/EXP 草稿 - %s\n\n", fmtVulnTitle(v)))
-	b.WriteString(fmt.Sprintf("> 自动生成时间: %s  |  状态: **草稿（未验证）**  |  文件: `%s`\n\n", time.Now().Format("2006-01-02 15:04:05"), pocFilenameFor(v)))
-
-	b.WriteString("## 漏洞信息\n\n")
-	fmtKV := func(label, value string) {
-		if strings.TrimSpace(value) == "" {
-			value = "（未记录）"
-		}
-		b.WriteString(fmt.Sprintf("- **%s**: %s\n", label, strings.ReplaceAll(value, "\n", " ")))
-	}
-	fmtKV("漏洞ID", v.ID)
-	fmtKV("严重程度", v.Severity)
-	fmtKV("状态", v.Status)
-	fmtKV("类型", v.Type)
-	fmtKV("目标", v.Target)
-	if !v.CreatedAt.IsZero() {
-		b.WriteString(fmt.Sprintf("- **发现时间**: %s\n", v.CreatedAt.Format("2006-01-02 15:04:05")))
-	}
-	b.WriteString("\n")
-
-	if strings.TrimSpace(v.Description) != "" {
-		b.WriteString("## 描述\n\n")
-		b.WriteString(v.Description + "\n\n")
-	}
-
-	if strings.TrimSpace(v.Preconditions) != "" {
-		b.WriteString("## 前置条件\n\n")
-		b.WriteString(v.Preconditions + "\n\n")
-	}
-
-	b.WriteString("## POC/EXP 草稿\n\n")
-	if respSteps := strings.TrimSpace(v.ReproSteps); respSteps != "" {
-		b.WriteString("### 复现步骤（来自漏洞记录）\n\n")
-		b.WriteString(renderNumberedBlocks(respSteps) + "\n\n")
-	} else {
-		b.WriteString("### 复现步骤（待补充）\n\n- （漏洞记录未保存复现步骤，请人工补全验证流程）\n\n")
-	}
-
-	b.WriteString("### 验证要点\n\n")
-	verification := []string{
-		"确认目标属于授权测试范围，且仅在正当授权下进行验证",
-		"先复核漏洞类型与已知 CVE/公开信息（可用 cve-poc-emerging-intel / vuln-intel 交叉校验版本与 EXP 候选）",
-		"使用最小化请求/命令逐步验证，记录原始请求/响应或命令输出作为证据",
-		"验证失败时应记录负结果，避免误报；未经实际验证不得将状态改为 confirmed",
-	}
-	for _, line := range verification {
-		b.WriteString(fmt.Sprintf("- [ ] %s\n", line))
-	}
-	b.WriteString("\n")
-
-	if strings.TrimSpace(v.Evidence) != "" {
-		b.WriteString("### 既有证据\n\n")
-		b.WriteString("```\n" + strings.TrimRight(v.Evidence, "\n") + "\n```\n\n")
-	}
-
-	if len(facts) > 0 {
-		b.WriteString("## 相关项目事实（攻击链上下文）\n\n")
-		for _, f := range facts {
-			b.WriteString(fmt.Sprintf("### %s (%s)\n\n", f.FactKey, f.Confidence))
-			if strings.TrimSpace(f.Summary) != "" {
-				b.WriteString(fmt.Sprintf("> %s\n\n", f.Summary))
-			}
-			if strings.TrimSpace(f.Body) != "" {
-				b.WriteString(f.Body + "\n\n")
-			}
-		}
-	}
-
-	if strings.TrimSpace(v.Impact) != "" {
-		b.WriteString("## 影响\n\n")
-		b.WriteString(v.Impact + "\n\n")
-	}
-	if strings.TrimSpace(v.Recommendation) != "" {
-		b.WriteString("## 修复建议\n\n")
-		b.WriteString(v.Recommendation + "\n\n")
-	}
-	if strings.TrimSpace(v.RetestNotes) != "" {
-		b.WriteString("## 复测方式\n\n")
-		b.WriteString(v.RetestNotes + "\n\n")
-	}
-
-	b.WriteString("## 免责声明\n\n")
-	b.WriteString("本文档由 generate_poc_draft 自动生成，仅为复现与验证参考，未执行任何实际攻击行为。请在获得明确书面授权的测试环境中使用。\n")
-	return b.String()
+	return poc.BuildPocDraftMarkdown(v, facts)
 }
 
-// appendPocDraftMarker 把草稿路径回写到漏洞记录的 evidence 字段（仅追加，不覆盖）。
 func appendPocDraftMarker(db *database.DB, vuln *database.Vulnerability, relPath string) error {
-	marker := fmt.Sprintf("> [自动生成 POC/EXP 草稿] %s", relPath)
-	if strings.Contains(vuln.Evidence, marker) {
-		return nil
-	}
-	newEvidence := strings.TrimRight(vuln.Evidence, "\n")
-	if newEvidence != "" {
-		newEvidence += "\n\n"
-	}
-	newEvidence += marker
-	updated := *vuln
-	updated.Evidence = newEvidence
-	return db.UpdateVulnerability(vuln.ID, &updated)
+	return poc.AppendPocDraftMarker(db, vuln, relPath)
 }
 
-// renderNumberedBlocks 把记录中的步骤按行渲染为编号清单。
 func renderNumberedBlocks(text string) string {
-	lines := strings.Split(strings.TrimSpace(text), "\n")
-	var staged []string
-	for _, line := range lines {
-		line = strings.TrimSpace(line)
-		if line == "" {
-			continue
-		}
-		staged = append(staged, strings.TrimPrefix(strings.TrimPrefix(line, "- "), "1. "))
-	}
-	var b strings.Builder
-	for i, line := range staged {
-		b.WriteString(fmt.Sprintf("%d. %s\n", i+1, line))
-	}
-	return b.String()
+	return poc.RenderNumberedBlocks(text)
 }

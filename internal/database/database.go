@@ -981,6 +981,10 @@ func (db *DB) initTables() error {
 		return fmt.Errorf("创建xss_payloads索引失败: %w", err)
 	}
 
+	if err := db.initSentinelTable(); err != nil {
+		return fmt.Errorf("创建sentinel_scans表失败: %w", err)
+	}
+
 	// 为已有表添加新字段（如果不存在）- 必须在创建索引之前
 	if err := db.migrateConversationsTable(); err != nil {
 		db.logger.Warn("迁移conversations表失败", zap.Error(err))

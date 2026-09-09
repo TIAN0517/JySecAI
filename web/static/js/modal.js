@@ -15,6 +15,9 @@
         'workflow-meta-modal',
         'workflow-dry-run-modal',
         'login-overlay',
+        'awvs-modal',
+        'poc-preview-modal',
+        'batch-poc-modal',
     ]);
 
     function resolveEl(idOrEl) {

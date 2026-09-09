@@ -110,7 +110,7 @@ function initRouter() {
         const hashParts = hash.split('?');
         let pageId = hashParts[0];
         if (pageId === 'c2') pageId = 'c2-listeners';
-        if (pageId && ['dashboard', 'chat', 'hitl', 'asset-overview', 'asset-library', 'info-collect', 'projects', 'vulnerabilities', 'security-ops', 'webshell', 'chat-files', 'mcp-monitor', 'mcp-management', 'knowledge-management', 'knowledge-retrieval-logs', 'roles-management', 'platform-rbac', 'workflows', 'skills-monitor', 'skills-management', 'agents-management', 'settings', 'tasks', 'c2-listeners', 'c2-sessions', 'c2-tasks', 'c2-payloads', 'c2-events', 'c2-profiles', 'xss'].includes(pageId)) {
+        if (pageId && ['dashboard', 'chat', 'hitl', 'asset-overview', 'asset-library', 'info-collect', 'sentinel', 'projects', 'vulnerabilities', 'security-ops', 'webshell', 'chat-files', 'mcp-monitor', 'mcp-management', 'knowledge-management', 'knowledge-retrieval-logs', 'roles-management', 'platform-rbac', 'workflows', 'skills-monitor', 'skills-management', 'agents-management', 'settings', 'tasks', 'c2-listeners', 'c2-sessions', 'c2-tasks', 'c2-payloads', 'c2-events', 'c2-profiles', 'xss'].includes(pageId)) {
             switchPage(pageId);
             if (pageId === 'chat') {
                 scheduleChatConversationFromHash(0);
@@ -186,7 +186,7 @@ function updateNavState(pageId) {
     });
     
     // 设置活动状态
-    if (pageId === 'asset-overview' || pageId === 'asset-library' || pageId === 'info-collect') {
+    if (pageId === 'asset-overview' || pageId === 'asset-library' || pageId === 'info-collect' || pageId === 'sentinel') {
         const assetItem = document.querySelector('.nav-item[data-page="assets"]');
         if (assetItem) {
             assetItem.classList.add('active');
@@ -425,6 +425,11 @@ async function initPage(pageId) {
             // 信息收集页面
             if (typeof initInfoCollectPage === 'function') {
                 initInfoCollectPage();
+            }
+            break;
+        case 'sentinel':
+            if (typeof initSentinelPage === 'function') {
+                initSentinelPage();
             }
             break;
         case 'asset-overview':
