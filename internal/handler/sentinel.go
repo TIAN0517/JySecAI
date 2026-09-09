@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strings"
 	"sync"
@@ -35,18 +36,11 @@ type ScanRequest struct {
 	Target string `json:"target" binding:"required"`
 }
 
-// StartScan 啟動暴露面探測任務
-func (h *SentinelHandler) StartScan(c *gin.Context) {
-	var req ScanRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "請提供有效的 target (二級域名或公網 IPv4)"})
-		return
-	}
-
-	val := sentinel.ValidateTarget(req.Target)
+// StartScanTarget 啟動背景非同步暴露面探測任務並返回初始快照
+func (h *SentinelHandler) StartScanTarget(target string) (*sentinel.ScanSnapshot, error) {
+	val := sentinel.ValidateTarget(target)
 	if !val.OK {
-		c.JSON(http.StatusBadRequest, gin.H{"error": val.Error})
-		return
+		return nil, fmt.Errorf("%s", val.Error)
 	}
 
 	scanID := uuid.New().String()
@@ -96,15 +90,93 @@ func (h *SentinelHandler) StartScan(c *gin.Context) {
 		}
 	}(scanID, val.Target)
 
+	return snapshot, nil
+}
+
+// RunScanSync 同步執行暴露面探測直到完成或超時
+func (h *SentinelHandler) RunScanSync(ctx context.Context, target string) (*sentinel.ScanSnapshot, error) {
+	val := sentinel.ValidateTarget(target)
+	if !val.OK {
+		return nil, fmt.Errorf("%s", val.Error)
+	}
+
+	scanID := uuid.New().String()
+	snapshot := &sentinel.ScanSnapshot{
+		ID:         scanID,
+		Target:     val.Target,
+		TargetKind: val.Kind,
+		CreatedAt:  time.Now(),
+		Status:     "running",
+	}
+
+	h.activeMu.Lock()
+	h.activeScans[scanID] = snapshot
+	h.activeMu.Unlock()
+	_ = h.db.SaveSentinelScan(snapshot)
+
+	result, err := sentinel.RunScan(ctx, val.Target)
+	if err != nil {
+		h.activeMu.Lock()
+		snapshot.Status = "failed"
+		snapshot.Error = err.Error()
+		snapshot.FinishedAt = time.Now().Format(time.RFC3339)
+		_ = h.db.SaveSentinelScan(snapshot)
+		h.activeMu.Unlock()
+		return snapshot, err
+	}
+
+	result.ID = scanID
+	h.activeMu.Lock()
+	h.activeScans[scanID] = result
+	h.activeMu.Unlock()
+	_ = h.db.SaveSentinelScan(result)
+
+	return result, nil
+}
+
+// StartScan 啟動暴露面探測任務（HTTP API）
+func (h *SentinelHandler) StartScan(c *gin.Context) {
+	var req ScanRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "請提供有效的 target (二級域名或公網 IPv4)"})
+		return
+	}
+
+	snapshot, err := h.StartScanTarget(req.Target)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
-		"scan_id": scanID,
-		"target":  val.Target,
+		"scan_id": snapshot.ID,
+		"target":  snapshot.Target,
 		"status":  "running",
 	})
 }
 
-// GetScanStatus 查詢指定任務狀態
+// GetScanByID 查詢指定任務快照（先查記憶體中的活動任務，再查資料庫；若 id 為空則返回最新快照）
+func (h *SentinelHandler) GetScanByID(scanID string) (*sentinel.ScanSnapshot, error) {
+	scanID = strings.TrimSpace(scanID)
+	if scanID == "" {
+		return h.db.GetLatestSentinelScan()
+	}
+	h.activeMu.RLock()
+	if s, ok := h.activeScans[scanID]; ok {
+		h.activeMu.RUnlock()
+		return s, nil
+	}
+	h.activeMu.RUnlock()
+	return h.db.GetSentinelScanByID(scanID)
+}
+
+// GetLatestScanSnapshot 獲取最近一次探測快照
+func (h *SentinelHandler) GetLatestScanSnapshot() (*sentinel.ScanSnapshot, error) {
+	return h.db.GetLatestSentinelScan()
+}
+
+// GetScanStatus 查詢指定任務狀態（HTTP API）
 func (h *SentinelHandler) GetScanStatus(c *gin.Context) {
 	scanID := strings.TrimSpace(c.Param("id"))
 	if scanID == "" {
@@ -112,16 +184,7 @@ func (h *SentinelHandler) GetScanStatus(c *gin.Context) {
 		return
 	}
 
-	h.activeMu.RLock()
-	if s, ok := h.activeScans[scanID]; ok {
-		h.activeMu.RUnlock()
-		c.JSON(http.StatusOK, s)
-		return
-	}
-	h.activeMu.RUnlock()
-
-	// 從 DB 檢索
-	snapshot, err := h.db.GetSentinelScanByID(scanID)
+	snapshot, err := h.GetScanByID(scanID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "查詢任務失敗: " + err.Error()})
 		return
@@ -134,9 +197,9 @@ func (h *SentinelHandler) GetScanStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, snapshot)
 }
 
-// GetLatestScan 獲取最近一次探測快照
+// GetLatestScan 獲取最近一次探測快照（HTTP API）
 func (h *SentinelHandler) GetLatestScan(c *gin.Context) {
-	snapshot, err := h.db.GetLatestSentinelScan()
+	snapshot, err := h.GetLatestScanSnapshot()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "獲取最新快照失敗: " + err.Error()})
 		return
@@ -163,29 +226,18 @@ type SyncAssetsRequest struct {
 	ProjectID string `json:"project_id"`
 }
 
-// SyncToAssets 將暴露面發現的主機與端口批量同步到系統資產庫
-func (h *SentinelHandler) SyncToAssets(c *gin.Context) {
-	var req SyncAssetsRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "請指定 scan_id"})
-		return
+// SyncAssetsDirect 將暴露面發現的主機與端口批量同步到系統資產庫
+func (h *SentinelHandler) SyncAssetsDirect(scanID, projectID, userID string) (*database.AssetImportResult, int, error) {
+	snapshot, err := h.GetScanByID(scanID)
+	if err != nil {
+		return nil, 0, err
+	}
+	if snapshot == nil {
+		return nil, 0, fmt.Errorf("未找到對應的探測快照")
 	}
 
-	snapshot, err := h.db.GetSentinelScanByID(req.ScanID)
-	if err != nil || snapshot == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "未找到對應的探測快照"})
-		return
-	}
-
-	userID := "admin"
-	if session, ok := security.CurrentSession(c); ok && session.UserID != "" {
-		userID = session.UserID
-		if session.Scope != database.RBACScopeAll && strings.TrimSpace(req.ProjectID) != "" {
-			if !h.db.UserCanAccessResource(session.UserID, session.Scope, "project", strings.TrimSpace(req.ProjectID)) {
-				c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该项目"})
-				return
-			}
-		}
+	if userID == "" {
+		userID = "admin"
 	}
 
 	var assetsToUpsert []*database.Asset
@@ -195,7 +247,7 @@ func (h *SentinelHandler) SyncToAssets(c *gin.Context) {
 	for _, p := range snapshot.Ports {
 		a := &database.Asset{
 			ID:          uuid.New().String(),
-			ProjectID:   req.ProjectID,
+			ProjectID:   strings.TrimSpace(projectID),
 			Host:        p.Host,
 			IP:          p.IP,
 			Port:        p.Port,
@@ -229,7 +281,7 @@ func (h *SentinelHandler) SyncToAssets(c *gin.Context) {
 			if item.Alive {
 				a := &database.Asset{
 					ID:          uuid.New().String(),
-					ProjectID:   req.ProjectID,
+					ProjectID:   strings.TrimSpace(projectID),
 					Host:        item.Host,
 					IP:          item.IP,
 					Port:        0,
@@ -251,7 +303,38 @@ func (h *SentinelHandler) SyncToAssets(c *gin.Context) {
 
 	result, err := h.db.UpsertAssets(assetsToUpsert, userID, true)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "同步資產庫失敗: " + err.Error()})
+		return nil, len(assetsToUpsert), err
+	}
+
+	return &result, len(assetsToUpsert), nil
+}
+
+// SyncToAssets 將暴露面發現的主機與端口批量同步到系統資產庫（HTTP API）
+func (h *SentinelHandler) SyncToAssets(c *gin.Context) {
+	var req SyncAssetsRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "請指定 scan_id"})
+		return
+	}
+
+	userID := "admin"
+	if session, ok := security.CurrentSession(c); ok && session.UserID != "" {
+		userID = session.UserID
+		if session.Scope != database.RBACScopeAll && strings.TrimSpace(req.ProjectID) != "" {
+			if !h.db.UserCanAccessResource(session.UserID, session.Scope, "project", strings.TrimSpace(req.ProjectID)) {
+				c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该项目"})
+				return
+			}
+		}
+	}
+
+	result, total, err := h.SyncAssetsDirect(req.ScanID, req.ProjectID, userID)
+	if err != nil {
+		if strings.Contains(err.Error(), "未找到") {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "同步資產庫失敗: " + err.Error()})
+		}
 		return
 	}
 
@@ -260,7 +343,7 @@ func (h *SentinelHandler) SyncToAssets(c *gin.Context) {
 		"created": result.Created,
 		"updated": result.Updated,
 		"skipped": result.Skipped,
-		"total":   len(assetsToUpsert),
+		"total":   total,
 	})
 }
 
@@ -269,25 +352,14 @@ type SyncVulnsRequest struct {
 	ProjectID string `json:"project_id"`
 }
 
-// SyncToVulnerabilities 將高危/中危發現項同步到系統漏洞庫
-func (h *SentinelHandler) SyncToVulnerabilities(c *gin.Context) {
-	var req SyncVulnsRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "請指定 scan_id"})
-		return
+// SyncVulnsDirect 將高危/中危發現項同步到系統漏洞庫
+func (h *SentinelHandler) SyncVulnsDirect(scanID, projectID string) (int, int, error) {
+	snapshot, err := h.GetScanByID(scanID)
+	if err != nil {
+		return 0, 0, err
 	}
-
-	snapshot, err := h.db.GetSentinelScanByID(req.ScanID)
-	if err != nil || snapshot == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "未找到對應的探測快照"})
-		return
-	}
-
-	if session, ok := security.CurrentSession(c); ok && session.Scope != database.RBACScopeAll && strings.TrimSpace(req.ProjectID) != "" {
-		if !h.db.UserCanAccessResource(session.UserID, session.Scope, "project", strings.TrimSpace(req.ProjectID)) {
-			c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该项目"})
-			return
-		}
+	if snapshot == nil {
+		return 0, 0, fmt.Errorf("未找到對應的探測快照")
 	}
 
 	createdCount := 0
@@ -306,14 +378,14 @@ func (h *SentinelHandler) SyncToVulnerabilities(c *gin.Context) {
 		}
 
 		// 去重檢查：若相同 Target 和 Title 的漏洞已存在則跳過
-		if existing, _ := h.db.FindVulnerabilityByTargetAndTitle(req.ProjectID, target, f.Title); existing != nil {
+		if existing, _ := h.db.FindVulnerabilityByTargetAndTitle(projectID, target, f.Title); existing != nil {
 			skippedCount++
 			continue
 		}
 
 		vuln := &database.Vulnerability{
 			ID:          uuid.New().String(),
-			ProjectID:   req.ProjectID,
+			ProjectID:   strings.TrimSpace(projectID),
 			Title:       f.Title,
 			Description: f.Detail,
 			Severity:    f.Severity,
@@ -331,6 +403,34 @@ func (h *SentinelHandler) SyncToVulnerabilities(c *gin.Context) {
 		} else {
 			h.logger.Warn("寫入漏洞記錄失敗", zap.Error(err))
 		}
+	}
+
+	return createdCount, skippedCount, nil
+}
+
+// SyncToVulnerabilities 將高危/中危發現項同步到系統漏洞庫（HTTP API）
+func (h *SentinelHandler) SyncToVulnerabilities(c *gin.Context) {
+	var req SyncVulnsRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "請指定 scan_id"})
+		return
+	}
+
+	if session, ok := security.CurrentSession(c); ok && session.Scope != database.RBACScopeAll && strings.TrimSpace(req.ProjectID) != "" {
+		if !h.db.UserCanAccessResource(session.UserID, session.Scope, "project", strings.TrimSpace(req.ProjectID)) {
+			c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该项目"})
+			return
+		}
+	}
+
+	createdCount, skippedCount, err := h.SyncVulnsDirect(req.ScanID, req.ProjectID)
+	if err != nil {
+		if strings.Contains(err.Error(), "未找到") {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{

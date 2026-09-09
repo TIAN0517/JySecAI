@@ -2,6 +2,8 @@ package app
 
 import (
 	"context"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
@@ -217,5 +219,62 @@ func TestRenderNumberedBlocks(t *testing.T) {
 		if !strings.Contains(got, want) {
 			t.Fatalf("numbered blocks missing %q: %q", want, got)
 		}
+	}
+}
+
+func TestVerifyPocTool(t *testing.T) {
+	db, server, convID, ctx := newPocGeneratorEnv(t)
+
+	// 建立 Mock HTTP 伺服器
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Server", "JySec-Mock/1.0")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"leak_info":"vulnerable_database_exposed_token"}`))
+	}))
+	defer mockServer.Close()
+
+	// 建立待驗證漏洞
+	vuln, err := db.CreateVulnerability(&database.Vulnerability{
+		ConversationID: convID,
+		Title:          "Mock Information Leak",
+		Status:         "open",
+		Target:         mockServer.URL,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// 呼叫 verify_poc 工具
+	res, _, err := server.CallTool(ctx, builtin.ToolVerifyPoc, map[string]interface{}{
+		"vulnerability_id": vuln.ID,
+		"match_string":     "vulnerable_database_exposed_token",
+		"match_status":     200,
+		"update_status":    true,
+	})
+	if err != nil {
+		t.Fatalf("call verify_poc failed: %v", err)
+	}
+	if res.IsError {
+		t.Fatalf("verify_poc returned error: %s", res.Content[0].Text)
+	}
+
+	text := res.Content[0].Text
+	if !strings.Contains(text, "验证通过 (Vulnerability Confirmed)") {
+		t.Errorf("expected confirmed result, got: %s", text)
+	}
+	if !strings.Contains(text, "漏洞库联动") {
+		t.Errorf("expected db linkage update, got: %s", text)
+	}
+
+	// 檢驗資料庫狀態
+	updated, err := db.GetVulnerability(vuln.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if updated.Status != "confirmed" {
+		t.Errorf("expected status to be 'confirmed', got %q", updated.Status)
+	}
+	if !strings.Contains(updated.Evidence, "[JySecAI 在线验证通过]") {
+		t.Errorf("expected evidence marker, got: %s", updated.Evidence)
 	}
 }

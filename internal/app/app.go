@@ -445,6 +445,10 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		skillsHandler.SetDB(db) // 设置数据库连接以便获取调用统计
 	}
 
+	// 注册暴露面哨兵 (Sentinel) 与 AWVS 联动 MCP 工具集
+	registerSentinelTools(mcpServer, db, sentinelHandler, log.Logger)
+	registerAWVSTools(mcpServer, db, awvsHandler, log.Logger)
+
 	// ============================================================================
 	// 初始化 C2 模块（可按配置关闭，节省本机部署资源）
 	// ============================================================================

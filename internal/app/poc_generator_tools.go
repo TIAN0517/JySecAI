@@ -199,8 +199,151 @@ func registerPocGeneratorTools(mcpServer *mcp.Server, db *database.DB, cfg *conf
 		return textResult(b.String(), false), nil
 	})
 
+	// 注册 POC 在线弱验证工具
+	verifyTool := mcp.Tool{
+		Name:             builtin.ToolVerifyPoc,
+		Description:      "对 HTTP/HTTPS 漏洞进行在线非破坏性弱探测与特征验证。支持指定 vulnerability_id（自动读取其目标与上下文）或直接指定 target_url；支持配置 HTTP 方法、自定义标头、请求体，以及匹配预期 HTTP 状态码、响应体文本子串或正则表达式。若验证匹配成功且 update_status=true，会自动将漏洞状态标记为 confirmed 并追加验证证据。",
+		ShortDescription: "对 HTTP 目标执行非破坏性 POC 在线弱验证与特征匹配",
+		InputSchema: map[string]interface{}{
+			"type": "object",
+			"properties": map[string]interface{}{
+				"vulnerability_id": map[string]interface{}{
+					"type":        "string",
+					"description": "可选：指定要验证的系统漏洞 ID；若未提供 target_url 则自动提取该漏洞记录的 target",
+				},
+				"target_url": map[string]interface{}{
+					"type":        "string",
+					"description": "可选：直接指定待探测的完整 HTTP/HTTPS URL；若与 vulnerability_id 同时提供则优先使用 target_url",
+				},
+				"method": map[string]interface{}{
+					"type":        "string",
+					"description": "HTTP 请求方法：GET, POST, HEAD, OPTIONS, PUT, DELETE, PATCH，默认 GET",
+					"enum":        []string{"GET", "POST", "HEAD", "OPTIONS", "PUT", "DELETE", "PATCH"},
+				},
+				"headers": map[string]interface{}{
+					"type":        "object",
+					"description": "可选：自定义 HTTP 请求标头 Key-Value 映射",
+				},
+				"body": map[string]interface{}{
+					"type":        "string",
+					"description": "可选：POST/PUT 等请求的 Payload 内容（仅限最小化无害探测数据）",
+				},
+				"match_status": map[string]interface{}{
+					"type":        "integer",
+					"description": "可选：预期响应 HTTP 状态码（如 200, 403, 500 等）",
+				},
+				"match_string": map[string]interface{}{
+					"type":        "string",
+					"description": "可选：预期在响应体中包含的关键特征子字符串",
+				},
+				"match_regex": map[string]interface{}{
+					"type":        "string",
+					"description": "可选：预期在响应体中命中的正则表达式模式",
+				},
+				"timeout_seconds": map[string]interface{}{
+					"type":        "integer",
+					"description": "请求超时时间（秒），默认 10，最大 30",
+				},
+				"update_status": map[string]interface{}{
+					"type":        "boolean",
+					"description": "若验证成功且提供了 vulnerability_id，是否自动将漏洞状态更新为 confirmed 并追加验证标记，默认 true",
+				},
+			},
+		},
+	}
+
+	mcpServer.RegisterTool(verifyTool, func(ctx context.Context, args map[string]interface{}) (*mcp.ToolResult, error) {
+		vulnID := strings.TrimSpace(strArg(args, "vulnerability_id"))
+		targetURL := strings.TrimSpace(strArg(args, "target_url"))
+		method := strings.TrimSpace(strArg(args, "method"))
+		body := strArg(args, "body")
+		matchStatus := intArg(args, "match_status", 0)
+		matchString := strings.TrimSpace(strArg(args, "match_string"))
+		matchRegex := strings.TrimSpace(strArg(args, "match_regex"))
+		timeoutSec := intArg(args, "timeout_seconds", 10)
+		updateStatus := boolArgDefault(args, "update_status", true)
+
+		var headersMap map[string]string
+		if hRaw, ok := args["headers"].(map[string]interface{}); ok {
+			headersMap = make(map[string]string)
+			for k, v := range hRaw {
+				headersMap[k] = fmt.Sprint(v)
+			}
+		}
+
+		convID := conversationIDFromToolCtx(ctx)
+		if vulnID != "" && db != nil {
+			vuln, err := db.GetVulnerability(vulnID)
+			if err != nil {
+				return textResult("错误: 指定的漏洞 ID 不存在", true), nil
+			}
+			projectID, _ := db.GetConversationProjectID(convID)
+			if convID != "" && !canAccessVulnerability(vuln, convID, projectID) {
+				return textResult("错误: 无权访问该漏洞记录", true), nil
+			}
+		}
+
+		spec := &poc.VerifyPocSpec{
+			VulnerabilityID: vulnID,
+			TargetURL:       targetURL,
+			Method:          method,
+			Headers:         headersMap,
+			Body:            body,
+			MatchStatus:     matchStatus,
+			MatchString:     matchString,
+			MatchRegex:      matchRegex,
+			TimeoutSeconds:  timeoutSec,
+		}
+
+		res, err := poc.VerifyPoc(ctx, db, spec, updateStatus)
+		if err != nil {
+			return textResult("POC 验证失败: "+err.Error(), true), nil
+		}
+
+		var b strings.Builder
+		b.WriteString("# POC 在线弱验证结果\n\n")
+		b.WriteString(fmt.Sprintf("- **目标 URL**: `%s`\n", res.TargetURL))
+		b.WriteString(fmt.Sprintf("- **请求方法**: `%s`\n", res.Method))
+		if res.Error != "" {
+			b.WriteString(fmt.Sprintf("- **执行状态**: ❌ **请求失败** (`%s`)\n", res.Error))
+		} else {
+			if res.Verified {
+				b.WriteString("- **验证判定**: 🎯 **验证通过 (Vulnerability Confirmed)**\n")
+			} else {
+				b.WriteString("- **验证判定**: ⚠️ **特征未完全匹配 / 未确认**\n")
+			}
+			b.WriteString(fmt.Sprintf("- **HTTP 状态码**: %d (%s)\n", res.StatusCode, res.StatusText))
+			b.WriteString(fmt.Sprintf("- **响应耗时**: %d ms\n", res.ResponseTimeMs))
+			if len(res.MatchedConditions) > 0 {
+				b.WriteString(fmt.Sprintf("- **命中匹配项**: %s\n", strings.Join(res.MatchedConditions, " | ")))
+			}
+			if res.UpdatedVulnerability {
+				b.WriteString(fmt.Sprintf("- **漏洞库联动**: 漏洞 `%s` 状态已自动更新为 `confirmed` 并回写证据\n", res.VulnerabilityID))
+			}
+			if len(res.ResponseHeaders) > 0 {
+				b.WriteString("\n### 关键响应头\n```http\n")
+				for k, v := range res.ResponseHeaders {
+					b.WriteString(fmt.Sprintf("%s: %s\n", k, v))
+				}
+				b.WriteString("```\n")
+			}
+			if res.ResponseSnippet != "" {
+				b.WriteString("\n### 响应内容预览 (Safe Snippet)\n```\n")
+				b.WriteString(res.ResponseSnippet)
+				b.WriteString("\n```\n")
+			}
+		}
+
+		return textResult(b.String(), false), nil
+	})
+
 	if logger != nil {
-		logger.Info("POC/EXP 草稿生成 MCP 工具注册成功", zap.String("tool", builtin.ToolGeneratePocDraft))
+		logger.Info("POC/EXP 工具注册成功",
+			zap.Strings("tools", []string{
+				builtin.ToolGeneratePocDraft,
+				builtin.ToolVerifyPoc,
+			}),
+		)
 	}
 }
 

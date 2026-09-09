@@ -95,47 +95,43 @@ func (h *AWVSHandler) doRequest(method, path string, body io.Reader) (*http.Resp
 	return h.client.Do(req)
 }
 
-// GetStatus 獲取 AWVS 連線狀態與當前用戶資訊
-func (h *AWVSHandler) GetStatus(c *gin.Context) {
+// GetStatusInfo 獲取 AWVS 連線狀態與當前用戶資訊
+func (h *AWVSHandler) GetStatusInfo() (map[string]interface{}, error) {
 	baseURL := h.getBaseURL()
 	if h.getAPIKey() == "" {
-		c.JSON(http.StatusOK, gin.H{
+		return map[string]interface{}{
 			"connected": false,
 			"url":       baseURL,
-			"error":     "AWVS API Key 未配置，請在下方輸入 API Key 或設置 JYSEC_AWVS_API_KEY 環境變數",
-		})
-		return
+			"error":     "AWVS API Key 未配置，請設置 JYSEC_AWVS_API_KEY 環境變數或在頁面配置",
+		}, nil
 	}
 	resp, err := h.doRequest(http.MethodGet, "me", nil)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		return map[string]interface{}{
 			"connected": false,
 			"url":       baseURL,
 			"error":     err.Error(),
-		})
-		return
+		}, nil
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		c.JSON(http.StatusOK, gin.H{
+		return map[string]interface{}{
 			"connected":   false,
 			"url":         baseURL,
 			"status_code": resp.StatusCode,
 			"error":       string(body),
-		})
-		return
+		}, nil
 	}
 
 	var meData map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&meData); err != nil {
-		c.JSON(http.StatusOK, gin.H{
+		return map[string]interface{}{
 			"connected": false,
 			"url":       baseURL,
 			"error":     "解析 AWVS 回應失敗: " + err.Error(),
-		})
-		return
+		}, nil
 	}
 
 	// 額外獲取 targets 數量
@@ -152,30 +148,44 @@ func (h *AWVSHandler) GetStatus(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	return map[string]interface{}{
 		"connected":    true,
 		"url":          baseURL,
 		"email":        meData["email"],
 		"role":         meData["role"],
 		"target_count": targetCount,
-	})
+	}, nil
 }
 
-// ListTargets 列出 AWVS 所有目標
-func (h *AWVSHandler) ListTargets(c *gin.Context) {
+// GetStatus 獲取 AWVS 連線狀態與當前用戶資訊（HTTP API）
+func (h *AWVSHandler) GetStatus(c *gin.Context) {
+	info, _ := h.GetStatusInfo()
+	c.JSON(http.StatusOK, info)
+}
+
+// ListTargetsInfo 列出 AWVS 所有目標
+func (h *AWVSHandler) ListTargetsInfo() (map[string]interface{}, error) {
 	resp, err := h.doRequest(http.MethodGet, "targets", nil)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "請求 AWVS 失敗: " + err.Error()})
-		return
+		return nil, fmt.Errorf("請求 AWVS 失敗: %w", err)
 	}
 	defer resp.Body.Close()
 
 	var data map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "解析 targets 失敗: " + err.Error()})
-		return
+		return nil, fmt.Errorf("解析 targets 失敗: %w", err)
 	}
 
+	return data, nil
+}
+
+// ListTargets 列出 AWVS 所有目標（HTTP API）
+func (h *AWVSHandler) ListTargets(c *gin.Context) {
+	data, err := h.ListTargetsInfo()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, data)
 }
 
@@ -222,21 +232,20 @@ type StartScanRequest struct {
 	ProfileID string `json:"profile_id"`
 }
 
-// StartScan 發起 AWVS 掃描
-func (h *AWVSHandler) StartScan(c *gin.Context) {
-	var req StartScanRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+// StartScanTarget 發起 AWVS 掃描
+func (h *AWVSHandler) StartScanTarget(targetID, profileID string) (map[string]interface{}, error) {
+	targetID = strings.TrimSpace(targetID)
+	if targetID == "" {
+		return nil, fmt.Errorf("target_id 必填")
 	}
 
-	profileID := strings.TrimSpace(req.ProfileID)
+	profileID = strings.TrimSpace(profileID)
 	if profileID == "" {
 		profileID = "11111111-1111-1111-1111-111111111111" // Full Scan
 	}
 
 	payload := map[string]interface{}{
-		"target_id":  req.TargetID,
+		"target_id":  targetID,
 		"profile_id": profileID,
 		"schedule": map[string]interface{}{
 			"disable":        false,
@@ -248,18 +257,64 @@ func (h *AWVSHandler) StartScan(c *gin.Context) {
 
 	resp, err := h.doRequest(http.MethodPost, "scans", bytes.NewReader(bodyBytes))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
+		return nil, fmt.Errorf("發起掃描失敗: %w", err)
 	}
 	defer resp.Body.Close()
 
 	var resData map[string]interface{}
 	_ = json.NewDecoder(resp.Body).Decode(&resData)
 
-	c.JSON(resp.StatusCode, gin.H{
-		"success": resp.StatusCode >= 200 && resp.StatusCode < 300,
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return resData, fmt.Errorf("AWVS 響應錯誤: 狀態碼 %d", resp.StatusCode)
+	}
+
+	return resData, nil
+}
+
+// StartScan 發起 AWVS 掃描（HTTP API）
+func (h *AWVSHandler) StartScan(c *gin.Context) {
+	var req StartScanRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	resData, err := h.StartScanTarget(req.TargetID, req.ProfileID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"error":   err.Error(),
+			"data":    resData,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
 		"data":    resData,
 	})
+}
+
+// GetScanStatusInfo 獲取指定掃描任務狀態，或在 scanID 為空時列出所有掃描
+func (h *AWVSHandler) GetScanStatusInfo(scanID string) (map[string]interface{}, error) {
+	scanID = strings.TrimSpace(scanID)
+	path := "scans"
+	if scanID != "" {
+		path = "scans/" + scanID
+	}
+
+	resp, err := h.doRequest(http.MethodGet, path, nil)
+	if err != nil {
+		return nil, fmt.Errorf("請求 AWVS scans 失敗: %w", err)
+	}
+	defer resp.Body.Close()
+
+	var data map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return nil, fmt.Errorf("解析 scans 回應失敗: %w", err)
+	}
+
+	return data, nil
 }
 
 // SyncRequest 同步漏洞請求
@@ -268,11 +323,8 @@ type SyncRequest struct {
 	TargetID  string `json:"target_id"`
 }
 
-// SyncVulnerabilities 從 AWVS 拉取漏洞並匯入 JySecAI 本地資料庫（支援完整分頁與重複去重）
-func (h *AWVSHandler) SyncVulnerabilities(c *gin.Context) {
-	var req SyncRequest
-	_ = c.ShouldBindJSON(&req)
-
+// SyncVulnerabilitiesDirect 從 AWVS 拉取漏洞並匯入 JySecAI 本地資料庫（支援完整分頁與重複去重）
+func (h *AWVSHandler) SyncVulnerabilitiesDirect(projectID, targetID string) (synced int, skipped int, totalInAwvs int, err error) {
 	type awvsVulnItem struct {
 		VulnID     string   `json:"vuln_id"`
 		VTName     string   `json:"vt_name"`
@@ -284,7 +336,6 @@ func (h *AWVSHandler) SyncVulnerabilities(c *gin.Context) {
 	}
 
 	var allVulnerabilities []awvsVulnItem
-	totalInAwvs := 0
 	cursor := ""
 	visitedCursors := make(map[string]bool)
 	const maxPages = 50 // 最多抓取 50 頁 (約 5000 條)
@@ -292,8 +343,8 @@ func (h *AWVSHandler) SyncVulnerabilities(c *gin.Context) {
 	for page := 0; page < maxPages; page++ {
 		path := "vulnerabilities"
 		var queryParams []string
-		if strings.TrimSpace(req.TargetID) != "" {
-			queryParams = append(queryParams, "q=target_id:"+url.QueryEscape(strings.TrimSpace(req.TargetID)))
+		if strings.TrimSpace(targetID) != "" {
+			queryParams = append(queryParams, "q=target_id:"+url.QueryEscape(strings.TrimSpace(targetID)))
 		}
 		if cursor != "" {
 			queryParams = append(queryParams, "c="+url.QueryEscape(cursor))
@@ -302,11 +353,10 @@ func (h *AWVSHandler) SyncVulnerabilities(c *gin.Context) {
 			path += "?" + strings.Join(queryParams, "&")
 		}
 
-		resp, err := h.doRequest(http.MethodGet, path, nil)
-		if err != nil {
+		resp, reqErr := h.doRequest(http.MethodGet, path, nil)
+		if reqErr != nil {
 			if len(allVulnerabilities) == 0 {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "獲取 AWVS 漏洞列表失敗: " + err.Error()})
-				return
+				return 0, 0, 0, fmt.Errorf("獲取 AWVS 漏洞列表失敗: %w", reqErr)
 			}
 			break
 		}
@@ -324,8 +374,7 @@ func (h *AWVSHandler) SyncVulnerabilities(c *gin.Context) {
 		resp.Body.Close()
 		if decodeErr != nil {
 			if len(allVulnerabilities) == 0 {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "解析 AWVS 漏洞回應失敗: " + decodeErr.Error()})
-				return
+				return 0, 0, 0, fmt.Errorf("解析 AWVS 漏洞回應失敗: %w", decodeErr)
 			}
 			break
 		}
@@ -337,12 +386,10 @@ func (h *AWVSHandler) SyncVulnerabilities(c *gin.Context) {
 			break
 		}
 
-		// 判斷是否有下一頁 cursor
 		nextCursor := ""
 		if listData.Pagination.NextCursor != nil && *listData.Pagination.NextCursor != "" {
 			nextCursor = *listData.Pagination.NextCursor
 		} else if len(listData.Pagination.Cursors) > 1 {
-			// AWVS cursors 格式為 [prev, next]
 			if nextVal, ok := listData.Pagination.Cursors[1].(string); ok && nextVal != "" {
 				nextCursor = nextVal
 			}
@@ -363,7 +410,6 @@ func (h *AWVSHandler) SyncVulnerabilities(c *gin.Context) {
 			continue
 		}
 
-		// 獲取詳細資訊 (request, description, recommendation, impact)
 		var detailData struct {
 			Description    string `json:"description"`
 			Details        string `json:"details"`
@@ -376,7 +422,6 @@ func (h *AWVSHandler) SyncVulnerabilities(c *gin.Context) {
 			dResp.Body.Close()
 		}
 
-		// 嚴重程度映射
 		sevStr := "info"
 		switch awvsVuln.Severity {
 		case 4:
@@ -391,7 +436,6 @@ func (h *AWVSHandler) SyncVulnerabilities(c *gin.Context) {
 			sevStr = "info"
 		}
 
-		// 漏洞類型
 		vType := "Web Vulnerability"
 		if len(awvsVuln.Tags) > 0 {
 			vType = awvsVuln.Tags[0]
@@ -411,10 +455,8 @@ func (h *AWVSHandler) SyncVulnerabilities(c *gin.Context) {
 			reproSteps = "1. 使用 AWVS 檢測目標位置: " + awvsVuln.AffectsURL
 		}
 
-		// 去重比對：檢索同一專案/全域下相同 Target + Title 的已有記錄
-		existing, err := h.db.FindVulnerabilityByTargetAndTitle(req.ProjectID, awvsVuln.AffectsURL, awvsVuln.VTName)
+		existing, err := h.db.FindVulnerabilityByTargetAndTitle(projectID, awvsVuln.AffectsURL, awvsVuln.VTName)
 		if err == nil && existing != nil {
-			// 若已有記錄，補充更完整的證據或關聯專案
 			needsUpdate := false
 			if strings.TrimSpace(existing.Evidence) == "" && strings.TrimSpace(evidence) != "" {
 				existing.Evidence = evidence
@@ -424,8 +466,8 @@ func (h *AWVSHandler) SyncVulnerabilities(c *gin.Context) {
 				existing.ReproSteps = reproSteps
 				needsUpdate = true
 			}
-			if strings.TrimSpace(existing.ProjectID) == "" && strings.TrimSpace(req.ProjectID) != "" {
-				existing.ProjectID = strings.TrimSpace(req.ProjectID)
+			if strings.TrimSpace(existing.ProjectID) == "" && strings.TrimSpace(projectID) != "" {
+				existing.ProjectID = strings.TrimSpace(projectID)
 				needsUpdate = true
 			}
 			if needsUpdate {
@@ -437,7 +479,7 @@ func (h *AWVSHandler) SyncVulnerabilities(c *gin.Context) {
 
 		vuln := &database.Vulnerability{
 			ConversationID:  "",
-			ProjectID:       strings.TrimSpace(req.ProjectID),
+			ProjectID:       strings.TrimSpace(projectID),
 			ConversationTag: "awvs-scanner",
 			TaskTag:         "awvs",
 			Title:           awvsVuln.VTName,
@@ -461,12 +503,26 @@ func (h *AWVSHandler) SyncVulnerabilities(c *gin.Context) {
 		}
 	}
 
+	return syncedCount, skippedCount, totalInAwvs, nil
+}
+
+// SyncVulnerabilities 從 AWVS 拉取漏洞並匯入 JySecAI 本地資料庫（HTTP API）
+func (h *AWVSHandler) SyncVulnerabilities(c *gin.Context) {
+	var req SyncRequest
+	_ = c.ShouldBindJSON(&req)
+
+	synced, skipped, total, err := h.SyncVulnerabilitiesDirect(req.ProjectID, req.TargetID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"success":       true,
-		"synced":        syncedCount,
-		"skipped":       skippedCount,
-		"total_in_awvs": totalInAwvs,
-		"message":       fmt.Sprintf("成功同步 %d 條 AWVS 漏洞到資料庫（已存在/跳過 %d 條）！", syncedCount, skippedCount),
+		"synced":        synced,
+		"skipped":       skipped,
+		"total_in_awvs": total,
+		"message":       fmt.Sprintf("成功同步 %d 條 AWVS 漏洞到資料庫（已存在/跳過 %d 條）！", synced, skipped),
 	})
 }
 

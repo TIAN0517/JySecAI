@@ -74,6 +74,22 @@ const (
 	ToolC2Event      = "c2_event"       // 事件查询
 	ToolC2Profile    = "c2_profile"     // Malleable Profile 管理（list/get/create/update/delete）
 	ToolC2File       = "c2_file"        // 文件管理（list/get_result）
+
+	// 暴露面哨兵工具 (Sentinel / 零零哨兵)
+	ToolSentinelScan                = "sentinel_scan"
+	ToolGetSentinelScan             = "get_sentinel_scan"
+	ToolSentinelSyncAssets          = "sentinel_sync_assets"
+	ToolSentinelSyncVulnerabilities = "sentinel_sync_vulnerabilities"
+
+	// AWVS 扫描器联动工具
+	ToolAWVSStatus              = "awvs_status"
+	ToolAWVSListTargets         = "awvs_list_targets"
+	ToolAWVSStartScan           = "awvs_start_scan"
+	ToolAWVSGetScanStatus       = "awvs_get_scan_status"
+	ToolAWVSSyncVulnerabilities = "awvs_sync_vulnerabilities"
+
+	// POC / EXP 在线弱验证工具
+	ToolVerifyPoc = "verify_poc"
 )
 
 // IsBuiltinTool 检查工具名称是否是内置工具
@@ -131,7 +147,20 @@ func IsBuiltinTool(toolName string) bool {
 		ToolC2Payload,
 		ToolC2Event,
 		ToolC2Profile,
-		ToolC2File:
+		ToolC2File,
+		// 暴露面哨兵工具
+		ToolSentinelScan,
+		ToolGetSentinelScan,
+		ToolSentinelSyncAssets,
+		ToolSentinelSyncVulnerabilities,
+		// AWVS 扫描器联动工具
+		ToolAWVSStatus,
+		ToolAWVSListTargets,
+		ToolAWVSStartScan,
+		ToolAWVSGetScanStatus,
+		ToolAWVSSyncVulnerabilities,
+		// POC 在线验证工具
+		ToolVerifyPoc:
 		return true
 	default:
 		return false
@@ -194,5 +223,18 @@ func GetAllBuiltinTools() []string {
 		ToolC2Event,
 		ToolC2Profile,
 		ToolC2File,
+		// 暴露面哨兵工具
+		ToolSentinelScan,
+		ToolGetSentinelScan,
+		ToolSentinelSyncAssets,
+		ToolSentinelSyncVulnerabilities,
+		// AWVS 扫描器联动工具
+		ToolAWVSStatus,
+		ToolAWVSListTargets,
+		ToolAWVSStartScan,
+		ToolAWVSGetScanStatus,
+		ToolAWVSSyncVulnerabilities,
+		// POC 在线验证工具
+		ToolVerifyPoc,
 	}
 }

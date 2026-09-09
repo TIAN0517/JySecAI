@@ -1,7 +1,12 @@
 package poc
 
 import (
+	"context"
+	"crypto/tls"
 	"fmt"
+	"io"
+	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -258,3 +263,210 @@ func RenderNumberedBlocks(text string) string {
 	}
 	return b.String()
 }
+
+// VerifyPocSpec 是在線弱驗證探測參數
+type VerifyPocSpec struct {
+	VulnerabilityID string            `json:"vulnerability_id,omitempty"`
+	TargetURL       string            `json:"target_url"`
+	Method          string            `json:"method,omitempty"` // GET, POST, HEAD, OPTIONS, PUT, DELETE, PATCH
+	Headers         map[string]string `json:"headers,omitempty"`
+	Body            string            `json:"body,omitempty"`
+	MatchStatus     int               `json:"match_status,omitempty"`
+	MatchRegex      string            `json:"match_regex,omitempty"`
+	MatchString     string            `json:"match_string,omitempty"`
+	TimeoutSeconds  int               `json:"timeout_seconds,omitempty"`
+}
+
+// VerifyPocResult 是在線弱驗證探測結果
+type VerifyPocResult struct {
+	VulnerabilityID      string            `json:"vulnerability_id,omitempty"`
+	TargetURL            string            `json:"target_url"`
+	Method               string            `json:"method"`
+	StatusCode           int               `json:"status_code"`
+	StatusText           string            `json:"status_text"`
+	ResponseTimeMs       int64             `json:"response_time_ms"`
+	MatchedConditions    []string          `json:"matched_conditions"`
+	Verified             bool              `json:"verified"`
+	ResponseSnippet      string            `json:"response_snippet"`
+	ResponseHeaders      map[string]string `json:"response_headers,omitempty"`
+	UpdatedVulnerability bool              `json:"updated_vulnerability"`
+	Error                string            `json:"error,omitempty"`
+}
+
+// VerifyPoc 執行針對 HTTP/HTTPS 漏洞的非破壞性無害弱探測驗證
+func VerifyPoc(ctx context.Context, db *database.DB, spec *VerifyPocSpec, updateStatus bool) (*VerifyPocResult, error) {
+	if spec == nil {
+		return nil, fmt.Errorf("spec is nil")
+	}
+
+	result := &VerifyPocResult{
+		VulnerabilityID:   spec.VulnerabilityID,
+		TargetURL:         spec.TargetURL,
+		MatchedConditions: make([]string, 0),
+		ResponseHeaders:   make(map[string]string),
+	}
+
+	var targetVuln *database.Vulnerability
+	if strings.TrimSpace(spec.VulnerabilityID) != "" && db != nil {
+		vuln, err := db.GetVulnerability(spec.VulnerabilityID)
+		if err == nil && vuln != nil {
+			targetVuln = vuln
+			if strings.TrimSpace(spec.TargetURL) == "" {
+				if strings.HasPrefix(vuln.Target, "http://") || strings.HasPrefix(vuln.Target, "https://") {
+					spec.TargetURL = strings.TrimSpace(vuln.Target)
+					result.TargetURL = spec.TargetURL
+				}
+			}
+		}
+	}
+
+	rawTarget := strings.TrimSpace(spec.TargetURL)
+	if rawTarget == "" {
+		return nil, fmt.Errorf("目标 URL 为空；请提供 target_url 或关联有效的漏洞记录")
+	}
+
+	u, err := url.Parse(rawTarget)
+	if err != nil || (u.Scheme != "http" && u.Scheme != "https") {
+		return nil, fmt.Errorf("非法 target_url: %s (必须是以 http:// 或 https:// 开头的合法 URL)", rawTarget)
+	}
+
+	method := strings.ToUpper(strings.TrimSpace(spec.Method))
+	if method == "" {
+		method = http.MethodGet
+	}
+	result.Method = method
+
+	timeoutSec := spec.TimeoutSeconds
+	if timeoutSec <= 0 {
+		timeoutSec = 10
+	} else if timeoutSec > 30 {
+		timeoutSec = 30
+	}
+
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	defer tr.CloseIdleConnections()
+
+	client := &http.Client{
+		Transport: tr,
+		Timeout:   time.Duration(timeoutSec) * time.Second,
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			if len(via) >= 5 {
+				return http.ErrUseLastResponse
+			}
+			return nil
+		},
+	}
+
+	var reqBody io.Reader
+	if strings.TrimSpace(spec.Body) != "" {
+		reqBody = strings.NewReader(spec.Body)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, method, rawTarget, reqBody)
+	if err != nil {
+		return nil, fmt.Errorf("构造请求失败: %w", err)
+	}
+
+	req.Header.Set("User-Agent", "JySecAI-PocVerifier/1.0")
+	for k, v := range spec.Headers {
+		req.Header.Set(k, v)
+	}
+
+	start := time.Now()
+	resp, err := client.Do(req)
+	result.ResponseTimeMs = time.Since(start).Milliseconds()
+
+	if err != nil {
+		result.Error = err.Error()
+		return result, nil
+	}
+	defer resp.Body.Close()
+
+	result.StatusCode = resp.StatusCode
+	result.StatusText = resp.Status
+
+	// 提取关键响应头
+	for _, h := range []string{"Server", "Content-Type", "Set-Cookie", "X-Powered-By", "Location"} {
+		if val := resp.Header.Get(h); val != "" {
+			result.ResponseHeaders[h] = val
+		}
+	}
+
+	bodyBytes, _ := io.ReadAll(io.LimitReader(resp.Body, 512*1024))
+	snippet := string(bodyBytes)
+	if len(snippet) > 1000 {
+		snippet = snippet[:1000] + "... [截断]"
+	}
+	result.ResponseSnippet = snippet
+
+	// 规则匹配
+	hasCriteria := false
+	allMatch := true
+
+	if spec.MatchStatus > 0 {
+		hasCriteria = true
+		if resp.StatusCode == spec.MatchStatus {
+			result.MatchedConditions = append(result.MatchedConditions, fmt.Sprintf("HTTP 状态码匹配: %d", resp.StatusCode))
+		} else {
+			allMatch = false
+		}
+	}
+
+	if strings.TrimSpace(spec.MatchString) != "" {
+		hasCriteria = true
+		targetStr := strings.TrimSpace(spec.MatchString)
+		if strings.Contains(string(bodyBytes), targetStr) {
+			result.MatchedConditions = append(result.MatchedConditions, fmt.Sprintf("文本子串匹配: %q", targetStr))
+		} else {
+			allMatch = false
+		}
+	}
+
+	if strings.TrimSpace(spec.MatchRegex) != "" {
+		hasCriteria = true
+		re, rerr := regexp.Compile(spec.MatchRegex)
+		if rerr != nil {
+			allMatch = false
+			result.Error = fmt.Sprintf("正则表达式无效: %v", rerr)
+		} else if re.Match(bodyBytes) {
+			result.MatchedConditions = append(result.MatchedConditions, fmt.Sprintf("正则表达式匹配: %q", spec.MatchRegex))
+		} else {
+			allMatch = false
+		}
+	}
+
+	if hasCriteria {
+		result.Verified = allMatch
+	} else {
+		// 无具体条件时，HTTP 2xx 或 3xx 判定为连通与存活验证
+		if resp.StatusCode >= 200 && resp.StatusCode < 400 {
+			result.Verified = true
+			result.MatchedConditions = append(result.MatchedConditions, fmt.Sprintf("默认存活验证（HTTP 状态码 %d 正常）", resp.StatusCode))
+		} else {
+			result.Verified = false
+		}
+	}
+
+	// 若验证成功且指定更新状态
+	if result.Verified && updateStatus && targetVuln != nil && db != nil {
+		updated := *targetVuln
+		updated.Status = "confirmed"
+		marker := fmt.Sprintf("\n\n> [JySecAI 在线验证通过] 时间: %s | 状态码: %d (%dms) | 匹配项: %s",
+			time.Now().Format("2006-01-02 15:04:05"),
+			resp.StatusCode,
+			result.ResponseTimeMs,
+			strings.Join(result.MatchedConditions, "; "),
+		)
+		if !strings.Contains(updated.Evidence, "[JySecAI 在线验证通过]") {
+			updated.Evidence = strings.TrimRight(updated.Evidence, "\n") + marker
+		}
+		if err := db.UpdateVulnerability(updated.ID, &updated); err == nil {
+			result.UpdatedVulnerability = true
+		}
+	}
+
+	return result, nil
+}
+
