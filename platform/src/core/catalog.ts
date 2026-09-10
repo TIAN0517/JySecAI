@@ -56,6 +56,7 @@ const engineDefinitions: Readonly<Record<EngineId, EngineDefinition>> = Object.f
     supportedOperations: ["passive_discovery", "active_scan", "exploit_validation", "credential_audit"],
     connector: "worker",
     description: "TriV3 Kali API and MCP tool fabric with governed execution and evidence ingestion.",
+  },
   promptfoo: {
     id: "promptfoo",
     name: "Promptfoo CI Red Team",

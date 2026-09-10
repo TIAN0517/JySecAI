@@ -92,10 +92,14 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - run: cp platform/production.env.example platform/.env.production
+      - name: Generate self-signed SSL certificates for testing
+        run: mkdir -p deploy/ssl && openssl req -x509 -newkey rsa:2048 -keyout deploy/ssl/jysecai.key -out deploy/ssl/jysecai.crt -days 365 -nodes -subj "/CN=localhost"
       - run: docker compose -f compose.jysec.yml config --quiet
       - run: >-
           docker run --rm
           --add-host core:127.0.0.1
           --add-host control-plane:127.0.0.1
           -v "$PWD/deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
+          -v "$PWD/deploy/ssl:/etc/nginx/ssl:ro"
           nginx:1.29-alpine nginx -t
+
