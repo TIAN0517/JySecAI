@@ -3,7 +3,6 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import Fastify, { type FastifyInstance, type FastifyRequest } from "fastify";
 import { ZodError } from "zod";
 
-import { executeAwvs } from "./awvs.js";
 import type { ScannerAdapterConfig } from "./config.js";
 import { Semaphore } from "./http.js";
 import { executeToolBackend } from "./tool-backend.js";
@@ -28,7 +27,6 @@ function backendStatus(config: ScannerAdapterConfig) {
   return {
     hexstrike: Boolean(config.backends.hexstrike),
     "kali-mcp": Boolean(config.backends.kali),
-    awvs: Boolean(config.backends.awvs && config.backends.awvsApiKey),
   } as const;
 }
 
@@ -44,7 +42,6 @@ export async function buildScannerAdapter(
   const semaphores: Record<ScannerEngine, Semaphore> = {
     hexstrike: new Semaphore(config.maxConcurrentPerEngine),
     "kali-mcp": new Semaphore(config.maxConcurrentPerEngine),
-    awvs: new Semaphore(config.maxConcurrentPerEngine),
   };
 
   // 安全默认：未配置 worker token 时以失败关闭策略运行——所有受保护端点一律拒绝，
@@ -88,14 +85,6 @@ export async function buildScannerAdapter(
     }
     const result = await semaphores[job.run.engine].run(async () => {
       const proxy = await selectProxy(config, job.run.id);
-      if (job.run.engine === "awvs") {
-        if (!job.run.authorization.operations.some((item) =>
-          item === "active_scan" || item === "exploit_validation"
-        )) {
-          throw new Error("AWVS requires active_scan or exploit_validation authorization");
-        }
-        return executeAwvs(job, config, proxy);
-      }
       return executeToolBackend(job.run.engine, job, config, proxy);
     });
     return reply.send(result);

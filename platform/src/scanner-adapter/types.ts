@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { scopeOperationSchema, type FindingSubmission, type RunProfile } from "../core/types.js";
 
-export const scannerEngineSchema = z.enum(["hexstrike", "kali-mcp", "awvs"]);
+export const scannerEngineSchema = z.enum(["hexstrike", "kali-mcp"]);
 export type ScannerEngine = z.infer<typeof scannerEngineSchema>;
 
 const findingHintSchema = z

@@ -127,3 +127,5 @@ scripts/hourly-verify.sh
 data_manager.py
 demo_data_manager.py
 BUILD_INSTRUCTIONS.txt
+_archive/
+evidence/

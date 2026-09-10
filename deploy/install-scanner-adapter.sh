@@ -11,9 +11,6 @@ SOURCE_ROOT=$REPO_ROOT/platform
 APP_ROOT=/opt/jysecai/platform-adapter
 ENV_DIR=/etc/jysecai
 ENV_FILE=$ENV_DIR/scanner-adapter.env
-AWVS_CA_SOURCE=${AWVS_CA_SOURCE:-/mnt/c/ProgramData/Acunetix/certs/ca.cer}
-AWVS_CERT_SOURCE=${AWVS_CERT_SOURCE:-/mnt/c/ProgramData/Acunetix/certs/server.cer}
-AWVS_CA_FILE=$ENV_DIR/awvs-ca.cer
 RELEASE_ID=$(date -u +%Y%m%d%H%M%S)-$$
 RELEASE_DIR=$APP_ROOT/releases/$RELEASE_ID
 
@@ -74,24 +71,11 @@ set_default JYSEC_KALI_API_URL http://127.0.0.1:5000
 set_default JYSEC_SCANNER_MAX_CONCURRENT_PER_ENGINE 2
 set_default JYSEC_SCANNER_REQUEST_TIMEOUT_SECONDS 300
 set_default JYSEC_SCANNER_MAX_RETRIES 3
-set_default JYSEC_AWVS_POLL_INTERVAL_SECONDS 15
-set_default JYSEC_AWVS_API_KEY ''
 set_default JYSEC_PROXY_POOL 'vps-221|socks5h://127.0.0.1:11080|http://127.0.0.1:12080|202.160.76.221;vps-173|socks5h://127.0.0.1:11081|http://127.0.0.1:12081|202.160.76.173;vps-169|socks5h://127.0.0.1:11082|http://127.0.0.1:12082|202.160.76.169;vps-168|socks5h://127.0.0.1:11083|http://127.0.0.1:12083|202.160.76.168;vps-167|socks5h://127.0.0.1:11084|http://127.0.0.1:12084|202.160.76.167'
 
 if ! grep -Eq '^JYSEC_ENGINE_ADAPTER_TOKEN=.{32,}$' "$ENV_FILE"; then
   sed -i '/^JYSEC_ENGINE_ADAPTER_TOKEN=/d' "$ENV_FILE"
   printf 'JYSEC_ENGINE_ADAPTER_TOKEN=%s\n' "$(openssl rand -hex 32)" >>"$ENV_FILE"
-fi
-
-if [[ -r "$AWVS_CA_SOURCE" && -r "$AWVS_CERT_SOURCE" ]]; then
-  install -o root -g jysec -m 0640 "$AWVS_CA_SOURCE" "$AWVS_CA_FILE"
-  AWVS_SERVER_NAME=$(openssl x509 -in "$AWVS_CERT_SOURCE" -noout -ext subjectAltName \
-    | sed -n 's/.*DNS:\([^, ]*\).*/\1/p' | head -n 1)
-  if [[ -n "$AWVS_SERVER_NAME" ]]; then
-    set_default JYSEC_AWVS_API_URL "https://${AWVS_SERVER_NAME}:3443"
-    set_default JYSEC_AWVS_CA_FILE "$AWVS_CA_FILE"
-    set_default JYSEC_AWVS_TLS_SERVER_NAME "$AWVS_SERVER_NAME"
-  fi
 fi
 
 ln -sfn "$RELEASE_DIR" "$APP_ROOT/current.new"

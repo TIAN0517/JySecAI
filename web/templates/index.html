@@ -2796,10 +2796,6 @@
                     <div class="page-header">
                         <h2 data-i18n="vulnerability.title">漏洞管理</h2>
                         <div class="page-header-actions">
-                            <button class="btn-secondary" type="button" data-require-permission="vulnerability:write" onclick="openAwvsModal()" style="border-color: #3b82f6; color: #2563eb; font-weight: 500;">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                                <span>AWVS 聯動</span>
-                            </button>
                             <button class="btn-secondary" type="button" data-require-permission="vulnerability:write" onclick="openBatchPocModal()" style="border-color: #8b5cf6; color: #7c3aed; font-weight: 500;">
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                                 <span>批量產出 POC</span>
@@ -7199,101 +7195,6 @@
         </div>
     </div>
 
-    <!-- AWVS 聯動管理彈窗 -->
-    <div id="awvs-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="awvs-modal-title" style="display: none;">
-        <div class="modal-content" style="max-width: 920px; max-height: 90vh; display: flex; flex-direction: column;">
-            <div class="modal-header" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color, #e5e7eb); padding: 16px 20px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <span style="font-size: 24px;">🛡️</span>
-                    <div>
-                        <h3 id="awvs-modal-title" style="margin: 0; font-size: 18px; font-weight: 600;">AWVS (Acunetix) 漏洞掃描器聯動</h3>
-                        <p style="margin: 2px 0 0; font-size: 13px; color: var(--text-secondary, #6b7280);">一鍵測試連線、發起掃描與同步 AWVS 發現的漏洞至本系統</p>
-                    </div>
-                </div>
-                <button type="button" class="modal-close" onclick="closeAwvsModal()" aria-label="关闭" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-secondary);">&times;</button>
-            </div>
-            <div class="modal-body" style="padding: 20px; overflow-y: auto; flex: 1;">
-                <!-- 連線狀態面板 -->
-                <div style="background: var(--bg-card, #f9fafb); border: 1px solid var(--border-color, #e5e7eb); border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <span id="awvs-status-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 12px; font-size: 13px; font-weight: 500; background: #e0f2fe; color: #0284c7;">
-                                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #0284c7;"></span>
-                                <span>檢查連線中…</span>
-                            </span>
-                            <span id="awvs-user-info" style="font-size: 13px; color: var(--text-secondary);"></span>
-                        </div>
-                        <div style="display: flex; gap: 8px;">
-                            <button type="button" class="btn-secondary btn-small" onclick="checkAwvsStatus(true)">🔄 測試連線</button>
-                            <button type="button" class="btn-primary btn-small" onclick="syncAwvsVulnerabilities()" id="awvs-sync-btn" style="background: #2563eb; color: #fff;">📥 同步 AWVS 漏洞至本系統</button>
-                        </div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px;">
-                        <div>
-                            <label style="display: block; color: var(--text-secondary); margin-bottom: 4px;">伺服器位址 (URL)</label>
-                            <input type="text" id="awvs-url-input" class="modern-input" placeholder="https://localhost:3443" style="width: 100%; font-family: monospace; font-size: 13px;">
-                        </div>
-                        <div>
-                            <label style="display: block; color: var(--text-secondary); margin-bottom: 4px;">API Key (X-Auth)</label>
-                            <div style="display: flex; gap: 6px;">
-                                <input type="password" id="awvs-key-input" class="modern-input" placeholder="留空則保持後端已配置金鑰" style="flex: 1; font-family: monospace; font-size: 13px;">
-                                <button type="button" class="btn-secondary btn-small" onclick="saveAwvsConfig()">保存設置</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="awvs-sync-result" style="margin-top: 10px; font-size: 13px; display: none;"></div>
-                </div>
-
-                <!-- 快速新增目標與發起掃描 -->
-                <div style="margin-bottom: 20px; background: var(--bg-card, #fff); border: 1px solid var(--border-color, #e5e7eb); border-radius: 8px; padding: 16px;">
-                    <h4 style="margin: 0 0 12px; font-size: 15px; font-weight: 600;">➕ 新增掃描目標並觸發</h4>
-                    <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
-                        <div style="flex: 2; min-width: 220px;">
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">目標網址 (Target Address)</label>
-                            <input type="url" id="awvs-new-target-address" class="modern-input" placeholder="https://target.example.com" style="width: 100%;">
-                        </div>
-                        <div style="flex: 1; min-width: 180px;">
-                            <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">掃描策略 (Profile)</label>
-                            <select id="awvs-new-target-profile" class="modern-select" style="width: 100%;">
-                                <option value="11111111-1111-1111-1111-111111111111">Full Scan (全量掃描)</option>
-                                <option value="11111111-1111-1111-1111-111111111112">Critical / High Risk (高危優先)</option>
-                                <option value="11111111-1111-1111-1111-111111111113">SQL Injection (SQL 注入)</option>
-                                <option value="11111111-1111-1111-1111-111111111116">XSS (跨站腳本)</option>
-                                <option value="11111111-1111-1111-1111-111111111129">OWASP Top 10</option>
-                            </select>
-                        </div>
-                        <button type="button" class="btn-primary" onclick="addAndScanAwvsTarget()" style="white-space: nowrap; height: 38px;">🚀 新增並發起掃描</button>
-                    </div>
-                </div>
-
-                <!-- AWVS 目標列表 -->
-                <div>
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                        <h4 style="margin: 0; font-size: 15px; font-weight: 600;">📋 AWVS 目標列表 (<span id="awvs-targets-count">0</span>)</h4>
-                        <button type="button" class="btn-secondary btn-small" onclick="loadAwvsTargets()">刷新列表</button>
-                    </div>
-                    <div style="overflow-x: auto; border: 1px solid var(--border-color, #e5e7eb); border-radius: 8px;">
-                        <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
-                            <thead>
-                                <tr style="background: var(--bg-hover, #f3f4f6); text-align: left;">
-                                    <th style="padding: 10px 14px;">目標網址</th>
-                                    <th style="padding: 10px 14px;">漏洞統計</th>
-                                    <th style="padding: 10px 14px;">最新狀態</th>
-                                    <th style="padding: 10px 14px; text-align: right;">操作按鈕</th>
-                                </tr>
-                            </thead>
-                            <tbody id="awvs-targets-tbody">
-                                <tr><td colspan="4" style="text-align: center; padding: 20px; color: var(--text-secondary);">載入目標中…</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer" style="padding: 12px 20px; border-top: 1px solid var(--border-color, #e5e7eb); display: flex; justify-content: flex-end;">
-                <button type="button" class="btn-secondary" onclick="closeAwvsModal()">關閉</button>
-            </div>
-        </div>
-    </div>
 
     <!-- POC / EXP 草稿預覽與導出彈窗 -->
     <div id="poc-preview-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="poc-preview-title" style="display: none;">

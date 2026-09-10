@@ -42,9 +42,11 @@ function proxyPoolNumber(id, fallback, min, max) {
 }
 
 function normalizeProxyPoolDraftEntry(entry, index) {
+    const rawGroup = String(entry?.group || '').toLowerCase().trim();
     return {
         name: String(entry?.name || `s5-${index + 1}`).trim(),
         url: String(entry?.url || '').trim(),
+        group: rawGroup === 'residential' ? 'residential' : 'dc',
         enabled: entry?.enabled !== false
     };
 }
@@ -91,7 +93,7 @@ function renderProxyPoolRows() {
     proxyPoolDraft.forEach((entry, index) => {
         const row = document.createElement('div');
         row.className = 'settings-form';
-        row.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;align-items:end;margin:10px 0;';
+        row.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;align-items:end;margin:10px 0;';
 
         const nameGroup = document.createElement('div');
         nameGroup.className = 'form-group';
@@ -119,6 +121,22 @@ function renderProxyPoolRows() {
         });
         urlGroup.append(urlLabel, urlInput);
 
+        const groupGroup = document.createElement('div');
+        groupGroup.className = 'form-group';
+        const groupLabel = document.createElement('label');
+        groupLabel.textContent = '分流分组';
+        const groupSelect = document.createElement('select');
+        const optDc = document.createElement('option');
+        optDc.value = 'dc';
+        optDc.textContent = '数据中心 (dc)';
+        const optRes = document.createElement('option');
+        optRes.value = 'residential';
+        optRes.textContent = '住宅轮替 (residential)';
+        groupSelect.append(optDc, optRes);
+        groupSelect.value = entry.group === 'residential' ? 'residential' : 'dc';
+        groupSelect.addEventListener('change', () => { proxyPoolDraft[index].group = groupSelect.value; });
+        groupGroup.append(groupLabel, groupSelect);
+
         const enabledLabel = document.createElement('label');
         enabledLabel.className = 'checkbox-label';
         enabledLabel.style.marginBottom = '12px';
@@ -140,7 +158,7 @@ function renderProxyPoolRows() {
         removeButton.style.marginBottom = '4px';
         removeButton.textContent = '删除';
         removeButton.addEventListener('click', () => removeProxyPoolRow(index));
-        row.append(nameGroup, urlGroup, enabledLabel, removeButton);
+        row.append(nameGroup, urlGroup, groupGroup, enabledLabel, removeButton);
 
 		const probe = proxyPoolProbeResults[proxyPoolURLKey(entry.url)];
         if (probe) {
@@ -148,9 +166,10 @@ function renderProxyPoolRows() {
             status.className = 'form-hint';
             status.style.gridColumn = '1 / -1';
             status.style.color = probe.healthy ? 'var(--success-color, #22c55e)' : 'var(--danger-color, #ef4444)';
+            const groupBadge = entry.group === 'residential' ? '【住宅轮替】' : '【数据中心】';
             status.textContent = probe.healthy
-                ? `可用 · 出口 ${probe.exit_ip || '-'} · ${probe.last_latency_ms || 0} ms`
-                : `不可用 · ${probe.error || '连接失败'}`;
+                ? `${groupBadge} 可用 · 出口 ${probe.exit_ip || '-'} · ${probe.last_latency_ms || 0} ms`
+                : `${groupBadge} 不可用 · ${probe.error || '连接失败'}`;
             row.appendChild(status);
         }
         list.appendChild(row);
@@ -164,7 +183,7 @@ function renderProxyPoolRows() {
 }
 
 function addProxyPoolRow() {
-    proxyPoolDraft.push({name: `s5-${proxyPoolDraft.length + 1}`, url: '', enabled: true});
+    proxyPoolDraft.push({name: `s5-${proxyPoolDraft.length + 1}`, url: '', group: 'dc', enabled: true});
     renderProxyPoolRows();
 }
 

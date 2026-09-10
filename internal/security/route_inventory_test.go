@@ -23,7 +23,6 @@ func TestEveryProtectedRouteHasCatalogPermission(t *testing.T) {
 		"protected":       "",
 		"c2Routes":        "/c2",
 		"knowledgeRoutes": "/knowledge",
-		"awvsRoutes":      "/awvs",
 		"sentinelRoutes":  "/sentinel",
 	}
 	found := 0

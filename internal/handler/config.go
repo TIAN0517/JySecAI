@@ -376,14 +376,39 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		),
 	}
 
+	fofaCfg := h.config.FOFA
+	if fofaCfg.APIKey == "" {
+		if k := strings.TrimSpace(os.Getenv("FOFA_API_KEY")); k != "" {
+			fofaCfg.APIKey = k
+		}
+	}
+	zoomeyeCfg := h.config.ZoomEye
+	if zoomeyeCfg.APIKey == "" {
+		if k := strings.TrimSpace(os.Getenv("ZOOMEYE_API_KEY")); k != "" {
+			zoomeyeCfg.APIKey = k
+		}
+	}
+	quakeCfg := h.config.Quake
+	if quakeCfg.APIKey == "" {
+		if k := strings.TrimSpace(os.Getenv("QUAKE_API_KEY")); k != "" {
+			quakeCfg.APIKey = k
+		}
+	}
+	shodanCfg := h.config.Shodan
+	if shodanCfg.APIKey == "" {
+		if k := strings.TrimSpace(os.Getenv("SHODAN_API_KEY")); k != "" {
+			shodanCfg.APIKey = k
+		}
+	}
+
 	resp := GetConfigResponse{
 		AI:         h.config.AI,
 		OpenAI:     h.config.OpenAI,
 		Vision:     h.config.Vision,
-		FOFA:       h.config.FOFA,
-		ZoomEye:    h.config.ZoomEye,
-		Quake:      h.config.Quake,
-		Shodan:     h.config.Shodan,
+		FOFA:       fofaCfg,
+		ZoomEye:    zoomeyeCfg,
+		Quake:      quakeCfg,
+		Shodan:     shodanCfg,
 		ProxyPool:  h.config.ProxyPool,
 		MCP:        h.config.MCP,
 		Tools:      tools,

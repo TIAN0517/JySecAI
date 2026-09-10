@@ -153,11 +153,6 @@ func permissionForRequest(method, fullPath string) string {
 		return crudPermission(method, "knowledge")
 	case strings.HasPrefix(path, "/vulnerabilities"):
 		return crudPermission(method, "vulnerability")
-	case strings.HasPrefix(path, "/awvs"):
-		if method == http.MethodGet || method == http.MethodHead {
-			return "vulnerability:read"
-		}
-		return "vulnerability:write"
 	case path == "/sentinel/sync/vulnerabilities":
 		return "vulnerability:write"
 	case strings.HasPrefix(path, "/sentinel"):
@@ -201,6 +196,8 @@ func permissionForRequest(method, fullPath string) string {
 		return "openapi:read"
 	case strings.HasPrefix(path, "/fofa"):
 		return "fofa:execute"
+	case strings.HasPrefix(path, "/recon"):
+		return crudPermission(method, "asset")
 	default:
 		return ""
 	}

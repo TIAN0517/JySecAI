@@ -42,7 +42,6 @@ const envSctema = z
     JYSECAI_SERVICE_TOKEN: z.string().optional(),
     JYSEC_ENGINE_HEXSTRIKE_URL: optionalUrlFromEnv,
     JYSEC_ENGINE_KALI_MCP_URL: optionalUrlFromEnv,
-    JYSEC_ENGINE_AWVS_URL: optionalUrlFromEnv,
     JYSEC_ENGINE_PROMPTFOO_URL: optionalUrlFromEnv,
     JYSEC_ENGINE_PYRIT_URL: optionalUrlFromEnv,
     JYSEC_ENGINE_GISKARD_URL: optionalUrlFromEnv,
@@ -150,7 +149,6 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env) {
       adapterUrls: {
         hexstrike: parsed.JYSEC_ENGINE_HEXSTRIKE_URL,
         "kali-mcp": parsed.JYSEC_ENGINE_KALI_MCP_URL,
-        awvs: parsed.JYSEC_ENGINE_AWVS_URL,
         promptfoo: parsed.JYSEC_ENGINE_PROMPTFOO_URL,
         pyrit: parsed.JYSEC_ENGINE_PYRIT_URL,
         giskard: parsed.JYSEC_ENGINE_GISKARD_URL,

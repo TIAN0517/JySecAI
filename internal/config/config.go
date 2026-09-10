@@ -1547,10 +1547,29 @@ func Load(path string) (*Config, error) {
 	}
 	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 
+	// 尝试加载配置文件所在目录及当前工作目录下的 .env 环境变量
+	loadDotEnvIfPresent(filepath.Dir(path))
+	loadDotEnvIfPresent(".")
+
 	var cfg Config
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		return nil, fmt.Errorf("解析配置文件失败: %w", err)
 	}
+
+	// 外部 MCP：官方 disabled 字段迁移为 ExternalMCPEnable
+	if cfg.ExternalMCP.Servers != nil {
+		for name, serverCfg := range cfg.ExternalMCP.Servers {
+			if serverCfg.Disabled {
+				serverCfg.ExternalMCPEnable = false
+			} else if !serverCfg.ExternalMCPEnable {
+				serverCfg.ExternalMCPEnable = true
+			}
+			cfg.ExternalMCP.Servers[name] = serverCfg
+		}
+	}
+
+	// 全局环境变量展开（在 Normalize 与 ApplyDefaultAIChannel 之前展开，确保各通道及资产测绘 API 获得完整配置）
+	ExpandConfigEnvAll(&cfg)
 
 	if cfg.Auth.SessionDurationHours <= 0 {
 		cfg.Auth.SessionDurationHours = 12
@@ -1575,24 +1594,6 @@ func Load(path string) (*Config, error) {
 			return nil, fmt.Errorf("从工具目录加载工具配置失败: %w", err)
 		}
 		cfg.Security.Tools = merged
-	}
-
-	// 外部 MCP：迁移 + 环境变量展开
-	if cfg.ExternalMCP.Servers != nil {
-		for name, serverCfg := range cfg.ExternalMCP.Servers {
-			// 官方 disabled 字段 → ExternalMCPEnable
-			if serverCfg.Disabled {
-				serverCfg.ExternalMCPEnable = false
-			} else if !serverCfg.ExternalMCPEnable {
-				// 默认启用
-				serverCfg.ExternalMCPEnable = true
-			}
-
-			// 展开所有 ${VAR} / ${VAR:-default} 环境变量引用
-			ExpandConfigEnv(&serverCfg)
-
-			cfg.ExternalMCP.Servers[name] = serverCfg
-		}
 	}
 
 	// 从角色目录加载角色配置

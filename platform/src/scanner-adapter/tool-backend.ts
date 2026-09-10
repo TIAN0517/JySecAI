@@ -166,14 +166,14 @@ function conditionMatches(task: ScannerTask, findings: FindingSubmission[]): boo
   });
 }
 
-function backendUrl(engine: Exclude<ScannerEngine, "awvs">, config: ScannerAdapterConfig): string {
+function backendUrl(engine: ScannerEngine, config: ScannerAdapterConfig): string {
   const value = engine === "hexstrike" ? config.backends.hexstrike : config.backends.kali;
   if (!value) throw new Error(`${engine} backend URL is not configured`);
   return value;
 }
 
 async function callTool(input: {
-  engine: Exclude<ScannerEngine, "awvs">;
+  engine: ScannerEngine;
   config: ScannerAdapterConfig;
   task: ScannerTask;
   target: string;
@@ -204,7 +204,7 @@ interface TaskOutcome {
 }
 
 async function executeTasks(input: {
-  engine: Exclude<ScannerEngine, "awvs">;
+  engine: ScannerEngine;
   config: ScannerAdapterConfig;
   job: ScannerJob;
   tasks: ScannerTask[];
@@ -258,7 +258,7 @@ async function executeTasks(input: {
 }
 
 export async function executeToolBackend(
-  engine: Exclude<ScannerEngine, "awvs">,
+  engine: ScannerEngine,
   job: ScannerJob,
   config: ScannerAdapterConfig,
   proxy?: ProxyEndpoint,

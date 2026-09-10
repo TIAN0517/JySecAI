@@ -5,7 +5,6 @@ export const engineIds = [
   "jysecai",
   "hexstrike",
   "kali-mcp",
-  "awvs",
   "promptfoo",
   "pyrit",
   "giskard",

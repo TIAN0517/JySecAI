@@ -35,6 +35,9 @@ JySecAI 由兩個後端應用組成；reference Compose 已用同源 Gateway 將
 
 ## 目前確實已落地
 
+- 原生 Go Recon Engine 已接入 Go core：`POST /api/recon/runs` 建立授權掃描、`GET /api/recon/runs/:id` 查詢結果；目前內建 DNS、HTTP、常見 TCP port 與敏感端點檢查，所有執行都受既有 session／RBAC 路由保護。
+- Desinter_scan 的 23 個 collector 名稱已納入同一個 Go registry；可直接使用 `profile=deep` 或 `profile=audit` 啟動全清單。純 Go collector 會直接執行，Nuclei、WhatWeb、dirsearch、gau、waybackurls、gowitness 等外部工具缺少時會明確回報 error，不會偽造成功。
+- 不需要逐個按 collector：登入 JySecAI 後只呼叫 `POST /api/recon/auto`，body 傳入 `{"target":"example.com"}`，系統會自動啟動完整清單；以回傳的 `id` 輪詢 `GET /api/recon/runs/:id` 即可取得進度與結果。
 - JySecAI 品牌已套用至新增控制面與既有 Go Web 介面。
 - Fastify 控制面、PostgreSQL store、Redis Streams dispatcher、JWT／JWKS 驗證、Prometheus metrics。
 - Run 建立、一次人工核准、取消、狀態轉移、冪等鍵、租戶並發與月額度檢查。

@@ -218,20 +218,7 @@ func mcpToolAuthorizer(db *database.DB) func(context.Context, string, map[string
 				}
 			}
 			return nil
-		case builtin.ToolAWVSStatus, builtin.ToolAWVSListTargets, builtin.ToolAWVSGetScanStatus:
-			return require("vulnerability:read")
-		case builtin.ToolAWVSStartScan:
-			return require("vulnerability:write")
-		case builtin.ToolAWVSSyncVulnerabilities:
-			if err := require("vulnerability:write"); err != nil {
-				return err
-			}
-			if projectID := mcpAuthorizationString(args, "project_id"); projectID != "" && db != nil {
-				if !db.UserCanAccessResource(principal.UserID, principal.ScopeFor("vulnerability:write"), "project", projectID) {
-					return fmt.Errorf("no access to project %s", projectID)
-				}
-			}
-			return nil
+
 		case builtin.ToolVerifyPoc:
 			if err := require("vulnerability:write"); err != nil {
 				return err

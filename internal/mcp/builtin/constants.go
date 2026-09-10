@@ -81,13 +81,6 @@ const (
 	ToolSentinelSyncAssets          = "sentinel_sync_assets"
 	ToolSentinelSyncVulnerabilities = "sentinel_sync_vulnerabilities"
 
-	// AWVS 扫描器联动工具
-	ToolAWVSStatus              = "awvs_status"
-	ToolAWVSListTargets         = "awvs_list_targets"
-	ToolAWVSStartScan           = "awvs_start_scan"
-	ToolAWVSGetScanStatus       = "awvs_get_scan_status"
-	ToolAWVSSyncVulnerabilities = "awvs_sync_vulnerabilities"
-
 	// POC / EXP 在线弱验证工具
 	ToolVerifyPoc = "verify_poc"
 )
@@ -153,12 +146,6 @@ func IsBuiltinTool(toolName string) bool {
 		ToolGetSentinelScan,
 		ToolSentinelSyncAssets,
 		ToolSentinelSyncVulnerabilities,
-		// AWVS 扫描器联动工具
-		ToolAWVSStatus,
-		ToolAWVSListTargets,
-		ToolAWVSStartScan,
-		ToolAWVSGetScanStatus,
-		ToolAWVSSyncVulnerabilities,
 		// POC 在线验证工具
 		ToolVerifyPoc:
 		return true
@@ -228,12 +215,6 @@ func GetAllBuiltinTools() []string {
 		ToolGetSentinelScan,
 		ToolSentinelSyncAssets,
 		ToolSentinelSyncVulnerabilities,
-		// AWVS 扫描器联动工具
-		ToolAWVSStatus,
-		ToolAWVSListTargets,
-		ToolAWVSStartScan,
-		ToolAWVSGetScanStatus,
-		ToolAWVSSyncVulnerabilities,
 		// POC 在线验证工具
 		ToolVerifyPoc,
 	}

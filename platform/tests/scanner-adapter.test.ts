@@ -2,7 +2,6 @@ import http, { type IncomingMessage, type ServerResponse } from "node:http";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import { executeAwvs } from "../src/scanner-adapter/awvs.js";
 import { loadScannerAdapterConfig } from "../src/scanner-adapter/config.js";
 import { buildScannerAdapter } from "../src/scanner-adapter/server.js";
 import { executeToolBackend } from "../src/scanner-adapter/tool-backend.js";
@@ -87,7 +86,6 @@ function adapterConfig(values: Record<string, string>) {
   return loadScannerAdapterConfig({
     JYSEC_SCANNER_MAX_RETRIES: "0",
     JYSEC_SCANNER_REQUEST_TIMEOUT_SECONDS: "5",
-    JYSEC_AWVS_POLL_INTERVAL_SECONDS: "2",
     ...values,
   });
 }
@@ -150,71 +148,6 @@ describe("tool scanner backends", () => {
   });
 });
 
-describe("AWVS backend", () => {
-  it("runs a scan, ingests findings, and waits for authorized rechecks", async () => {
-    const upstream = await mockServer((request, response) => {
-      if (request.method === "GET" && request.path.startsWith("/api/v1/targets?")) {
-        json(response, 200, {
-          targets: [{ target_id: "target-1", address: "https://example.test" }],
-        });
-      } else if (request.method === "POST" && request.path === "/api/v1/scans") {
-        json(response, 201, { scan_id: "scan-1" });
-      } else if (request.method === "GET" && request.path === "/api/v1/scans/scan-1") {
-        json(response, 200, {
-          current_session: { status: "completed", progress: 100, scan_session_id: "result-1" },
-        });
-      } else if (request.method === "GET" && request.path.startsWith("/api/v1/scans/scan-1/results?")) {
-        json(response, 200, { results: [{ result_id: "result-1", status: "completed" }] });
-      } else if (request.method === "GET" && request.path.startsWith("/api/v1/scans/scan-1/results/result-1/vulnerabilities?")) {
-        json(response, 200, {
-          vulnerabilities: [{
-            vuln_id: "vuln-1",
-            vt_id: "type-1",
-            vt_name: "SQL injection",
-            source: "acunetix",
-            severity: 4,
-            confidence: 95,
-            affects_url: "https://example.test/search",
-          }],
-        });
-      } else if (request.method === "PUT" && request.path.endsWith("/vuln-1/recheck")) {
-        json(response, 201, {}, { location: "/api/v1/scans/recheck-1" });
-      } else if (request.method === "GET" && request.path === "/api/v1/scans/recheck-1") {
-        json(response, 200, {
-          current_session: { status: "completed", progress: 100, scan_session_id: "result-2" },
-        });
-      } else if (request.method === "GET" && request.path.startsWith("/api/v1/scans/recheck-1/results?")) {
-        json(response, 200, { results: [{ result_id: "result-2", status: "completed" }] });
-      } else if (request.method === "GET" && request.path.startsWith("/api/v1/scans/recheck-1/results/result-2/vulnerabilities?")) {
-        json(response, 200, {
-          vulnerabilities: [{
-            vuln_id: "vuln-1",
-            vt_id: "type-1",
-            vt_name: "SQL injection",
-            source: "acunetix",
-            severity: 4,
-            confidence: 99,
-          }],
-        });
-      } else {
-        json(response, 404, { error: `unhandled ${request.method} ${request.path}` });
-      }
-    });
-
-    const result = await executeAwvs(
-      job("awvs", ["exploit_validation"], { autoValidate: true, maxValidationFindings: 1 }),
-      adapterConfig({
-        JYSEC_AWVS_API_URL: upstream.origin,
-        JYSEC_AWVS_API_KEY: "test-api-key",
-      }),
-    );
-
-    expect(result.findings).toHaveLength(1);
-    expect(result.findings[0]).toMatchObject({ title: "SQL injection", status: "confirmed" });
-    expect(upstream.requests.some((item) => item.method === "PUT" && item.path.endsWith("/recheck"))).toBe(true);
-    expect(result.summary.validationAuthorized).toBe(true);
-  });
-});
 
 describe("scanner adapter HTTP boundary", () => {
   it("keeps health public and protects execution with the configured bearer token", async () => {

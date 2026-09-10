@@ -31,6 +31,7 @@ import (
 	"jysecai/internal/monitor"
 	"jysecai/internal/multiagent"
 	"jysecai/internal/proxypool"
+	"jysecai/internal/recon"
 	"jysecai/internal/robot"
 	"jysecai/internal/security"
 	"jysecai/internal/skillpackage"
@@ -77,6 +78,7 @@ type App struct {
 	sentinelHandler    *handler.SentinelHandler  // 零零哨兵 (Surface Watch) 暴露面巡检
 	auditSvc           *audit.Service
 	proxyPool          *proxypool.Manager
+	reconHandler       *handler.ReconHandler
 }
 
 // New 创建新应用
@@ -439,15 +441,13 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	terminalHandler := handler.NewTerminalHandler(log.Logger)
 	securityOpsHandler := handler.NewSecurityOpsHandler(log.Logger)
 	securityOpsHandler.SetAudit(auditSvc)
-	awvsHandler := handler.NewAWVSHandler(db, log.Logger, "", "")
 	sentinelHandler := handler.NewSentinelHandler(db, log.Logger)
 	if db != nil {
 		skillsHandler.SetDB(db) // 设置数据库连接以便获取调用统计
 	}
 
-	// 注册暴露面哨兵 (Sentinel) 与 AWVS 联动 MCP 工具集
+	// 注册暴露面哨兵 (Sentinel) MCP 工具集
 	registerSentinelTools(mcpServer, db, sentinelHandler, log.Logger)
-	registerAWVSTools(mcpServer, db, awvsHandler, log.Logger)
 
 	// ============================================================================
 	// 初始化 C2 模块（可按配置关闭，节省本机部署资源）
@@ -477,6 +477,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	robotHandler.SetAudit(auditSvc)
 	db.SetVulnerabilityCreatedHook(robotHandler.NotifyNewVulnerability)
 	openAPIHandler := handler.NewOpenAPIHandler(db, log.Logger, conversationHandler, agentHandler)
+	reconHandler := handler.NewReconHandler(recon.NewEngine(8))
 
 	// 创建 App 实例（部分字段稍后填充）
 	app := &App{
@@ -505,6 +506,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		sentinelHandler:    sentinelHandler,
 		auditSvc:           auditSvc,
 		proxyPool:          proxyPoolManager,
+		reconHandler:       reconHandler,
 	}
 	// 飞书/钉钉长连接（无需公网），启用时在后台启动；后续前端应用配置时会通过 RestartRobotConnections 重启
 	app.startRobotConnections()
@@ -520,7 +522,6 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		registerVisionTools(mcpServer, cfg, log.Logger)
 		registerPocGeneratorTools(mcpServer, db, cfg, log.Logger)
 		registerSentinelTools(mcpServer, db, sentinelHandler, log.Logger)
-		registerAWVSTools(mcpServer, db, awvsHandler, log.Logger)
 		return nil
 	}
 	configHandler.SetVulnerabilityToolRegistrar(vulnerabilityRegistrar)
@@ -625,7 +626,6 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		mcpServer,
 		authManager,
 		openAPIHandler,
-		awvsHandler,
 		sentinelHandler,
 	)
 
@@ -938,7 +938,6 @@ func setupRoutes(
 	mcpServer *mcp.Server,
 	authManager *security.AuthManager,
 	openAPIHandler *handler.OpenAPIHandler,
-	awvsHandler *handler.AWVSHandler,
 	sentinelHandler *handler.SentinelHandler,
 ) {
 	// API路由
@@ -981,6 +980,11 @@ func setupRoutes(
 		}
 	}))
 	{
+		protected.POST("/recon/runs", security.RequirePermission("asset:write"), app.reconHandler.Start)
+		protected.POST("/recon/auto", security.RequirePermission("asset:write"), app.reconHandler.Auto)
+		protected.GET("/recon/runs/:id", security.RequirePermission("asset:read"), app.reconHandler.Get)
+		protected.POST("/recon/runs/:id/cancel", security.RequirePermission("asset:write"), app.reconHandler.Cancel)
+
 		protected.GET("/rbac/me", rbacHandler.Me)
 		protected.GET("/rbac/metadata", rbacHandler.Metadata)
 		protected.GET("/rbac/users", rbacHandler.ListUsers)
@@ -1310,17 +1314,7 @@ func setupRoutes(
 		protected.DELETE("/vulnerabilities/:id", vulnerabilityHandler.DeleteVulnerability)
 		protected.POST("/vulnerabilities/:id/generate-poc", vulnerabilityHandler.GeneratePoc)
 		protected.POST("/vulnerabilities/batch-generate-poc", vulnerabilityHandler.BatchGeneratePoc)
-
-		// AWVS 聯動管理
-		awvsRoutes := protected.Group("/awvs")
-		{
-			awvsRoutes.GET("/status", awvsHandler.GetStatus)
-			awvsRoutes.GET("/targets", awvsHandler.ListTargets)
-			awvsRoutes.POST("/targets", awvsHandler.CreateTarget)
-			awvsRoutes.POST("/scan", awvsHandler.StartScan)
-			awvsRoutes.POST("/sync", awvsHandler.SyncVulnerabilities)
-			awvsRoutes.POST("/config", awvsHandler.UpdateConfig)
-		}
+		protected.POST("/vulnerabilities/:id/verify-poc", vulnerabilityHandler.VerifyPoc)
 
 		// 零零哨兵 (Surface Watch) 暴露面巡检
 		sentinelRoutes := protected.Group("/sentinel")

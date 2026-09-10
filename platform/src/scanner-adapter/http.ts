@@ -53,7 +53,7 @@ function parseBody(raw: string): unknown {
   }
 }
 
-// Acunetix may issue a certificate whose numeric host is encoded as a DNS SAN
+// Some appliance scanners may issue a certificate whose numeric host is encoded as a DNS SAN
 // instead of an IP SAN. Node correctly rejects that with checkHost(), so allow
 // only an exact numeric DNS SAN as a narrow compatibility fallback.
 export function matchesNumericDnsSan(expected: string, subjectAltName: string | undefined): boolean {
