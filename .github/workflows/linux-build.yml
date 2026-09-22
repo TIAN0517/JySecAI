@@ -1,0 +1,42 @@
+name: Linux Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.x'
+
+      - name: Install CGO dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential
+
+      - name: Test
+        run: go test ./internal/multiagent/...
+
+      - name: Build Linux production binary
+        env:
+          CGO_ENABLED: 1
+          GOOS: linux
+          GOARCH: amd64
+        run: go build -o jysec-core-linux ./cmd/server
+
+      - name: Verify binary
+        run: |
+          file jysec-core-linux
+          ldd jysec-core-linux || true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jysec-core-linux-amd64
+          path: jysec-core-linux
