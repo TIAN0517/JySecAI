@@ -155,45 +155,6 @@ func TestEinoRunErrorHandlerRetryExhaustedOriginalErrorProgress(t *testing.T) {
 	}
 }
 
-func TestEinoClientRunErrorMessageToolCallingCapability(t *testing.T) {
-	raw := `[NodeRunError] error, status code: 400, status: 400 Bad Request, message: "auto" tool choice requires --enable-auto-tool-choice and --tool-call-parser to be set` + "\nnode path: [node_1, ChatModel]"
-	cases := []struct {
-		name string
-		err  error
-		want string
-	}{
-		{name: "direct", err: errors.New(raw), want: raw},
-		{name: "retry exhausted", err: &adk.RetryExhaustedError{LastErr: errors.New(raw), TotalRetries: 4}, want: "模型调用重试已耗尽（已重试 4 次）"},
-		{name: "summarization", err: newEinoSummarizationModelError(errors.New(raw)), want: "摘要阶段大模型调用失败"},
-	}
-	for _, tc := range cases {
-		t.Run(tc.name, func(t *testing.T) {
-			got := EinoClientRunErrorMessage(tc.err)
-			if !strings.HasPrefix(got, "模型服务未启用当前请求所需的自动工具调用支持") {
-				t.Fatalf("missing capability explanation: %q", got)
-			}
-			if !strings.Contains(got, raw) || !strings.Contains(got, tc.want) {
-				t.Fatalf("original error or phase/retry context lost: %q", got)
-			}
-		})
-	}
-}
-
-func TestEinoClientRunErrorMessageLeavesOtherErrorsUnchanged(t *testing.T) {
-	if got := EinoClientRunErrorMessage(nil); got != "" {
-		t.Fatalf("nil error = %q", got)
-	}
-	for _, raw := range []string{
-		"401 Unauthorized",
-		"400 Bad Request: invalid model",
-		"unknown argument: --tool-call-parser",
-	} {
-		if got := EinoClientRunErrorMessage(errors.New(raw)); got != raw {
-			t.Fatalf("unrelated error changed: %q", got)
-		}
-	}
-}
-
 func TestEinoClientRunErrorMessageUsesRawRetryExhaustedModelError(t *testing.T) {
 	raw := "summary content is empty: role=assistant content_runes=0 reasoning_runes=42\nprovider request id: req_123"
 	err := &adk.RetryExhaustedError{

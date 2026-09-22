@@ -4,16 +4,16 @@ Optional integrations that connect JySecAI with other tools.
 
 ### Burp Suite
 
-- **Path**: `plugins/burp-suite/jysecai-burp-extension/`
-- **Build**: `bash build-mvn.sh` → `dist/jysecai-burp-extension.jar`
+- **Path**: `plugins/burp-suite/cyberstrikeai-burp-extension/`
+- **Build**: `bash build-mvn.sh` → `dist/cyberstrikeai-burp-extension.jar`
 - **Docs**: `README.md` / `README.zh-CN.md`
 
 ### Browser (Chrome / Edge)
 
-- **Path**: `plugins/browser-extension/jysecai-browser-extension/`
+- **Path**: `plugins/browser-extension/cyberstrikeai-browser-extension/`
 - **Version**: **0.3.8**
 - **Install**: `chrome://extensions/` → Load unpacked → F12 → **JySecAI** tab
-- **Package**: `bash package.sh` → `dist/jysecai-browser-extension.zip`
+- **Package**: `bash package.sh` → `dist/cyberstrikeai-browser-extension.zip`
 - **Docs**: `README.zh-CN.md` (full) / `README.md` (summary)
 
 #### Highlights (v0.3.x)

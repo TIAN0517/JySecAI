@@ -7,7 +7,6 @@ const (
 	ToolRecordVulnerability = "record_vulnerability"
 	ToolListVulnerabilities = "list_vulnerabilities"
 	ToolGetVulnerability    = "get_vulnerability"
-	ToolGeneratePocDraft    = "generate_poc_draft"
 
 	// 资产管理工具
 	ToolCreateAsset       = "create_asset"
@@ -74,15 +73,6 @@ const (
 	ToolC2Event      = "c2_event"       // 事件查询
 	ToolC2Profile    = "c2_profile"     // Malleable Profile 管理（list/get/create/update/delete）
 	ToolC2File       = "c2_file"        // 文件管理（list/get_result）
-
-	// 暴露面哨兵工具 (Sentinel / 零零哨兵)
-	ToolSentinelScan                = "sentinel_scan"
-	ToolGetSentinelScan             = "get_sentinel_scan"
-	ToolSentinelSyncAssets          = "sentinel_sync_assets"
-	ToolSentinelSyncVulnerabilities = "sentinel_sync_vulnerabilities"
-
-	// POC / EXP 在线弱验证工具
-	ToolVerifyPoc = "verify_poc"
 )
 
 // IsBuiltinTool 检查工具名称是否是内置工具
@@ -91,7 +81,6 @@ func IsBuiltinTool(toolName string) bool {
 	case ToolRecordVulnerability,
 		ToolListVulnerabilities,
 		ToolGetVulnerability,
-		ToolGeneratePocDraft,
 		ToolCreateAsset,
 		ToolGetAsset,
 		ToolQueryAssets,
@@ -140,14 +129,7 @@ func IsBuiltinTool(toolName string) bool {
 		ToolC2Payload,
 		ToolC2Event,
 		ToolC2Profile,
-		ToolC2File,
-		// 暴露面哨兵工具
-		ToolSentinelScan,
-		ToolGetSentinelScan,
-		ToolSentinelSyncAssets,
-		ToolSentinelSyncVulnerabilities,
-		// POC 在线验证工具
-		ToolVerifyPoc:
+		ToolC2File:
 		return true
 	default:
 		return false
@@ -160,7 +142,6 @@ func GetAllBuiltinTools() []string {
 		ToolRecordVulnerability,
 		ToolListVulnerabilities,
 		ToolGetVulnerability,
-		ToolGeneratePocDraft,
 		ToolCreateAsset,
 		ToolGetAsset,
 		ToolQueryAssets,
@@ -210,12 +191,5 @@ func GetAllBuiltinTools() []string {
 		ToolC2Event,
 		ToolC2Profile,
 		ToolC2File,
-		// 暴露面哨兵工具
-		ToolSentinelScan,
-		ToolGetSentinelScan,
-		ToolSentinelSyncAssets,
-		ToolSentinelSyncVulnerabilities,
-		// POC 在线验证工具
-		ToolVerifyPoc,
 	}
 }

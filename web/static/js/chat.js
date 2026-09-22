@@ -109,8 +109,8 @@ let isComposing = false;
 let compositionEndTimer = null;
 
 // 输入框草稿保存相关
-const DRAFT_STORAGE_KEY = 'jysec-chat-draft';
-const RECENT_CONVERSATIONS_EXPANDED_KEY = 'jysec-chat-recent-conversations-expanded';
+const DRAFT_STORAGE_KEY = 'cyberstrike-chat-draft';
+const RECENT_CONVERSATIONS_EXPANDED_KEY = 'cyberstrike-chat-recent-conversations-expanded';
 let draftSaveTimer = null;
 const DRAFT_SAVE_DELAY = 500; // 500ms防抖延迟
 
@@ -130,11 +130,11 @@ let chatAttachments = [];
 let chatAttachmentSeq = 0;
 
 // 对话模式：eino_single = Eino ADK 单代理（/api/eino-agent/stream）；deep / plan_execute / supervisor = Eino 多代理（/api/multi-agent/stream，请求体 orchestration）
-const AGENT_MODE_STORAGE_KEY = 'jysec-chat-agent-mode';
-const AGENT_MODE_CONVERSATION_STORAGE_PREFIX = 'jysec-chat-agent-mode:conversation';
-const AI_CHANNEL_STORAGE_KEY = 'jysec-chat-ai-channel';
-const REASONING_MODE_LS = 'jysec-chat-reasoning-mode';
-const REASONING_EFFORT_LS = 'jysec-chat-reasoning-effort';
+const AGENT_MODE_STORAGE_KEY = 'cyberstrike-chat-agent-mode';
+const AGENT_MODE_CONVERSATION_STORAGE_PREFIX = 'cyberstrike-chat-agent-mode:conversation';
+const AI_CHANNEL_STORAGE_KEY = 'cyberstrike-chat-ai-channel';
+const REASONING_MODE_LS = 'cyberstrike-chat-reasoning-mode';
+const REASONING_EFFORT_LS = 'cyberstrike-chat-reasoning-effort';
 const CHAT_AI_CHANNEL_SUMMARY_NAME_MAX = 10;
 const CHAT_AGENT_MODE_EINO_SINGLE = 'eino_single';
 const CHAT_AGENT_EINO_MODES = ['deep', 'plan_execute', 'supervisor'];
@@ -153,7 +153,7 @@ const CHAT_SYSTEM_MODEL_CACHE_TTL_MS = 5 * 60 * 1000;
 const chatSystemModelCache = new Map();
 
 // 人机协同（HITL）会话级配置
-const HITL_STORAGE_PREFIX = 'jysec-chat-hitl';
+const HITL_STORAGE_PREFIX = 'cyberstrike-chat-hitl';
 const HITL_MODE_OFF = 'off';
 const HITL_MODE_APPROVAL = 'approval';
 const HITL_MODE_REVIEW_EDIT = 'review_edit';
@@ -1891,6 +1891,8 @@ function initChatPrimaryActionButton() {
     updateChatPrimaryActionState();
 }
 
+document.addEventListener('DOMContentLoaded', initChatPrimaryActionButton);
+
 function closeChatReasoningPanel() {
     const wrap = document.getElementById('chat-reasoning-wrapper');
     const toggle = document.getElementById('conversation-reasoning-toggle');
@@ -2282,8 +2284,8 @@ async function sendMessage() {
     const displayMessage = hasAttachments
         ? message + '\n' + chatAttachments.map(a => '📎 ' + a.fileName).join('\n')
         : message;
-    if (window.JySecChatScroll) {
-        window.JySecChatScroll.onUserSendMessage();
+    if (window.CyberStrikeChatScroll) {
+        window.CyberStrikeChatScroll.onUserSendMessage();
     }
     addMessage('user', displayMessage, null, null, null, { scroll: 'none' });
     if (currentConversationId) {
@@ -2362,9 +2364,9 @@ async function sendMessage() {
 
     // 创建进度消息容器（使用详细的进度展示）
     const progressId = addProgressMessage();
-    if (window.JySecChatScroll) {
-        window.JySecChatScroll.markProgressStreaming(true, progressId);
-        window.JySecChatScroll.onUserSendMessage();
+    if (window.CyberStrikeChatScroll) {
+        window.CyberStrikeChatScroll.markProgressStreaming(true, progressId);
+        window.CyberStrikeChatScroll.onUserSendMessage();
     }
     const progressElement = document.getElementById(progressId);
     registerProgressTask(progressId, streamConversationId);
@@ -2503,8 +2505,8 @@ async function sendMessage() {
             }
         } finally {
             const clearedOwnedStream = clearLiveChatStreamIfOwned(liveStreamState);
-            if (clearedOwnedStream && !liveStreamState.detached && window.JySecChatScroll) {
-                window.JySecChatScroll.onStreamEnd();
+            if (clearedOwnedStream && !liveStreamState.detached && window.CyberStrikeChatScroll) {
+                window.CyberStrikeChatScroll.onStreamEnd();
             }
         }
 
@@ -3651,8 +3653,8 @@ function addMessage(role, content, mcpExecutionIds = null, progressId = null, cr
         messageDiv.setAttribute('data-system-ready-message', '1');
     }
     messagesDiv.appendChild(messageDiv);
-    if (window.JySecChatScroll) {
-        window.JySecChatScroll.applyMessageScroll(options);
+    if (window.CyberStrikeChatScroll) {
+        window.CyberStrikeChatScroll.applyMessageScroll(options);
     } else {
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
@@ -3869,14 +3871,14 @@ function hasModelOutputRecoveryMarker(value) {
     let obj = value;
     if (typeof obj === 'string') {
         const text = obj.trim();
-        if (!text || text.indexOf('_jysec_model_output_recovery') === -1) return false;
+        if (!text || text.indexOf('_cyberstrike_model_output_recovery') === -1) return false;
         try {
             obj = JSON.parse(text);
         } catch (e) {
             return false;
         }
     }
-    return !!(obj && typeof obj === 'object' && obj._jysec_model_output_recovery);
+    return !!(obj && typeof obj === 'object' && obj._cyberstrike_model_output_recovery);
 }
 
 function isModelOutputRecoveryToolCallDetail(detail) {
@@ -4355,8 +4357,10 @@ function renderProcessDetails(messageId, processDetails, options) {
                 : { kind: (data.success !== false ? 'success' : 'error'), isError: data.success === false };
             const backgroundRunning = displayState.kind === 'background_running';
             const success = !displayState.isError && !backgroundRunning;
-            const statusIcon = backgroundRunning ? '⏳' : (success ? '✅' : '❌');
-            const execText = backgroundRunning
+            const statusIcon = displayState.kind === 'blocked' ? '🛡' : (backgroundRunning ? '⏳' : (success ? '✅' : '❌'));
+            const execText = displayState.kind === 'blocked'
+                ? (typeof window.t === 'function' ? window.t('chat.toolExecBlocked', { name: escapeHtml(toolName) }) : '工具 ' + escapeHtml(toolName) + ' 已拦截')
+                : backgroundRunning
                 ? ((typeof window.getBackgroundRunningToolLabel === 'function' ? window.getBackgroundRunningToolLabel() : '后台执行中') + ': ' + escapeHtml(toolName))
                 : (success ? (typeof window.t === 'function' ? window.t('chat.toolExecComplete', { name: escapeHtml(toolName) }) : '工具 ' + escapeHtml(toolName) + ' 执行完成') : (typeof window.t === 'function' ? window.t('chat.toolExecFailed', { name: escapeHtml(toolName) }) : '工具 ' + escapeHtml(toolName) + ' 执行失败'));
             let execLine = statusIcon + ' ' + execText;
@@ -5399,7 +5403,7 @@ function normalizeToolExecutionSummary(raw) {
     if (raw && typeof raw === 'object') {
         return {
             toolName: raw.toolName || raw.name || '',
-            status: raw.status || ''
+            status: typeof window.getToolExecutionDisplayStatus === 'function' ? window.getToolExecutionDisplayStatus(raw) : (raw.status || '')
         };
     }
     return { toolName: '', status: '' };
@@ -5411,6 +5415,7 @@ function getToolExecutionStatusLabel(status) {
         const keyMap = {
             completed: 'mcpMonitor.statusSuccess',
             failed: 'mcpMonitor.statusFailed',
+            blocked: 'mcpMonitor.statusBlocked',
             running: 'mcpMonitor.statusRunning',
             cancelled: 'mcpMonitor.statusCancelled',
             pending: 'mcpMonitor.statusPending',
@@ -5425,6 +5430,7 @@ function getToolExecutionStatusLabel(status) {
     const fallback = {
         completed: '成功',
         failed: '失败',
+        blocked: '已拦截',
         running: '运行中',
         cancelled: '已取消',
         pending: '等待中',
@@ -5504,7 +5510,8 @@ function formatMCPResultJsonForDisplay(result) {
     if (!result) return '{}';
     const payload = {
         content: result.content,
-        isError: !!result.isError
+        isError: !!result.isError,
+        ...(result.blocked === true ? { blocked: true } : {})
     };
     return JSON.stringify(payload, null, 2);
 }
@@ -5552,12 +5559,13 @@ function renderMCPDetailModal(exec) {
     document.getElementById('detail-tool-name').textContent = exec.toolName || (typeof window.t === 'function' ? window.t('mcpDetailModal.unknown') : 'Unknown');
     document.getElementById('detail-execution-id').textContent = exec.id || 'N/A';
     const statusEl = document.getElementById('detail-status');
-    const normalizedStatus = (exec.status || 'unknown').toLowerCase();
-    statusEl.textContent = getStatusText(exec.status);
+    const normalizedStatus = typeof window.getToolExecutionDisplayStatus === 'function' ? window.getToolExecutionDisplayStatus(exec) : (exec.status || 'unknown').toLowerCase();
+    const blocked = normalizedStatus === 'blocked';
+    statusEl.textContent = getStatusText(normalizedStatus);
     const statusClass = normalizedStatus === 'background_running' ? 'running' : normalizedStatus;
     statusEl.className = `status-chip status-${statusClass}`;
     try {
-        statusEl.dataset.detailStatus = (exec.status || '') + '';
+        statusEl.dataset.detailStatus = normalizedStatus;
     } catch (e) { /* ignore */ }
     const detailTimeLocale = (typeof window.__locale === 'string' && window.__locale.startsWith('zh')) ? 'zh-CN' : 'en-US';
     const detailTimeEl = document.getElementById('detail-time');
@@ -5592,12 +5600,26 @@ function renderMCPDetailModal(exec) {
         errorElement.textContent = '';
     }
     setMCPResultDetailTabs('raw', false);
+    const resultTabLabel = document.querySelector('#detail-result-tab-success [data-i18n]');
+    if (resultTabLabel) {
+        const key = blocked ? 'mcpDetailModal.blockReason' : 'mcpDetailModal.correctInfo';
+        resultTabLabel.dataset.i18n = key;
+        resultTabLabel.textContent = typeof window.t === 'function' ? window.t(key) : (blocked ? '拦截原因' : '正确信息');
+    }
 
     if (exec.result) {
         const agentVisibleText = formatMCPDetailText(extractMCPResultText(exec.result));
         const emptyText = typeof window.t === 'function' ? window.t('mcpDetailModal.execSuccessNoContent') : '执行成功，未返回可展示的文本内容。';
 
-        if (exec.result.isError) {
+        if (blocked) {
+            responseElement.className = 'code-block blocked';
+            responseElement.textContent = formatMCPResultJsonForDisplay(exec.result);
+            if (successElement) {
+                successElement.className = 'code-block blocked';
+                successElement.textContent = agentVisibleText || exec.error || getStatusText('blocked');
+            }
+            setMCPResultDetailTabs('success', true);
+        } else if (exec.result.isError) {
             responseElement.className = 'code-block error';
             responseElement.textContent = formatMCPResultJsonForDisplay(exec.result);
             if (successElement) {
@@ -6558,8 +6580,8 @@ async function loadConversation(conversationId) {
                         if (offset < rest.length) {
                             requestAnimationFrame(renderNextBatch);
                         } else {
-                            if (window.JySecChatScroll) {
-                                window.JySecChatScroll.forceScrollToBottom(false);
+                            if (window.CyberStrikeChatScroll) {
+                                window.CyberStrikeChatScroll.forceScrollToBottom(false);
                             } else {
                                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
                             }
@@ -6570,8 +6592,8 @@ async function loadConversation(conversationId) {
                 });
             }
 
-            if (window.JySecChatScroll) {
-                window.JySecChatScroll.forceScrollToBottom(false);
+            if (window.CyberStrikeChatScroll) {
+                window.CyberStrikeChatScroll.forceScrollToBottom(false);
             } else {
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
             }
@@ -6589,15 +6611,15 @@ async function loadConversation(conversationId) {
                 await window.restoreHitlInlineForConversation(conversationId);
             }
             if (
-                window.JySecChatScroll &&
-                typeof window.JySecChatScroll.settleConversationRestoreToBottom === 'function'
+                window.CyberStrikeChatScroll &&
+                typeof window.CyberStrikeChatScroll.settleConversationRestoreToBottom === 'function'
             ) {
-                window.JySecChatScroll.settleConversationRestoreToBottom(30);
+                window.CyberStrikeChatScroll.settleConversationRestoreToBottom(30);
             }
         } else {
             renderChatWelcomeEmptyState();
-            if (window.JySecChatScroll) {
-                window.JySecChatScroll.forceScrollToBottom(false);
+            if (window.CyberStrikeChatScroll) {
+                window.CyberStrikeChatScroll.forceScrollToBottom(false);
             } else {
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
             }
@@ -8985,9 +9007,9 @@ let contextMenuConversationId = null;
 let contextMenuConversationTitle = '';
 let conversationsListLoadSeq = 0; // 对话列表加载序号，避免并发请求导致重复渲染
 let conversationsListNavigateGen = 0; // 用户主动翻页代数，防止后台刷新覆盖翻页结果
-const CONVERSATIONS_PAGE_SIZE_KEY = 'jysec.conversations_page_size';
-const CONVERSATIONS_SORT_KEY = 'jysec.conversations_sort_by';
-const CONVERSATIONS_PROJECT_FILTER_KEY = 'jysec.conversations_project_filter';
+const CONVERSATIONS_PAGE_SIZE_KEY = 'cyberstrike.conversations_page_size';
+const CONVERSATIONS_SORT_KEY = 'cyberstrike.conversations_sort_by';
+const CONVERSATIONS_PROJECT_FILTER_KEY = 'cyberstrike.conversations_project_filter';
 const CONVERSATION_PROJECT_FILTER_NONE = '__none__';
 const CONVERSATION_PROJECT_FILTER_SELECT_ID = 'conversation-project-filter';
 const CONVERSATION_PROJECT_FILTER_CARET = '<svg class="conversation-project-filter-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -11056,8 +11078,8 @@ function refreshChatPanelI18n() {
                 window.syncMcpToolsToggleButton(msgEl);
             }
         });
-        if (window.JySecChatScroll && typeof window.JySecChatScroll.refreshTurnRail === 'function') {
-            window.JySecChatScroll.refreshTurnRail();
+        if (window.CyberStrikeChatScroll && typeof window.CyberStrikeChatScroll.refreshTurnRail === 'function') {
+            window.CyberStrikeChatScroll.refreshTurnRail();
         }
     }
 

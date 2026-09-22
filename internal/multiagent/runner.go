@@ -302,7 +302,7 @@ func RunDeepAgent(
 	modelFacingTrace := newModelFacingTraceHolder()
 
 	// 与 deep.Config.Name / supervisor 主代理 Name 一致。
-	orchestratorName := "jysec-deep"
+	orchestratorName := "cyberstrike-deep"
 	orchDescription := "Coordinates specialist agents and MCP tools for authorized security testing."
 	orchInstruction, orchMeta := resolveMainOrchestratorInstruction(orchMode, ma, markdownLoad)
 	if orchMeta != nil {

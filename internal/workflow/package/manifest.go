@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	PackageFormat = "jysecai.workflow-package"
+	PackageFormat = "cyberstrikeai.workflow-package"
 	FormatVersion = "1.0"
 )
 

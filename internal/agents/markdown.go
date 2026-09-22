@@ -112,17 +112,12 @@ func WantsMarkdownOrchestrator(filename string, kindField string, raw string) bo
 
 // SplitFrontMatter 分离 YAML front matter 与正文（--- ... ---）。
 func SplitFrontMatter(content string) (frontYAML string, body string, err error) {
-	s := strings.TrimPrefix(content, "\ufeff")
-	s = strings.TrimSpace(s)
+	s := strings.TrimSpace(content)
 	if !strings.HasPrefix(s, "---") {
 		return "", s, nil
 	}
 	rest := strings.TrimPrefix(s, "---")
 	rest = strings.TrimLeft(rest, "\r\n")
-	for strings.HasPrefix(rest, "---") {
-		rest = strings.TrimPrefix(rest, "---")
-		rest = strings.TrimLeft(rest, "\r\n")
-	}
 	end := strings.Index(rest, "\n---")
 	if end < 0 {
 		return "", "", fmt.Errorf("agents: 缺少结束的 --- 分隔符")
@@ -203,7 +198,7 @@ func SlugID(name string) string {
 	return s
 }
 
-// sanitizeEinoAgentID 规范化 Deep 主代理在 Eino 中的 Name：小写 ASCII、数字、连字符，与默认 jysec-deep 一致。
+// sanitizeEinoAgentID 规范化 Deep 主代理在 Eino 中的 Name：小写 ASCII、数字、连字符，与默认 cyberstrike-deep 一致。
 func sanitizeEinoAgentID(s string) string {
 	s = strings.TrimSpace(strings.ToLower(s))
 	var b strings.Builder
@@ -217,7 +212,7 @@ func sanitizeEinoAgentID(s string) string {
 	}
 	out := strings.Trim(b.String(), "-")
 	if out == "" {
-		return "jysec-deep"
+		return "cyberstrike-deep"
 	}
 	return out
 }

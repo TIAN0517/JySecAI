@@ -4,9 +4,6 @@ import (
 	"context"
 	"errors"
 	"io"
-	"os"
-	"path/filepath"
-	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -14,15 +11,7 @@ import (
 	"github.com/cloudwego/eino/adk/filesystem"
 )
 
-func skipIfNoPosixShell(t *testing.T) {
-	t.Helper()
-	if runtime.GOOS == "windows" {
-		t.Skip("requires POSIX /bin/sh streaming shell")
-	}
-}
-
 func TestEinoStreamingShell_StreamsStderrBeforeStdoutEOF(t *testing.T) {
-	skipIfNoPosixShell(t)
 	shell := NewEinoStreamingShell()
 	cmd := PrepareNonInteractiveShellCommand("echo err-only >&2; exit 1")
 	sr, err := shell.ExecuteStreaming(context.Background(), &filesystem.ExecuteRequest{Command: cmd})
@@ -54,17 +43,6 @@ func TestEinoStreamingShell_StreamsStderrBeforeStdoutEOF(t *testing.T) {
 }
 
 func TestEinoStreamingShell_SudoFailsFast(t *testing.T) {
-	skipIfNoPosixShell(t)
-	// Keep this test deterministic across local machines, containers, and CI.
-	// GitHub-hosted runners can execute as root with passwordless sudo, which
-	// would make a test against the host's real sudo environment-dependent.
-	binDir := t.TempDir()
-	fakeSudo := filepath.Join(binDir, "sudo")
-	if err := os.WriteFile(fakeSudo, []byte("#!/bin/sh\necho 'sudo: a password is required' >&2\nexit 1\n"), 0o755); err != nil {
-		t.Fatalf("write fake sudo: %v", err)
-	}
-	t.Setenv("PATH", binDir+string(os.PathListSeparator)+os.Getenv("PATH"))
-
 	shell := NewEinoStreamingShell()
 	cmd := PrepareNonInteractiveShellCommand("sudo whoami && sudo cat /etc/os-release")
 	sr, err := shell.ExecuteStreaming(context.Background(), &filesystem.ExecuteRequest{Command: cmd})
@@ -101,7 +79,6 @@ func TestEinoStreamingShell_SudoFailsFast(t *testing.T) {
 }
 
 func TestEinoStreamingShell_StderrWhileStdoutBlocks(t *testing.T) {
-	skipIfNoPosixShell(t)
 	shell := NewEinoStreamingShell()
 	// 模拟 sudo：stderr 先有输出，stdout 侧进程仍挂起；旧 eino local 在首包 stderr 前不会向流写任何内容。
 	cmd := PrepareNonInteractiveShellCommand(`echo "password prompt" >&2; sleep 30`)
@@ -141,7 +118,6 @@ func TestEinoStreamingShell_StderrWhileStdoutBlocks(t *testing.T) {
 
 // TestEinoStreamingShell_BackgroundJobDoesNotHoldPipe 模拟 cmd & 后继续前台逻辑：重定向后应快速结束。
 func TestEinoStreamingShell_BackgroundJobDoesNotHoldPipe(t *testing.T) {
-	skipIfNoPosixShell(t)
 	if testing.Short() {
 		t.Skip("skipping shell integration in -short")
 	}

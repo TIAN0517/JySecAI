@@ -1,10 +1,10 @@
-# 視覺分析（analyze_image）
+# 视觉分析（analyze_image）
 
 ## 概述
 
-- **工具名**：`analyze_image`（MCP 內建）
-- **行為**：讀取本地圖片 → `imaging` 縮放/JPEG 壓縮 → 呼叫獨立 **Vision** 模型 → 返回**純文字**給 Agent
-- **上下文**：圖片位元組**不會**寫入對話歷史；僅路徑與文字摘要進入 Agent 上下文
+- **工具名**：`analyze_image`（MCP 内置）
+- **行为**：读取本地图片 → `imaging` 缩放/JPEG 压缩 → 调用独立 **Vision** 模型 → 返回**纯文本**给 Agent
+- **上下文**：图片字节**不会**写入对话历史；仅路径与文字摘要进入 Agent 上下文
 
 ## 配置（`config.yaml` → `vision`）
 
@@ -12,34 +12,34 @@
 vision:
   enabled: true
   model: qwen-vl-max   # 必填
-  api_key:             # 留空 → 預設 AI 通道 api_key
-  base_url:            # 留空 → 預設 AI 通道 base_url
-  provider:            # 留空 → 預設 AI 通道 provider
+  api_key:             # 留空 → 默认 AI 通道 api_key
+  base_url:            # 留空 → 默认 AI 通道 base_url
+  provider:            # 留空 → 默认 AI 通道 provider
   max_image_bytes: 5242880
   max_dimension: 2048
   jpeg_quality: 82
   max_payload_bytes: 524288
-  skip_preprocess_below_bytes: 2097152  # 低於 2MB 且長邊<=max_dimension 時原圖直傳；0=始終 JPEG 壓縮
+  skip_preprocess_below_bytes: 2097152  # 低于 2MB 且长边<=max_dimension 时原图直传；0=始终 JPEG 压缩
   detail: low          # low | high | auto
   timeout_seconds: 60
 ```
 
-`enabled: false` 時不註冊工具。
+`enabled: false` 时不注册工具。
 
-## Web 設定
+## Web 设置
 
-**系統設定 → 基本設定 → 視覺分析（analyze_image）** 可配置啟用開關、視覺模型、API Key/Base URL（留空複用預設 AI 通道）、預處理引數；**儲存並應用** 後寫入 `config.yaml` 並重新註冊 MCP 工具。
+**系统设置 → 基本设置 → 视觉分析（analyze_image）** 可配置启用开关、视觉模型、API Key/Base URL（留空复用默认 AI 通道）、预处理参数；**保存并应用** 后写入 `config.yaml` 并重新注册 MCP 工具。
 
-## 路徑
+## 路径
 
-`analyze_image` 可讀取伺服器上任意可讀的圖片檔案路徑（絕對路徑或相對於程序工作目錄的相對路徑）。仍校驗圖片副檔名與常規檔案型別。
+`analyze_image` 可读取服务器上任意可读的图片文件路径（绝对路径或相对于进程工作目录的相对路径）。仍校验图片扩展名与常规文件类型。
 
 ## Agent 使用
 
-系統提示已說明：遇圖片呼叫 `analyze_image`，勿用 `read_file` 讀二進位制圖。
+系统提示已说明：遇图片调用 `analyze_image`，勿用 `read_file` 读二进制图。
 
-`multi_agent.eino_middleware.tool_search_always_visible_tools` 建議包含 `analyze_image`。
+`multi_agent.eino_middleware.tool_search_always_visible_tools` 建议包含 `analyze_image`。
 
-## 合規
+## 合规
 
-啟用後圖片會發往 Vision API 配置的上游；敏感環境請使用可信閘道器或保持 `enabled: false`。
+启用后图片会发往 Vision API 配置的上游；敏感环境请使用可信网关或保持 `enabled: false`。

@@ -18,12 +18,14 @@ import (
 	"jysecai/internal/config"
 	"jysecai/internal/database"
 	"jysecai/internal/knowledge"
+	"jysecai/internal/llm"
 	"jysecai/internal/mcp"
 	"jysecai/internal/mcp/builtin"
 	"jysecai/internal/openai"
-	"jysecai/internal/proxypool"
 	"jysecai/internal/security"
+	"jysecai/internal/toolguard"
 
+	"github.com/cloudwego/eino/schema"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"gopkg.in/yaml.v3"
@@ -90,23 +92,16 @@ type ConfigHandler struct {
 	knowledgeInitializer       KnowledgeInitializer       // 知识库初始化器（可选）
 	appUpdater                 AppUpdater                 // App更新器（可选）
 	robotRestarter             RobotRestarter             // 机器人连接重启器（可选），ApplyConfig 时重启钉钉/飞书
-	proxyPool                  *proxypool.Manager
 	audit                      *audit.Service
 	db                         *database.DB
 	logger                     *zap.Logger
 	mu                         sync.RWMutex
+	toolGuard                  *toolguard.Manager
 	lastEmbeddingConfig        *config.EmbeddingConfig // 上一次的嵌入模型配置（用于检测变更）
-	configApplyHooks           []func(*config.Config)  // 配置应用后通知的外部回调节点（如 FOFA 只读快照）
 }
 
 func (h *ConfigHandler) SetDB(db *database.DB) {
 	h.db = db
-}
-
-func (h *ConfigHandler) SetProxyPoolManager(manager *proxypool.Manager) {
-	h.mu.Lock()
-	defer h.mu.Unlock()
-	h.proxyPool = manager
 }
 
 func (h *ConfigHandler) validateRobotServiceAccounts(robots config.RobotsConfig) error {
@@ -218,16 +213,6 @@ func (h *ConfigHandler) SetRetrieverUpdater(updater RetrieverUpdater) {
 	h.retrieverUpdater = updater
 }
 
-// AddConfigApplyHook 注册配置应用后的回调（在 ConfigHandler 写锁内调用，
-// 回调可用以同步只读快照），例如 FofaHandler.ApplyConfig。
-func (h *ConfigHandler) AddConfigApplyHook(fn func(*config.Config)) {
-	h.mu.Lock()
-	defer h.mu.Unlock()
-	if fn != nil {
-		h.configApplyHooks = append(h.configApplyHooks, fn)
-	}
-}
-
 // SetKnowledgeInitializer 设置知识库初始化器
 func (h *ConfigHandler) SetKnowledgeInitializer(initializer KnowledgeInitializer) {
 	h.mu.Lock()
@@ -284,7 +269,6 @@ type GetConfigResponse struct {
 	ZoomEye    config.SpaceSearchConfig `json:"zoomeye"`
 	Quake      config.SpaceSearchConfig `json:"quake"`
 	Shodan     config.SpaceSearchConfig `json:"shodan"`
-	ProxyPool  config.ProxyPoolConfig   `json:"proxy_pool"`
 	MCP        config.MCPConfig         `json:"mcp"`
 	Tools      []ToolConfigInfo         `json:"tools"`
 	Agent      config.AgentConfig       `json:"agent"`
@@ -293,7 +277,6 @@ type GetConfigResponse struct {
 	Robots     config.RobotsConfig      `json:"robots,omitempty"`
 	MultiAgent config.MultiAgentPublic  `json:"multi_agent,omitempty"`
 	C2         config.C2Public          `json:"c2"`
-	XSS        config.XSSPublic         `json:"xss"`
 }
 
 // ToolConfigInfo 工具配置信息
@@ -310,8 +293,10 @@ type ToolConfigInfo struct {
 // GetConfig 获取当前配置
 func (h *ConfigHandler) GetConfig(c *gin.Context) {
 	h.mu.RLock()
+	defer h.mu.RUnlock()
 
-	// 获取工具列表（从配置文件与内置MCP服务器获取）
+	// 获取工具列表（包含内部和外部工具）
+	// 首先从配置文件获取工具
 	configToolMap := make(map[string]bool)
 	tools := make([]ToolConfigInfo, 0, len(h.config.Security.Tools))
 
@@ -326,6 +311,7 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		tools = append(tools, info)
 	}
 
+	// 从MCP服务器获取所有已注册的工具（包括直接注册的工具，如知识检索工具）
 	if h.mcpServer != nil {
 		mcpTools := h.mcpServer.GetAllTools()
 		for _, mcpTool := range mcpTools {
@@ -339,6 +325,15 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 				Enabled:     true,
 				IsExternal:  false,
 			})
+		}
+	}
+
+	// 获取外部MCP工具（走缓存，持锁期间通常不阻塞）
+	if h.externalMCPMgr != nil {
+		ctx := context.Background()
+		externalTools := h.getExternalMCPTools(ctx)
+		for _, toolInfo := range externalTools {
+			tools = append(tools, toolInfo)
 		}
 	}
 
@@ -376,61 +371,23 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		),
 	}
 
-	fofaCfg := h.config.FOFA
-	if fofaCfg.APIKey == "" {
-		if k := strings.TrimSpace(os.Getenv("FOFA_API_KEY")); k != "" {
-			fofaCfg.APIKey = k
-		}
-	}
-	zoomeyeCfg := h.config.ZoomEye
-	if zoomeyeCfg.APIKey == "" {
-		if k := strings.TrimSpace(os.Getenv("ZOOMEYE_API_KEY")); k != "" {
-			zoomeyeCfg.APIKey = k
-		}
-	}
-	quakeCfg := h.config.Quake
-	if quakeCfg.APIKey == "" {
-		if k := strings.TrimSpace(os.Getenv("QUAKE_API_KEY")); k != "" {
-			quakeCfg.APIKey = k
-		}
-	}
-	shodanCfg := h.config.Shodan
-	if shodanCfg.APIKey == "" {
-		if k := strings.TrimSpace(os.Getenv("SHODAN_API_KEY")); k != "" {
-			shodanCfg.APIKey = k
-		}
-	}
-
-	resp := GetConfigResponse{
+	c.JSON(http.StatusOK, GetConfigResponse{
 		AI:         h.config.AI,
 		OpenAI:     h.config.OpenAI,
 		Vision:     h.config.Vision,
-		FOFA:       fofaCfg,
-		ZoomEye:    zoomeyeCfg,
-		Quake:      quakeCfg,
-		Shodan:     shodanCfg,
-		ProxyPool:  h.config.ProxyPool,
+		FOFA:       h.config.FOFA,
+		ZoomEye:    h.config.ZoomEye,
+		Quake:      h.config.Quake,
+		Shodan:     h.config.Shodan,
 		MCP:        h.config.MCP,
 		Tools:      tools,
 		Agent:      h.config.Agent,
 		Hitl:       h.config.Hitl,
 		Knowledge:  h.config.Knowledge,
 		C2:         h.config.C2.Public(),
-		XSS:        h.config.XSS.Public(),
 		Robots:     h.config.Robots,
 		MultiAgent: multiPub,
-	}
-	h.mu.RUnlock()
-
-	// 获取外部MCP工具（走缓存，在锁外执行，避免外部MCP慢阻塞全局配置锁）
-	if h.externalMCPMgr != nil {
-		ctx, cancel := context.WithTimeout(c.Request.Context(), 1*time.Second)
-		defer cancel()
-		externalTools := h.getExternalMCPTools(ctx)
-		resp.Tools = append(resp.Tools, externalTools...)
-	}
-
-	c.JSON(http.StatusOK, resp)
+	})
 }
 
 // GetToolsResponse 获取工具列表响应（分页）
@@ -766,7 +723,6 @@ type UpdateConfigRequest struct {
 	ZoomEye    *config.SpaceSearchConfig   `json:"zoomeye,omitempty"`
 	Quake      *config.SpaceSearchConfig   `json:"quake,omitempty"`
 	Shodan     *config.SpaceSearchConfig   `json:"shodan,omitempty"`
-	ProxyPool  *config.ProxyPoolConfig     `json:"proxy_pool,omitempty"`
 	MCP        *config.MCPConfig           `json:"mcp,omitempty"`
 	Tools      []ToolEnableStatus          `json:"tools,omitempty"`
 	Agent      *AgentConfigUpdate          `json:"agent,omitempty"`
@@ -775,7 +731,6 @@ type UpdateConfigRequest struct {
 	Robots     *config.RobotsConfig        `json:"robots,omitempty"`
 	MultiAgent *config.MultiAgentAPIUpdate `json:"multi_agent,omitempty"`
 	C2         *config.C2APIUpdate         `json:"c2,omitempty"`
-	XSS        *config.XSSAPIUpdate        `json:"xss,omitempty"`
 }
 
 // AgentConfigUpdate 用于 PATCH /api/config 的 agent 段：仅 JSON 中出现的字段（指针非 nil）覆盖内存配置。
@@ -885,25 +840,6 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 	if req.Shodan != nil {
 		h.config.Shodan = *req.Shodan
 		h.logger.Info("更新Shodan配置", zap.String("base_url", h.config.Shodan.BaseURL))
-	}
-	if req.ProxyPool != nil {
-		next := *req.ProxyPool
-		if err := next.NormalizeAndValidate(); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		if h.proxyPool != nil {
-			if err := h.proxyPool.Update(next); err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-				return
-			}
-		}
-		h.config.ProxyPool = next
-		h.logger.Info("更新 SOCKS5 代理池配置",
-			zap.Bool("enabled", next.Enabled),
-			zap.String("strategy", next.Strategy),
-			zap.Int("proxies", len(next.Proxies)),
-		)
 	}
 
 	// 更新MCP配置
@@ -1032,19 +968,6 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 		v := req.C2.Enabled
 		h.config.C2.Enabled = &v
 		h.logger.Info("更新C2配置", zap.Bool("enabled", v))
-		if req.C2.AutoCheckin != nil && req.C2.AutoCheckin.Enabled != nil {
-			if h.config.C2.AutoCheckin == nil {
-				h.config.C2.AutoCheckin = &config.C2AutoCheckinConfig{}
-			}
-			ev := *req.C2.AutoCheckin.Enabled
-			h.config.C2.AutoCheckin.Enabled = &ev
-			h.logger.Info("更新C2自动上线配置", zap.Bool("auto_checkin_enabled", ev))
-		}
-	}
-
-	if req.XSS != nil && req.XSS.Enabled != nil {
-		h.config.XSS.Enabled = req.XSS.Enabled
-		h.logger.Info("更新XSS收集服务配置", zap.Bool("enabled", *req.XSS.Enabled))
 	}
 
 	// 多代理标量（sub_agents 等仍由 config.yaml 维护）
@@ -1290,7 +1213,11 @@ func (h *ConfigHandler) TestOpenAI(c *gin.Context) {
 
 	baseURL := strings.TrimSuffix(strings.TrimSpace(req.BaseURL), "/")
 	if baseURL == "" {
-		baseURL = "https://api.openai.com/v1"
+		if strings.EqualFold(strings.TrimSpace(req.Provider), "claude") {
+			baseURL = "https://api.anthropic.com"
+		} else {
+			baseURL = "https://api.openai.com/v1"
+		}
 	}
 
 	// 构造一个最小的 chat completion 请求
@@ -1302,6 +1229,7 @@ func (h *ConfigHandler) TestOpenAI(c *gin.Context) {
 		"max_completion_tokens": 5,
 	}
 
+	// OpenAI-compatible 通道使用内部客户端；Claude 通道在下方直接使用 Eino agenticclaude。
 	tmpCfg := &config.OpenAIConfig{
 		Provider: req.Provider,
 		BaseURL:  baseURL,
@@ -1314,6 +1242,28 @@ func (h *ConfigHandler) TestOpenAI(c *gin.Context) {
 	defer cancel()
 
 	start := time.Now()
+	if llm.IsClaudeProvider(req.Provider) {
+		nativeModel, err := llm.NewClaudeAgenticModel(ctx, *tmpCfg, nil, 5, nil)
+		if err == nil {
+			_, err = nativeModel.Generate(ctx, []*schema.AgenticMessage{
+				schema.UserAgenticMessage("Hi"),
+			})
+		}
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"error":   "连接失败: " + err.Error(),
+			})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"success":    true,
+			"model":      tmpCfg.Model,
+			"latency_ms": time.Since(start).Milliseconds(),
+		})
+		return
+	}
+
 	var chatResp struct {
 		ID      string `json:"id"`
 		Object  string `json:"object"`
@@ -1385,6 +1335,14 @@ func (h *ConfigHandler) ListModels(c *gin.Context) {
 	provider := strings.TrimSpace(req.Provider)
 	if provider == "" {
 		provider = "openai"
+	}
+	if strings.EqualFold(provider, "claude") {
+		c.JSON(http.StatusOK, gin.H{
+			"success":   false,
+			"supported": false,
+			"error":     "Claude (Anthropic Messages API) 不支持自动获取模型列表，请手动填写",
+		})
+		return
 	}
 
 	if strings.TrimSpace(req.APIKey) == "" {
@@ -1458,7 +1416,11 @@ func (h *ConfigHandler) TestVision(c *gin.Context) {
 
 	baseURL := strings.TrimSuffix(strings.TrimSpace(oa.BaseURL), "/")
 	if baseURL == "" {
-		baseURL = "https://api.openai.com/v1"
+		if strings.EqualFold(strings.TrimSpace(oa.Provider), "claude") {
+			baseURL = "https://api.anthropic.com"
+		} else {
+			baseURL = "https://api.openai.com/v1"
+		}
 	}
 
 	payload := map[string]interface{}{
@@ -1520,50 +1482,6 @@ func (h *ConfigHandler) TestVision(c *gin.Context) {
 		"model":      chatResp.Model,
 		"latency_ms": latency.Milliseconds(),
 	})
-}
-
-// TestProxyPool checks every configured SOCKS5 endpoint with a bounded HTTPS
-// request. The request body may contain an unsaved draft from the settings UI.
-func (h *ConfigHandler) TestProxyPool(c *gin.Context) {
-	var draft config.ProxyPoolConfig
-	if err := c.ShouldBindJSON(&draft); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid proxy pool config: " + err.Error()})
-		return
-	}
-	if err := draft.NormalizeAndValidate(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	results, err := proxypool.CheckAll(c.Request.Context(), draft)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	healthy := 0
-	for _, result := range results {
-		if result.Healthy {
-			healthy++
-		}
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"success": healthy == len(results) && len(results) > 0,
-		"healthy": healthy,
-		"total":   len(results),
-		"results": results,
-	})
-}
-
-func (h *ConfigHandler) GetProxyPoolStatus(c *gin.Context) {
-	h.mu.RLock()
-	manager := h.proxyPool
-	enabled := h.config.ProxyPool.Enabled
-	strategy := h.config.ProxyPool.Strategy
-	h.mu.RUnlock()
-	if manager == nil {
-		c.JSON(http.StatusOK, gin.H{"enabled": enabled, "strategy": strategy, "results": []proxypool.EndpointStatus{}})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"enabled": enabled, "strategy": strategy, "results": manager.Status()})
 }
 
 // ApplyConfig 应用配置（重新加载并重启相关服务）
@@ -1778,14 +1696,6 @@ func (h *ConfigHandler) ApplyConfig(c *gin.Context) {
 		h.logger.Info("AttackChainHandler配置已更新")
 	}
 
-	// 通知依赖配置的外部处理器（如 FOFA 空间测绘查询所需的 key/base_url/OpenAI 快照），
-	// 当前仍持有 h.mu 写锁，回调中复制只读快照保证一致性与无数据竞争。
-	for _, hook := range h.configApplyHooks {
-		if hook != nil {
-			hook(h.config)
-		}
-	}
-
 	// 更新检索器配置（如果知识库启用）
 	if h.config.Knowledge.Enabled && h.retrieverUpdater != nil {
 		retrievalConfig := knowledge.RetrievalConfigFromYAML(h.config.Knowledge.Retrieval)
@@ -1838,11 +1748,9 @@ func (h *ConfigHandler) ApplyConfig(c *gin.Context) {
 
 // saveConfig 保存配置到文件
 func (h *ConfigHandler) saveConfig() error {
+	configFileMu.Lock()
+	defer configFileMu.Unlock()
 	h.config.NormalizeAIProviderProfiles()
-
-	if err := os.Chmod(h.configPath, privateConfigFileMode); err != nil {
-		return fmt.Errorf("收紧配置文件权限失败: %w", err)
-	}
 
 	// 读取现有配置文件并创建备份
 	data, err := os.ReadFile(h.configPath)
@@ -1850,7 +1758,7 @@ func (h *ConfigHandler) saveConfig() error {
 		return fmt.Errorf("读取配置文件失败: %w", err)
 	}
 
-	if err := writePrivateConfigFile(h.configPath+".backup", data); err != nil {
+	if err := os.WriteFile(h.configPath+".backup", data, 0644); err != nil {
 		h.logger.Warn("创建配置备份失败", zap.Error(err))
 	}
 
@@ -1868,10 +1776,8 @@ func (h *ConfigHandler) saveConfig() error {
 	updateSpaceSearchConfig(root, "zoomeye", h.config.ZoomEye)
 	updateSpaceSearchConfig(root, "quake", h.config.Quake)
 	updateSpaceSearchConfig(root, "shodan", h.config.Shodan)
-	updateProxyPoolConfig(root, h.config.ProxyPool)
 	updateKnowledgeConfig(root, h.config.Knowledge)
 	updateC2Config(root, h.config.C2)
-	updateXSSConfig(root, h.config.XSS)
 	updateRobotsConfig(root, h.config.Robots)
 	updateHitlConfig(root, h.config.Hitl)
 	updateMultiAgentConfig(root, h.config.MultiAgent)
@@ -1928,7 +1834,6 @@ func loadYAMLDocument(path string) (*yaml.Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 
 	if len(bytes.TrimSpace(data)) == 0 {
 		return newEmptyYAMLDocument(), nil
@@ -1969,36 +1874,7 @@ func writeYAMLDocument(path string, doc *yaml.Node) error {
 	if err := encoder.Close(); err != nil {
 		return err
 	}
-	return writePrivateConfigFile(path, buf.Bytes())
-}
-
-const privateConfigFileMode = 0o600
-
-// writePrivateConfigFile rewrites secret-bearing configuration without
-// retaining a legacy file's broader mode. Permissions are tightened before
-// truncation, and the same rule applies to newly created backup files.
-func writePrivateConfigFile(path string, data []byte) error {
-	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, privateConfigFileMode)
-	if err != nil {
-		return err
-	}
-	closeWithError := func(writeErr error) error {
-		if closeErr := f.Close(); writeErr == nil {
-			return closeErr
-		}
-		return writeErr
-	}
-
-	if err := f.Chmod(privateConfigFileMode); err != nil {
-		return closeWithError(err)
-	}
-	if err := f.Truncate(0); err != nil {
-		return closeWithError(err)
-	}
-	if _, err := f.Write(data); err != nil {
-		return closeWithError(err)
-	}
-	return closeWithError(nil)
+	return os.WriteFile(path, buf.Bytes(), 0644)
 }
 
 func updateAgentConfig(doc *yaml.Node, agent config.AgentConfig) {
@@ -2166,31 +2042,6 @@ func updateSpaceSearchConfig(doc *yaml.Node, key string, cfg config.SpaceSearchC
 	setStringInMap(node, "api_key", cfg.APIKey)
 }
 
-func updateProxyPoolConfig(doc *yaml.Node, cfg config.ProxyPoolConfig) {
-	root := doc.Content[0]
-	node := ensureMap(root, "proxy_pool")
-	setBoolInMap(node, "enabled", cfg.Enabled)
-	setStringInMap(node, "strategy", cfg.Strategy)
-	setStringInMap(node, "health_check_url", cfg.HealthCheckURL)
-	setIntInMap(node, "connect_timeout_seconds", cfg.ConnectTimeoutSeconds)
-	setIntInMap(node, "request_timeout_seconds", cfg.RequestTimeoutSeconds)
-	setIntInMap(node, "failure_threshold", cfg.FailureThreshold)
-	setIntInMap(node, "cooldown_seconds", cfg.CooldownSeconds)
-
-	_, proxiesNode := ensureKeyValue(node, "proxies")
-	proxiesNode.Kind = yaml.SequenceNode
-	proxiesNode.Tag = "!!seq"
-	proxiesNode.Style = 0
-	proxiesNode.Content = nil
-	for _, endpoint := range cfg.Proxies {
-		entryNode := &yaml.Node{Kind: yaml.MappingNode, Tag: "!!map"}
-		setStringInMap(entryNode, "name", endpoint.Name)
-		setStringInMap(entryNode, "url", endpoint.URL)
-		setBoolInMap(entryNode, "enabled", endpoint.Enabled)
-		proxiesNode.Content = append(proxiesNode.Content, entryNode)
-	}
-}
-
 func updateKnowledgeConfig(doc *yaml.Node, cfg config.KnowledgeConfig) {
 	root := doc.Content[0]
 	knowledgeNode := ensureMap(root, "knowledge")
@@ -2245,51 +2096,6 @@ func updateC2Config(doc *yaml.Node, cfg config.C2Config) {
 	root := doc.Content[0]
 	c2Node := ensureMap(root, "c2")
 	setBoolInMap(c2Node, "enabled", cfg.EnabledEffective())
-	ac := cfg.AutoCheckin
-	if ac == nil {
-		ac = &config.C2AutoCheckinConfig{}
-	}
-	acNode := ensureMap(c2Node, "auto_checkin")
-	setBoolInMap(acNode, "enabled", ac.EnabledEffective())
-	setBoolInMap(acNode, "auto_start_listeners", ac.AutoStartListenersEffective())
-	setIntInMap(acNode, "default_sleep_seconds", ac.DefaultSleepSecondsEffective())
-	setIntInMap(acNode, "default_jitter_percent", ac.DefaultJitterPercentEffective())
-	setIntInMap(acNode, "stale_session_timeout_seconds", ac.StaleSessionTimeoutSecondsEffective())
-	setAutoListenerSequence(acNode, "listeners", ac.Listeners)
-}
-
-// updateXSSConfig 将 XSS 收集服务状态写回 yaml 的 xss 块。token 仅在内存中非空时回写，
-// 避免把配置里已经存在的密钥清空；其余字段照常持久化。
-func updateXSSConfig(doc *yaml.Node, cfg config.XSSConfig) {
-	root := doc.Content[0]
-	xssNode := ensureMap(root, "xss")
-	setBoolInMap(xssNode, "enabled", cfg.EnabledEffective())
-	setStringInMap(xssNode, "bind_host", cfg.BindHost)
-	setIntInMap(xssNode, "bind_port", cfg.BindPort)
-	setStringInMap(xssNode, "public_url", cfg.PublicURL)
-	if cfg.Token != "" {
-		setStringInMap(xssNode, "token", cfg.Token)
-	}
-	setIntInMap(xssNode, "cooldown_seconds", cfg.CooldownSeconds)
-}
-
-// setAutoListenerSequence 将自动上线监听器清单写入 yaml 节点（整体重写，保持可读性）。
-func setAutoListenerSequence(parent *yaml.Node, key string, listeners []config.C2AutoListenerConfig) {
-	_, valueNode := ensureKeyValue(parent, key)
-	valueNode.Kind = yaml.SequenceNode
-	valueNode.Tag = "!!seq"
-	valueNode.Style = 0
-	valueNode.Content = nil
-	for _, l := range listeners {
-		item := &yaml.Node{Kind: yaml.MappingNode, Tag: "!!map"}
-		setBoolInMap(item, "enabled", l.EnabledEffective())
-		setStringInMap(item, "name", l.Name)
-		setStringInMap(item, "type", l.Type)
-		setStringInMap(item, "bind_host", l.BindHost)
-		setIntInMap(item, "bind_port", l.BindPort)
-		setStringInMap(item, "callback_host", l.CallbackHost)
-		valueNode.Content = append(valueNode.Content, item)
-	}
 }
 
 func mergeHitlToolWhitelistSlice(existing, add []string) []string {

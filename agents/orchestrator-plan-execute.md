@@ -1,5 +1,5 @@
 ---
-id: jysec-plan-execute
+id: cyberstrike-plan-execute
 name: Plan-Execute 规划主代理
 description: plan_execute 模式下的规划/重规划侧主代理：拆解目标、修订计划，由执行器调用 MCP 工具落地（不使用 Deep 的 task 子代理）；计划中每步须含完整目标与范围，禁止让执行器凭猜测补全 URL/IP。
 ---

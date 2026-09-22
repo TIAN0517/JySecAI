@@ -13,86 +13,35 @@ import (
 	"net/url"
 	"os"
 	"strings"
-	"sync"
 	"time"
 
 	"jysecai/internal/config"
 	openaiClient "jysecai/internal/openai"
-	"jysecai/internal/proxypool"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
 type FofaHandler struct {
-	cfgMu        sync.RWMutex
-	cfg          *fofaRuntimeConfig
+	cfg          *config.Config
 	logger       *zap.Logger
 	client       *http.Client
 	openAIClient *openaiClient.Client
-	proxyPool    *proxypool.Manager
-}
-
-// fofaRuntimeConfig 是 FofaHandler 使用的只读配置快照。
-// 由 ApplyConfig 在 ConfigHandler 的写锁内整体复制，之后只读不写，
-// 避免直接持有共享 *config.Config 指针并发读写造成数据竞争。
-type fofaRuntimeConfig struct {
-	OpenAI  config.OpenAIConfig
-	FOFA    config.FofaConfig
-	ZoomEye config.SpaceSearchConfig
-	Quake   config.SpaceSearchConfig
-	Shodan  config.SpaceSearchConfig
-}
-
-// ApplyConfig 从共享配置中复制出 FofaHandler 需要的最小只读快照。
-// 调用方（ConfigHandler）需在写锁内调用，确保一致性与无竞争。
-func (h *FofaHandler) ApplyConfig(cfg *config.Config) {
-	h.cfgMu.Lock()
-	defer h.cfgMu.Unlock()
-	if cfg == nil {
-		h.cfg = nil
-		return
-	}
-	snapshot := &fofaRuntimeConfig{
-		OpenAI:  cfg.OpenAI,
-		FOFA:    cfg.FOFA,
-		ZoomEye: cfg.ZoomEye,
-		Quake:   cfg.Quake,
-		Shodan:  cfg.Shodan,
-	}
-	h.cfg = snapshot
-	if h.openAIClient != nil {
-		h.openAIClient.UpdateConfig(&snapshot.OpenAI)
-	}
-}
-
-func (h *FofaHandler) configSnapshot() *fofaRuntimeConfig {
-	h.cfgMu.RLock()
-	defer h.cfgMu.RUnlock()
-	return h.cfg
-}
-
-func (h *FofaHandler) SetProxyPoolManager(manager *proxypool.Manager) {
-	h.proxyPool = manager
-	if manager == nil {
-		h.client = &http.Client{Timeout: 60 * time.Second}
-		return
-	}
-	// 情蒐查詢一律走住宅輪替組（residential）：台灣目標需要真實住宅出口，
-	// 避免機房 IP 被 FOFA/目標端風控。residential 組不可用時退回直連。
-	h.client = manager.ClientGroup(60*time.Second, "residential")
 }
 
 func NewFofaHandler(cfg *config.Config, logger *zap.Logger) *FofaHandler {
 	// LLM 请求通常比 FOFA 查询更慢一点，单独给一个更宽松的超时。
 	llmHTTPClient := &http.Client{Timeout: 2 * time.Minute}
-	h := &FofaHandler{
+	var llmCfg *config.OpenAIConfig
+	if cfg != nil {
+		llmCfg = &cfg.OpenAI
+	}
+	return &FofaHandler{
+		cfg:          cfg,
 		logger:       logger,
 		client:       &http.Client{Timeout: 60 * time.Second},
-		openAIClient: openaiClient.NewClient(nil, llmHTTPClient, logger),
+		openAIClient: openaiClient.NewClient(llmCfg, llmHTTPClient, logger),
 	}
-	h.ApplyConfig(cfg)
-	return h
 }
 
 type fofaSearchRequest struct {
@@ -211,17 +160,16 @@ func (h *FofaHandler) resolveAPIKey(provider string) string {
 	if apiKey := strings.TrimSpace(os.Getenv(envKey)); apiKey != "" {
 		return apiKey
 	}
-	cfg := h.configSnapshot()
-	if cfg != nil {
+	if h.cfg != nil {
 		switch provider {
 		case "zoomeye":
-			return strings.TrimSpace(cfg.ZoomEye.APIKey)
+			return strings.TrimSpace(h.cfg.ZoomEye.APIKey)
 		case "quake":
-			return strings.TrimSpace(cfg.Quake.APIKey)
+			return strings.TrimSpace(h.cfg.Quake.APIKey)
 		case "shodan":
-			return strings.TrimSpace(cfg.Shodan.APIKey)
+			return strings.TrimSpace(h.cfg.Shodan.APIKey)
 		default:
-			return strings.TrimSpace(cfg.FOFA.APIKey)
+			return strings.TrimSpace(h.cfg.FOFA.APIKey)
 		}
 	}
 	return ""
@@ -229,23 +177,22 @@ func (h *FofaHandler) resolveAPIKey(provider string) string {
 
 func (h *FofaHandler) resolveBaseURL(provider string) string {
 	provider = normalizeSpaceSearchProvider(provider)
-	cfg := h.configSnapshot()
-	if cfg != nil {
+	if h.cfg != nil {
 		switch provider {
 		case "zoomeye":
-			if v := strings.TrimSpace(cfg.ZoomEye.BaseURL); v != "" {
+			if v := strings.TrimSpace(h.cfg.ZoomEye.BaseURL); v != "" {
 				return canonicalizeSpaceSearchBaseURL(provider, v)
 			}
 		case "quake":
-			if v := strings.TrimSpace(cfg.Quake.BaseURL); v != "" {
+			if v := strings.TrimSpace(h.cfg.Quake.BaseURL); v != "" {
 				return canonicalizeSpaceSearchBaseURL(provider, v)
 			}
 		case "shodan":
-			if v := strings.TrimSpace(cfg.Shodan.BaseURL); v != "" {
+			if v := strings.TrimSpace(h.cfg.Shodan.BaseURL); v != "" {
 				return canonicalizeSpaceSearchBaseURL(provider, v)
 			}
 		default:
-			if v := strings.TrimSpace(cfg.FOFA.BaseURL); v != "" {
+			if v := strings.TrimSpace(h.cfg.FOFA.BaseURL); v != "" {
 				return v
 			}
 		}
@@ -294,12 +241,11 @@ func (h *FofaHandler) ParseNaturalLanguage(c *gin.Context) {
 		return
 	}
 
-	cfg := h.configSnapshot()
-	if cfg == nil {
+	if h.cfg == nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "系统配置未初始化"})
 		return
 	}
-	if strings.TrimSpace(cfg.OpenAI.APIKey) == "" || strings.TrimSpace(cfg.OpenAI.Model) == "" {
+	if strings.TrimSpace(h.cfg.OpenAI.APIKey) == "" || strings.TrimSpace(h.cfg.OpenAI.Model) == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "未配置 AI 模型：请在系统设置中填写 openai.api_key 与 openai.model（支持 OpenAI 兼容 API，如 DeepSeek）",
 			"need":  []string{"openai.api_key", "openai.model"},
@@ -467,7 +413,7 @@ Shodan 官方查询语法参考：
 	userPrompt := fmt.Sprintf("自然语言意图：%s", req.Text)
 
 	requestBody := map[string]interface{}{
-		"model": cfg.OpenAI.Model,
+		"model": h.cfg.OpenAI.Model,
 		"messages": []map[string]interface{}{
 			{"role": "system", "content": systemPrompt},
 			{"role": "user", "content": userPrompt},

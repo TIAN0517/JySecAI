@@ -84,15 +84,6 @@ func mcpToolAuthorizer(db *database.DB) func(context.Context, string, map[string
 			return nil
 		case builtin.ToolGetVulnerability:
 			return resource("vulnerability:read", "vulnerability", "id")
-		case builtin.ToolGeneratePocDraft:
-			if err := require("vulnerability:write"); err != nil {
-				return err
-			}
-			conversationID := mcpAuthorizationConversationID(ctx)
-			if conversationID == "" || db == nil || !db.UserCanAccessResource(principal.UserID, principal.ScopeFor("vulnerability:write"), "conversation", conversationID) {
-				return fmt.Errorf("no access to conversation")
-			}
-			return nil
 		case builtin.ToolQueryAssets:
 			return require("asset:read")
 		case builtin.ToolGetAsset:
@@ -194,44 +185,6 @@ func mcpToolAuthorizer(db *database.DB) func(context.Context, string, map[string
 				return require("c2:delete")
 			}
 			return require("c2:write")
-		case builtin.ToolSentinelScan:
-			return require("asset:write")
-		case builtin.ToolGetSentinelScan:
-			return require("asset:read")
-		case builtin.ToolSentinelSyncAssets:
-			if err := require("asset:write"); err != nil {
-				return err
-			}
-			if projectID := mcpAuthorizationString(args, "project_id"); projectID != "" && db != nil {
-				if !db.UserCanAccessResource(principal.UserID, principal.ScopeFor("asset:write"), "project", projectID) {
-					return fmt.Errorf("no access to project %s", projectID)
-				}
-			}
-			return nil
-		case builtin.ToolSentinelSyncVulnerabilities:
-			if err := require("vulnerability:write"); err != nil {
-				return err
-			}
-			if projectID := mcpAuthorizationString(args, "project_id"); projectID != "" && db != nil {
-				if !db.UserCanAccessResource(principal.UserID, principal.ScopeFor("vulnerability:write"), "project", projectID) {
-					return fmt.Errorf("no access to project %s", projectID)
-				}
-			}
-			return nil
-
-		case builtin.ToolVerifyPoc:
-			if err := require("vulnerability:write"); err != nil {
-				return err
-			}
-			if vulnID := mcpAuthorizationString(args, "vulnerability_id"); vulnID != "" && db != nil {
-				if !db.UserCanAccessResource(principal.UserID, principal.ScopeFor("vulnerability:write"), "vulnerability", vulnID) {
-					return fmt.Errorf("no access to vulnerability %s", vulnID)
-				}
-				if err := authorizeMCPProjectResourceBoundary(ctx, db, "vulnerability", vulnID); err != nil {
-					return err
-				}
-			}
-			return nil
 		default:
 			if builtin.IsBuiltinTool(toolName) {
 				return fmt.Errorf("no authorization policy registered for builtin tool %s", toolName)

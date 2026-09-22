@@ -1,11 +1,11 @@
 package config
 
 import (
-	"bytes"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"jysecai/internal/termout"
+	"jysecai/internal/toolguard"
 
 	"gopkg.in/yaml.v3"
 )
@@ -28,9 +29,9 @@ type Config struct {
 	ZoomEye     SpaceSearchConfig     `yaml:"zoomeye,omitempty" json:"zoomeye,omitempty"`
 	Quake       SpaceSearchConfig     `yaml:"quake,omitempty" json:"quake,omitempty"`
 	Shodan      SpaceSearchConfig     `yaml:"shodan,omitempty" json:"shodan,omitempty"`
-	ProxyPool   ProxyPoolConfig       `yaml:"proxy_pool,omitempty" json:"proxy_pool,omitempty"`
 	Agent       AgentConfig           `yaml:"agent"`
 	Hitl        HitlConfig            `yaml:"hitl,omitempty" json:"hitl,omitempty"`
+	ToolGuard   *toolguard.Config     `yaml:"tool_guard,omitempty" json:"tool_guard,omitempty"`
 	Security    SecurityConfig        `yaml:"security"`
 	Database    DatabaseConfig        `yaml:"database"`
 	Auth        AuthConfig            `yaml:"auth"`
@@ -39,7 +40,6 @@ type Config struct {
 	ExternalMCP ExternalMCPConfig     `yaml:"external_mcp,omitempty"`
 	Knowledge   KnowledgeConfig       `yaml:"knowledge,omitempty"`
 	C2          C2Config              `yaml:"c2,omitempty" json:"c2,omitempty"`                 // 内置 C2 总开关；未配置时默认启用
-	XSS         XSSConfig             `yaml:"xss,omitempty" json:"xss,omitempty"`               // XSS cookie 提取/接管
 	Robots      RobotsConfig          `yaml:"robots,omitempty" json:"robots,omitempty"`         // 企业微信/钉钉/飞书等机器人配置
 	RolesDir    string                `yaml:"roles_dir,omitempty" json:"roles_dir,omitempty"`   // 角色配置文件目录（新方式）
 	Roles       map[string]RoleConfig `yaml:"roles,omitempty" json:"roles,omitempty"`           // 向后兼容：支持在主配置文件中定义角色
@@ -53,115 +53,6 @@ type Config struct {
 type EnsureLocalConfigResult struct {
 	Created     bool
 	ExamplePath string
-}
-
-// ProxyPoolConfig controls the SOCKS5 pool used by network-space search APIs.
-// It is deliberately scoped to reconnaissance API traffic so LLM and other
-// credential-bearing requests are never routed through third-party proxies.
-type ProxyPoolConfig struct {
-	Enabled               bool                `yaml:"enabled" json:"enabled"`
-	Strategy              string              `yaml:"strategy,omitempty" json:"strategy,omitempty"`
-	HealthCheckURL        string              `yaml:"health_check_url,omitempty" json:"health_check_url,omitempty"`
-	ConnectTimeoutSeconds int                 `yaml:"connect_timeout_seconds,omitempty" json:"connect_timeout_seconds,omitempty"`
-	RequestTimeoutSeconds int                 `yaml:"request_timeout_seconds,omitempty" json:"request_timeout_seconds,omitempty"`
-	FailureThreshold      int                 `yaml:"failure_threshold,omitempty" json:"failure_threshold,omitempty"`
-	CooldownSeconds       int                 `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
-	Proxies               []SOCKS5ProxyConfig `yaml:"proxies,omitempty" json:"proxies,omitempty"`
-}
-
-type SOCKS5ProxyConfig struct {
-	Name    string `yaml:"name,omitempty" json:"name,omitempty"`
-	URL     string `yaml:"url" json:"url"`
-	Enabled bool   `yaml:"enabled" json:"enabled"`
-	// Group 分流標籤：residential=住宅輪替（情蒐/掃描）, dc=機房（長連線/大流量）。
-	// 空值視為 dc；Manager.Client(group) 依此過濾。
-	Group string `yaml:"group,omitempty" json:"group,omitempty"`
-}
-
-// ProxyGroupEffective 回傳正規化後的群組標籤（dc 或 residential）。
-func (c SOCKS5ProxyConfig) ProxyGroupEffective() string {
-	g := strings.ToLower(strings.TrimSpace(c.Group))
-	if g == "residential" {
-		return "residential"
-	}
-	return "dc"
-}
-
-func (c *ProxyPoolConfig) NormalizeAndValidate() error {
-	if c == nil {
-		return nil
-	}
-	c.Strategy = strings.ToLower(strings.TrimSpace(c.Strategy))
-	if c.Strategy == "" {
-		c.Strategy = "round_robin"
-	}
-	if c.Strategy != "round_robin" && c.Strategy != "random" {
-		return fmt.Errorf("proxy_pool.strategy must be round_robin or random")
-	}
-	c.HealthCheckURL = strings.TrimSpace(c.HealthCheckURL)
-	if c.HealthCheckURL == "" {
-		c.HealthCheckURL = "https://api.ipify.org"
-	}
-	healthURL, err := url.Parse(c.HealthCheckURL)
-	if err != nil || healthURL.Scheme != "https" || healthURL.Hostname() == "" {
-		return fmt.Errorf("proxy_pool.health_check_url must be a valid HTTPS URL")
-	}
-	if c.ConnectTimeoutSeconds <= 0 {
-		c.ConnectTimeoutSeconds = 8
-	}
-	if c.RequestTimeoutSeconds <= 0 {
-		c.RequestTimeoutSeconds = 15
-	}
-	if c.FailureThreshold <= 0 {
-		c.FailureThreshold = 2
-	}
-	if c.CooldownSeconds <= 0 {
-		c.CooldownSeconds = 60
-	}
-
-	seen := make(map[string]struct{}, len(c.Proxies))
-	for i := range c.Proxies {
-		entry := &c.Proxies[i]
-		entry.Name = strings.TrimSpace(entry.Name)
-		entry.URL = strings.TrimSpace(entry.URL)
-		if entry.URL == "" {
-			return fmt.Errorf("proxy_pool.proxies[%d].url is required", i)
-		}
-		if !strings.Contains(entry.URL, "://") {
-			entry.URL = "socks5://" + entry.URL
-		}
-		proxyURL, parseErr := url.Parse(entry.URL)
-		if parseErr != nil ||
-			(proxyURL.Scheme != "socks5" && proxyURL.Scheme != "socks5h") ||
-			proxyURL.Hostname() == "" || proxyURL.Port() == "" ||
-			proxyURL.Path != "" || proxyURL.RawPath != "" || proxyURL.RawQuery != "" || proxyURL.Fragment != "" {
-			return fmt.Errorf("proxy_pool.proxies[%d].url must be socks5://host:port", i)
-		}
-		port, portErr := strconv.Atoi(proxyURL.Port())
-		if portErr != nil || port < 1 || port > 65535 {
-			return fmt.Errorf("proxy_pool.proxies[%d].url has an invalid port", i)
-		}
-		canonical := strings.ToLower(proxyURL.Scheme) + "://" + proxyURL.Host
-		if _, exists := seen[canonical]; exists {
-			return fmt.Errorf("proxy_pool contains duplicate proxy %s", proxyURL.Host)
-		}
-		seen[canonical] = struct{}{}
-		if entry.Name == "" {
-			entry.Name = proxyURL.Host
-		}
-	}
-	if c.Enabled {
-		enabled := 0
-		for _, entry := range c.Proxies {
-			if entry.Enabled {
-				enabled++
-			}
-		}
-		if enabled == 0 {
-			return fmt.Errorf("proxy_pool.enabled requires at least one enabled proxy")
-		}
-	}
-	return nil
 }
 
 const (
@@ -916,8 +807,11 @@ type ServerConfig struct {
 }
 
 type LogConfig struct {
-	Level  string `yaml:"level"`
-	Output string `yaml:"output"`
+	Level                   string `yaml:"level"`
+	Output                  string `yaml:"output"`
+	DiagnosticDir           string `yaml:"diagnostic_dir"`
+	DiagnosticDisabled      bool   `yaml:"diagnostic_disabled"`
+	DiagnosticRetentionDays int    `yaml:"diagnostic_retention_days"`
 }
 
 type MCPConfig struct {
@@ -1545,31 +1439,19 @@ func Load(path string) (*Config, error) {
 	if err != nil {
 		return nil, fmt.Errorf("读取配置文件失败: %w", err)
 	}
-	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
-
-	// 尝试加载配置文件所在目录及当前工作目录下的 .env 环境变量
-	loadDotEnvIfPresent(filepath.Dir(path))
-	loadDotEnvIfPresent(".")
 
 	var cfg Config
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		return nil, fmt.Errorf("解析配置文件失败: %w", err)
 	}
-
-	// 外部 MCP：官方 disabled 字段迁移为 ExternalMCPEnable
-	if cfg.ExternalMCP.Servers != nil {
-		for name, serverCfg := range cfg.ExternalMCP.Servers {
-			if serverCfg.Disabled {
-				serverCfg.ExternalMCPEnable = false
-			} else if !serverCfg.ExternalMCPEnable {
-				serverCfg.ExternalMCPEnable = true
-			}
-			cfg.ExternalMCP.Servers[name] = serverCfg
+	if cfg.ToolGuard != nil {
+		if err := validateToolGuardYAML(data); err != nil {
+			return nil, fmt.Errorf("调用拦截配置无效: %w", err)
 		}
 	}
-
-	// 全局环境变量展开（在 Normalize 与 ApplyDefaultAIChannel 之前展开，确保各通道及资产测绘 API 获得完整配置）
-	ExpandConfigEnvAll(&cfg)
+	if _, err := toolguard.Compile(cfg.EffectiveToolGuard()); err != nil {
+		return nil, fmt.Errorf("调用拦截配置无效: %w", err)
+	}
 
 	if cfg.Auth.SessionDurationHours <= 0 {
 		cfg.Auth.SessionDurationHours = 12
@@ -1579,9 +1461,6 @@ func Load(path string) (*Config, error) {
 	}
 	cfg.NormalizeAIProviderProfiles()
 	cfg.ApplyDefaultAIChannel()
-	if err := cfg.ProxyPool.NormalizeAndValidate(); err != nil {
-		return nil, err
-	}
 	if err := validateOpenAIOutputLimits(cfg.OpenAI); err != nil {
 		return nil, err
 	}
@@ -1594,6 +1473,24 @@ func Load(path string) (*Config, error) {
 			return nil, fmt.Errorf("从工具目录加载工具配置失败: %w", err)
 		}
 		cfg.Security.Tools = merged
+	}
+
+	// 外部 MCP：迁移 + 环境变量展开
+	if cfg.ExternalMCP.Servers != nil {
+		for name, serverCfg := range cfg.ExternalMCP.Servers {
+			// 官方 disabled 字段 → ExternalMCPEnable
+			if serverCfg.Disabled {
+				serverCfg.ExternalMCPEnable = false
+			} else if !serverCfg.ExternalMCPEnable {
+				// 默认启用
+				serverCfg.ExternalMCPEnable = true
+			}
+
+			// 展开所有 ${VAR} / ${VAR:-default} 环境变量引用
+			ExpandConfigEnv(&serverCfg)
+
+			cfg.ExternalMCP.Servers[name] = serverCfg
+		}
 	}
 
 	// 从角色目录加载角色配置
@@ -1643,9 +1540,6 @@ func EnsureLocalConfig(path string) (EnsureLocalConfigResult, error) {
 	}
 
 	if _, err := os.Stat(path); err == nil {
-		if err := os.Chmod(path, privateConfigFileMode); err != nil {
-			return EnsureLocalConfigResult{}, fmt.Errorf("收紧配置文件权限失败: %w", err)
-		}
 		return EnsureLocalConfigResult{}, nil
 	} else if !os.IsNotExist(err) {
 		return EnsureLocalConfigResult{}, fmt.Errorf("检查配置文件失败: %w", err)
@@ -1678,7 +1572,7 @@ func EnsureLocalConfig(path string) (EnsureLocalConfigResult, error) {
 			return EnsureLocalConfigResult{}, fmt.Errorf("创建配置目录失败: %w", err)
 		}
 	}
-	if err := writePrivateConfigFile(path, data); err != nil {
+	if err := os.WriteFile(path, data, fs.FileMode(0600)); err != nil {
 		return EnsureLocalConfigResult{}, fmt.Errorf("创建配置文件失败: %w", err)
 	}
 
@@ -1686,35 +1580,6 @@ func EnsureLocalConfig(path string) (EnsureLocalConfigResult, error) {
 		Created:     true,
 		ExamplePath: examplePath,
 	}, nil
-}
-
-const privateConfigFileMode = 0o600
-
-// writePrivateConfigFile writes configuration that may contain API keys and
-// service credentials. Chmod happens before truncation so rewriting a legacy
-// 0644 file never exposes newly written secrets with its old permissions.
-func writePrivateConfigFile(path string, data []byte) error {
-	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, privateConfigFileMode)
-	if err != nil {
-		return err
-	}
-	closeWithError := func(writeErr error) error {
-		if closeErr := f.Close(); writeErr == nil {
-			return closeErr
-		}
-		return writeErr
-	}
-
-	if err := f.Chmod(privateConfigFileMode); err != nil {
-		return closeWithError(err)
-	}
-	if err := f.Truncate(0); err != nil {
-		return closeWithError(err)
-	}
-	if _, err := f.Write(data); err != nil {
-		return closeWithError(err)
-	}
-	return closeWithError(nil)
 }
 
 func PrintBootstrapAdminPassword(password string) {
@@ -1784,7 +1649,7 @@ func persistMCPAuth(path string, mcp *MCPConfig) error {
 		}
 	}
 
-	return writePrivateConfigFile(path, []byte(strings.Join(lines, "\n")))
+	return os.WriteFile(path, []byte(strings.Join(lines, "\n")), 0644)
 }
 
 // EnsureMCPAuth only provisions the privileged static service credential when
@@ -1802,90 +1667,6 @@ func EnsureMCPAuth(path string, cfg *Config) error {
 		cfg.MCP.AuthHeader = "X-MCP-Token"
 	}
 	return persistMCPAuth(path, &cfg.MCP)
-}
-
-// EnsureXSSSecret 在 XSS 收集服务启用且 token 为空时，生成随机共享密钥并写回 config.yaml。
-func EnsureXSSSecret(path string, cfg *Config) error {
-	x := cfg.XSS
-	if !x.EnabledEffective() {
-		return nil
-	}
-	if strings.TrimSpace(x.Token) != "" {
-		return nil
-	}
-	token, err := generateRandomToken()
-	if err != nil {
-		return fmt.Errorf("生成 XSS 收集密钥失败: %w", err)
-	}
-	cfg.XSS.Token = token
-	return persistXSSSecret(path, token)
-}
-
-// persistXSSSecret 将生成的 xss.token 写回配置文件的 xss 块；若尚无 token 行则原地插入。
-func persistXSSSecret(path string, token string) error {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return err
-	}
-	lines := strings.Split(string(data), "\n")
-	inXSSBlock := false
-	xssIndent := -1
-	foundToken := false
-
-	for i, line := range lines {
-		trimmed := strings.TrimSpace(line)
-		if !inXSSBlock {
-			if strings.HasPrefix(trimmed, "xss:") {
-				inXSSBlock = true
-				xssIndent = len(line) - len(strings.TrimLeft(line, " "))
-			}
-			continue
-		}
-		if trimmed == "" || strings.HasPrefix(trimmed, "#") {
-			continue
-		}
-		leadingSpaces := len(line) - len(strings.TrimLeft(line, " "))
-		if leadingSpaces <= xssIndent {
-			inXSSBlock = false
-			xssIndent = -1
-			continue
-		}
-
-		prefix := line[:leadingSpaces]
-		rest := strings.TrimSpace(line[leadingSpaces:])
-		if strings.HasPrefix(rest, "token:") {
-			comment := ""
-			if idx := strings.Index(line, "#"); idx >= 0 {
-				comment = strings.TrimRight(line[idx:], " ")
-			}
-			withComment := ""
-			if comment != "" {
-				if !strings.HasPrefix(comment, " ") {
-					withComment = " "
-				}
-				withComment += comment
-			}
-			lines[i] = fmt.Sprintf("%stoken: %q%s", prefix, token, withComment)
-			foundToken = true
-		}
-	}
-
-	if !foundToken {
-		// xss 块存在但尚无 token 键：紧随 xss: 行插入（缩进两块，与其他字段一致），保留行尾注释。
-		fieldIndent := xssIndent + 2
-		if fieldIndent < 0 {
-			fieldIndent = 2
-		}
-		inserted := fmt.Sprintf("\n%stoken: %q", strings.Repeat(" ", fieldIndent), token)
-		for i, line := range lines {
-			if strings.HasPrefix(strings.TrimSpace(line), "xss:") {
-				lines[i] = line + inserted
-				break
-			}
-		}
-	}
-
-	return writePrivateConfigFile(path, []byte(strings.Join(lines, "\n")))
 }
 
 // PrintMCPConfigJSON 向终端输出 MCP 配置的 JSON，可直接复制到 Cursor / Claude Code 的 mcp 配置中使用
@@ -1962,7 +1743,6 @@ func loadInlineSecurityToolsFromYAML(configPath string) ([]ToolConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("读取配置文件失败: %w", err)
 	}
-	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 	var partial struct {
 		Security struct {
 			Tools []ToolConfig `yaml:"tools"`
@@ -2040,7 +1820,6 @@ func LoadToolFromFile(path string) (*ToolConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("读取文件失败: %w", err)
 	}
-	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 
 	var tool ToolConfig
 	if err := yaml.Unmarshal(data, &tool); err != nil {
@@ -2111,7 +1890,6 @@ func LoadRoleFromFile(path string) (*RoleConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("读取文件失败: %w", err)
 	}
-	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 
 	var role RoleConfig
 	if err := yaml.Unmarshal(data, &role); err != nil {
@@ -2156,7 +1934,7 @@ func Default() *Config {
 	return &Config{
 		Server: ServerConfig{
 			Host: "0.0.0.0",
-			Port: 6688,
+			Port: 8080,
 		},
 		Log: LogConfig{
 			Level:  "info",
@@ -2165,7 +1943,7 @@ func Default() *Config {
 		MCP: MCPConfig{
 			Enabled: false,
 			Host:    "127.0.0.1",
-			Port:    6689,
+			Port:    8081,
 		},
 		AI: AIConfig{
 			DefaultChannel: "default",
@@ -2258,110 +2036,6 @@ func Default() *Config {
 type C2Config struct {
 	// Enabled 为 nil 表示未写配置，按 true 处理（兼容旧 config.yaml）
 	Enabled *bool `yaml:"enabled,omitempty" json:"enabled,omitempty"`
-	// AutoCheckin 高端自动上线：boot 时自动创建/启动默认监听器、为首次上线植入体注入默认心跳参数，
-	// 并按失联阈值清理死会话。nil 表示未写配置，视为启用。
-	AutoCheckin *C2AutoCheckinConfig `yaml:"auto_checkin,omitempty" json:"auto_checkin,omitempty"`
-}
-
-// C2AutoCheckinConfig 自动上线子配置。
-//
-// 语义：C2 启用且自动上线开启时，应用启动阶段会按 Listeners 清单幂等创建监听器
-// （不存在才创建，按 name 匹配，避免重启重复），并在 AutoStartListeners 开启时直接启动；
-// 新植入体首次 check_in 未携带心跳参数时，注入 DefaultSleepSeconds/DefaultJitterPercent。
-type C2AutoCheckinConfig struct {
-	// Enabled 为 nil 表示未写配置，按 true 处理。
-	Enabled *bool `yaml:"enabled,omitempty" json:"enabled,omitempty"`
-	// AutoStartListeners 为 true 时自动上线监听器创建后立即启动；false 仅创建不启动。
-	AutoStartListeners *bool `yaml:"auto_start_listeners,omitempty" json:"auto_start_listeners,omitempty"`
-	// DefaultSleepSeconds 新会话默认心跳间隔（秒），仅作首次上线的初值；0 或未填表示沿用监听器默认 5s。
-	DefaultSleepSeconds *int `yaml:"default_sleep_seconds,omitempty" json:"default_sleep_seconds,omitempty"`
-	// DefaultJitterPercent 新会话默认抖动百分比（0-100）。
-	DefaultJitterPercent *int `yaml:"default_jitter_percent,omitempty" json:"default_jitter_percent,omitempty"`
-	// StaleSessionTimeoutSeconds 失联会话自动标记为 dead 的最小宽限期（秒）；0 或未填表示沿用看门狗默认 30s。
-	StaleSessionTimeoutSeconds *int `yaml:"stale_session_timeout_seconds,omitempty" json:"stale_session_timeout_seconds,omitempty"`
-	// Listeners boot 自动创建并（可选）启动的默认监听器清单；每个元素可独立 enabled。
-	Listeners []C2AutoListenerConfig `yaml:"listeners,omitempty" json:"listeners,omitempty"`
-}
-
-// C2AutoListenerConfig 自动上线监听器定义。
-type C2AutoListenerConfig struct {
-	// Enabled 为 nil 表示启用该监听器。
-	Enabled  *bool  `yaml:"enabled,omitempty" json:"enabled,omitempty"`
-	Name     string `yaml:"name,omitempty" json:"name,omitempty"`
-	Type     string `yaml:"type,omitempty" json:"type,omitempty"` // http_beacon/https_beacon/websocket/tcp_reverse
-	BindHost string `yaml:"bind_host,omitempty" json:"bind_host,omitempty"`
-	BindPort int    `yaml:"bind_port,omitempty" json:"bind_port,omitempty"`
-	// CallbackHost 植入端/Payload 使用的回连主机名（可选；与 bind_host 分离，便于 NAT/ECS 场景）。
-	CallbackHost string `yaml:"callback_host,omitempty" json:"callback_host,omitempty"`
-}
-
-// EnabledEffective 返回自动上线监听器是否启用；未显式配置时默认启用。
-func (l C2AutoListenerConfig) EnabledEffective() bool {
-	if l.Enabled == nil {
-		return true
-	}
-	return *l.Enabled
-}
-
-// EnabledEffective 返回自动上线是否启用；未显式配置时默认启用（需 C2 总开关同时打开）。
-func (c *C2AutoCheckinConfig) EnabledEffective() bool {
-	if c == nil || c.Enabled == nil {
-		return true
-	}
-	return *c.Enabled
-}
-
-// AutoStartListenersEffective 自动上线监听器是否随应用自动启动；未配置时默认 true。
-func (c *C2AutoCheckinConfig) AutoStartListenersEffective() bool {
-	if c == nil || c.AutoStartListeners == nil {
-		return true
-	}
-	return *c.AutoStartListeners
-}
-
-// DefaultSleepSecondsEffective 默认心跳间隔；未配置或非正数时返回 5。
-func (c *C2AutoCheckinConfig) DefaultSleepSecondsEffective() int {
-	if c == nil || c.DefaultSleepSeconds == nil || *c.DefaultSleepSeconds <= 0 {
-		return 5
-	}
-	return *c.DefaultSleepSeconds
-}
-
-// DefaultJitterPercentEffective 默认抖动百分比，收敛到 0-100。
-func (c *C2AutoCheckinConfig) DefaultJitterPercentEffective() int {
-	if c == nil || c.DefaultJitterPercent == nil {
-		return 0
-	}
-	v := *c.DefaultJitterPercent
-	if v < 0 {
-		return 0
-	}
-	if v > 100 {
-		return 100
-	}
-	return v
-}
-
-// StaleSessionTimeoutSecondsEffective 失联宽限期；0 表示沿用看门狗默认。
-func (c *C2AutoCheckinConfig) StaleSessionTimeoutSecondsEffective() int {
-	if c == nil || c.StaleSessionTimeoutSeconds == nil || *c.StaleSessionTimeoutSeconds <= 0 {
-		return 0
-	}
-	return *c.StaleSessionTimeoutSeconds
-}
-
-// EnabledAutoListeners 返回启用的自动上线监听器清单（未显式 enabled 视为启用）。
-func (c *C2AutoCheckinConfig) EnabledAutoListeners() []C2AutoListenerConfig {
-	if c == nil {
-		return nil
-	}
-	out := make([]C2AutoListenerConfig, 0, len(c.Listeners))
-	for _, l := range c.Listeners {
-		if l.EnabledEffective() {
-			out = append(out, l)
-		}
-	}
-	return out
 }
 
 // EnabledEffective 返回是否启用 C2；未显式配置时默认启用。
@@ -2374,138 +2048,17 @@ func (c C2Config) EnabledEffective() bool {
 
 // C2Public 返回给前端的 C2 状态（仅标量）。
 type C2Public struct {
-	Enabled     bool                `json:"enabled"`
-	AutoCheckin C2AutoCheckinPublic `json:"auto_checkin"`
-}
-
-// C2AutoCheckinPublic 返回给前端的自动上线状态（标量，不含监听器明细）。
-type C2AutoCheckinPublic struct {
-	Enabled                bool `json:"enabled"`
-	AutoStartListeners     bool `json:"auto_start_listeners"`
-	DefaultSleepSeconds    int  `json:"default_sleep_seconds"`
-	DefaultJitterPercent   int  `json:"default_jitter_percent"`
-	StaleSessionTimeoutSeconds int `json:"stale_session_timeout_seconds"`
-	ListenerCount          int  `json:"listener_count"`
+	Enabled bool `json:"enabled"`
 }
 
 // Public 将内部配置转为 API 响应。
 func (c C2Config) Public() C2Public {
-	ac := c.AutoCheckin
-	return C2Public{
-		Enabled: c.EnabledEffective(),
-		AutoCheckin: C2AutoCheckinPublic{
-			Enabled:                    ac.EnabledEffective(),
-			AutoStartListeners:         ac.AutoStartListenersEffective(),
-			DefaultSleepSeconds:        ac.DefaultSleepSecondsEffective(),
-			DefaultJitterPercent:       ac.DefaultJitterPercentEffective(),
-			StaleSessionTimeoutSeconds: ac.StaleSessionTimeoutSecondsEffective(),
-			ListenerCount:              len(ac.EnabledAutoListeners()),
-		},
-	}
+	return C2Public{Enabled: c.EnabledEffective()}
 }
 
 // C2APIUpdate 设置页/API 更新 C2 开关。
 type C2APIUpdate struct {
 	Enabled bool `json:"enabled"`
-	// AutoCheckin 可选子对象；仅当提供时更新自动上线开关（其余自动上线字段仍由 config.yaml 维护）。
-	AutoCheckin *C2AutoCheckinAPIUpdate `json:"auto_checkin,omitempty"`
-}
-
-// C2AutoCheckinAPIUpdate 自动上线开关的 API 更新载荷。
-type C2AutoCheckinAPIUpdate struct {
-	Enabled *bool `json:"enabled,omitempty"`
-}
-
-// XSSConfig XSS 窃密/接管回连监听器配置。收集端独立于主站监听，
-// 以便植入脚本（覆盖端拦截目标页面用户请求）向不可信用户隐藏的地址回连。
-type XSSConfig struct {
-	// Enabled 为 nil 表示关闭。
-	Enabled *bool `yaml:"enabled,omitempty" json:"enabled,omitempty"`
-	// BindHost 收集服务监听地址。
-	BindHost string `yaml:"bind_host,omitempty" json:"bind_host,omitempty"`
-	// BindPort 收集服务监听端口。
-	BindPort int `yaml:"bind_port,omitempty" json:"bind_port,omitempty"`
-	// PublicURL 写入植入脚本的收割地址（通常指向公网/内网可达的收集服务）。留空时按 http://<BindHost>:<BindPort> 推导。
-	PublicURL string `yaml:"public_url,omitempty" json:"public_url,omitempty"`
-	// Token 掠夺/收割共享密钥（写入载荷，植入手环在回调上带）。留空由 EnsureXSSSecret 自动生成并回写。
-	Token string `yaml:"token,omitempty" json:"token,omitempty"`
-	// CooldownSeconds 同一来源的收割去重冷却（秒），0 表示不去重。
-	CooldownSeconds int `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
-}
-
-// EnabledEffective 是否启用 XSS 收集服务；未配置时默认关闭。
-func (x *XSSConfig) EnabledEffective() bool {
-	if x == nil || x.Enabled == nil {
-		return false
-	}
-	return *x.Enabled
-}
-
-// BindHostEffective 收集服务监听地址；默认 127.0.0.1（禁止公网默认暴露）。
-func (x *XSSConfig) BindHostEffective() string {
-	if x == nil {
-		return "127.0.0.1"
-	}
-	h := strings.TrimSpace(x.BindHost)
-	if h == "" {
-		return "127.0.0.1"
-	}
-	return h
-}
-
-// BindPortEffective 收集服务端口；默认 8877。
-func (x *XSSConfig) BindPortEffective() int {
-	if x == nil {
-		return 8877
-	}
-	if x.BindPort <= 0 || x.BindPort > 65535 {
-		return 8877
-	}
-	return x.BindPort
-}
-
-// PublicURLEffective 推导植入收割地址；优先取显式配置。
-func (x *XSSConfig) PublicURLEffective() string {
-	var base string
-	if x != nil {
-		base = strings.TrimSpace(strings.TrimRight(x.PublicURL, "/"))
-	}
-	if base != "" {
-		return base
-	}
-	host := x.BindHostEffective()
-	if host == "" || host == "0.0.0.0" {
-		host = "127.0.0.1"
-	}
-	return fmt.Sprintf("http://%s:%d", host, x.BindPortEffective())
-}
-
-// XSSPublic 前端可见的 XSS 收集服务状态（不含 token）。
-type XSSPublic struct {
-	Enabled         bool   `json:"enabled"`
-	BindHost        string `json:"bind_host"`
-	BindPort        int    `json:"bind_port"`
-	PublicURL       string `json:"public_url"`
-	CooldownSeconds int    `json:"cooldown_seconds"`
-}
-
-// Public 返回 XSS 收集服务对外状态（Token 不下发前端）。
-func (x *XSSConfig) Public() XSSPublic {
-	if x == nil {
-		return XSSPublic{}
-	}
-	return XSSPublic{
-		Enabled:         x.EnabledEffective(),
-		BindHost:        x.BindHostEffective(),
-		BindPort:        x.BindPortEffective(),
-		PublicURL:       x.PublicURLEffective(),
-		CooldownSeconds: x.CooldownSeconds,
-	}
-}
-
-// XSSAPIUpdate 前端更新 XSS 收集服务开关。
-type XSSAPIUpdate struct {
-	Enabled *bool `json:"enabled,omitempty"`
 }
 
 // KnowledgeConfig 知识库配置

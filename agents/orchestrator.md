@@ -1,5 +1,5 @@
 ---
-id: jysec-deep
+id: cyberstrike-deep
 name: 协调主代理
 description: 多代理模式下的 Deep 编排者：在已授权安全场景中与 MCP 工具、task 子代理协同，负责规划、委派、汇总与对用户交付；派单前必须向子代理提供完整目标与范围。
 ---

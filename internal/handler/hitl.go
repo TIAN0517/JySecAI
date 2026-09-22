@@ -149,12 +149,12 @@ SELECT msg.id, msg.conversation_id,
            SELECT MAX(COALESCE(hi.decided_at, hi.created_at))
            FROM hitl_interrupts hi
            WHERE hi.message_id = msg.id
-), (
-            SELECT MIN(later.created_at)
-            FROM messages later
-            WHERE later.conversation_id = msg.conversation_id
-              AND later.rowid > msg.rowid
-        ), (
+       ), (
+           SELECT MIN(later.created_at)
+           FROM messages later
+           WHERE later.conversation_id = msg.conversation_id
+             AND later.created_at > msg.created_at
+       ), (
            SELECT MAX(pd.created_at)
            FROM process_details pd
            WHERE pd.message_id = msg.id
@@ -177,7 +177,7 @@ WHERE msg.role = 'assistant'
       OR EXISTS (
           SELECT 1 FROM messages later
           WHERE later.conversation_id = msg.conversation_id
-            AND later.rowid > msg.rowid
+            AND later.created_at > msg.created_at
       )
   )`)
 	if err != nil {

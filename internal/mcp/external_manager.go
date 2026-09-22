@@ -11,6 +11,7 @@ import (
 
 	"jysecai/internal/authctx"
 	"jysecai/internal/config"
+	"jysecai/internal/toolguard"
 
 	"go.uber.org/zap"
 )
@@ -74,6 +75,7 @@ type ExternalMCPManager struct {
 	reconnectLastTry   map[string]time.Time
 	reconnectAttempts  map[string]int
 	toolAuthorizer     func(context.Context, string, map[string]interface{}) error
+	toolGuard          *toolguard.Manager
 	executionService   *ExecutionService
 	toolWaitTimeout    time.Duration
 	toolResultMaxBytes int
@@ -94,6 +96,23 @@ func (m *ExternalMCPManager) SetToolAuthorizer(authorizer func(context.Context, 
 	m.mu.Lock()
 	m.toolAuthorizer = authorizer
 	m.mu.Unlock()
+}
+
+// SetToolGuard installs safety rules evaluated before dispatch to external MCPs.
+func (m *ExternalMCPManager) SetToolGuard(guard *toolguard.Manager) {
+	if m == nil {
+		return
+	}
+	m.mu.Lock()
+	m.toolGuard = guard
+	m.mu.Unlock()
+}
+
+func (m *ExternalMCPManager) checkToolGuard(toolName string, args map[string]interface{}) *ToolResult {
+	m.mu.RLock()
+	guard := m.toolGuard
+	m.mu.RUnlock()
+	return toolGuardBlockedResult(guard, toolName, args)
 }
 
 // NewExternalMCPManagerWithStorage 创建外部MCP管理器（带持久化存储）
@@ -129,8 +148,6 @@ func NewExternalMCPManagerWithStorage(logger *zap.Logger, storage MonitorStorage
 	manager.executionService = NewExecutionService(storage, logger)
 	// 启动后台刷新工具数量的goroutine
 	manager.startToolCountRefresh()
-	// 启动主动健康检查监督循环（断连自動拉起，15s 周期）
-	manager.startHealthSupervisor()
 	return manager
 }
 
@@ -225,7 +242,7 @@ func (m *ExternalMCPManager) LoadConfigs(cfg *config.ExternalMCPConfig) {
 
 	m.configs = make(map[string]config.ExternalMCPServerConfig)
 	for name, serverCfg := range cfg.Servers {
-		m.configs[name] = cloneExternalMCPServerConfig(serverCfg)
+		m.configs[name] = serverCfg
 	}
 }
 
@@ -241,45 +258,10 @@ func (m *ExternalMCPManager) GetConfigs() map[string]config.ExternalMCPServerCon
 	return result
 }
 
-// cloneExternalMCPServerConfig 深拷贝配置中可变引用字段（Args/Env/Headers/AutoApprove/ToolEnabled）。
-// 浅拷贝会让不同调用方（如配置环境变量展开与后台连接协程）共享同一底层数组/Map，
-// 一方的就地写会与另一方的读产生数据竞争。
-func cloneExternalMCPServerConfig(in config.ExternalMCPServerConfig) config.ExternalMCPServerConfig {
-	out := in
-	if in.Args != nil {
-		out.Args = append([]string(nil), in.Args...)
-	}
-	if in.Env != nil {
-		out.Env = make(map[string]string, len(in.Env))
-		for k, v := range in.Env {
-			out.Env[k] = v
-		}
-	}
-	if in.Headers != nil {
-		out.Headers = make(map[string]string, len(in.Headers))
-		for k, v := range in.Headers {
-			out.Headers[k] = v
-		}
-	}
-	if in.AutoApprove != nil {
-		out.AutoApprove = append([]string(nil), in.AutoApprove...)
-	}
-	if in.ToolEnabled != nil {
-		out.ToolEnabled = make(map[string]bool, len(in.ToolEnabled))
-		for k, v := range in.ToolEnabled {
-			out.ToolEnabled[k] = v
-		}
-	}
-	return out
-}
-
 // AddOrUpdateConfig 添加或更新配置
 func (m *ExternalMCPManager) AddOrUpdateConfig(name string, serverCfg config.ExternalMCPServerConfig) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-
-	// 深拷贝后再存储/传给后台协程，隔离调用方后续对配置的就地修改
-	serverCfg = cloneExternalMCPServerConfig(serverCfg)
 
 	// 如果已存在客户端，先关闭
 	if client, exists := m.clients[name]; exists {
@@ -687,17 +669,6 @@ func (m *ExternalMCPManager) triggerToolListRefresh(name string, client External
 
 // updateToolCache 更新工具列表缓存与工具数量
 func (m *ExternalMCPManager) updateToolCache(name string, tools []Tool) {
-	// 已由监督循环判定断连的客户端不得回写工具数与缓存，直到重连成功清除错误标记。
-	m.mu.RLock()
-	disconnected := isDisconnectErrorText(m.errors[name])
-	m.mu.RUnlock()
-	if disconnected {
-		m.logger.Debug("跳过更新工具缓存（客户端已断连）",
-			zap.String("name", name),
-		)
-		return
-	}
-
 	stored := cloneTools(tools)
 	m.toolCacheMu.Lock()
 	m.toolCache[name] = toolListCacheEntry{tools: stored, updatedAt: time.Now()}
@@ -733,6 +704,7 @@ func (m *ExternalMCPManager) CallTool(ctx context.Context, toolName string, args
 	}
 	var mcpName, actualToolName string
 	var client ExternalMCPClient
+	var blockedByGuard bool
 	handle, err := m.executionService.Submit(ctx, ExecutionRequest{
 		ToolName:       toolName,
 		Arguments:      args,
@@ -749,6 +721,10 @@ func (m *ExternalMCPManager) CallTool(ctx context.Context, toolName string, args
 				}
 			} else if authenticated {
 				return nil, fmt.Errorf("external tool authorization policy is not configured")
+			}
+			if blocked := m.checkToolGuard(toolName, args); blocked != nil {
+				blockedByGuard = true
+				return nil, &toolGuardBlockError{result: blocked}
 			}
 
 			// 解析工具名称：name::toolName
@@ -789,6 +765,11 @@ func (m *ExternalMCPManager) CallTool(ctx context.Context, toolName string, args
 			return release, nil
 		},
 		Run: func(runCtx context.Context) (*ToolResult, error) {
+			// Rules may have changed while this execution waited for a slot.
+			if blocked := m.checkToolGuard(toolName, args); blocked != nil {
+				blockedByGuard = true
+				return blocked, nil
+			}
 			result, callErr := client.CallTool(runCtx, actualToolName, args)
 			if callErr != nil {
 				m.handleConnectionDead(mcpName, client, callErr)
@@ -796,11 +777,13 @@ func (m *ExternalMCPManager) CallTool(ctx context.Context, toolName string, args
 			return result, callErr
 		},
 		OnDone: func(exec *ToolExecution) {
-			failed := exec != nil && exec.Status != ToolExecutionStatusCompleted && exec.Status != ToolExecutionStatusCancelled
-			if mcpName != "" {
+			failed := exec != nil && executionStatusCountsAsFailed(exec.Status)
+			if mcpName != "" && !blockedByGuard && (exec == nil || exec.Status != ToolExecutionStatusBlocked) {
 				m.recordExternalMCPResult(mcpName, failed)
 			}
-			m.updateStats(toolName, failed)
+			if exec != nil {
+				m.updateStats(toolName, exec.Status)
+			}
 		},
 	})
 	if err != nil {
@@ -989,6 +972,9 @@ func (m *ExternalMCPManager) applyAbortUserNoteToCancelledToolResult(executionID
 	}
 	hasErr := err != nil && *err != nil
 	hasRes := result != nil && *result != nil
+	if hasRes && (*result).Blocked {
+		return false
+	}
 	if !hasErr && !hasRes {
 		return false
 	}
@@ -1146,15 +1132,15 @@ func (m *ExternalMCPManager) ActiveRunningExecutionIDs() map[string]struct{} {
 }
 
 // updateStats 更新统计信息
-func (m *ExternalMCPManager) updateStats(toolName string, failed bool) {
+func (m *ExternalMCPManager) updateStats(toolName string, status string) {
 	now := time.Now()
 	if m.storage != nil {
 		totalCalls := 1
 		successCalls := 0
 		failedCalls := 0
-		if failed {
+		if executionStatusCountsAsFailed(status) {
 			failedCalls = 1
-		} else {
+		} else if status == ToolExecutionStatusCompleted {
 			successCalls = 1
 		}
 		if err := m.storage.UpdateToolStats(toolName, totalCalls, successCalls, failedCalls, &now); err != nil {
@@ -1176,10 +1162,12 @@ func (m *ExternalMCPManager) updateStats(toolName string, failed bool) {
 	stats.TotalCalls++
 	stats.LastCallTime = &now
 
-	if failed {
+	if executionStatusCountsAsFailed(status) {
 		stats.FailedCalls++
-	} else {
+	} else if status == ToolExecutionStatusCompleted {
 		stats.SuccessCalls++
+	} else if status == ToolExecutionStatusBlocked {
+		stats.BlockedCalls++
 	}
 }
 
@@ -1318,14 +1306,6 @@ func (m *ExternalMCPManager) refreshToolCounts() {
 	for k, v := range m.clients {
 		clients[k] = v
 	}
-	// 已由监督循环/handleConnectionDead 判定为断连的客户端，其工具数应保持 0，
-	// 直到重连成功清除错误标记，避免后台刷新把过期工具数“复活”回 UI。
-	disconnected := make(map[string]bool, len(m.errors))
-	for k, v := range m.errors {
-		if isDisconnectErrorText(v) {
-			disconnected[k] = true
-		}
-	}
 	m.mu.RUnlock()
 
 	newCounts := make(map[string]int)
@@ -1340,10 +1320,6 @@ func (m *ExternalMCPManager) refreshToolCounts() {
 	for name, client := range clients {
 		go func(n string, c ExternalMCPClient) {
 			if !c.IsConnected() {
-				resultChan <- countResult{name: n, count: 0}
-				return
-			}
-			if disconnected[n] {
 				resultChan <- countResult{name: n, count: 0}
 				return
 			}
@@ -1398,43 +1374,19 @@ func (m *ExternalMCPManager) refreshToolCounts() {
 		}
 	}
 
-	// 收集阶段再次读取最新的断连标记：若监督循环在本轮刷新期间判定某客户端断连，
-	// 则该客户端本轮计算出的工具数一律以 0 为准，避免旧快照回写把已清零的计数“复活”。
-	m.mu.RLock()
-	disconnectedNow := make(map[string]bool, len(m.errors))
-	for k, v := range m.errors {
-		if isDisconnectErrorText(v) {
-			disconnectedNow[k] = true
-		}
-	}
-	m.mu.RUnlock()
-
 	// 更新缓存
 	m.toolCountsMu.Lock()
 	// 更新所有获取到的值
 	for name, count := range newCounts {
-		if disconnectedNow[name] {
-			m.toolCounts[name] = 0
-			continue
-		}
 		m.toolCounts[name] = count
 	}
 	// 对于未连接的客户端，设置为0
 	for name, client := range clients {
-		if !client.IsConnected() || disconnectedNow[name] {
+		if !client.IsConnected() {
 			m.toolCounts[name] = 0
 		}
 	}
 	m.toolCountsMu.Unlock()
-}
-
-// isDisconnectErrorText 判断错误文本是否表示“连接已断开”类标记（断连后未恢复）。
-func isDisconnectErrorText(s string) bool {
-	low := strings.ToLower(s)
-	return strings.Contains(low, "连接已断开") || strings.Contains(low, "disconnected") ||
-		strings.Contains(low, "connection closed") ||
-		strings.Contains(low, "connection reset") || strings.Contains(low, "broken pipe") ||
-		strings.Contains(low, "client is closing")
 }
 
 // refreshToolCache 刷新指定MCP的工具列表缓存
@@ -1584,7 +1536,11 @@ func (m *ExternalMCPManager) connectClient(name string, serverCfg config.Externa
 
 	// 连接成功，触发工具数量刷新和工具列表缓存刷新
 	m.triggerToolCountRefresh()
-	go m.refreshToolCache(name, client)
+	m.mu.RLock()
+	if client, exists := m.clients[name]; exists {
+		m.refreshToolCache(name, client)
+	}
+	m.mu.RUnlock()
 
 	return nil
 }

@@ -1,39 +1,39 @@
-# 架構說明
+# 架构说明
 
-JySecAI 是一個以 Web 管理面為入口、以 Agent 和 MCP 工具為執行核心的安全測試編排平臺。
+JySecAI 是一个以 Web 管理面为入口、以 Agent 和 MCP 工具为执行核心的安全测试编排平台。
 
-## 總覽
+## 总览
 
 ```mermaid
 flowchart LR
-    U["Web / Robot / API 使用者"] --> R["Gin Router"]
+    U["Web / Robot / API 用户"] --> R["Gin Router"]
     R --> H["Handlers"]
     H --> DB["SQLite"]
     H --> A["Agent / Multi-Agent"]
     A --> M["MCP Server"]
-    M --> T["內建工具 / YAML 工具 / Skills FS"]
+    M --> T["内置工具 / YAML 工具 / Skills FS"]
     M --> EM["外部 MCP"]
-    A --> K["知識庫檢索"]
+    A --> K["知识库检索"]
     H --> W["Workflow 工作流"]
-    H --> C2["內建 C2"]
+    H --> C2["内置 C2"]
     H --> WS["WebShell"]
     H --> AU["Audit / Monitor"]
 ```
 
-## Web 層
+## Web 层
 
-入口在 `cmd/server/`，應用組裝在 `internal/app/`。Web 使用 Gin：
+入口在 `cmd/server/`，应用组装在 `internal/app/`。Web 使用 Gin：
 
-- `web/templates/index.html`：主頁面。
-- `web/templates/api-docs.html`：API 文件頁面。
-- `web/static/js/`：各業務模組前端邏輯。
-- `web/static/css/`：樣式。
+- `web/templates/index.html`：主页面。
+- `web/templates/api-docs.html`：API 文档页面。
+- `web/static/js/`：各业务模块前端逻辑。
+- `web/static/css/`：样式。
 
-路由註冊集中在 `internal/app/app.go`。
+路由注册集中在 `internal/app/app.go`。
 
-## Handler 層
+## Handler 层
 
-`internal/handler/` 按業務拆分：
+`internal/handler/` 按业务拆分：
 
 - `agent.go`、`eino_single_agent.go`、`multi_agent.go`
 - `workflow.go`、`workflow_run.go`
@@ -47,125 +47,125 @@ flowchart LR
 - `config.go`
 - `openapi.go`
 
-Handler 負責引數解析、許可權中介軟體後的業務協調和 HTTP 響應。
+Handler 负责参数解析、权限中间件后的业务协调和 HTTP 响应。
 
-## Agent 層
+## Agent 层
 
-單代理和多代理主要在：
+单代理和多代理主要在：
 
 - `internal/agent/`
 - `internal/multiagent/`
 - `internal/agents/`
 - `agents/`
 
-Eino ADK 提供單代理、Deep、Plan-Execute、Supervisor 等執行模式。多代理子 Agent 由 Markdown 檔案定義。
+Eino ADK 提供单代理、Deep、Plan-Execute、Supervisor 等执行模式。多代理子 Agent 由 Markdown 文件定义。
 
-## MCP 與工具
+## MCP 与工具
 
-MCP 相關：
+MCP 相关：
 
-- `internal/mcp/`：Server、外部 MCP、連線恢復。
-- `internal/einomcp/`：Eino 與 MCP 工具適配。
+- `internal/mcp/`：Server、外部 MCP、连接恢复。
+- `internal/einomcp/`：Eino 与 MCP 工具适配。
 - `tools/`：YAML 命令工具。
-- `internal/app/*_tools.go`：Go 內建工具註冊。
+- `internal/app/*_tools.go`：Go 内置工具注册。
 
-工具呼叫會進入監控記錄，並可受 HITL 審批影響。
+工具调用会进入监控记录，并可受 HITL 审批影响。
 
 ## Workflow
 
-工作流引擎在 `internal/workflow/`，HTTP 入口在 `internal/handler/workflow*.go`。它支援 start、agent、tool、condition、hitl、output、end 等節點。
+工作流引擎在 `internal/workflow/`，HTTP 入口在 `internal/handler/workflow*.go`。它支持 start、agent、tool、condition、hitl、output、end 等节点。
 
-詳細使用見 [工作流使用說明](workflow-graph.md)。
+详细使用见 [工作流使用说明](workflow-graph.md)。
 
-## 知識庫
+## 知识库
 
-知識庫在 `internal/knowledge/`，包括：
+知识库在 `internal/knowledge/`，包括：
 
-- Markdown/文字內容管理。
+- Markdown/文本内容管理。
 - chunk。
 - embedding。
 - SQLite 向量索引。
 - multi-query。
 - rerank。
-- 檢索日誌。
+- 检索日志。
 
-啟用後會向 Agent 暴露知識檢索工具。
+启用后会向 Agent 暴露知识检索工具。
 
-## 資料層
+## 数据层
 
-`internal/database/` 封裝 SQLite 訪問，儲存：
+`internal/database/` 封装 SQLite 访问，保存：
 
-- 對話、訊息、過程詳情。
-- 分組。
-- 工具執行記錄。
-- HITL 日誌。
-- 知識庫索引和檢索日誌。
-- WebShell、C2、專案、漏洞、批次任務等業務資料。
+- 对话、消息、过程详情。
+- 分组。
+- 工具执行记录。
+- HITL 日志。
+- 知识库索引和检索日志。
+- WebShell、C2、项目、漏洞、批量任务等业务数据。
 
-預設資料庫檔案：
+默认数据库文件：
 
 - `data/conversations.db`
 - `data/knowledge.db`
 
-## 安全與審計
+## 安全与审计
 
-`internal/security/` 提供認證、限流、Shell 執行和命令流處理。`internal/audit/` 和 `internal/monitor/` 分別負責平臺審計和執行監控。
+`internal/security/` 提供认证、限流、Shell 执行和命令流处理。`internal/audit/` 和 `internal/monitor/` 分别负责平台审计和执行监控。
 
-高風險模組包括：
+高风险模块包括：
 
 - Terminal。
 - WebShell。
 - C2。
 - 外部 MCP。
-- 檔案系統和 Shell Skills。
+- 文件系统和 Shell Skills。
 
-這些模組應結合角色、HITL 和部署隔離使用。
+这些模块应结合角色、HITL 和部署隔离使用。
 
-## 一次對話請求的真實路徑
+## 一次对话请求的真实路径
 
-以 `/api/eino-agent/stream` 為例：
+以 `/api/eino-agent/stream` 为例：
 
-1. Gin 路由進入認證中介軟體。
-2. Handler 解析請求體、會話 ID、角色、附件和 WebShell 上下文。
-3. Agent 構建模型輸入，包括歷史訊息、角色提示、專案事實、工具列表。
-4. Eino Runner 呼叫模型。
-5. 模型需要工具時走 MCP Tool。
-6. 工具呼叫前可能觸發 HITL。
-7. 工具執行結果寫入過程詳情和監控。
-8. 模型繼續推理並生成最終回答。
-9. SSE 將進度、工具事件、文字增量推給前端。
-10. 會話、訊息、過程詳情寫入 SQLite。
+1. Gin 路由进入认证中间件。
+2. Handler 解析请求体、会话 ID、角色、附件和 WebShell 上下文。
+3. Agent 构建模型输入，包括历史消息、角色提示、项目事实、工具列表。
+4. Eino Runner 调用模型。
+5. 模型需要工具时走 MCP Tool。
+6. 工具调用前可能触发 HITL。
+7. 工具执行结果写入过程详情和监控。
+8. 模型继续推理并生成最终回答。
+9. SSE 将进度、工具事件、文本增量推给前端。
+10. 会话、消息、过程详情写入 SQLite。
 
-這個路徑解釋了為什麼問題可能出在很多層：認證、會話、模型、工具、HITL、MCP、資料庫、SSE 或前端渲染。
+这个路径解释了为什么问题可能出在很多层：认证、会话、模型、工具、HITL、MCP、数据库、SSE 或前端渲染。
 
-## 橫向模組依賴
+## 横向模块依赖
 
-幾個模組不是獨立頁面，而是橫向能力：
+几个模块不是独立页面，而是横向能力：
 
-- Project facts：會被注入 Agent 上下文，影響多輪和跨對話判斷。
-- HITL：插在工具呼叫前，影響所有 Agent/MCP 工具。
-- Monitor：記錄工具執行，影響任務取消、覆盤和通知。
-- Audit：記錄平臺管理動作，影響安全運營。
-- Tool search：影響模型看見哪些工具，而不僅僅是工具頁面顯示。
+- Project facts：会被注入 Agent 上下文，影响多轮和跨对话判断。
+- HITL：插在工具调用前，影响所有 Agent/MCP 工具。
+- Monitor：记录工具执行，影响任务取消、复盘和通知。
+- Audit：记录平台管理动作，影响安全运营。
+- Tool search：影响模型看见哪些工具，而不仅仅是工具页面显示。
 
-改這些模組時要看全域性呼叫點，不要只測單個頁面。
+改这些模块时要看全局调用点，不要只测单个页面。
 
-## 複雜度熱點
+## 复杂度热点
 
-維護時優先警惕：
+维护时优先警惕：
 
-- `internal/app/app.go`：組裝所有服務，容易引入初始化順序問題。
-- `internal/handler/config.go`：熱應用配置，影響模型、知識庫、C2、機器人和 MCP。
-- `internal/multiagent/`：中介軟體多，流式、重試、摘要和工具呼叫交錯。
-- `internal/security/`：Shell 和認證是安全邊界。
-- `internal/database/`：SQLite 結構演進必須相容舊資料。
+- `internal/app/app.go`：组装所有服务，容易引入初始化顺序问题。
+- `internal/handler/config.go`：热应用配置，影响模型、知识库、C2、机器人和 MCP。
+- `internal/multiagent/`：中间件多，流式、重试、摘要和工具调用交错。
+- `internal/security/`：Shell 和认证是安全边界。
+- `internal/database/`：SQLite 结构演进必须兼容旧数据。
 
-## 設計取捨
+## 设计取舍
 
-專案選擇單體 Go 服務 + SQLite + 靜態前端，是為了降低部署門檻。但代價是：
+项目选择单体 Go 服务 + SQLite + 静态前端，是为了降低部署门槛。但代价是：
 
-- 多例項橫向擴充套件不天然成立，尤其 SQLite 寫入和記憶體 session。
-- 執行態配置和本地檔案強繫結，需要良好備份。
-- 高許可權工具和 Web 管理面在同一程序內，部署隔離更重要。
+- 多实例横向扩展不天然成立，尤其 SQLite 写入和内存 session。
+- 运行态配置和本地文件强绑定，需要良好备份。
+- 高权限工具和 Web 管理面在同一进程内，部署隔离更重要。
 
-這些不是缺陷，而是部署時必須理解的邊界。
+这些不是缺陷，而是部署时必须理解的边界。

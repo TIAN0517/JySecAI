@@ -12,7 +12,6 @@ chat_uploads/
 config.yaml
 config.local.yaml
 config.yaml.backup
-.config.yaml
 *.backup
 .env
 .env.*
@@ -24,24 +23,12 @@ config.yaml.backup
 # Upgrade / settings backups
 .upgrade-backup/
 
-# Dragon-V 迁移遗留原树（已迁入 mcp-servers/dragon_v/，此树保留为离线封存，不入库）
-serverall/
-
-# Dragon-V 离线数据源（CVE / 指纹 / 评估集）是产物源数据，非运行时数据，需入库
-!mcp-servers/dragon_v/data/
-!mcp-servers/dragon_v/data/**
-
 # Eino runtime task board (under skills_dir)
 skills/.eino/
-
-# Skills marketplace sync clone cache
-scripts/.marketplace-cache/
 
 # Build outputs
 cyberstrike-ai
 cyberstrike-ai.exe
-jysecai
-jysecai.exe
 *.test
 bin/
 dist/
@@ -53,6 +40,7 @@ coverage.out
 coverage.html
 
 # Logs and temporary files
+/log/
 *.log
 *.bak
 *~
@@ -68,9 +56,6 @@ __pycache__/
 
 # Go
 vendor/
-.gocache/
-.gomodcache/
-.gopath/
 
 # Node / browser extension
 node_modules/
@@ -81,51 +66,22 @@ Thumbs.db
 desktop.ini
 .idea/
 .vscode/
-.aider*
 
 # Local tool state / credentials (never commit)
 .codex/
-.evidence_tmp/
-IP/
 
-# Large local artifacts (builds, installers, archives)
-server
-server.exe
-server.exe.bak-*
-server.exe.prev-*
-serverall.zip
-*.zip
-!mcp-servers/dragon_v/data/**/*.zip
-OpenCode Desktop Installer.exe
-
-# Scratch scripts / test payloads at repo root
-/config.json
-/payload.json
-/glm.py
-/jysecai.py
-/k3.py
-/probe_nvidia.py
-/test_all_backends.py
-/test_claude_proxy.py
-/test_scan.py
-/verify_mixed.py
-/verify_zhipu.py
-
-# Pentest evidence dumps
-vps.*-vuln-evidence-*/
-vps.*-vuln-evidence-*.zip
-
-# Local logs, test runs and scratch configs
-logs/
-*.out
-config_*.yaml
-tw*.py
-*_config.py
-test_*.sh
-qq_section.txt
-scripts/hourly-verify.sh
-data_manager.py
-demo_data_manager.py
-BUILD_INSTRUCTIONS.txt
-_archive/
+# Pentest evidence dumps / local scratch workspaces (local only)
 evidence/
+tpe119_evidence/
+erpc/
+_archive/
+
+# Local logs
+/logs/
+
+# Root-level build binaries
+/*.exe
+
+# Scratch scripts at repo root
+/_*.py
+/.tmp-*

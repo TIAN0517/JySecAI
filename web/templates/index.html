@@ -261,6 +261,8 @@
                             <div class="nav-submenu-item" data-page="asset-library" onclick="switchPage('asset-library')" data-i18n="nav.assetLibrary">资产库</div>
                             <div class="nav-submenu-item" data-page="info-collect" onclick="switchPage('info-collect')" data-i18n="nav.infoCollect">信息收集</div>
                             <div class="nav-submenu-item" data-page="sentinel" onclick="switchPage('sentinel')" data-i18n="nav.sentinel" data-require-permission="asset:read">暴露面哨兵</div>
+                            <div class="nav-submenu-item" data-page="recon" onclick="switchPage('recon')" data-i18n="nav.recon" data-require-permission="asset:read">資產偵察</div>
+
                         </div>
                     </div>
                     <div class="nav-item" data-page="vulnerabilities">
@@ -2426,6 +2428,30 @@
                                 <div style="padding:32px;text-align:center;color:var(--text-muted);border:1px dashed var(--border-color);border-radius:8px;">暂无发现项数据</div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+
+                <!-- 資產偵察（既有 /api/recon） -->
+                <div id="page-recon" class="page">
+                    <div class="page-header">
+                        <h2>資產偵察</h2>
+                        <div class="page-header-actions">
+                            <button class="btn-secondary" id="recon-cancel-btn" type="button">停止</button>
+                            <button class="btn-secondary" id="recon-start-btn" type="button" data-require-permission="asset:write">快速偵察</button>
+                            <button class="btn-primary" id="recon-auto-btn" type="button" data-require-permission="asset:write">完整偵察</button>
+                        </div>
+                    </div>
+                    <div class="page-content">
+                        <p class="text-muted">只對已授權目標啟動。快速＝子域／DNS／HTTP／埠／外洩指紋；完整＝引擎既有深度收集器。不在此頁產生利用程式。</p>
+                        <div class="form-row" style="display:flex;gap:12px;flex-wrap:wrap;margin:12px 0;">
+                            <input id="recon-target" type="text" placeholder="example.com 或 https://authorized.example" style="min-width:280px;flex:1;">
+                            <select id="recon-profile">
+                                <option value="quick">quick</option>
+                                <option value="deep">deep</option>
+                            </select>
+                        </div>
+                        <div id="recon-result" class="card">尚未啟動</div>
                     </div>
                 </div>
 
@@ -7284,7 +7310,8 @@
     <script src="/static/js/notifications.js"></script>
     <script src="/static/js/info-collect.js?v=20260717-1"></script>
     <script src="/static/js/assets.js?v=20260717-7"></script>
-    <script src="/static/js/sentinel.js"></script>
+    <script src="/static/js/recon.js?v=20260910-1"></script>
+<script src="/static/js/sentinel.js"></script>
     <script src="/static/js/agents.js"></script>
     <script src="/static/js/dashboard.js"></script>
     <script src="/static/js/chat-scroll.js?v=20260815-1"></script>

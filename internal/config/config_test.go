@@ -3,11 +3,8 @@ package config
 import (
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"testing"
-
-	"gopkg.in/yaml.v3"
 )
 
 func TestEnsureLocalConfigCreatesFromExample(t *testing.T) {
@@ -43,17 +40,6 @@ server:
 	if cfg.Auth.SessionDurationHours != 12 {
 		t.Fatalf("SessionDurationHours = %d, want 12", cfg.Auth.SessionDurationHours)
 	}
-	assertPrivateConfigMode(t, configPath)
-
-	// Existing configurations can predate the private-permission policy.
-	// Startup must tighten them without changing their contents.
-	before, err := os.ReadFile(configPath)
-	if err != nil {
-		t.Fatalf("read generated config: %v", err)
-	}
-	if err := os.Chmod(configPath, 0644); err != nil {
-		t.Fatalf("chmod generated config: %v", err)
-	}
 
 	second, err := EnsureLocalConfig(configPath)
 	if err != nil {
@@ -61,122 +47,6 @@ server:
 	}
 	if second.Created {
 		t.Fatal("Created = true for existing config, want false")
-	}
-	assertPrivateConfigMode(t, configPath)
-	after, err := os.ReadFile(configPath)
-	if err != nil {
-		t.Fatalf("read tightened config: %v", err)
-	}
-	if string(after) != string(before) {
-		t.Fatal("EnsureLocalConfig modified existing config contents")
-	}
-}
-
-func TestEnsureMCPAuthRewritesConfigWithPrivatePermissions(t *testing.T) {
-	dir := t.TempDir()
-	path := filepath.Join(dir, "config.yaml")
-	initial := []byte("mcp:\n  enabled: true\n  allow_global_access: true\n  auth_header: X-MCP-Token\n  auth_header_value: \"\"\n")
-	if err := os.WriteFile(path, initial, 0644); err != nil {
-		t.Fatalf("write config: %v", err)
-	}
-	if err := os.Chmod(path, 0644); err != nil {
-		t.Fatalf("chmod config: %v", err)
-	}
-
-	cfg := &Config{MCP: MCPConfig{
-		Enabled:           true,
-		AllowGlobalAccess: true,
-		AuthHeader:        "X-MCP-Token",
-	}}
-	if err := EnsureMCPAuth(path, cfg); err != nil {
-		t.Fatalf("EnsureMCPAuth: %v", err)
-	}
-	if strings.TrimSpace(cfg.MCP.AuthHeaderValue) == "" {
-		t.Fatal("EnsureMCPAuth did not generate a service credential")
-	}
-	assertPrivateConfigMode(t, path)
-	written, err := os.ReadFile(path)
-	if err != nil {
-		t.Fatalf("read rewritten config: %v", err)
-	}
-	if !strings.Contains(string(written), cfg.MCP.AuthHeaderValue) {
-		t.Fatal("generated service credential was not persisted")
-	}
-}
-
-func TestEnsureXSSSecretGeneratesAndPersistsToken(t *testing.T) {
-	dir := t.TempDir()
-	path := filepath.Join(dir, "config.yaml")
-	initial := []byte("xss:\n  enabled: true\n  bind_host: 127.0.0.1\n  bind_port: 8877\n  cooldown_seconds: 60\n")
-	if err := os.WriteFile(path, initial, 0644); err != nil {
-		t.Fatalf("write config: %v", err)
-	}
-	if err := os.Chmod(path, 0644); err != nil {
-		t.Fatalf("chmod config: %v", err)
-	}
-
-	enabled := true
-	cfg := &Config{XSS: XSSConfig{Enabled: &enabled, BindHost: "127.0.0.1", BindPort: 8877, CooldownSeconds: 60}}
-	if err := EnsureXSSSecret(path, cfg); err != nil {
-		t.Fatalf("EnsureXSSSecret: %v", err)
-	}
-	if strings.TrimSpace(cfg.XSS.Token) == "" {
-		t.Fatal("EnsureXSSSecret did not generate a token")
-	}
-	assertPrivateConfigMode(t, path)
-	written, err := os.ReadFile(path)
-	if err != nil {
-		t.Fatalf("read rewritten config: %v", err)
-	}
-	if !strings.Contains(string(written), cfg.XSS.Token) {
-		t.Fatal("generated XSS token was not persisted")
-	}
-
-	// 已存在 token 时不应覆盖。
-	reload, err := Load(path)
-	if err != nil {
-		t.Fatalf("reload: %v", err)
-	}
-	if !reload.XSS.EnabledEffective() || reload.XSS.Token != cfg.XSS.Token {
-		t.Fatalf("reload XSS state mismatch: enabled=%v token=%q", reload.XSS.EnabledEffective(), reload.XSS.Token)
-	}
-}
-
-func TestEnsureXSSSecretDisabledNoWrite(t *testing.T) {
-	dir := t.TempDir()
-	path := filepath.Join(dir, "config.yaml")
-	initial := []byte("xss:\n  enabled: false\n")
-	if err := os.WriteFile(path, initial, 0644); err != nil {
-		t.Fatalf("write config: %v", err)
-	}
-	disabled := false
-	cfg := &Config{XSS: XSSConfig{Enabled: &disabled}}
-	if err := EnsureXSSSecret(path, cfg); err != nil {
-		t.Fatalf("EnsureXSSSecret disabled: %v", err)
-	}
-	written, err := os.ReadFile(path)
-	if err != nil {
-		t.Fatalf("read config: %v", err)
-	}
-	if strings.Contains(string(written), "token") {
-		t.Fatal("EnsureXSSSecret wrote a token while disabled")
-	}
-}
-
-func assertPrivateConfigMode(t *testing.T, path string) {
-	t.Helper()
-	info, err := os.Stat(path)
-	if err != nil {
-		t.Fatalf("stat %s: %v", path, err)
-	}
-	if runtime.GOOS == "windows" {
-		// Windows has no POSIX mode bits: os.Chmod only toggles the read-only
-		// attribute and Mode().Perm() always reports 0666/0444. The 0600
-		// contract is enforced on POSIX platforms where it is representable.
-		return
-	}
-	if got := info.Mode().Perm(); got != 0600 {
-		t.Fatalf("%s permissions = %04o, want 0600", path, got)
 	}
 }
 
@@ -434,124 +304,5 @@ func TestLatestUserMessageRunesEffective(t *testing.T) {
 	}
 	if got := custom.LatestUserMessageTailRunesEffective(); got != 60 {
 		t.Fatalf("custom latest user tail runes = %d", got)
-	}
-}
-
-func TestC2AutoCheckinConfigParseAndEffective(t *testing.T) {
-	raw := []byte(`c2:
-  enabled: true
-  auto_checkin:
-    enabled: true
-    auto_start_listeners: false
-    default_sleep_seconds: 9
-    default_jitter_percent: 15
-    stale_session_timeout_seconds: 120
-    listeners:
-      - name: auto-http
-        type: http_beacon
-        bind_host: 127.0.0.1
-        bind_port: 8899
-        enabled: true
-      - name: auto-ws
-        type: websocket
-        bind_host: 0.0.0.0
-        bind_port: 8900
-        enabled: false
-`)
-	var cfg Config
-	if err := yaml.Unmarshal(raw, &cfg); err != nil {
-		t.Fatalf("yaml.Unmarshal: %v", err)
-	}
-	ac := cfg.C2.AutoCheckin
-	if ac == nil {
-		t.Fatal("C2.AutoCheckin = nil, want parsed config")
-	}
-	if !ac.EnabledEffective() {
-		t.Fatal("auto_checkin should be enabled")
-	}
-	if ac.AutoStartListenersEffective() {
-		t.Fatal("auto_start_listeners should be false")
-	}
-	if got := ac.DefaultSleepSecondsEffective(); got != 9 {
-		t.Fatalf("default sleep = %d, want 9", got)
-	}
-	if got := ac.DefaultJitterPercentEffective(); got != 15 {
-		t.Fatalf("default jitter = %d, want 15", got)
-	}
-	if got := ac.StaleSessionTimeoutSecondsEffective(); got != 120 {
-		t.Fatalf("stale timeout = %d, want 120", got)
-	}
-	enabled := ac.EnabledAutoListeners()
-	if len(enabled) != 1 || enabled[0].Name != "auto-http" {
-		t.Fatalf("enabled auto listeners = %+v, want only auto-http", enabled)
-	}
-	pub := cfg.C2.Public()
-	if !pub.Enabled {
-		t.Fatal("C2 public enabled = false")
-	}
-	if pub.AutoCheckin.DefaultSleepSeconds != 9 ||
-		pub.AutoCheckin.DefaultJitterPercent != 15 ||
-		pub.AutoCheckin.StaleSessionTimeoutSeconds != 120 ||
-		pub.AutoCheckin.ListenerCount != 1 {
-		t.Fatalf("C2 public auto_checkin = %+v", pub.AutoCheckin)
-	}
-}
-
-func TestC2AutoCheckinDefaultsWhenAbsent(t *testing.T) {
-	// 未写 auto_checkin：视为启用 + 默认参数（与旧 config.yaml 兼容）。
-	var cfg Config
-	if err := yaml.Unmarshal([]byte("c2:\n  enabled: true\n"), &cfg); err != nil {
-		t.Fatalf("yaml.Unmarshal: %v", err)
-	}
-	var ac *C2AutoCheckinConfig
-	if cfg.C2.AutoCheckin != nil {
-		ac = cfg.C2.AutoCheckin
-	}
-	if !ac.EnabledEffective() {
-		t.Fatal("auto_checkin absent should default to enabled")
-	}
-	if !ac.AutoStartListenersEffective() {
-		t.Fatal("auto_start_listeners absent should default to true")
-	}
-	if got := ac.DefaultSleepSecondsEffective(); got != 5 {
-		t.Fatalf("default sleep = %d, want 5", got)
-	}
-	if got := ac.DefaultJitterPercentEffective(); got != 0 {
-		t.Fatalf("default jitter = %d, want 0", got)
-	}
-	if got := ac.StaleSessionTimeoutSecondsEffective(); got != 0 {
-		t.Fatalf("stale timeout = %d, want 0 (watchdog default)", got)
-	}
-	if len(ac.EnabledAutoListeners()) != 0 {
-		t.Fatal("no listeners configured, EnabledAutoListeners should be empty")
-	}
-	if got := cfg.C2.Public().AutoCheckin.ListenerCount; got != 0 {
-		t.Fatalf("listener count = %d, want 0", got)
-	}
-}
-
-func TestC2AutoCheckinEffectiveClamps(t *testing.T) {
-	raw := []byte(`c2:
-  auto_checkin:
-    default_jitter_percent: 500
-    default_sleep_seconds: -3
-    stale_session_timeout_seconds: -1
-`)
-	var cfg Config
-	if err := yaml.Unmarshal(raw, &cfg); err != nil {
-		t.Fatalf("yaml.Unmarshal: %v", err)
-	}
-	ac := cfg.C2.AutoCheckin
-	if ac == nil {
-		t.Fatal("C2.AutoCheckin = nil")
-	}
-	if got := ac.DefaultSleepSecondsEffective(); got != 5 {
-		t.Fatalf("default sleep = %d, want fallback 5", got)
-	}
-	if got := ac.DefaultJitterPercentEffective(); got != 100 {
-		t.Fatalf("default jitter = %d, want clamp 100", got)
-	}
-	if got := ac.StaleSessionTimeoutSecondsEffective(); got != 0 {
-		t.Fatalf("stale timeout = %d, want 0 (disable override)", got)
 	}
 }

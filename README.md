@@ -1,172 +1,418 @@
-<p align="center">
-  <img src="images/jysecai-logo.png" alt="JySecAI 3D Jy mark" width="180">
-</p>
+<div align="center">
+  <img src="images/logo.png" alt="JySecAI Logo" width="200" >
+</div>
 
-<h1 align="center">JySecAI</h1>
+# JySecAI
 
-<p align="center">
-  <strong>Jy 技術團隊打造的 AI 原生安全驗證與多引擎治理平臺</strong><br>
-  一套授權邊界、人工審批、任務生命週期、證據索引與商用計費基礎，統一協調自主滲透、LLM／Agent 紅隊、ML 魯棒性與身分安全稽核。
-</p>
+
+[中文](README_CN.md) | [English](README.md)
+
+**The system of action for AI-native cybersecurity—where intent becomes governed execution, evidence becomes operational memory, and every operation improves the next.**
+
+JySecAI connects planning, execution, human oversight, evidence, and replay in one auditable workspace. Built in Go, it combines Eino-powered agents, MCP-native tools, RAG knowledge, visual workflows, and attack-chain modeling and analysis for authorized security operations.
+
+**Start here:** [Quick start](#quick-start-one-command-deployment) · [Documentation](docs/en-US/README.md) · [Security hardening](docs/en-US/security-hardening.md)
 
 > [!IMPORTANT]
-> JySecAI 僅限於資產所有者或已取得明確書面授權的安全測試。平臺刻意保留 HITL、Scope、RBAC 與可追溯稽核；「無痕整合」在本專案只代表一致的使用體驗，不代表隱匿行為、繞過偵測或刪除紀錄。
+> Use JySecAI only on systems you own or are explicitly authorized to test. For shared or production environments, review the [security model](docs/en-US/security-model.md) and [hardening guide](docs/en-US/security-hardening.md) before enabling high-risk tools, WebShell, or C2 capabilities.
 
-## 專案現況
+## Interface & Integration Preview
 
-JySecAI 由兩個後端應用組成；reference Compose 已用同源 Gateway 將它們組裝成一個產品入口：
+<div align="center">
 
-| 產品面 | Compose 對外路徑 | 已有能力 |
-|---|---|---|
-| Go 完整主控臺 | `/` | 專案、對話、多 Agent、工作流、資產、漏洞、知識庫、Blackboard、攻擊鏈、HITL、RBAC、Audit、MCP、WebShell、C2 與機器人整合 |
-| TypeScript 治理控制面 | `/governance/` | Run 建立／審批／取消、Scope 驗證、方案額度、事件、Finding／Artifact metadata、Redis Worker queue、Prometheus 與選配 Stripe |
+### System Dashboard Overview
 
-`compose.jysec.yml` 會以 `Dockerfile.core` 建置 Go core，並啟動 TypeScript control-plane、PostgreSQL、Redis 與使用 `deploy/nginx.conf` 的 Nginx Gateway。Gateway 在 `http://127.0.0.1:8787` 提供：
+<table>
+<tr>
+<td width="50%" align="center">
+<strong>Light Mode</strong><br/>
+<img src="./images/dashboard.png" alt="System Dashboard (Light)" width="100%">
+</td>
+<td width="50%" align="center">
+<strong>Dark Mode</strong><br/>
+<img src="./images/dark.png" alt="System Dashboard (Dark)" width="100%">
+</td>
+</tr>
+</table>
 
-| 路徑 | 上游／行為 |
-|---|---|
-| `/` | Go 完整主控臺（包含 WebSocket／SSE） |
-| `/governance/` | TypeScript 治理、執行、證據索引與計費頁面 |
-| `/assets/*`、`/v1/*` | TypeScript 靜態資產與 API |
-| `/metrics` | TypeScript Prometheus endpoint；仍需透過 metrics token 驗證 |
-| `/internal/*` | 不公開；Gateway 直接回覆 `404`，Worker 只使用私有 service address callback |
+*The dashboard provides a comprehensive overview of system runtime status, security vulnerabilities, tool usage, and knowledge base, helping users quickly understand the platform's core features and current state.*
 
-這是統一路由，不是統一身份：Go 主控臺仍使用既有 session，治理控制面仍驗證自己的 JWT／JWKS。正式單一登入仍需共同 IdP 或受控 token exchange。
+<details>
+<summary><strong>More interface screenshots</strong></summary>
 
-## 目前確實已落地
+### Core Features Overview
 
-- 原生 Go Recon Engine 已接入 Go core：`POST /api/recon/runs` 建立授權掃描、`GET /api/recon/runs/:id` 查詢結果；目前內建 DNS、HTTP、常見 TCP port 與敏感端點檢查，所有執行都受既有 session／RBAC 路由保護。
-- Desinter_scan 的 23 個 collector 名稱已納入同一個 Go registry；可直接使用 `profile=deep` 或 `profile=audit` 啟動全清單。純 Go collector 會直接執行，Nuclei、WhatWeb、dirsearch、gau、waybackurls、gowitness 等外部工具缺少時會明確回報 error，不會偽造成功。
-- 不需要逐個按 collector：登入 JySecAI 後只呼叫 `POST /api/recon/auto`，body 傳入 `{"target":"example.com"}`，系統會自動啟動完整清單；以回傳的 `id` 輪詢 `GET /api/recon/runs/:id` 即可取得進度與結果。
-- JySecAI 品牌已套用至新增控制面與既有 Go Web 介面。
-- Fastify 控制面、PostgreSQL store、Redis Streams dispatcher、JWT／JWKS 驗證、Prometheus metrics。
-- Run 建立、一次人工核准、取消、狀態轉移、冪等鍵、租戶並發與月額度檢查。
-- URL、Host、Wildcard Domain、IPv4／IPv6 CIDR、期限與 operation 的 Scope 驗證。
-- HMAC 簽名工作、工作時效檢查、樂觀狀態轉移，以及 Worker 外層失敗的 bounded dead-letter stream。
-- Finding 正規化，以及 Artifact object key、SHA-256、media type、size 與 `encrypted=true` metadata 驗證。
-- Go core 容器與同源 Nginx Gateway；Compose 會將 `/` 導向完整主控臺，將 `/governance/`、`/assets/*`、`/v1/*` 與 `/metrics` 導向治理控制面，且不公開 `/internal/*` callback。
-- Strix CLI Driver；Worker image 會安裝鎖定版本，但執行仍需 LLM、Docker sandbox 與明確啟用設定。
-- JySecAI／Jy Workflow HTTP Driver；Compose 已包含 Go 核心，但使用前仍須提供可被核心接受的 service token。
-- 選配 Stripe Checkout、Customer Portal 與訂閱 Webhook 驗證。
-- Production 組態會拒絕 memory store、development auth、預設金鑰、未保護 metrics 與非 HTTPS 公開網址。
+<table>
+<tr>
+<td width="33.33%" align="center">
+<strong>Web Console</strong><br/>
+<img src="./images/web-console.png" alt="Web Console" width="100%">
+</td>
+<td width="33.33%" align="center">
+<strong>Task Management</strong><br/>
+<img src="./images/task-management.png" alt="Task Management" width="100%">
+</td>
+<td width="33.33%" align="center">
+<strong>Vulnerability Management</strong><br/>
+<img src="./images/vulnerability-management.png" alt="Vulnerability Management" width="100%">
+</td>
+</tr>
+<tr>
+<td width="33.33%" align="center">
+<strong>WebShell Management</strong><br/>
+<img src="./images/webshell-management.png" alt="WebShell Management" width="100%">
+</td>
+<td width="33.33%" align="center">
+<strong>MCP Management</strong><br/>
+<img src="./images/mcp-management.png" alt="MCP management" width="100%">
+</td>
+<td width="33.33%" align="center">
+<strong>Knowledge Base</strong><br/>
+<img src="./images/knowledge-base.png" alt="Knowledge Base" width="100%">
+</td>
+</tr>
+<tr>
+<td width="33.33%" align="center">
+<strong>Skills Management</strong><br/>
+<img src="./images/skills.png" alt="Skills Management" width="100%">
+</td>
+<td width="33.33%" align="center">
+<strong>Agent Management</strong><br/>
+<img src="./images/agent-management.png" alt="Agent Management" width="100%">
+</td>
+<td width="33.33%" align="center">
+<strong>Role Management</strong><br/>
+<img src="./images/role-management.png" alt="Role Management" width="100%">
+</td>
+</tr>
+<tr>
+<td width="33.33%" align="center">
+<strong>System Settings</strong><br/>
+<img src="./images/settings.png" alt="System settings" width="100%">
+</td>
+<td width="33.33%" align="center">
+<strong>MCP stdio Mode</strong><br/>
+<img src="./images/mcp-stdio2.png" alt="MCP stdio mode" width="100%">
+</td>
+<td width="33.33%" align="center">
+<strong>Burp Suite Plugin</strong><br/>
+<img src="./images/plugins.png" alt="Burp Suite plugin" width="100%">
+</td>
+</tr>
+</table>
 
-## 尚未完成或不隨倉庫部署
+</details>
 
-- Promptfoo、PyRIT、Giskard、ART、Humanbound 與 AD Audit 目前只有統一 HTTP Adapter 契約；本倉庫未包含它們的 Adapter service 或映像。
-- Artifact 本體上傳、下載、S3／MinIO、KMS 與 envelope encryption 尚未實作；目前儲存的是 metadata。
-- OIDC／SAML 登入流程、SCIM、組織生命週期與兩套控制檯的單一登入尚未完成；控制面僅支援驗證既有 JWT／JWKS。
-- Worker heartbeat、即時 liveness/capacity、pending-job reclaim、checkpoint/retry 與跨節點排程尚未完成。已配置 URL 只表示可嘗試連線，不等於完成 E2E 驗證。
-- `paused`／`budget_paused` 已存在於狀態模型，但尚無公開 pause/resume 操作面。
-- 稽核儲存天數、SSO 與 private worker 目前是 entitlement／能力旗標，尚未形成完整的儲存排程或佈建流程。
-- Credits 現階段是建立 Run 時的 reservation，不是依實際 Token、GPU 或執行時間結算的用量計費。
-- Reference Compose 是單節點部署範例；外部負載平衡、control-plane／Worker 多副本協調、PostgreSQL／Redis 高可用、備份還原與跨區域容錯尚未完成。
-- 尚未完成授權 staging target 的全引擎端到端驗收；目前 CI 主要驗證型別、單元測試、Go 測試及容器可建置性。
+</div>
 
-## 引擎整合矩陣
+## Highlights
 
-| 引擎 | Repo 內實作 | 啟用條件 | 目前成熟度 |
-|---|---|---|---|
-| Jy Workflow Orchestrator | HTTP Driver + Go core 容器 | 配置 service token；Compose 預設使用私有 `core:8080` | 已接入部署拓撲，仍需授權環境 E2E |
-| Strix | CLI Driver + Worker image | 明確啟用、LLM key、可用 Docker sandbox | Driver 已實作，需授權環境 E2E |
-| Promptfoo | 通用 HTTP client | 部署相容 Adapter 並配置 URL | 僅有契約，不隨倉庫部署 |
-| PyRIT | 通用 HTTP client | 部署相容 Adapter 並配置 URL | 僅有契約，不隨倉庫部署 |
-| Giskard | 通用 HTTP client | 部署相容 Adapter 並配置 URL | 僅有契約，不隨倉庫部署 |
-| ART | 通用 HTTP client | 部署相容 Adapter 並配置 URL／GPU | 僅有契約，不隨倉庫部署 |
-| Humanbound | 通用 HTTP client | 部署相容 Adapter 並配置 URL | 選配契約，不隨倉庫部署 |
-| AD Risk Audit | 通用 HTTP client | 部署隔離、預設唯讀的 Adapter | 僅有契約，不隨倉庫部署 |
+### Agents and orchestration
 
-> 「Adapter 契約存在」不等於該引擎已安裝或線上。Runtime catalog 會依部署設定決定是否允許選擇；現階段的 `ready` 僅表示必要設定存在，完整主動健康檢查與 Worker heartbeat 尚未完成。
+- 🤖 **Agentic execution** translates natural-language intent into governed, auditable security actions.
+- 🧩 **Eino orchestration** supports single-agent execution plus Deep, Plan-Execute, and Supervisor multi-agent modes.
+- 🔀 **Graph workflows** combine Agents, tools, conditions, approvals, and outputs into reusable flows.
+- 🎭 **Role-based testing** provides focused prompts and tool policies for common security scenarios.
 
-## 架構
+### Tools and knowledge
 
-```mermaid
-flowchart TB
-    Gateway["Gateway :8787"] --> Full["/ · Go Full Console"]
-    Gateway --> Gov["/governance/ · Governance Console"]
-    Gov --> CP["TypeScript Control Plane"]
-    CP --> DB["PostgreSQL metadata + usage reservations"]
-    CP --> Q["Signed Redis Run Queue"]
-    Q --> W["Configured Workers"]
-    W --> Strix["Bundled Strix Driver"]
-    W --> Ext["External Adapter services"]
-    W --> Full
-    W --> CP
-```
+- 🧰 **Security tools** include 100+ curated YAML recipes with custom extensions and role-scoped access.
+- 🔌 **MCP integration** supports HTTP, stdio, SSE, external federation, and dynamic tool discovery.
+- ⏱️ **Resilient tool execution** runs blocking MCP/tool calls in workers with bounded agent waits, resumable `execution_id` polling, cancellation, per-server circuit breakers, concurrency limits, and unified output caps.
+- 🎯 **Agent Skills** follow the standard Skill layout and support progressive, on-demand loading.
+- 📚 **Knowledge base** combines query rewriting, vector retrieval, reranking, and result post-processing.
+- 🖼️ **Vision analysis** uses a separate vision model for screenshots, captchas, and UI while retaining text summaries only.
 
-每個控制面工作只攜帶授權範圍與最小任務內容。Go 核心負責 Agent Session 與既有專案資料；控制面儲存 Run、Event、Finding 與 Artifact metadata。原始 Artifact 的加密物件儲存尚待實作，不能只靠 `encrypted=true` metadata 視為已加密落盤。
+### Governance and audit
 
-更完整設計見 [架構檔案](docs/jysec-architecture.md) 與 [Adapter 契約](docs/jysec-adapter-contract.md)。
+- 🧑‍⚖️ **Human in the loop** provides approval modes, tool allowlists, audit-agent review, and traceable decisions.
+- 🛡️ **Call blocking** under Security adds configurable regex checks before MCP execution, reminder templates, and dry runs, with government-domain protection enabled by default. See [Tool call blocking](docs/en-US/tool-call-guard.md).
+- 🔐 **Platform RBAC** supports multiple users, system and custom roles, scoped permissions, ownership, and explicit assignments.
+- 🔒 **Security and audit** provide authenticated access, audit logs, SQLite persistence, and operational evidence retention.
+- 📄 **Result governance** stores the same capped tool result seen by the agent, protects resume paths from oversized historical output, and adds UI safeguards for large detail views. See [Tool Execution Governance](docs/en-US/tool-execution-governance.md).
 
-## 本機啟動
+### Security operations
 
-### 完整 Go 主控臺（單獨開發）
+- 📁 **Conversation management** provides pinning, renaming, and batch organization.
+- 📂 **Projects and attack chains** connect cross-session facts, risk scoring, graph views, and step-by-step replay.
+- 🗂️ **Asset management** normalizes and deduplicates domains, IP addresses, ports, and services; supports XLSX/CSV import and export, advanced filters and saved views, ownership and business metadata, cross-page bulk maintenance, and duplicate merging; and tracks scan coverage, linked vulnerabilities, and risk state. See the [Asset Management guide](docs/en-US/asset-management.md).
+- 🛡️ **Vulnerability management** provides severity classification, lifecycle tracking, filtering, and statistics.
+- 📋 **Batch tasks** provide queued execution, editing, status tracking, and retained results.
+- 📱 **Chatbots** connect Personal WeChat, WeCom, DingTalk, Lark, Telegram, Slack, Discord, and QQ Bot.
 
-依 [既有部署指南](docs/zh-CN/deployment.md) 配置 `config.yaml` 後啟動：
+### Authorized security operations
 
+- 🐚 **WebShell management** provides connection management, a virtual terminal, file operations, and AI-assisted workflows.
+- 📡 **Built-in C2** provides listeners, encrypted beacons, sessions, task queues, payload helpers, and live events.
+
+> WebShell, C2, and other high-risk capabilities are for systems you own or are explicitly authorized to test. See the [security model](docs/en-US/security-model.md) and [hardening guide](docs/en-US/security-hardening.md).
+
+## Plugins
+
+JySecAI includes optional integrations under `plugins/`.
+
+- **Burp Suite extension**: `plugins/burp-suite/cyberstrikeai-burp-extension/`  
+  Build output: `plugins/burp-suite/cyberstrikeai-burp-extension/dist/cyberstrikeai-burp-extension.jar`  
+  Docs: `plugins/burp-suite/cyberstrikeai-burp-extension/README.md`
+- **Browser extension (Chrome / Edge)**: `plugins/browser-extension/cyberstrikeai-browser-extension/`  
+  Capture Network traffic in DevTools and send it to JySecAI for AI-assisted security testing—aligned with the Burp plugin.  
+  Install: `chrome://extensions/` → Load unpacked → F12 → **JySecAI** tab  
+  Package output: `plugins/browser-extension/cyberstrikeai-browser-extension/dist/cyberstrikeai-browser-extension.zip`  
+  Docs: `plugins/browser-extension/cyberstrikeai-browser-extension/README.md` / `README.zh-CN.md`
+
+## Tool Overview
+
+JySecAI ships with 100+ curated tools covering the whole kill chain:
+
+<details>
+<summary><strong>View the complete tool categories</strong></summary>
+
+- **Network Scanners** – nmap, masscan, rustscan, arp-scan, nbtscan
+- **Web & App Scanners** – sqlmap, nikto, dirb, gobuster, feroxbuster, ffuf, httpx
+- **Vulnerability Scanners** – nuclei, wpscan, wafw00f, dalfox, xsser
+- **Subdomain Enumeration** – subfinder, amass, findomain, dnsenum, fierce
+- **Network Space Search Engines** – fofa_search, zoomeye_search, quake_search, shodan_search
+- **API Security** – graphql-scanner, arjun, api-fuzzer, api-schema-analyzer
+- **Container Security** – trivy, clair, docker-bench-security, kube-bench, kube-hunter
+- **Cloud Security** – prowler, scout-suite, cloudmapper, pacu, terrascan, checkov
+- **Binary Analysis** – gdb, radare2, ghidra, objdump, strings, binwalk
+- **Exploitation** – metasploit, msfvenom, pwntools, ropper, ropgadget
+- **Password Cracking** – hashcat, john, hashpump
+- **Forensics** – volatility, volatility3, foremost, steghide, exiftool
+- **Post-Exploitation** – linpeas, winpeas, mimikatz, bloodhound, impacket, responder
+- **CTF Utilities** – stegsolve, zsteg, hash-identifier, fcrackzip, pdfcrack, cyberchef
+- **System Helpers** – exec, create-file, delete-file, list-files, modify-file
+
+</details>
+
+See [tools/README_EN.md](tools/README_EN.md) for tool definitions, customization, and usage notes.
+
+## Basic Usage
+
+### Quick Start (One-Command Deployment)
+
+**Prerequisites:**
+- Go 1.25+ ([Install](https://go.dev/dl/); required by `go.mod`)
+- Python 3.10+ ([Install](https://www.python.org/downloads/))
+
+**One-Command Deployment:**
 ```bash
-./run.sh
+git clone https://github.com/Ed1s0nZ/JySecAI.git
+cd JySecAI
+chmod +x run.sh && ./run.sh
 ```
 
-預設使用自簽 HTTPS 並監聽 `8080`。這是目前檢視專案、對話、Agent、工作流、資產與其他完整功能的入口。
+The `run.sh` script will automatically:
+- ✅ Check and validate Go & Python environments
+- ✅ Create Python virtual environment
+- ✅ Install Python dependencies
+- ✅ Download Go dependencies
+- ✅ Build the project
+- ✅ Start the server
 
-### 治理控制面（單獨開發）
+**Verify the startup:**
 
-需求：Node.js 24+。
+1. Confirm the terminal displays `● ONLINE` followed by the actual Web UI URL.
+2. Open that URL; the default HTTPS mode uses a local self-signed certificate, so accept the browser warning once.
+3. On a new installation, store the one-time `admin` password shown under `ADMIN SETUP REQUIRED`, sign in, and change it immediately.
 
+**Networking defaults:** `run.sh` starts the server with **`--https`** and the repo **`config.yaml`** (local self-signed TLS; better for many concurrent streams). Use **`./run.sh --http`** for plain HTTP. In production, set **`server.tls_cert_path`** / **`server.tls_key_path`** in **`config.yaml`** (see comments there). For manual runs, add **`--https`** or **`CYBERSTRIKE_HTTPS=1`**; if **`-config`** is wrong, the binary prints a short usage hint on stderr.
+
+**First-Time Configuration:**
+1. **Configure AI channels** (required before first use)
+   - After launch, open **`https://127.0.0.1:8080/`** (or **`https://localhost:8080/`**; replace **8080** with `server.port` in `config.yaml`) and accept the self-signed certificate warning once. If you used `./run.sh --http`, use **`http://`** instead.
+   - Go to `System Settings` → `Basic Settings` → `AI Channel Configuration`, add or edit a channel, then fill in provider, Base URL, API key, model, and token limits. Click **Save changes**. The left channel list supports setting a default, copy, delete, and bulk probe.
+     ```yaml
+     ai:
+       default_channel: openai-main
+       channels:
+         openai-main:
+           name: OpenAI Main
+           provider: openai_compatible
+           api_key: "${OPENAI_API_KEY}"
+           base_url: "https://api.openai.com/v1"  # or https://api.deepseek.com/v1
+           model: "gpt-4o"  # or deepseek-chat, qwen3-max, etc.
+           max_total_tokens: 120000
+           max_completion_tokens: 16384
+     ```
+   - Or edit `config.yaml` directly before launching. `ai.default_channel` is used for new conversations and tasks that do not explicitly select a channel; the chat page can also select any saved channel per session.
+2. **Login** - On first startup the console prints an auto-generated initial `admin` password; create accounts from **Platform permissions → User management**
+3. **Install security tools (optional)** - Install tools from `tools/` as needed; missing tools are skipped or substituted at runtime. Common examples:
+
+   **macOS (Homebrew):**
+   ```bash
+   brew install nmap masscan sqlmap nikto gobuster ffuf hydra hashcat nuclei subfinder
+   ```
+
+   **Linux (Kali / Debian / Ubuntu):**
+   ```bash
+   sudo apt update
+   sudo apt install -y nmap masscan sqlmap nikto gobuster hydra hashcat john binwalk
+   # On some distros, install ffuf/nuclei/subfinder via go install or upstream docs
+   ```
+
+   See the `tools/` directory for the full list; refer to each tool's official docs for install details.
+
+**Alternative Launch Methods:**
 ```bash
-cd platform
-cp .env.example .env
-npm ci
-npm run check
-npm run dev
+# Direct Go run (set up env yourself); add --https to match run.sh defaults
+go run cmd/server/main.go --https
+
+# Manual build
+go build -o jysecai cmd/server/main.go
+./jysecai --https
 ```
 
-開啟 `http://127.0.0.1:8787`。開發模式使用記憶體儲存與 header identity；它適合 UI／API 評估，但 `MemoryRunDispatcher` 沒有背景 Worker，因此核准後的 Run 不會在此模式自行執行。Production 會拒絕這種組態。
+If server logs show `client sent an HTTP request to an HTTPS server`, a client is still using **`http://`** on a TLS-only port—switch the URL to **`https://`**.
 
-## 統一 Compose reference
+**Note:** The Python virtual environment (`venv/`) is automatically created and managed by `run.sh`. Tools that require Python (like `api-fuzzer`, `http-framework-test`, etc.) will automatically use this environment.
 
-```bash
-cp platform/production.env.example platform/.env.production
-# 編輯所有密碼、JWT、Worker、Metrics、Stripe 與引擎設定
-docker compose -f compose.jysec.yml up -d --build
+### Upgrade and Compatibility
 
-# 僅在專用、隔離 Worker 主機上啟用 Strix／已配置 Adapter Worker
-docker compose -f compose.jysec.yml --profile worker up -d --build worker
+**JySecAI one-click upgrade:**
+1. (First time) enable the script: `chmod +x upgrade.sh`
+2. Upgrade with: `./upgrade.sh` (optional flags: `--tag vX.Y.Z`, `--no-venv`, `--yes`). Local `tools/`, `roles/`, and `skills/` are always preserved.
+3. The script will back up your `config.yaml` and `data/`, upgrade the code from GitHub Release, update `config.yaml`'s `version`, then restart the server.
+
+Recommended one-liner:
+`chmod +x upgrade.sh && ./upgrade.sh --yes`
+
+If something goes wrong, you can restore from `.upgrade-backup/` (or manually copy `/data` and `config.yaml` back) and run `./run.sh` again.
+
+Requirements / tips:
+* You need `curl` or `wget` for downloading Release packages.
+* `rsync` is recommended/required for the safe code sync.
+* If GitHub API rate-limits you, set `export GITHUB_TOKEN="..."` before running `./upgrade.sh`.
+
+⚠️ **Before upgrading:** review the target release notes for configuration, database, and API changes. Backups are required even for patch upgrades; a version number alone is not a compatibility guarantee.
+
+
+## Configuration
+
+Use [`config.example.yaml`](config.example.yaml) as the authoritative configuration template and copy only the values required for your environment. At minimum, configure the server and one AI channel:
+
+```yaml
+server:
+  host: "127.0.0.1"
+  port: 8080
+ai:
+  default_channel: openai-main
+  channels:
+    openai-main:
+      provider: openai_compatible
+      api_key: "${OPENAI_API_KEY}"
+      base_url: "https://api.openai.com/v1"
+      model: "your-model"
 ```
 
-Compose 預設會啟動 PostgreSQL、Redis、Go core、治理控制面與 HTTP Gateway；開啟 `http://127.0.0.1:8787/` 可進入完整主控臺，`http://127.0.0.1:8787/governance/` 可進入治理控制檯。Worker 只會在明確指定 `--profile worker` 時啟動。外部 Adapter、S3／MinIO 物件儲存、共同 IdP、HA 與對外 TLS 終結不隨 reference Compose 部署。Gateway 預設只繫結 loopback；公開服務時必須再放到 TLS／Zero Trust 入口後方。Strix Worker 會掛載 Docker socket，請只在專用節點使用。完整邊界見 [部署與強化指南](docs/jysec-deployment.md)。
+`openai` is a backward-compatible runtime field; maintain new model settings in `ai.channels`. Do not commit real credentials. Review the [configuration reference](docs/en-US/configuration.md), [recommended profiles](docs/en-US/configuration-profiles.md), and [security hardening guide](docs/en-US/security-hardening.md) before exposing the service beyond localhost.
 
-## 驗證
+## Related documentation
 
-```bash
-npm --prefix platform run check
-npm --prefix platform audit --audit-level=high
-npm --prefix platform run build
-node --test web/static/js/*.test.cjs
-go test ./...
+- **New users:** [Deployment](docs/en-US/deployment.md) → [Configuration](docs/en-US/configuration.md) → [Troubleshooting](docs/en-US/troubleshooting.md)
+- **Operators:** [Configuration profiles](docs/en-US/configuration-profiles.md) → [Security hardening](docs/en-US/security-hardening.md) → [Runbooks](docs/en-US/runbooks.md)
+- **Integrators:** [API reference](docs/en-US/api-reference.md) → [API recipes](docs/en-US/api-recipes.md) → [MCP federation](docs/en-US/mcp-federation.md)
+- **Contributors:** [Developer guide](docs/en-US/developer-guide.md) → [Testing](docs/en-US/testing.md) → [Contributing](docs/en-US/contributing-guide.md)
+- **All topics:** [English documentation](docs/en-US/README.md) · [Bilingual documentation index](docs/README.md)
+
+## Project Layout
+
+```
+JySecAI/
+├── cmd/                 # Server, MCP stdio entrypoints, tooling
+├── internal/            # Agent, MCP core, handlers, C2 (`internal/c2`), security executor
+├── web/                 # Static SPA + templates
+├── tools/               # YAML tool recipes (100+ examples provided)
+├── roles/               # Role configurations (12+ predefined security testing roles)
+├── skills/              # Agent Skills dirs (SKILL.md + optional files; demo: cyberstrike-eino-demo)
+├── agents/              # Multi-agent Markdown (orchestrator.md + sub-agent *.md)
+├── docs/                # Topic docs (deployment, config, security, API, knowledge base, C2, WebShell, etc.)
+├── images/              # Docs screenshots & diagrams
+├── scripts/             # Repository maintenance checks, including documentation validation
+├── config.yaml          # Runtime configuration
+├── run.sh               # Convenience launcher
+└── README*.md
 ```
 
-GitHub Actions 會在每次 push／PR 執行控制面型別檢查、單元測試、依賴稽核、既有 Web console 測試、Go 測試與 control-plane／worker 容器建置驗證。它不代表外部 Adapter、LLM provider、Docker sandbox 或真實 target 已完成 E2E。
+## Basic Usage Examples
 
-## 商用方式
+```
+Scan open ports on 192.168.1.1
+Perform a comprehensive port scan on 192.168.1.1 focusing on 80,443,22
+Check if https://example.com/page?id=1 is vulnerable to SQL injection
+Scan https://example.com for hidden directories and outdated software
+Enumerate subdomains for example.com, then run nuclei against the results
+```
 
-JySecAI 已具備方案 catalog、建立 Run 時的 credits reservation、並發與引擎 entitlement，以及選配 Stripe 自助訂閱的工程基礎。儲存期限、私有 Worker 與 SSO 目前仍包含尚待實作的能力旗標與部署工作。完成營運、法律與 E2E 工作後，可採：
+## Advanced Playbooks
 
-- 代管 SaaS：按月／年訂閱與超額 credits。
-- 私有部署：年度授權、部署費、維護與 SLA。
-- Sovereign Enterprise：客戶 VPC／內網、私有模型、私有 Worker、長期稽核。
-- 專業服務：授權紅隊評估、規則包、整合與報告。
+```
+Load the recon-engagement template, run amass/subfinder, then brute-force dirs on every live host.
+Use external Burp-based MCP server for authenticated traffic replay, then pass findings back for graphing.
+Compress the 5 MB nuclei report, summarize critical CVEs, and attach the artifact to the conversation.
+Build an attack chain for the latest engagement and export the node list with severity >= high.
+```
 
-授權與可收費邊界請先閱讀 [COMMERCIAL.md](COMMERCIAL.md)。
+## 404Starlink 
 
-## 開源來源與法律
+<img src="./images/404StarLinkLogo.png" width="30%">
 
-JySecAI 目前以 Apache-2.0 的 [JySecAI](https://github.com/Ed1s0nZ/JySecAI) 為平臺基礎進行品牌與控制面擴充。Strix 以外部、可替換 Worker 方式整合，並未複製進本倉庫。Promptfoo、PyRIT、Giskard、ART、Humanbound 等由部署者依各自授權安裝。
+JySecAI has joined [404Starlink](https://github.com/knownsec/404StarLink)
 
-plutoxAI 公開倉庫在分析時未提供可整合的完整原始碼與明確授權，因此 JySecAI 沒有複製其程式或素材，只採用一般性的工具目錄／工作臺產品觀念。
+## TCH Top-Ranked Intelligent Pentest Project  
+<div align="left">
+  <a href="https://zc.tencent.com/competition/competitionHackathon?code=cha004" target="_blank">
+    <img src="./images/tch.png" alt="TCH Top-Ranked Intelligent Pentest Project" width="30%">
+  </a>
+</div>
 
-請保留 [Apache-2.0 LICENSE](LICENSE) 與 [NOTICE](NOTICE)。JySecAI 名稱、Jy 立體標誌與 Jy 技術團隊品牌識別不因原始碼授權而自動授權為商標使用。
 
-## 開發者
 
-**Jy 技術團隊** · [TIAN0517/JySecAI](https://github.com/TIAN0517/JySecAI)
+---
+
+## Community and Support
+
+- Join the community on [Discord](https://discord.gg/8PjVCMu8Zw).
+
+<details>
+<summary><strong>WeChat group</strong></summary>
+
+<img src="./images/wechat-group-cyberstrikeai-qr.jpg" alt="JySecAI WeChat group QR code" width="280">
+
+</details>
+
+<details>
+<summary><strong>Sponsorship via WeChat Pay or Alipay</strong></summary>
+
+<div align="center">
+  <img src="./images/sponsor-wechat-alipay-qr.jpg" alt="WeChat Pay and Alipay sponsorship QR codes" width="480">
+</div>
+
+</details>
+
+## License
+
+JySecAI is licensed under the Apache License 2.0.  
+See the [LICENSE](LICENSE) file for details.
+
+---
+
+## ⚠️ Disclaimer
+
+**This tool is for educational and authorized testing purposes only!**
+
+JySecAI is a professional security testing platform designed to assist security researchers, penetration testers, and IT professionals in conducting security assessments and vulnerability research **with explicit authorization**.
+
+**By using this tool, you agree to:**
+- Use this tool only on systems where you have clear written authorization
+- Comply with all applicable laws, regulations, and ethical standards
+- Take full responsibility for any unauthorized use or misuse
+- Not use this tool for any illegal or malicious purposes
+
+**The developers are not responsible for any misuse!** Please ensure your usage complies with local laws and regulations, and that you have obtained explicit authorization from the target system owner.
+
+For vulnerability reporting and deployment hardening guidance, see [SECURITY.md](SECURITY.md).
+
+---
+
+Need help or want to contribute? Open an issue or PR—community tooling additions are welcome!

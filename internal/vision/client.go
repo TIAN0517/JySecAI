@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"jysecai/internal/config"
+	"jysecai/internal/llm"
 	"jysecai/internal/openai"
 
 	einoopenai "github.com/cloudwego/eino-ext/components/model/openai"
@@ -69,6 +70,37 @@ func (c *Client) Analyze(ctx context.Context, img ImagePayload, question string)
 	}
 
 	prompt := buildVisionPrompt(question)
+	if llm.IsClaudeProvider(oa.Provider) {
+		nativeModel, err := llm.NewClaudeAgenticModel(
+			ctx,
+			oa,
+			httpClient,
+			oa.MaxCompletionTokensEffective(),
+			nil,
+		)
+		if err != nil {
+			return "", fmt.Errorf("vision native Claude model: %w", err)
+		}
+		resp, err := nativeModel.Generate(ctx, []*schema.AgenticMessage{{
+			Role: schema.AgenticRoleTypeUser,
+			ContentBlocks: []*schema.ContentBlock{
+				schema.NewContentBlock(&schema.UserInputText{Text: prompt}),
+				schema.NewContentBlock(&schema.UserInputImage{
+					Base64Data: b64,
+					MIMEType:   mime,
+					Detail:     detail,
+				}),
+			},
+		}})
+		if err != nil {
+			return "", fmt.Errorf("vision native Claude generate: %w", err)
+		}
+		content, _ := llm.AgenticText(resp)
+		if strings.TrimSpace(content) == "" {
+			return "", fmt.Errorf("vision model returned empty content")
+		}
+		return strings.TrimSpace(content), nil
+	}
 
 	httpClient = openai.NewEinoHTTPClient(&oa, httpClient)
 	maxCompletionTokens := oa.MaxCompletionTokensEffective()

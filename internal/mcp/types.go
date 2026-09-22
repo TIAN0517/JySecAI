@@ -13,7 +13,6 @@ type ExternalMCPClient interface {
 	Initialize(ctx context.Context) error
 	ListTools(ctx context.Context) ([]Tool, error)
 	CallTool(ctx context.Context, name string, args map[string]interface{}) (*ToolResult, error)
-	// Ping 发送 MCP ping 请求，用于主动健康检查（返回连接的传输层错误时表示断连）。
 	Ping(ctx context.Context) error
 	Close() error
 	IsConnected() bool
@@ -118,6 +117,9 @@ type ToolCall struct {
 type ToolResult struct {
 	Content []Content `json:"content"`
 	IsError bool      `json:"isError,omitempty"`
+	// Blocked means policy stopped the call before execution. IsError remains
+	// true for MCP/model handling, while monitoring uses a distinct status.
+	Blocked bool `json:"blocked,omitempty"`
 }
 
 // Content 表示内容
@@ -186,8 +188,10 @@ type CallToolRequest struct {
 
 // CallToolResponse 调用工具响应
 type CallToolResponse struct {
-	Content []Content `json:"content"`
-	IsError bool      `json:"isError,omitempty"`
+	Content []Content              `json:"content"`
+	IsError bool                   `json:"isError,omitempty"`
+	Blocked bool                   `json:"blocked,omitempty"`
+	Meta    map[string]interface{} `json:"_meta,omitempty"`
 }
 
 // ToolExecution 工具执行记录
@@ -195,7 +199,7 @@ type ToolExecution struct {
 	ID        string                 `json:"id"`
 	ToolName  string                 `json:"toolName"`
 	Arguments map[string]interface{} `json:"arguments"`
-	Status    string                 `json:"status"` // pending, running, completed, failed, cancelled
+	Status    string                 `json:"status"` // queued, running, completed, blocked, failed, cancelled, hard_timeout, orphaned
 	Result    *ToolResult            `json:"result,omitempty"`
 	Error     string                 `json:"error,omitempty"`
 	StartTime time.Time              `json:"startTime"`
@@ -218,6 +222,7 @@ type ToolStats struct {
 	TotalCalls   int        `json:"totalCalls"`
 	SuccessCalls int        `json:"successCalls"`
 	FailedCalls  int        `json:"failedCalls"`
+	BlockedCalls int        `json:"blockedCalls"`
 	LastCallTime *time.Time `json:"lastCallTime,omitempty"`
 }
 

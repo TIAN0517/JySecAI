@@ -26,35 +26,9 @@ type SessionWatchdog struct {
 	stopCh    chan struct{}
 }
 
-// SessionWatchdogOption 可选配置项（用于自动上线等场景按配置调整失联判定）。
-type SessionWatchdogOption func(*SessionWatchdog)
-
-// WithStaleTimeout 自定义失联判定最小宽限期（<=0 时忽略，沿用默认）。
-func WithStaleTimeout(t time.Duration) SessionWatchdogOption {
-	return func(w *SessionWatchdog) {
-		if t > 0 {
-			w.minGrace = t
-		}
-	}
-}
-
-// WithWatchdogInterval 自定义扫描周期（<=0 时忽略，沿用默认）。
-func WithWatchdogInterval(d time.Duration) SessionWatchdogOption {
-	return func(w *SessionWatchdog) {
-		if d > 0 {
-			w.interval = d
-		}
-	}
-}
-
-// NewSessionWatchdog 创建看门狗（默认参数）
+// NewSessionWatchdog 创建看门狗
 func NewSessionWatchdog(m *Manager) *SessionWatchdog {
-	return NewSessionWatchdogWithOptions(m)
-}
-
-// NewSessionWatchdogWithOptions 创建看门狗并应用可选项。
-func NewSessionWatchdogWithOptions(m *Manager, opts ...SessionWatchdogOption) *SessionWatchdog {
-	w := &SessionWatchdog{
+	return &SessionWatchdog{
 		manager:  m,
 		logger:   m.Logger().With(zap.String("component", "c2-watchdog")),
 		interval: 15 * time.Second,
@@ -62,10 +36,6 @@ func NewSessionWatchdogWithOptions(m *Manager, opts ...SessionWatchdogOption) *S
 		gracePct: 3.0,
 		stopCh:   make(chan struct{}),
 	}
-	for _, o := range opts {
-		o(w)
-	}
-	return w
 }
 
 // Run 阻塞执行，直到 ctx.Done() 或 Stop()

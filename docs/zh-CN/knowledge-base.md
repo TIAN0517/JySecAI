@@ -1,8 +1,8 @@
-# 知識庫
+# 知识库
 
-知識庫用於把本地安全知識、漏洞手冊、測試方法和組織經驗轉成可檢索上下文，供 Agent 在任務中按需引用。
+知识库用于把本地安全知识、漏洞手册、测试方法和组织经验转成可检索上下文，供 Agent 在任务中按需引用。
 
-## 啟用
+## 启用
 
 ```yaml
 knowledge:
@@ -17,11 +17,11 @@ database:
   knowledge_db_path: data/knowledge.db
 ```
 
-`embedding.base_url/api_key` 留空時會複用 `openai` 配置。建議知識庫資料庫獨立儲存，便於遷移和複用。
+`embedding.base_url/api_key` 留空时会复用 `openai` 配置。建议知识库数据库独立保存，便于迁移和复用。
 
-## 內容目錄
+## 内容目录
 
-預設目錄是 `knowledge_base/`。專案中已有示例：
+默认目录是 `knowledge_base/`。项目中已有示例：
 
 ```text
 knowledge_base/
@@ -32,7 +32,7 @@ knowledge_base/
     README.md
 ```
 
-推薦用一級目錄表示風險型別或知識域，如：
+推荐用一级目录表示风险类型或知识域，如：
 
 - `SQL Injection`
 - `XSS`
@@ -42,15 +42,15 @@ knowledge_base/
 
 ## 管理流程
 
-常見流程：
+常见流程：
 
-1. 把 Markdown 知識檔案放到 `knowledge_base/`。
-2. 在 Web 知識庫頁面掃描目錄。
+1. 把 Markdown 知识文件放到 `knowledge_base/`。
+2. 在 Web 知识库页面扫描目录。
 3. 重建索引。
-4. 用搜尋功能驗證召回效果。
-5. 在角色或任務中要求 Agent 優先查詢知識庫。
+4. 用搜索功能验证召回效果。
+5. 在角色或任务中要求 Agent 优先查询知识库。
 
-介面入口包括：
+接口入口包括：
 
 - `GET /api/knowledge/categories`
 - `GET /api/knowledge/items`
@@ -81,14 +81,14 @@ knowledge:
     sub_indexes: []
 ```
 
-建議：
+建议：
 
-- 文件結構清晰時用 `markdown_then_recursive`。
-- 嵌入介面限制嚴格時降低 `batch_size`，增加 `rate_limit_delay_ms`。
-- 單篇超長文件可設定 `max_chunks_per_item` 控制成本。
-- 需要按業務域隔離時使用 `sub_indexes` 和 `sub_index_filter`。
+- 文档结构清晰时用 `markdown_then_recursive`。
+- 嵌入接口限制严格时降低 `batch_size`，增加 `rate_limit_delay_ms`。
+- 单篇超长文档可设置 `max_chunks_per_item` 控制成本。
+- 需要按业务域隔离时使用 `sub_indexes` 和 `sub_index_filter`。
 
-## 檢索
+## 检索
 
 ```yaml
 knowledge:
@@ -103,16 +103,16 @@ knowledge:
       max_context_tokens: 0
 ```
 
-檢索鏈路大致為：
+检索链路大致为：
 
-1. 使用者查詢或 Agent 查詢。
-2. MultiQuery 改寫出多個語義變體。
-3. 向量檢索獲取候選塊。
+1. 用户查询或 Agent 查询。
+2. MultiQuery 改写出多个语义变体。
+3. 向量检索获取候选块。
 4. rerank 精排。
-5. 後處理去重、限長。
-6. 返回給 Agent 或 API 呼叫方。
+5. 后处理去重、限长。
+6. 返回给 Agent 或 API 调用方。
 
-`similarity_threshold` 太高會漏召回，太低會帶入噪聲。初始建議 0.35 到 0.45。
+`similarity_threshold` 太高会漏召回，太低会带入噪声。初始建议 0.35 到 0.45。
 
 ## Rerank
 
@@ -126,147 +126,147 @@ knowledge:
       api_key: ""
 ```
 
-留空時會根據 `base_url` 推斷。DashScope 常用 `gte-rerank`；其他 OpenAI 相容端點可能走 `/v1/rerank`。如果服務商不支援 rerank，檢索質量可能下降，建議降低 `top_k` 並提高知識條目質量。
+留空时会根据 `base_url` 推断。DashScope 常用 `gte-rerank`；其他 OpenAI 兼容端点可能走 `/v1/rerank`。如果服务商不支持 rerank，检索质量可能下降，建议降低 `top_k` 并提高知识条目质量。
 
 ## MCP 工具
 
-啟用知識庫後，會註冊類似以下能力：
+启用知识库后，会注册类似以下能力：
 
-- 列出風險型別。
-- 搜尋知識庫。
-- 獲取相關知識片段。
+- 列出风险类型。
+- 搜索知识库。
+- 获取相关知识片段。
 
-角色提示詞中可以寫明：
+角色提示词中可以写明：
 
 ```text
-遇到漏洞驗證、修復建議或檢測方法不確定時，先檢索知識庫，再給出結論。
+遇到漏洞验证、修复建议或检测方法不确定时，先检索知识库，再给出结论。
 ```
 
-## 內容編寫建議
+## 内容编写建议
 
-每篇知識建議包含：
+每篇知识建议包含：
 
-- 適用場景。
-- 檢測方法。
-- 驗證步驟。
-- 常見誤報。
-- 修復建議。
+- 适用场景。
+- 检测方法。
+- 验证步骤。
+- 常见误报。
+- 修复建议。
 - 工具命令示例。
-- 參考連結或內部標準。
+- 参考链接或内部标准。
 
-避免把無關主題堆在同一篇長文中。小而清晰的文件更利於 chunk 和召回。
+避免把无关主题堆在同一篇长文中。小而清晰的文档更利于 chunk 和召回。
 
-## 排錯
+## 排错
 
-索引失敗：
+索引失败：
 
-- 檢查 embedding API Key、模型名、base_url。
+- 检查 embedding API Key、模型名、base_url。
 - 降低 `batch_size`。
 - 增大 `request_timeout_seconds`。
-- 檢視服務日誌中的 400/401/429/5xx。
+- 查看服务日志中的 400/401/429/5xx。
 
-檢索為空：
+检索为空：
 
-- 檢查是否已重建索引。
+- 检查是否已重建索引。
 - 降低 `similarity_threshold`。
-- 檢視 `categories` 是否識別到風險型別。
-- 搜尋時不要使用過窄的 `riskType`。
+- 查看 `categories` 是否识别到风险类型。
+- 搜索时不要使用过窄的 `riskType`。
 
-召回不準：
+召回不准：
 
-- 最佳化標題層級。
-- 把混雜內容拆成多篇。
-- 增加關鍵術語和同義詞。
-- 調整 `top_k`、`prefetch_top_k` 和 rerank 配置。
+- 优化标题层级。
+- 把混杂内容拆成多篇。
+- 增加关键术语和同义词。
+- 调整 `top_k`、`prefetch_top_k` 和 rerank 配置。
 
-## 內部資料流
+## 内部数据流
 
-知識庫鏈路不是“全文搜尋”，而是一個多階段檢索系統：
+知识库链路不是“全文搜索”，而是一个多阶段检索系统：
 
 ```mermaid
 flowchart LR
-    F["Markdown / Web 知識項"] --> M["Manager"]
+    F["Markdown / Web 知识项"] --> M["Manager"]
     M --> C["Chunker"]
     C --> E["Embedding"]
     E --> V["SQLite Vector Index"]
-    Q["Agent 查詢"] --> MQ["MultiQuery 改寫"]
+    Q["Agent 查询"] --> MQ["MultiQuery 改写"]
     MQ --> V
     V --> R["Rerank"]
-    R --> P["Post-process 去重/限長"]
+    R --> P["Post-process 去重/限长"]
     P --> A["Agent 上下文"]
 ```
 
-因此檢索質量取決於四件事：原文結構、chunk 粒度、embedding 質量、rerank 可用性。單純調 `top_k` 往往不是最有效的辦法。
+因此检索质量取决于四件事：原文结构、chunk 粒度、embedding 质量、rerank 可用性。单纯调 `top_k` 往往不是最有效的办法。
 
-## 知識項寫作反例
+## 知识项写作反例
 
-不好的知識：
+不好的知识：
 
 ```text
-SQL隱碼攻擊很危險，可以用sqlmap掃，修復就是過濾。
+SQL注入很危险，可以用sqlmap扫，修复就是过滤。
 ```
 
-好的知識：
+好的知识：
 
 ```markdown
-# MySQL UNION 注入驗證
+# MySQL UNION 注入验证
 
-## 觸發條件
-- 引數進入 SELECT 查詢並直接拼接。
-- 頁面返回欄位數量錯誤或型別錯誤。
+## 触发条件
+- 参数进入 SELECT 查询并直接拼接。
+- 页面返回字段数量错误或类型错误。
 
-## 驗證步驟
-1. 使用 `' order by 1-- -` 遞增列數。
-2. 使用 `union select null,...` 校驗回顯位。
-3. 用只讀函式確認資料庫型別，例如 `database()`。
+## 验证步骤
+1. 使用 `' order by 1-- -` 递增列数。
+2. 使用 `union select null,...` 校验回显位。
+3. 用只读函数确认数据库类型，例如 `database()`。
 
-## 誤報排除
-- WAF 注入攔截頁可能模擬 SQL 錯誤。
-- 統一錯誤頁不能直接證明注入。
+## 误报排除
+- WAF 注入拦截页可能模拟 SQL 错误。
+- 统一错误页不能直接证明注入。
 
-## 修復
-- 引數化查詢。
-- 最小資料庫許可權。
-- 統一錯誤處理但不吞掉安全日誌。
+## 修复
+- 参数化查询。
+- 最小数据库权限。
+- 统一错误处理但不吞掉安全日志。
 ```
 
-第二種寫法能給 chunk 足夠的標題、術語和步驟訊號，Agent 也能直接執行。
+第二种写法能给 chunk 足够的标题、术语和步骤信号，Agent 也能直接执行。
 
-## 調參方法
+## 调参方法
 
-先固定一組測試問題，例如：
+先固定一组测试问题，例如：
 
 ```text
-MySQL union 注入怎麼判斷欄位數？
-SSRF 如何驗證雲後設資料訪問？
-檔案上傳黑名單繞過有哪些誤報？
+MySQL union 注入怎么判断字段数？
+SSRF 如何验证云元数据访问？
+文件上传黑名单绕过有哪些误报？
 ```
 
-然後逐項調：
+然后逐项调：
 
-1. 搜尋為空：降低 `similarity_threshold`，確認索引完成。
-2. 結果主題錯：提高文件標題質量，增加風險型別過濾。
-3. 結果片段斷裂：增大 `chunk_overlap` 或降低 `chunk_size` 後重建索引。
-4. 噪聲多：提高 `similarity_threshold`，啟用/修復 rerank。
+1. 搜索为空：降低 `similarity_threshold`，确认索引完成。
+2. 结果主题错：提高文档标题质量，增加风险类型过滤。
+3. 结果片段断裂：增大 `chunk_overlap` 或降低 `chunk_size` 后重建索引。
+4. 噪声多：提高 `similarity_threshold`，启用/修复 rerank。
 5. 成本高：降低 `multi_query.max_queries`、`prefetch_top_k`、`top_k`。
 
-每次只改一個引數，並記錄查詢結果，否則無法判斷哪個變數有效。
+每次只改一个参数，并记录查询结果，否则无法判断哪个变量有效。
 
-## 檢索日誌怎麼用
+## 检索日志怎么用
 
-檢索日誌不只是排錯用，還可以反向改進知識庫：
+检索日志不只是排错用，还可以反向改进知识库：
 
-- 高頻無結果查詢：說明缺知識或同義詞不足。
-- 高頻低分查詢：說明文件標題和術語不匹配。
-- 同一問題召回多個重複文件：說明需要合併或加 category。
-- Agent 常忽略知識庫結果：說明結果太長、太散或缺明確結論。
+- 高频无结果查询：说明缺知识或同义词不足。
+- 高频低分查询：说明文档标题和术语不匹配。
+- 同一问题召回多个重复文档：说明需要合并或加 category。
+- Agent 常忽略知识库结果：说明结果太长、太散或缺明确结论。
 
-## 原始碼錨點
+## 源码锚点
 
-- 知識管理：`internal/knowledge/manager.go`
-- 索引流水線：`internal/knowledge/index_pipeline.go`
+- 知识管理：`internal/knowledge/manager.go`
+- 索引流水线：`internal/knowledge/index_pipeline.go`
 - Eino chunk：`internal/knowledge/chunk_eino.go`
-- 檢索器：`internal/knowledge/retriever.go`
-- Eino 檢索鏈：`internal/knowledge/eino_retrieve_chain.go`
+- 检索器：`internal/knowledge/retriever.go`
+- Eino 检索链：`internal/knowledge/eino_retrieve_chain.go`
 - rerank：`internal/knowledge/rerank_http.go`
 - MCP 工具：`internal/knowledge/tool.go`

@@ -31,8 +31,6 @@ var rbacAssignableResourceTables = map[string]string{
 	"webshell":      "webshell_connections",
 	"batch_task":    "batch_task_queues",
 	"c2_listener":   "c2_listeners",
-	"xss_payload":   "xss_payloads",
-	"xss_capture":   "xss_captures",
 }
 
 // RBACUser is a local platform account.
@@ -768,14 +766,6 @@ func (db *DB) ListAssignableRBACResourcesPage(resourceType, search string, limit
 	case "c2_listener":
 		query = `SELECT id, name, type || ' · ' || status FROM c2_listeners
 			WHERE LOWER(name) LIKE ? ESCAPE '\' OR LOWER(id) LIKE ? ESCAPE '\'
-			ORDER BY created_at DESC LIMIT ? OFFSET ?`
-	case "xss_payload":
-		query = `SELECT id, COALESCE(NULLIF(TRIM(name), ''), id), COALESCE(status, '') FROM xss_payloads
-			WHERE LOWER(COALESCE(NULLIF(TRIM(name), ''), id)) LIKE ? ESCAPE '\' OR LOWER(id) LIKE ? ESCAPE '\'
-			ORDER BY created_at DESC LIMIT ? OFFSET ?`
-	case "xss_capture":
-		query = `SELECT id, COALESCE(NULLIF(source_url, ''), id), COALESCE(status, '') FROM xss_captures
-			WHERE LOWER(COALESCE(NULLIF(source_url, ''), id)) LIKE ? ESCAPE '\' OR LOWER(id) LIKE ? ESCAPE '\'
 			ORDER BY created_at DESC LIMIT ? OFFSET ?`
 	}
 

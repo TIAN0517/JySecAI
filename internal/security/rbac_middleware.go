@@ -118,8 +118,6 @@ func permissionForRequest(method, fullPath string) string {
 		return "hitl:write"
 	case strings.HasPrefix(path, "/agent-loop"), strings.HasPrefix(path, "/batch-tasks"):
 		return crudPermission(method, "tasks")
-	case strings.HasPrefix(path, "/security-ops"):
-		return crudPermission(method, "tasks")
 	case path == "/usage/tokens":
 		return "dashboard:read"
 	case strings.HasPrefix(path, "/conversations"), strings.HasPrefix(path, "/messages"), strings.HasPrefix(path, "/process-details"):
@@ -131,6 +129,10 @@ func permissionForRequest(method, fullPath string) string {
 			return "notification:read"
 		}
 		return "notification:write"
+	case path == "/tool-guard/test" && method == http.MethodPost:
+		return "config:read"
+	case path == "/tool-guard":
+		return crudPermission(method, "config")
 	case strings.HasPrefix(path, "/config"):
 		return crudPermission(method, "config")
 	case strings.HasPrefix(path, "/terminal"):
@@ -153,13 +155,6 @@ func permissionForRequest(method, fullPath string) string {
 		return crudPermission(method, "knowledge")
 	case strings.HasPrefix(path, "/vulnerabilities"):
 		return crudPermission(method, "vulnerability")
-	case path == "/sentinel/sync/vulnerabilities":
-		return "vulnerability:write"
-	case strings.HasPrefix(path, "/sentinel"):
-		if method == http.MethodGet || method == http.MethodHead {
-			return "asset:read"
-		}
-		return "asset:write"
 	case path == "/assets/batch-delete", path == "/assets/merge":
 		return "asset:delete"
 	case strings.HasPrefix(path, "/assets"):
@@ -173,8 +168,6 @@ func permissionForRequest(method, fullPath string) string {
 		return crudPermission(method, "webshell")
 	case strings.HasPrefix(path, "/c2"):
 		return crudPermission(method, "c2")
-	case strings.HasPrefix(path, "/xss"):
-		return crudPermission(method, "xss")
 	case strings.HasPrefix(path, "/chat-uploads"):
 		return crudPermission(method, "files")
 	case strings.HasPrefix(path, "/roles"):
@@ -196,8 +189,6 @@ func permissionForRequest(method, fullPath string) string {
 		return "openapi:read"
 	case strings.HasPrefix(path, "/fofa"):
 		return "fofa:execute"
-	case strings.HasPrefix(path, "/recon"):
-		return crudPermission(method, "asset")
 	default:
 		return ""
 	}
@@ -221,6 +212,8 @@ func resourceAllowed(c *gin.Context, db *database.DB) bool {
 	}
 	path := strings.TrimPrefix(c.FullPath(), "/api")
 	switch {
+	case path == "/tool-guard" && isMutationMethod(c.Request.Method):
+		return session.Scope == database.RBACScopeAll
 	case path == "/monitor/stats", path == "/monitor/calls-timeline":
 		// These APIs currently operate on process-global state. Until every MCP
 		// invocation and persisted execution record carries an immutable owner,
@@ -259,10 +252,6 @@ func resourceAllowed(c *gin.Context, db *database.DB) bool {
 		return db.UserCanAccessResource(session.UserID, session.Scope, "c2_session", c.Param("id"))
 	case strings.HasPrefix(path, "/c2/tasks/:id"):
 		return db.UserCanAccessResource(session.UserID, session.Scope, "c2_task", c.Param("id"))
-	case strings.HasPrefix(path, "/xss/payloads/:id"):
-		return db.UserCanAccessXSS(database.RBACListAccess{UserID: session.UserID, Scope: session.Scope}, "xss_payloads", "xss_payload", c.Param("id"))
-	case strings.HasPrefix(path, "/xss/captures/:id"):
-		return db.UserCanAccessXSS(database.RBACListAccess{UserID: session.UserID, Scope: session.Scope}, "xss_captures", "xss_capture", c.Param("id"))
 	default:
 		return true
 	}

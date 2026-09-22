@@ -330,6 +330,7 @@ func (a *Agent) getAvailableTools(roleTools []string) []Tool {
 		description := a.pickToolDescription(mcpTool.ShortDescription, mcpTool.Description)
 
 		// 转换schema中的类型为OpenAI标准类型
+		a.diagnoseToolSchema(mcpTool.Name, mcpTool.InputSchema)
 		convertedSchema := a.convertSchemaTypes(mcpTool.InputSchema)
 
 		tools = append(tools, Tool{
@@ -404,6 +405,7 @@ func (a *Agent) getAvailableTools(roleTools []string) []Tool {
 				description := a.pickToolDescription(externalTool.ShortDescription, externalTool.Description)
 
 				// 转换schema中的类型为OpenAI标准类型
+				a.diagnoseToolSchema(externalTool.Name, externalTool.InputSchema)
 				convertedSchema := a.convertSchemaTypes(externalTool.InputSchema)
 
 				// 将工具名称中的 "::" 替换为 "__" 以符合OpenAI命名规范
@@ -450,6 +452,64 @@ func (a *Agent) pickToolDescription(shortDesc, fullDesc string) string {
 }
 
 // convertSchemaTypes 递归转换schema中的类型为OpenAI标准类型
+
+// diagnoseToolSchema performs read-only diagnostics for MCP JSON schemas.
+// It does not modify the schema.
+func (a *Agent) diagnoseToolSchema(toolName string, schema map[string]interface{}) {
+	if schema == nil {
+		return
+	}
+
+	properties, ok := schema["properties"].(map[string]interface{})
+	if !ok {
+		return
+	}
+
+	rulesRaw, exists := properties["rules"]
+	if !exists {
+		return
+	}
+
+	rules, ok := rulesRaw.(map[string]interface{})
+	if !ok {
+		a.logger.Error("MCP schema rules is not an object",
+			zap.String("tool", toolName),
+			zap.String("go_type", fmt.Sprintf("%T", rulesRaw)),
+			zap.Any("rules", rulesRaw),
+		)
+		return
+	}
+
+	rulesType, _ := rules["type"].(string)
+	if rulesType != "array" {
+		return
+	}
+
+	items, exists := rules["items"]
+	if !exists {
+		a.logger.Error("MCP array schema missing items",
+			zap.String("tool", toolName),
+			zap.Any("rules", rules),
+		)
+		return
+	}
+
+	raw, err := json.Marshal(items)
+	if err != nil {
+		a.logger.Error("MCP rules.items marshal failed",
+			zap.String("tool", toolName),
+			zap.Error(err),
+		)
+		return
+	}
+
+	a.logger.Warn("MCP rules.items schema diagnostic",
+		zap.String("tool", toolName),
+		zap.String("items_go_type", fmt.Sprintf("%T", items)),
+		zap.ByteString("items_json", raw),
+	)
+}
+
 func (a *Agent) convertSchemaTypes(schema map[string]interface{}) map[string]interface{} {
 	if schema == nil {
 		return schema
@@ -512,6 +572,7 @@ type ToolExecutionResult struct {
 	Result      string
 	ExecutionID string
 	IsError     bool
+	Blocked     bool
 }
 
 func buildToolFailureMessage(toolName, detail string, err error) string {
@@ -612,6 +673,7 @@ func (a *Agent) executeToolViaMCP(ctx context.Context, toolName string, args map
 		Result:      resultStr,
 		ExecutionID: executionID,
 		IsError:     result != nil && result.IsError,
+		Blocked:     result != nil && result.Blocked,
 	}, nil
 }
 
@@ -815,6 +877,10 @@ func (a *Agent) UpdateMCPExecutionDisplayResult(executionID, resultText string) 
 	tr := &mcp.ToolResult{
 		Content: []mcp.Content{{Type: "text", Text: text}},
 	}
+	if exec := a.mcpExecution(executionID); exec != nil && exec.Result != nil {
+		tr.IsError = exec.Result.IsError
+		tr.Blocked = exec.Result.Blocked
+	}
 	if a.mcpServer != nil {
 		_ = a.mcpServer.UpdateToolExecutionResult(executionID, tr)
 	}
@@ -823,14 +889,37 @@ func (a *Agent) UpdateMCPExecutionDisplayResult(executionID, resultText string) 
 // MCPExecutionResultText returns the monitor-facing result text after storage
 // guards such as large-output spilling have been applied.
 func (a *Agent) MCPExecutionResultText(executionID string) string {
-	if a == nil || a.mcpServer == nil || strings.TrimSpace(executionID) == "" {
-		return ""
-	}
-	exec, ok := a.mcpServer.GetExecution(executionID)
-	if !ok || exec == nil || exec.Result == nil {
+	exec := a.mcpExecution(executionID)
+	if exec == nil || exec.Result == nil {
 		return ""
 	}
 	return mcp.ToolResultPlainText(exec.Result)
+}
+
+// MCPExecutionStatus returns the recorded outcome independently of model-facing
+// text reduction, which can remove the original refusal wording.
+func (a *Agent) MCPExecutionStatus(executionID string) string {
+	if exec := a.mcpExecution(executionID); exec != nil {
+		return exec.Status
+	}
+	return ""
+}
+
+func (a *Agent) mcpExecution(executionID string) *mcp.ToolExecution {
+	if a == nil || strings.TrimSpace(executionID) == "" {
+		return nil
+	}
+	if a.mcpServer != nil {
+		if exec, ok := a.mcpServer.GetExecution(executionID); ok && exec != nil {
+			return exec
+		}
+	}
+	if a.externalMCPMgr != nil {
+		if exec, ok := a.externalMCPMgr.GetExecution(executionID); ok {
+			return exec
+		}
+	}
+	return nil
 }
 
 // CancelMCPToolExecutionWithNote 取消一次进行中的 MCP 工具（先内部后外部），与监控页「终止工具」一致；note 非空时合并进返回给模型的文本。

@@ -23,9 +23,9 @@ test('已有会话缺少本地配置时不会继承其他会话的最近审批�
 });
 
 test('服务端默认审批人只更新默认值，不覆盖最近会话选择', () => {
-    const source = functionSource(hitl, 'applyHitlDefaultConfigFromServer', 'fetchHitlDefaultConfig');
+    const source = functionSource(hitl, 'applyHitlDefaultReviewerFromServer', 'fetchHitlDefaultReviewer');
 
-    assert.match(source, /window\.csaiHitlDefaultReviewer = reviewer/);
+    assert.match(source, /window\.csaiHitlDefaultReviewer = v/);
     assert.doesNotMatch(source, /saveHitlLastGlobalConfig/);
 });
 

@@ -88,7 +88,6 @@ var draftToolHints = []draftToolHint{
 	{Label: "云配置审计", Keywords: []string{"云", "cloud", "配置审计", "prowler", "scout"}, Tools: []string{"prowler", "scout-suite"}},
 	{Label: "容器安全检查", Keywords: []string{"容器", "镜像", "k8s", "kubernetes", "trivy", "kube"}, Tools: []string{"trivy", "kube-bench", "kube-hunter"}},
 	{Label: "威胁情报收集", Keywords: []string{"情报", "威胁情报", "threat", "ioc", "virustotal", "shodan", "fofa"}, Tools: []string{"virustotal_search", "shodan_search", "fofa_search"}},
-	{Label: "POC/EXP 草稿生成", Keywords: []string{"poc", "exp", "exploit", "漏洞利用", "利用脚本", "payload", "exp草稿", "poc生成"}, Tools: []string{"generate_poc_draft"}},
 }
 
 var highRiskDraftRE = regexp.MustCompile(`(?i)(隔离|封禁|加固|修复|执行|命令|脚本|删除|清理|阻断|封锁|攻击|利用|getshell|shell|payload|exploit|isolate|block|execute|script|delete|exploit|payload)`)

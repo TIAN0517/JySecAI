@@ -61,10 +61,6 @@ func (m *ExternalMCPManager) markClientDisconnected(name string, client External
 	m.toolCountsMu.Lock()
 	m.toolCounts[name] = 0
 	m.toolCountsMu.Unlock()
-	// 丢弃已断连客户端的工具列表缓存，避免后台刷新仍在「新鲜」窗口内复用过期工具/数量。
-	m.toolCacheMu.Lock()
-	delete(m.toolCache, name)
-	m.toolCacheMu.Unlock()
 }
 
 func (m *ExternalMCPManager) onClientConnected(name string) {

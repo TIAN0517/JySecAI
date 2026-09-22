@@ -153,17 +153,6 @@ func (c *lazySDKClient) Initialize(ctx context.Context) error {
 	return nil
 }
 
-func (c *lazySDKClient) Ping(ctx context.Context) error {
-	c.mu.RLock()
-	inner := c.inner
-	c.mu.RUnlock()
-	if inner == nil {
-		c.setStatus("error")
-		return fmt.Errorf("未连接")
-	}
-	return inner.Ping(ctx)
-}
-
 func (c *lazySDKClient) ListTools(ctx context.Context) ([]Tool, error) {
 	c.mu.RLock()
 	inner := c.inner
@@ -182,6 +171,16 @@ func (c *lazySDKClient) CallTool(ctx context.Context, name string, args map[stri
 		return nil, fmt.Errorf("未连接")
 	}
 	return inner.CallTool(ctx, name, args)
+}
+
+func (c *lazySDKClient) Ping(ctx context.Context) error {
+	c.mu.RLock()
+	inner := c.inner
+	c.mu.RUnlock()
+	if inner == nil {
+		return fmt.Errorf("未连接")
+	}
+	return inner.Ping(ctx)
 }
 
 func (c *lazySDKClient) Close() error {
@@ -240,13 +239,6 @@ func (c *sdkClient) Initialize(ctx context.Context) error {
 	return nil
 }
 
-func (c *sdkClient) Ping(ctx context.Context) error {
-	if c.session == nil {
-		return fmt.Errorf("未连接")
-	}
-	return c.session.Ping(ctx, nil)
-}
-
 func (c *sdkClient) ListTools(ctx context.Context) ([]Tool, error) {
 	if c.session == nil {
 		return nil, fmt.Errorf("未连接")
@@ -274,6 +266,13 @@ func (c *sdkClient) CallTool(ctx context.Context, name string, args map[string]i
 		return nil, err
 	}
 	return sdkCallToolResultToOurs(res), nil
+}
+
+func (c *sdkClient) Ping(ctx context.Context) error {
+	if c.session == nil {
+		return fmt.Errorf("未连接")
+	}
+	return c.session.Ping(ctx, nil)
 }
 
 func (c *sdkClient) Close() error {
@@ -326,9 +325,11 @@ func sdkCallToolResultToOurs(res *mcp.CallToolResult) *ToolResult {
 		return &ToolResult{Content: []Content{}}
 	}
 	content := sdkContentToOurs(res.Content)
+	blocked, _ := res.Meta[toolGuardBlockedMetaKey].(bool)
 	return &ToolResult{
 		Content: content,
 		IsError: res.IsError,
+		Blocked: blocked,
 	}
 }
 

@@ -30,11 +30,10 @@ import (
 	"jysecai/internal/mcp/builtin"
 	"jysecai/internal/monitor"
 	"jysecai/internal/multiagent"
-	"jysecai/internal/proxypool"
-	"jysecai/internal/recon"
 	"jysecai/internal/robot"
 	"jysecai/internal/security"
 	"jysecai/internal/skillpackage"
+	"jysecai/internal/toolguard"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -73,26 +72,21 @@ type App struct {
 	c2Watchdog         *c2.SessionWatchdog       // C2 会话看门狗
 	c2WatchdogCancel   context.CancelFunc        // 看门狗取消函数
 	c2Handler          *handler.C2Handler        // C2 REST（与 Manager 生命周期同步）
-	xssCollector       *xssCollectorRuntime      // XSS 窃密回连收集服务（未启用时为 nil）
-	xssHandler         *handler.XSSHandler       // XSS 载荷/收割 REST（含生成入口）
-	sentinelHandler    *handler.SentinelHandler  // 零零哨兵 (Surface Watch) 暴露面巡检
 	auditSvc           *audit.Service
-	proxyPool          *proxypool.Manager
-	reconHandler       *handler.ReconHandler
 }
 
 // New 创建新应用
 func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error) {
+	toolGuard, err := toolguard.NewManager(cfg.EffectiveToolGuard())
+	if err != nil {
+		return nil, fmt.Errorf("初始化调用拦截规则: %w", err)
+	}
 	if err := multiagent.InitADK(); err != nil {
 		return nil, fmt.Errorf("初始化 Eino ADK: %w", err)
 	}
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
-	proxyPoolManager, err := proxypool.New(cfg.ProxyPool, log.Logger)
-	if err != nil {
-		return nil, fmt.Errorf("initialize SOCKS5 proxy pool: %w", err)
-	}
 
 	// CORS中间件
 	router.Use(corsMiddleware(cfg.Server.CORSAllowedOrigins))
@@ -158,6 +152,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	// 创建MCP服务器（带数据库持久化）
 	mcpServer := mcp.NewServerWithStorage(log.Logger, db)
 	mcpServer.SetToolAuthorizer(mcpToolAuthorizer(db))
+	mcpServer.SetToolGuard(toolGuard)
 	mcpServer.ConfigureHTTPToolCallTimeoutFromAgentMinutes(cfg.Agent.ToolTimeoutMinutes)
 	mcpServer.ConfigureToolWaitTimeoutSeconds(cfg.Agent.ToolWaitTimeoutSeconds)
 	mcpServer.ConfigureToolResultMaxBytes(cfg.MultiAgent.EinoMiddleware.ReductionMaxLengthForTruncEffective())
@@ -173,8 +168,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	executor.RegisterTools(mcpServer)
 
 	// 注册漏洞记录工具
-	registerVulnerabilityTools(mcpServer, db, log.Logger, xssHookFromConfig(cfg))
-	registerPocGeneratorTools(mcpServer, db, cfg, log.Logger)
+	registerVulnerabilityTools(mcpServer, db, log.Logger)
 	registerAssetTools(mcpServer, db, log.Logger)
 	registerProjectFactTools(mcpServer, db, cfg, log.Logger)
 	registerVisionTools(mcpServer, cfg, log.Logger)
@@ -182,6 +176,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	// 创建外部MCP管理器（使用与内部MCP服务器相同的存储）
 	externalMCPMgr := mcp.NewExternalMCPManagerWithStorage(log.Logger, db)
 	externalMCPMgr.SetToolAuthorizer(externalMCPToolAuthorizer())
+	externalMCPMgr.SetToolGuard(toolGuard)
 	externalMCPMgr.ConfigureToolWaitTimeoutSeconds(cfg.Agent.ToolWaitTimeoutSeconds)
 	externalMCPMgr.ConfigureToolResultMaxBytes(cfg.MultiAgent.EinoMiddleware.ReductionMaxLengthForTruncEffective())
 	externalMCPMgr.ConfigureToolResultSpillRoot(cfg.MultiAgent.EinoMiddleware.ReductionRootDir)
@@ -424,7 +419,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	registerWebshellManagementTools(mcpServer, db, webshellHandler, log.Logger)
 	configHandler := handler.NewConfigHandler(configPath, cfg, mcpServer, executor, agent, attackChainHandler, externalMCPMgr, log.Logger)
 	configHandler.SetDB(db)
-	configHandler.SetProxyPoolManager(proxyPoolManager)
+	configHandler.SetToolGuard(toolGuard)
 	configHandler.SetAudit(auditSvc)
 	agentHandler.SetHitlToolWhitelistSaver(configHandler)
 	agentHandler.SetHitlAuditStrategySaver(configHandler)
@@ -436,18 +431,10 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	skillsHandler := handler.NewSkillsHandler(cfg, configPath, log.Logger)
 	skillsHandler.SetAudit(auditSvc)
 	fofaHandler := handler.NewFofaHandler(cfg, log.Logger)
-	fofaHandler.SetProxyPoolManager(proxyPoolManager)
-	configHandler.AddConfigApplyHook(fofaHandler.ApplyConfig)
 	terminalHandler := handler.NewTerminalHandler(log.Logger)
-	securityOpsHandler := handler.NewSecurityOpsHandler(log.Logger)
-	securityOpsHandler.SetAudit(auditSvc)
-	sentinelHandler := handler.NewSentinelHandler(db, log.Logger)
 	if db != nil {
 		skillsHandler.SetDB(db) // 设置数据库连接以便获取调用统计
 	}
-
-	// 注册暴露面哨兵 (Sentinel) MCP 工具集
-	registerSentinelTools(mcpServer, db, sentinelHandler, log.Logger)
 
 	// ============================================================================
 	// 初始化 C2 模块（可按配置关闭，节省本机部署资源）
@@ -459,14 +446,6 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	c2Handler := handler.NewC2Handler(c2Manager, log.Logger)
 	c2Handler.SetAudit(auditSvc)
 
-	// ============================================================================
-	// 初始化 XSS 窃密/接管收集服务（独立监听，按配置启停）
-	// ============================================================================
-	xssCollector, err := startXSSCollector(db, &cfg.XSS, log.Logger)
-	if err != nil {
-		log.Logger.Warn("XSS 收集服务启动失败，请检查 xss 配置（端口/地址占用）", zap.Error(err))
-	}
-
 	// 创建OpenAPI处理器
 	conversationHandler := handler.NewConversationHandler(db, log.Logger)
 	conversationHandler.SetAudit(auditSvc)
@@ -477,7 +456,6 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	robotHandler.SetAudit(auditSvc)
 	db.SetVulnerabilityCreatedHook(robotHandler.NotifyNewVulnerability)
 	openAPIHandler := handler.NewOpenAPIHandler(db, log.Logger, conversationHandler, agentHandler)
-	reconHandler := handler.NewReconHandler(recon.NewEngine(8))
 
 	// 创建 App 实例（部分字段稍后填充）
 	app := &App{
@@ -501,12 +479,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		c2Watchdog:         c2Watchdog,
 		c2WatchdogCancel:   watchdogCancel,
 		c2Handler:          c2Handler,
-		xssCollector:       xssCollector,
-		xssHandler:         handler.NewXSSHandler(db, log.Logger, xssCollectorProviderFn(cfg, xssCollector, log.Logger)),
-		sentinelHandler:    sentinelHandler,
 		auditSvc:           auditSvc,
-		proxyPool:          proxyPoolManager,
-		reconHandler:       reconHandler,
 	}
 	// 飞书/钉钉长连接（无需公网），启用时在后台启动；后续前端应用配置时会通过 RestartRobotConnections 重启
 	app.startRobotConnections()
@@ -516,12 +489,10 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 
 	// 设置漏洞工具注册器（内置工具，必须设置）
 	vulnerabilityRegistrar := func() error {
-		registerVulnerabilityTools(mcpServer, db, log.Logger, xssHookFromConfig(cfg))
+		registerVulnerabilityTools(mcpServer, db, log.Logger)
 		registerAssetTools(mcpServer, db, log.Logger)
 		registerProjectFactTools(mcpServer, db, cfg, log.Logger)
 		registerVisionTools(mcpServer, cfg, log.Logger)
-		registerPocGeneratorTools(mcpServer, db, cfg, log.Logger)
-		registerSentinelTools(mcpServer, db, sentinelHandler, log.Logger)
 		return nil
 	}
 	configHandler.SetVulnerabilityToolRegistrar(vulnerabilityRegistrar)
@@ -618,7 +589,6 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		markdownAgentsHandler,
 		fofaHandler,
 		terminalHandler,
-		securityOpsHandler,
 		app.c2Handler,
 		auditHandler,
 		auditSvc,
@@ -626,7 +596,6 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		mcpServer,
 		authManager,
 		openAPIHandler,
-		sentinelHandler,
 	)
 
 	return app, nil
@@ -798,14 +767,6 @@ func (a *App) Shutdown() {
 
 	a.shutdownC2()
 
-	// 停止 XSS 窃密回连收集服务
-	if a.xssCollector != nil {
-		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-		a.xssCollector.shutdown(ctx)
-		cancel()
-		a.xssCollector = nil
-	}
-
 	// 停止所有外部MCP客户端
 	if a.externalMCPMgr != nil {
 		a.externalMCPMgr.StopAll()
@@ -930,7 +891,6 @@ func setupRoutes(
 	markdownAgentsHandler *handler.MarkdownAgentsHandler,
 	fofaHandler *handler.FofaHandler,
 	terminalHandler *handler.TerminalHandler,
-	securityOpsHandler *handler.SecurityOpsHandler,
 	c2Handler *handler.C2Handler,
 	auditHandler *handler.AuditHandler,
 	auditSvc *audit.Service,
@@ -938,7 +898,6 @@ func setupRoutes(
 	mcpServer *mcp.Server,
 	authManager *security.AuthManager,
 	openAPIHandler *handler.OpenAPIHandler,
-	sentinelHandler *handler.SentinelHandler,
 ) {
 	// API路由
 	api := router.Group("/api")
@@ -980,11 +939,6 @@ func setupRoutes(
 		}
 	}))
 	{
-		protected.POST("/recon/runs", security.RequirePermission("asset:write"), app.reconHandler.Start)
-		protected.POST("/recon/auto", security.RequirePermission("asset:write"), app.reconHandler.Auto)
-		protected.GET("/recon/runs/:id", security.RequirePermission("asset:read"), app.reconHandler.Get)
-		protected.POST("/recon/runs/:id/cancel", security.RequirePermission("asset:write"), app.reconHandler.Cancel)
-
 		protected.GET("/rbac/me", rbacHandler.Me)
 		protected.GET("/rbac/metadata", rbacHandler.Metadata)
 		protected.GET("/rbac/users", rbacHandler.ListUsers)
@@ -1074,18 +1028,6 @@ func setupRoutes(
 		protected.PUT("/batch-tasks/:queueId/schedule", agentHandler.UpdateBatchQueueSchedule)
 		protected.PUT("/batch-tasks/:queueId/schedule-enabled", agentHandler.SetBatchQueueScheduleEnabled)
 		protected.DELETE("/batch-tasks/:queueId", agentHandler.DeleteBatchQueue)
-
-		// Governed Web security operations. The control plane keeps target scope,
-		// approval, execution and evidence in one audit trail.
-		protected.GET("/security-ops/catalog", securityOpsHandler.Catalog)
-		protected.GET("/security-ops/runs", securityOpsHandler.ListRuns)
-		protected.POST("/security-ops/runs", securityOpsHandler.CreateRun)
-		protected.GET("/security-ops/runs/:runId", securityOpsHandler.GetRun)
-		protected.GET("/security-ops/runs/:runId/events", securityOpsHandler.ListEvents)
-		protected.GET("/security-ops/runs/:runId/artifacts", securityOpsHandler.ListArtifacts)
-		protected.GET("/security-ops/projects/:projectId/findings", securityOpsHandler.ListFindings)
-		protected.POST("/security-ops/runs/:runId/approve", security.RequirePermission("hitl:write"), securityOpsHandler.ApproveRun)
-		protected.POST("/security-ops/runs/:runId/cancel", securityOpsHandler.CancelRun)
 		protected.PUT("/batch-tasks/:queueId/tasks/:taskId", agentHandler.UpdateBatchTask)
 		protected.POST("/batch-tasks/:queueId/tasks/:taskId/run", agentHandler.RunSingleBatchTask)
 		protected.POST("/batch-tasks/:queueId/tasks", agentHandler.AddBatchTask)
@@ -1120,6 +1062,9 @@ func setupRoutes(
 
 		// 配置管理
 		protected.GET("/config", configHandler.GetConfig)
+		protected.GET("/tool-guard", configHandler.GetToolGuard)
+		protected.PUT("/tool-guard", configHandler.UpdateToolGuard)
+		protected.POST("/tool-guard/test", configHandler.TestToolGuard)
 		protected.GET("/config/tools", configHandler.GetTools)
 		protected.GET("/config/tools/:name/schema", configHandler.GetToolSchema)
 		protected.PUT("/config", configHandler.UpdateConfig)
@@ -1127,8 +1072,6 @@ func setupRoutes(
 		protected.POST("/config/test-openai", configHandler.TestOpenAI)
 		protected.POST("/config/test-vision", configHandler.TestVision)
 		protected.POST("/config/list-models", configHandler.ListModels)
-		protected.GET("/config/proxy-pool/status", configHandler.GetProxyPoolStatus)
-		protected.POST("/config/test-proxy-pool", configHandler.TestProxyPool)
 
 		// 系统设置 - 终端（执行命令，提高运维效率）
 		protected.POST("/terminal/run", terminalHandler.RunCommand)
@@ -1312,20 +1255,6 @@ func setupRoutes(
 		protected.POST("/vulnerabilities", vulnerabilityHandler.CreateVulnerability)
 		protected.PUT("/vulnerabilities/:id", vulnerabilityHandler.UpdateVulnerability)
 		protected.DELETE("/vulnerabilities/:id", vulnerabilityHandler.DeleteVulnerability)
-		protected.POST("/vulnerabilities/:id/generate-poc", vulnerabilityHandler.GeneratePoc)
-		protected.POST("/vulnerabilities/batch-generate-poc", vulnerabilityHandler.BatchGeneratePoc)
-		protected.POST("/vulnerabilities/:id/verify-poc", vulnerabilityHandler.VerifyPoc)
-
-		// 零零哨兵 (Surface Watch) 暴露面巡检
-		sentinelRoutes := protected.Group("/sentinel")
-		{
-			sentinelRoutes.POST("/scan", sentinelHandler.StartScan)
-			sentinelRoutes.GET("/status/:id", sentinelHandler.GetScanStatus)
-			sentinelRoutes.GET("/latest", sentinelHandler.GetLatestScan)
-			sentinelRoutes.GET("/history", sentinelHandler.ListScans)
-			sentinelRoutes.POST("/sync/assets", sentinelHandler.SyncToAssets)
-			sentinelRoutes.POST("/sync/vulnerabilities", sentinelHandler.SyncToVulnerabilities)
-		}
 
 		// 项目管理与事实黑板
 		protected.GET("/projects/dashboard-summary", projectHandler.GetDashboardSummary)
@@ -1408,17 +1337,6 @@ func setupRoutes(
 		c2Routes.PUT("/profiles/:id", c2Handler.UpdateProfile)
 		c2Routes.DELETE("/profiles/:id", c2Handler.DeleteProfile)
 
-		// XSS 窃密载荷与收割记录（收集回连由独立 xss_collector 监听，不走此路由）
-		protected.GET("/xss/config", security.RequirePermission("xss:read"), app.xssHandler.GetConfig)
-		protected.GET("/xss/payloads", security.RequirePermission("xss:read"), app.xssHandler.ListPayloads)
-		protected.POST("/xss/payloads/generate", security.RequirePermission("xss:write"), app.xssHandler.GeneratePayload)
-		protected.GET("/xss/payloads/:id", security.RequirePermission("xss:read"), app.xssHandler.GetPayload)
-		protected.DELETE("/xss/payloads/:id", security.RequirePermission("xss:delete"), app.xssHandler.DeletePayload)
-		protected.GET("/xss/captures", security.RequirePermission("xss:read"), app.xssHandler.ListCaptures)
-		protected.GET("/xss/captures/:id", security.RequirePermission("xss:read"), app.xssHandler.GetCapture)
-		protected.PUT("/xss/captures/:id/status", security.RequirePermission("xss:write"), app.xssHandler.UpdateCaptureStatus)
-		protected.DELETE("/xss/captures/:id", security.RequirePermission("xss:delete"), app.xssHandler.DeleteCapture)
-
 		// 对话附件（chat_uploads）管理
 		protected.GET("/chat-uploads", chatUploadsHandler.List)
 		protected.GET("/chat-uploads/export", chatUploadsHandler.Export)
@@ -1490,7 +1408,6 @@ func setupRoutes(
 
 	// 静态文件
 	router.Static("/static", "./web/static")
-	router.StaticFile("/favicon.ico", "./web/static/favicon.ico")
 	router.LoadHTMLGlob("web/templates/*")
 
 	// 前端页面

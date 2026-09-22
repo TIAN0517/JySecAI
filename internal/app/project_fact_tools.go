@@ -375,13 +375,6 @@ func boolArg(args map[string]interface{}, key string) bool {
 	return false
 }
 
-func boolArgDefault(args map[string]interface{}, key string, def bool) bool {
-	if v, ok := args[key].(bool); ok {
-		return v
-	}
-	return def
-}
-
 func intArg(args map[string]interface{}, key string, def int) int {
 	switch v := args[key].(type) {
 	case float64:

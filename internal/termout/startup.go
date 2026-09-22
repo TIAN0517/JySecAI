@@ -31,12 +31,12 @@ func PrintStartupWebUI(opts StartupWebUIOptions) {
 	}
 	port := opts.Port
 	if port <= 0 {
-		port = 6688
+		port = 8080
 	}
 	url := fmt.Sprintf("%s://127.0.0.1:%d/", scheme, port)
 
 	s.BlankLine()
-	s.Println(s.Bold(s.Cyan("JySecAI")) + s.Dim("  /  secure workspace"))
+	s.Println(s.Bold(s.Cyan("CYBERSTRIKE AI")) + s.Dim("  /  secure workspace"))
 	s.Println(s.Dim(strings.Repeat("─", 60)))
 	s.Println(s.Green("● ONLINE") + "   " + s.Bold(s.White(url)))
 	if opts.SelfSigned {

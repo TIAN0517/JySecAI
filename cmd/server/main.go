@@ -32,10 +32,7 @@ func main() {
 		os.Exit(2)
 	}
 	if !*httpsBootstrap && !*httpBootstrap {
-		v := strings.TrimSpace(os.Getenv("JYSECAI_HTTPS"))
-		if v == "" {
-			v = strings.TrimSpace(os.Getenv("CYBERSTRIKE_HTTPS"))
-		}
+		v := strings.TrimSpace(os.Getenv("CYBERSTRIKE_HTTPS"))
 		if v == "1" || strings.EqualFold(v, "true") || strings.EqualFold(v, "yes") {
 			*httpsBootstrap = true
 		}
@@ -81,7 +78,7 @@ func main() {
 
 	port := cfg.Server.Port
 	if port <= 0 {
-		port = 6688
+		port = 8080
 	}
 	scheme := "http"
 	if config.MainWebUIUsesHTTPS(&cfg.Server) {
@@ -103,14 +100,13 @@ func main() {
 		config.PrintMCPConfigJSON(cfg.MCP)
 	}
 
-	// XSS 收集服务启用且 token 为空时，自动生成随机密钥并写回配置
-	if err := config.EnsureXSSSecret(cp, cfg); err != nil {
-		fmt.Printf("Failed to configure XSS collector authentication: %v\n", err)
-		return
-	}
-
 	// 初始化日志
-	log := logger.New(cfg.Log.Level, cfg.Log.Output)
+	log := logger.New(cfg.Log.Level, cfg.Log.Output, logger.DiagnosticOptions{
+		Dir:           cfg.Log.DiagnosticDir,
+		Disabled:      cfg.Log.DiagnosticDisabled,
+		RetentionDays: cfg.Log.DiagnosticRetentionDays,
+	})
+	defer log.Sync()
 
 	// 创建可取消的根 context，用于优雅关闭
 	ctx, cancel := context.WithCancel(context.Background())

@@ -10,11 +10,11 @@
 # ============================================
 
 # 前端显示的版本号（可选，不填则显示默认版本）
-version: "v1.7.17"
+version: "v1.7.18"
 # 服务器配置
 server:
   host: 0.0.0.0 # 监听地址，0.0.0.0 表示监听所有网络接口
-  port: 6688 # 服务端口；未启用 TLS 时为 http://localhost:6688
+  port: 8080 # 服务端口；未启用 TLS 时为 http://localhost:8080
   # 其他可信 Web 集成的精确 Origin。Chromium 浏览器插件会自动识别，无需配置；不要使用通配符。
   # cors_allowed_origins:
   #   - https://trusted-integration.example
@@ -36,6 +36,9 @@ auth:
 log:
   level: info # 日志级别: debug(调试), info(信息), warn(警告), error(错误)
   output: stdout # 日志输出位置: stdout(标准输出), stderr(标准错误), 或文件路径
+  diagnostic_dir: log # 额外保存 warn 及以上诊断日志，按本地日期拆分；相对于进程工作目录
+  diagnostic_retention_days: 14 # 保留天数（含当天）；省略或 <= 0 使用 14 天
+  diagnostic_disabled: false # true 关闭额外诊断日志；修改后需重启
 # 平台操作审计（系统设置 -> 日志审计；不记录对话正文与每次工具调用）
 audit:
   enabled: true
@@ -59,24 +62,22 @@ monitor:
 # 常用模型: gpt-4, gpt-3.5-turbo, deepseek-chat, claude-3-opus 等
 # provider: 可选值 openai_compatible(默认) | claude(Eino 原生 Anthropic Messages API)
 ai:
-    default_channel: nvidia-primary
-    channels:
-      nvidia-primary:
-        name: NVIDIA Kimi K3 Primary
-        provider: openai_compatible
-        base_url: https://integrate.api.nvidia.com/v1
-        api_key: "${NVIDIA_API_KEY}"
-        model: moonshotai/kimi-k3
-        max_total_tokens: 16384
-        max_completion_tokens: 4096
-        reasoning:
-          mode: off
+  default_channel: qwen-max
+  channels:
+    qwen-max:
+      name: Qwen Max
+      provider: openai_compatible
+      base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api_key: sk-xxxxxxx
+      model: qwen3-max
+      max_total_tokens: 120000
+      max_completion_tokens: 32768
       # Eino 路径模型推理：DeepSeek/OpenAI 为 thinking / reasoning_effort；Claude 4.6+ 为 adaptive + output_config.effort（仅显式配置 effort 时下发）；3.7 为 enabled+budget_tokens:10000（文档示例），effort 不映射，自定义预算用 extra_request_fields
-      # reasoning:
-      #   mode: on # auto | on | off；off：OpenAI/Claude 不附加推理字段，DeepSeek 发送 thinking.type=disabled（其默认开启思考）
-      #   effort: high # low | medium | high | max | xhigh（最高档：OpenAI 常用 xhigh，部分网关用 max，原样下发）；空表示不指定
-      #   allow_client_reasoning: true # false 时忽略对话请求体 reasoning，仅以下方为准
-      #   profile: openai_compat # auto | deepseek_compat | openai_compat | output_config_effort
+      reasoning:
+        mode: on # auto | on | off；off：OpenAI/Claude 不附加推理字段，DeepSeek 发送 thinking.type=disabled（其默认开启思考）
+        effort: high # low | medium | high | max | xhigh（最高档：OpenAI 常用 xhigh，部分网关用 max，原样下发）；空表示不指定
+        allow_client_reasoning: true # false 时忽略对话请求体 reasoning，仅以下方为准
+        profile: openai_compat # auto | deepseek_compat | openai_compat | output_config_effort
         # extra_request_fields: {} # 可选：管理员自定义根级 JSON 片段（高级）
     # qwen-plus:
     #   name: Qwen Plus Fallback
@@ -117,29 +118,6 @@ quake:
 shodan:
   base_url: https://api.shodan.io # 可选，留空则使用默认
   api_key: "" # Shodan API Key；也可通过 SHODAN_API_KEY 环境变量配置
-# SOCKS5 轮换代理池（仅用于 FOFA / ZoomEye / Quake / Shodan 出站 API）
-proxy_pool:
-  enabled: true
-  strategy: round_robin # round_robin | random
-  health_check_url: https://api.ipify.org
-  connect_timeout_seconds: 8
-  request_timeout_seconds: 15
-  failure_threshold: 2
-  cooldown_seconds: 60
-  proxies:
-    - {name: s5-154, url: "socks5://202.160.76.154:11085", enabled: true}
-    - {name: s5-155, url: "socks5://202.160.76.155:11084", enabled: true}
-    - {name: s5-156, url: "socks5://202.160.76.156:11083", enabled: true}
-    - {name: s5-157, url: "socks5://202.160.76.157:11082", enabled: true}
-    - {name: s5-165, url: "socks5://202.160.76.165:11081", enabled: true}
-    - {name: s5-166, url: "socks5://202.160.76.166:11086", enabled: true}
-    - {name: s5-167, url: "socks5://202.160.76.167:1080", enabled: true}
-    - {name: s5-168, url: "socks5://202.160.76.168:1080", enabled: true}
-    - {name: s5-169, url: "socks5://202.160.76.169:1080", enabled: true}
-    - {name: s5-173, url: "socks5://202.160.76.173:1080", enabled: true}
-    - {name: s5-221, url: "socks5://202.160.76.221:1080", enabled: true}
-    - {name: s5-223, url: "socks5://202.160.76.223:1080", enabled: true}
-
 # Agent 配置
 # 达到最大迭代次数时，AI 会自动总结测试结果
 agent:
@@ -155,6 +133,19 @@ agent:
   # system_prompt_path: prompts/single-agent.md # 可选：单代理系统提示文件（相对本配置文件所在目录）；非空且可读时替换内置提示
 
   system_prompt_path: ""
+# 调用拦截：在「安全防护 → 调用拦截」编辑并保存后立即生效；与 HITL 审批白名单独立。
+# 旧配置省略 tool_guard 时也默认启用政府域名保护。手动修改 YAML 后需重启。
+tool_guard:
+  enabled: true
+  rules:
+    - id: government-domains
+      name: 政府网站保护
+      enabled: true
+      # Go/RE2 正则；命名捕获组 match 用于提醒中的 {match}。
+      pattern: '(?i)(?:^|[^\p{L}\p{M}\p{N}_.-])(?P<match>(?:(?:[\p{L}\p{M}\p{N}_*-]+\.)+gov(?:\.[\p{L}\p{M}\p{N}_*-]+)*|gov(?:\.[\p{L}\p{M}\p{N}_*-]+)+|\.gov(?:\.[\p{L}\p{M}\p{N}_*-]+)*)\.?)(?:$|[^\p{L}\p{M}\p{N}_.-])'
+      # 支持 {match}、{tool}、{rule}；留空使用通用提醒。
+      message: '识别到 {match}，禁止攻击政府网站。请检查目标与授权范围，并更换为已获授权的非政府目标。'
+
 # 人机协同（HITL）全局白名单：此处列出的工具始终免审批，与对话页「白名单工具（免审批，逗号分隔）」合并为并集；侧栏「应用」可合并写入本列表并立即生效。
 # 非白名单工具在审批方=审计 Agent 时，按会话 HITL 模式选用提示词：
 #   approval → audit_agent_prompt
@@ -175,7 +166,7 @@ hitl:
   # 已决策审计日志保留天数（与 MCP 监控一致；省略默认 90；0 表示不自动清理）
   retention_days: 90
   # 按你环境里的真实工具名增删（与侧栏一致、小写不敏感）；不需要全局免审批可改为 []
-  tool_whitelist: [read_file, ls, glob, grep, tool_search, upsert_project_fact, get_project_fact, list_project_facts, search_project_facts, list_vulnerabilities, get_vulnerability, get_asset, query_assets, list_knowledge_risk_types, get_tool_execution, wait_tool_execution, batch_task_list, batch_task_get, manage_webshell_list, c2_event, c2_file]
+  tool_whitelist: [read_file, ls, list_dir, glob, grep, tool_search, upsert_project_fact, get_project_fact, list_project_facts, search_project_facts, list_vulnerabilities, get_vulnerability, get_asset, query_assets, list_knowledge_risk_types, get_tool_execution, wait_tool_execution, batch_task_list, batch_task_get, manage_webshell_list, c2_event, c2_file]
   # audit_agent_prompt: |  # 审批模式；留空使用内置默认，可在「人机协同」页编辑
   # audit_agent_prompt_review_edit: |  # 审查编辑模式；留空使用内置默认
 
@@ -387,132 +378,16 @@ security:
 mcp:
   enabled: false # 是否启用 MCP 服务器（http模式）
   host: 127.0.0.1 # MCP 服务器监听地址；需要远程访问时再显式修改并配置网络层访问控制
-  port: 6689 # MCP 服务器端口
+  port: 8081 # MCP 服务器端口
   auth_header: "X-MCP-Token" # 可选的全局服务凭证 Header；普通调用请使用用户 Authorization: Bearer Token
   auth_header_value: "" # 全局服务凭证值，仅 allow_global_access=true 时生效
   allow_global_access: false # 高风险兼容模式：静态密钥映射为全局服务身份；默认请使用用户 Bearer Token
 # 外部 MCP 配置
 external_mcp:
-  # 外部 MCP「桥接」服务器示例：工具端自行部署后在此明确声明。
-  # 命令一律支援 ${VAR} / ${VAR:-default} 环境变量展开。
-  # 注意：config 加载时会把未设 disabled 的 server 强制视为启用（internal/config/config.go normalize），
-  # 因此停用用官方字段 disabled: true；部署后把 disabled 改为 false（或用 web UI「外部 MCP」管理启用）。
-  # 技能市场导入的 skill 依赖关系见 skills/.marketplace-manifest.json。
-  servers:
-    # BloodHound MCP（来源：https://github.com/mwnickerson/bloodhound_mcp）
-    bloodhound:
-      description: "BloodHound CE graph queries (AD/Entra attack-path). Requires self-deployed bloodhound-mcp."
-      disabled: true
-      type: stdio
-      command: uv
-      args:
-        - --directory
-        - ${BLOODHOUND_MCP_DIR:-/opt/bloodhound-mcp}
-        - run
-        - main.py
-      env:
-        BLOODHOUND_DOMAIN: ${BLOODHOUND_DOMAIN:-bloodhound.example.test}
-        BLOODHOUND_SCHEME: ${BLOODHOUND_SCHEME:-http}
-        BLOODHOUND_PORT: ${BLOODHOUND_PORT:-8080}
-        BLOODHOUND_TOKEN_ID: ${BLOODHOUND_TOKEN_ID:-}
-        BLOODHOUND_TOKEN_KEY: ${BLOODHOUND_TOKEN_KEY:-}
-      timeout: 30
-      keep_alive: 15
-      max_retries: 3
-    # Dragon-V 离线利用库与扫描
-    dragon-v:
-      description: "Dragon-V: offline CVE, fingerprints, payloads and authorized pentest chain."
-      disabled: true
-      type: stdio
-      command: ${JYSECAI_PYTHON:-python}
-      args:
-        - mcp-servers/dragon_v/dragon_v_mcp_server.py
-      timeout: 180
-      keep_alive: 30
-      max_retries: 5
-    # Reverse Shell 交互监听
-    reverse-shell:
-      description: "Reverse shell: start/stop TCP listener, run commands on connected target."
-      disabled: true
-      type: stdio
-      command: ${JYSECAI_PYTHON:-python}
-      args:
-        - mcp-servers/reverse_shell/mcp_reverse_shell.py
-      timeout: 60
-      keep_alive: 15
-      max_retries: 3
-    # Vuln Intel 漏洞情报检索
-    vuln-intel:
-      description: "Vulnerability intelligence: CVE/KEV/EPSS lookup."
-      disabled: true
-      type: stdio
-      command: ${JYSECAI_PYTHON:-python}
-      args:
-        - mcp-servers/vuln_intel/mcp_vuln_intel.py
-      timeout: 60
-      keep_alive: 15
-      max_retries: 3
-    # Redteam Knowledge 红队知识库
-    redteam-knowledge:
-      description: "Redteam knowledge: ATT&CK techniques, playbooks, and bypass references."
-      disabled: true
-      type: stdio
-      command: ${JYSECAI_PYTHON:-python}
-      args:
-        - mcp-servers/redteam_knowledge/mcp_redteam_knowledge.py
-      timeout: 60
-      keep_alive: 15
-      max_retries: 3
-    # Pent Claude Agent 渗透助手
-    pent-claude-agent:
-      description: "Pentest execution agent bridge."
-      disabled: true
-      type: stdio
-      command: ${JYSECAI_PYTHON:-python}
-      args:
-        - mcp-servers/pent_claude_agent/mcp_pent_claude_agent.py
-      timeout: 120
-      keep_alive: 15
-      max_retries: 3
-    # Ghostwriter MCP（对应 skill：timeline-ghostwriter / report-drafting 家族）
-    #   command/args 依你部署的 ghostwriter-mcp 调整
-    # ghostwriter:
-    #   description: "Ghostwriter report MCP bridge."
-    #   disabled: true
-    #   type: stdio
-    #   command: uvx
-    #   args: [ghostwriter-mcp]
-    #   env:
-    #     GHOSTWRITER_API_URL: ${GHOSTWRITER_API_URL:-http://127.0.0.1:8000}
-    #     GHOSTWRITER_API_KEY: ${GHOSTWRITER_API_KEY:-}
-    # Binary Ninja MCP / Ghidra MCP（对应 skill：reverse-engineering 家族）
-    #   同样由使用者自行部署，示例见 config.yaml 对应注释区块
+  servers: {}
 # 内置 C2：本机仅做对话/知识库时可设为 false，不启动监听器、不注册 C2 MCP 工具；省略本段时默认启用
 c2:
   enabled: true
-  # 高端自动上线：应用启动时按下方 listeners 幂等创建/启动监听器（按 name 匹配，已存在则跳过创建），
-  # 新会话首次 check_in 未携带心跳参数时注入 default_sleep_seconds/default_jitter_percent 兜底，
-  # 失联会话按 stale_session_timeout_seconds 兜底清理（0 表示沿用看门狗默认 30s）。
-  # 仅创建不启动时把 auto_start_listeners 置为 false；不需要自动上线监听器时整个 auto_checkin 段置 enabled: false。
-  auto_checkin:
-    enabled: true
-    auto_start_listeners: true
-    default_sleep_seconds: 5
-    default_jitter_percent: 0
-    stale_session_timeout_seconds: 0
-    listeners:
-      - name: auto-http-beacon
-        type: http_beacon
-        bind_host: 0.0.0.0
-        bind_port: 6690
-        callback_host: ""
-        enabled: true
-      - name: auto-websocket
-        type: websocket
-        bind_host: 0.0.0.0
-        bind_port: 6691
-        callback_host: ""
-        enabled: true
 # ============================================
 # 知识库相关配置
 # ============================================
@@ -641,7 +516,7 @@ robots:
 # ============================================
 
 # 技能包目录：每个子目录仅标准 SKILL.md（Agent Skills：front matter 仅 name、description）+ 可选附属文件；无 SKILL.yaml
-# 示例：skills/jysec-eino-demo/
+# 示例：skills/cyberstrike-eino-demo/
 skills_dir: skills # Skills配置文件目录（相对于配置文件所在目录）
 # ============================================
 # 多代理子 Agent（Markdown，唯一维护处）
@@ -668,13 +543,3 @@ project:
   fact_index_path_max_runes: 10000
   fact_summary_max_runes: 24000
   default_inject_deprecated: false
-# ============================================
-# XSS 窃密/接管回连收集服务（载荷脚本回调地址，独立于主站监听）
-# ============================================
-xss:
-  enabled: false
-  bind_host: 127.0.0.1
-  bind_port: 8877
-  # public_url: http://127.0.0.1:8877 # 留空时按 http://<bind_host>:<bind_port> 推导；需远程回连时配置公网可达地址
-  # token 留空时启动自动生成并写回本文件
-  cooldown_seconds: 60
