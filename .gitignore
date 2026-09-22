@@ -29,6 +29,8 @@ skills/.eino/
 # Build outputs
 cyberstrike-ai
 cyberstrike-ai.exe
+jysec-core-linux
+jysec-core-linux-*
 *.test
 bin/
 dist/
