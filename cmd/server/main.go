@@ -2,14 +2,14 @@ package main
 
 import (
 	"context"
+	"flag"
+	"fmt"
 	"jysecai/internal/app"
 	"jysecai/internal/config"
 	"jysecai/internal/database"
 	"jysecai/internal/logger"
 	"jysecai/internal/security"
 	"jysecai/internal/termout"
-	"flag"
-	"fmt"
 	"os"
 	"os/signal"
 	"strings"
@@ -20,11 +20,20 @@ import (
 )
 
 func main() {
+	var xssShadowDB = flag.String("xss-shadow-db", "", "Migrate an explicitly marked shadow DB only; never starts the normal application")
+	var xssShadowSeconds = flag.Int("xss-shadow-seconds", 0, "Optional loopback-only shadow health startup (0-30 seconds)")
 	var configPath = flag.String("config", "config.yaml", "Path to the configuration file")
 	var httpsBootstrap = flag.Bool("https", false, "Enable HTTPS for the main site; uses an in-memory self-signed certificate when no cert/key is configured")
 	var httpBootstrap = flag.Bool("http", false, "Force plain HTTP for the main site, overriding TLS settings in the configuration file")
 	var resetAdminPassword = flag.Bool("reset-admin-password", false, "Interactively reset the built-in admin password and exit")
 	flag.Parse()
+	if *xssShadowDB != "" {
+		if err := runXSSShadow(*xssShadowDB, *xssShadowSeconds); err != nil {
+			fmt.Fprintln(os.Stderr, "XSS shadow refused/failed:", err)
+			os.Exit(1)
+		}
+		return
+	}
 
 	// 环境变量兼容（便于 systemd/docker 等不传参场景）
 	if *httpsBootstrap && *httpBootstrap {

@@ -53,13 +53,13 @@ type Config struct {
 
 // XssConfig XSS 收割平台配置
 type XssConfig struct {
-	Enabled         bool   `yaml:"enabled" json:"enabled"`
-	Token           string `yaml:"token,omitempty" json:"token,omitempty"`
-	BindHost        string `yaml:"bind_host,omitempty" json:"bind_host,omitempty"`
-	BindPort        int    `yaml:"bind_port,omitempty" json:"bind_port,omitempty"`
-	CooldownSeconds int    `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
-	PublicURL       string `yaml:"public_url,omitempty" json:"public_url,omitempty"`
-	DNSExfilDomain  string `yaml:"dns_exfil_domain,omitempty" json:"dns_exfil_domain,omitempty"`
+	TrustedLocalProxies []string `yaml:"trusted_local_proxies,omitempty" json:"trusted_local_proxies,omitempty"`
+	Enabled             bool     `yaml:"enabled" json:"enabled"`
+	Token               string   `yaml:"token,omitempty" json:"token,omitempty"`
+	BindHost            string   `yaml:"bind_host,omitempty" json:"bind_host,omitempty"`
+	BindPort            int      `yaml:"bind_port,omitempty" json:"bind_port,omitempty"`
+	CooldownSeconds     int      `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
+	PublicURL           string   `yaml:"public_url,omitempty" json:"public_url,omitempty"`
 }
 
 func (c XssConfig) EnabledEffective() bool {

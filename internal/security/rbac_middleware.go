@@ -168,7 +168,7 @@ func permissionForRequest(method, fullPath string) string {
 		return crudPermission(method, "webshell")
 	case strings.HasPrefix(path, "/c2"):
 		return crudPermission(method, "c2")
-	case strings.HasPrefix(path, "/xss"):
+	case path == "/xss" || strings.HasPrefix(path, "/xss/"):
 		return crudPermission(method, "xss")
 	case strings.HasPrefix(path, "/chat-uploads"):
 		return crudPermission(method, "files")

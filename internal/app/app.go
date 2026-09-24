@@ -34,6 +34,7 @@ import (
 	"jysecai/internal/security"
 	"jysecai/internal/skillpackage"
 	"jysecai/internal/toolguard"
+	"jysecai/internal/xsshook"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -72,7 +73,8 @@ type App struct {
 	c2Watchdog         *c2.SessionWatchdog       // C2 会话看门狗
 	c2WatchdogCancel   context.CancelFunc        // 看门狗取消函数
 	c2Handler          *handler.C2Handler        // C2 REST（与 Manager 生命周期同步）
-	xssHandler         *handler.XssHandler       // XSS cookie-harvesting platform<br/>
+	xssCollector       *xsshook.Collector
+	xssHandler         *handler.XssHandler // XSS cookie-harvesting platform<br/>
 	auditSvc           *audit.Service
 }
 
@@ -450,8 +452,9 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	// 初始化 XSS 平台处理器
 	xssHandler := handler.NewXssHandler(db, &cfg.Xss, log.Logger)
 	xssHandler.SetAudit(auditSvc)
-	if cfg.Xss.EnabledEffective() {
-		xssHandler.StartCollector()
+	xssCollector, xssErr := startXSSCollector(db, cfg.Xss, log.Logger)
+	if xssErr != nil {
+		log.Logger.Error("XSS collector startup failed", zap.Error(xssErr))
 	}
 
 	// 创建OpenAPI处理器
@@ -488,6 +491,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		c2WatchdogCancel:   watchdogCancel,
 		c2Handler:          c2Handler,
 		xssHandler:         xssHandler,
+		xssCollector:       xssCollector,
 		auditSvc:           auditSvc,
 	}
 	// 飞书/钉钉长连接（无需公网），启用时在后台启动；后续前端应用配置时会通过 RestartRobotConnections 重启
@@ -778,8 +782,10 @@ func (a *App) Shutdown() {
 	a.shutdownC2()
 
 	// 停止 XSS 采集器服务器
-	if a.xssHandler != nil {
-		a.xssHandler.StopCollector()
+	if a.xssCollector != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		_ = a.xssCollector.Stop(ctx)
 	}
 
 	// 停止所有外部MCP客户端
@@ -1354,15 +1360,7 @@ func setupRoutes(
 		c2Routes.DELETE("/profiles/:id", c2Handler.DeleteProfile)
 
 		// XSS 平台管理
-		xssRoutes := protected.Group("/xss")
-		{
-			xssRoutes.GET("/config", xssHandler.GetConfig)
-			xssRoutes.GET("/payloads", xssHandler.ListPayloads)
-			xssRoutes.POST("/payloads", xssHandler.CreatePayload)
-			xssRoutes.GET("/payloads/:id", xssHandler.GetPayload)
-			xssRoutes.DELETE("/payloads/:id", xssHandler.DeletePayload)
-			xssRoutes.GET("/captures", xssHandler.ListCaptures)
-		}
+		handler.RegisterXSSRoutes(protected.Group("/xss"), xssHandler)
 
 		// 对话附件（chat_uploads）管理
 		protected.GET("/chat-uploads", chatUploadsHandler.List)
