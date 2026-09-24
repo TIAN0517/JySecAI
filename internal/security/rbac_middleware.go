@@ -223,6 +223,11 @@ func resourceAllowed(c *gin.Context, db *database.DB) bool {
 		return session.Scope == database.RBACScopeAll
 	case strings.HasPrefix(path, "/c2/profiles") && c.Request.Method != http.MethodGet:
 		return session.Scope == database.RBACScopeAll
+	case strings.HasPrefix(path, "/xss"):
+		// XSS management is process-global in the current storage model. Until
+		// payload/capture list queries are owner-scoped, only global-scope roles
+		// may access these management APIs.
+		return session.Scope == database.RBACScopeAll
 	case (strings.HasPrefix(path, "/hitl/tool-whitelist") || strings.HasPrefix(path, "/hitl/default-config") || strings.HasPrefix(path, "/hitl/default-reviewer") || strings.HasPrefix(path, "/hitl/audit-strategy")) && c.Request.Method != http.MethodGet:
 		return session.Scope == database.RBACScopeAll
 	case isMutationMethod(c.Request.Method) && isProcessGlobalMutationPath(path):
