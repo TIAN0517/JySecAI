@@ -26,11 +26,11 @@ JySecAI connects planning, execution, human oversight, evidence, and replay in o
 <tr>
 <td width="50%" align="center">
 <strong>Light Mode</strong><br/>
-<img src="./images/os.png" alt="System Dashboard (Light)" width="100%">
+<img src="./os.png" alt="System Dashboard (Light)" width="100%">
 </td>
 <td width="50%" align="center">
 <strong>Dark Mode</strong><br/>
-<img src="./images/so.png" alt="System Dashboard (Dark)" width="100%">
+<img src="./so.png" alt="System Dashboard (Dark)" width="100%">
 </td>
 </tr>
 </table>
@@ -40,70 +40,6 @@ JySecAI connects planning, execution, human oversight, evidence, and replay in o
 <details>
 <summary><strong>More interface screenshots</strong></summary>
 
-### Core Features Overview
-
-<table>
-<tr>
-<td width="33.33%" align="center">
-<strong>Web Console</strong><br/>
-<img src="./images/web-console.png" alt="Web Console" width="100%">
-</td>
-<td width="33.33%" align="center">
-<strong>Task Management</strong><br/>
-<img src="./images/task-management.png" alt="Task Management" width="100%">
-</td>
-<td width="33.33%" align="center">
-<strong>Vulnerability Management</strong><br/>
-<img src="./images/vulnerability-management.png" alt="Vulnerability Management" width="100%">
-</td>
-</tr>
-<tr>
-<td width="33.33%" align="center">
-<strong>WebShell Management</strong><br/>
-<img src="./images/webshell-management.png" alt="WebShell Management" width="100%">
-</td>
-<td width="33.33%" align="center">
-<strong>MCP Management</strong><br/>
-<img src="./images/mcp-management.png" alt="MCP management" width="100%">
-</td>
-<td width="33.33%" align="center">
-<strong>Knowledge Base</strong><br/>
-<img src="./images/knowledge-base.png" alt="Knowledge Base" width="100%">
-</td>
-</tr>
-<tr>
-<td width="33.33%" align="center">
-<strong>Skills Management</strong><br/>
-<img src="./images/skills.png" alt="Skills Management" width="100%">
-</td>
-<td width="33.33%" align="center">
-<strong>Agent Management</strong><br/>
-<img src="./images/agent-management.png" alt="Agent Management" width="100%">
-</td>
-<td width="33.33%" align="center">
-<strong>Role Management</strong><br/>
-<img src="./images/role-management.png" alt="Role Management" width="100%">
-</td>
-</tr>
-<tr>
-<td width="33.33%" align="center">
-<strong>System Settings</strong><br/>
-<img src="./images/settings.png" alt="System settings" width="100%">
-</td>
-<td width="33.33%" align="center">
-<strong>MCP stdio Mode</strong><br/>
-<img src="./images/mcp-stdio2.png" alt="MCP stdio mode" width="100%">
-</td>
-<td width="33.33%" align="center">
-<strong>Burp Suite Plugin</strong><br/>
-<img src="./images/plugins.png" alt="Burp Suite plugin" width="100%">
-</td>
-</tr>
-</table>
-
-</details>
-
-</div>
 
 ## Highlights
 
