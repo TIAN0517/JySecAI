@@ -2034,6 +2034,12 @@ func GenerateXssTokenShort() string {
 // migrateXssPayloadsTable ensures new columns (name, type, config,
 // project_id, updated_at) exist on pre-existing XSS databases.
 func (db *DB) migrateXssPayloadsTable() error {
+	var idType string
+	if err := db.QueryRow("SELECT type FROM pragma_table_info('xss_payloads') WHERE name='id'").Scan(&idType); err == nil {
+		if strings.EqualFold(strings.TrimSpace(idType), "TEXT") {
+			return fmt.Errorf("legacy XSS schema detected in xss_payloads (TEXT id); refusing implicit in-place conversion")
+		}
+	}
 	for _, col := range []struct {
 		name string
 		stmt string
@@ -2061,6 +2067,12 @@ func (db *DB) migrateXssPayloadsTable() error {
 // migrateXssCapturesTable ensures columns (token, cookie, url, domain, user_agent,
 // ip, extra) exist on pre-existing xss_captures tables.
 func (db *DB) migrateXssCapturesTable() error {
+	var idType string
+	if err := db.QueryRow("SELECT type FROM pragma_table_info('xss_captures') WHERE name='id'").Scan(&idType); err == nil {
+		if strings.EqualFold(strings.TrimSpace(idType), "TEXT") {
+			return fmt.Errorf("legacy XSS schema detected in xss_captures (TEXT id); refusing implicit in-place conversion")
+		}
+	}
 	for _, col := range []struct {
 		name string
 		stmt string
