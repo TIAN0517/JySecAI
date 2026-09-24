@@ -3614,7 +3614,7 @@
                                     <input type="checkbox" id="xss-config-enabled">
                                     <span>启用收集服务（监听收割回连）</span>
                                 </label>
-                                <p class="xss-modal-hint">启用后，生成的载荷即可回连收割 Cookie / localStorage / sessionStorage。需同时配置 <code>public_url</code> 为公网/内网可达地址。</p>
+                                <p class="xss-modal-hint">启用后，授权测试页面可回连记录 XSS 命中、可读 Cookie 与来源信息。HttpOnly Cookie 不会被浏览器 JavaScript 暴露。需同时配置 <code>public_url</code> 为可达地址。</p>
                             </div>
                             <div class="xss-form-group">
                                 <label>监听地址</label>
@@ -3629,7 +3629,7 @@
                                 <input type="number" id="xss-config-cooldown" class="form-control" readonly>
                             </div>
                             <div class="xss-modal-actions">
-                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.saveConfig()">保存</button>
+                                <button type="button" class="btn-primary btn-sm" onclick="XSS.saveConfig()">設定說明</button>
                                 <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)">关闭</button>
                             </div>
                         </div>

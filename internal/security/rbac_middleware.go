@@ -168,6 +168,8 @@ func permissionForRequest(method, fullPath string) string {
 		return crudPermission(method, "webshell")
 	case strings.HasPrefix(path, "/c2"):
 		return crudPermission(method, "c2")
+	case strings.HasPrefix(path, "/xss"):
+		return crudPermission(method, "xss")
 	case strings.HasPrefix(path, "/chat-uploads"):
 		return crudPermission(method, "files")
 	case strings.HasPrefix(path, "/roles"):
@@ -220,6 +222,11 @@ func resourceAllowed(c *gin.Context, db *database.DB) bool {
 		// allowing an assigned/own-scoped session would be a cross-user bypass.
 		return session.Scope == database.RBACScopeAll
 	case strings.HasPrefix(path, "/c2/profiles") && c.Request.Method != http.MethodGet:
+		return session.Scope == database.RBACScopeAll
+	case strings.HasPrefix(path, "/xss"):
+		// XSS management is process-global in the current storage model. Until
+		// payload/capture list queries are owner-scoped, only global-scope roles
+		// may access these management APIs.
 		return session.Scope == database.RBACScopeAll
 	case (strings.HasPrefix(path, "/hitl/tool-whitelist") || strings.HasPrefix(path, "/hitl/default-config") || strings.HasPrefix(path, "/hitl/default-reviewer") || strings.HasPrefix(path, "/hitl/audit-strategy")) && c.Request.Method != http.MethodGet:
 		return session.Scope == database.RBACScopeAll
