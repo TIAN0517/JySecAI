@@ -289,22 +289,7 @@ Compress the 5 MB nuclei report, summarize critical CVEs, and attach the artifac
 Build an attack chain for the latest engagement and export the node list with severity >= high.
 ```
 
-## 404Starlink 
 
-<img src="./images/404StarLinkLogo.png" width="30%">
-
-JySecAI has joined [404Starlink](https://github.com/knownsec/404StarLink)
-
-## TCH Top-Ranked Intelligent Pentest Project  
-<div align="left">
-  <a href="https://zc.tencent.com/competition/competitionHackathon?code=cha004" target="_blank">
-    <img src="./images/tch.png" alt="TCH Top-Ranked Intelligent Pentest Project" width="30%">
-  </a>
-</div>
-
-
-
----
 
 ## Community and Support
 
