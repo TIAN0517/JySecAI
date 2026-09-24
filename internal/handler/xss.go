@@ -115,8 +115,8 @@ func (h *XssHandler) serveCollector(w http.ResponseWriter, r *http.Request) {
 	path := strings.Trim(strings.TrimPrefix(r.URL.Path, "/xss/"), "/")
 	switch {
 	case strings.HasSuffix(path, ".js"):
-		if r.Method != http.MethodGet && r.Method != http.MethodHead {
-			w.Header().Set("Allow", "GET, HEAD")
+		if r.Method != http.MethodGet {
+			w.Header().Set("Allow", "GET")
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 			return
 		}
