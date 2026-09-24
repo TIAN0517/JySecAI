@@ -48,11 +48,11 @@ func TestXssCollectorFallbackURLIncludesConfiguredPort(t *testing.T) {
 		BindPort:        18877,
 		CooldownSeconds: -1,
 	})
-	createXssTestPayload(t, db, "token-a", 1, 0, "")
+	createXssTestPayload(t, db, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", 1, 0, "")
 
 	req := httptest.NewRequest(http.MethodGet, "http://collector/xss/token-a.js", nil)
 	rec := httptest.NewRecorder()
-	h.ServeCollectorJS(rec, req, "token-a")
+	h.ServeCollectorJS(rec, req, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
 	if rec.Code != http.StatusOK {
 		t.Fatalf("status = %d, body = %s", rec.Code, rec.Body.String())
@@ -69,11 +69,11 @@ func TestXssCollectorRejectsDisabledPayload(t *testing.T) {
 		BindPort:        18877,
 		CooldownSeconds: -1,
 	})
-	createXssTestPayload(t, db, "token-disabled", 0, 0, "")
+	createXssTestPayload(t, db, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", 0, 0, "")
 
 	req := httptest.NewRequest(http.MethodGet, "http://collector/xss/token-disabled.js", nil)
 	rec := httptest.NewRecorder()
-	h.ServeCollectorJS(rec, req, "token-disabled")
+	h.ServeCollectorJS(rec, req, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
 
 	if rec.Code != http.StatusNotFound {
 		t.Fatalf("disabled payload status = %d, want 404", rec.Code)
@@ -87,12 +87,12 @@ func TestXssCollectorEnforcesDomainOnly(t *testing.T) {
 		BindPort:        18877,
 		CooldownSeconds: -1,
 	})
-	createXssTestPayload(t, db, "token-domain", 1, 1, "example.com")
+	createXssTestPayload(t, db, "cccccccccccccccccccccccccccccccccccccccc", 1, 1, "example.com")
 
 	req := httptest.NewRequest(http.MethodGet, "http://collector/xss/token-domain.js", nil)
 	req.Header.Set("Referer", "https://evil.example.net/page")
 	rec := httptest.NewRecorder()
-	h.ServeCollectorJS(rec, req, "token-domain")
+	h.ServeCollectorJS(rec, req, "cccccccccccccccccccccccccccccccccccccccc")
 	if rec.Code != http.StatusNotFound {
 		t.Fatalf("wrong-domain status = %d, want 404", rec.Code)
 	}
@@ -100,7 +100,7 @@ func TestXssCollectorEnforcesDomainOnly(t *testing.T) {
 	req = httptest.NewRequest(http.MethodGet, "http://collector/xss/token-domain.js", nil)
 	req.Header.Set("Referer", "https://app.example.com/page")
 	rec = httptest.NewRecorder()
-	h.ServeCollectorJS(rec, req, "token-domain")
+	h.ServeCollectorJS(rec, req, "cccccccccccccccccccccccccccccccccccccccc")
 	if rec.Code != http.StatusOK {
 		t.Fatalf("authorized-domain status = %d, want 200", rec.Code)
 	}
@@ -113,7 +113,7 @@ func TestXssCaptureRecordsHitWithoutReadableCookie(t *testing.T) {
 		BindPort:        18877,
 		CooldownSeconds: -1,
 	})
-	createXssTestPayload(t, db, "token-empty-cookie", 1, 0, "")
+	createXssTestPayload(t, db, "dddddddddddddddddddddddddddddddddddddddd", 1, 0, "")
 
 	form := url.Values{}
 	form.Set("url", "https://example.com/login")
@@ -122,7 +122,7 @@ func TestXssCaptureRecordsHitWithoutReadableCookie(t *testing.T) {
 	req.Header.Set("User-Agent", "JySecAI-Test")
 	req.RemoteAddr = "127.0.0.1:54321"
 	rec := httptest.NewRecorder()
-	h.Capture(rec, req, "token-empty-cookie")
+	h.Capture(rec, req, "dddddddddddddddddddddddddddddddddddddddd")
 
 	if rec.Code != http.StatusOK {
 		t.Fatalf("capture status = %d, body = %s", rec.Code, rec.Body.String())
@@ -146,13 +146,13 @@ func TestXssCaptureDoesNotTrustForwardedIPFromDirectClient(t *testing.T) {
 		BindPort:        18877,
 		CooldownSeconds: -1,
 	})
-	createXssTestPayload(t, db, "token-ip", 1, 0, "")
+	createXssTestPayload(t, db, "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", 1, 0, "")
 
 	req := httptest.NewRequest(http.MethodGet, "http://collector/xss/token-ip.gif", nil)
 	req.RemoteAddr = "203.0.113.10:4567"
 	req.Header.Set("X-Forwarded-For", "198.51.100.99")
 	rec := httptest.NewRecorder()
-	h.ServeCollectorGIF(rec, req, "token-ip")
+	h.ServeCollectorGIF(rec, req, "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
 
 	if rec.Code != http.StatusOK {
 		t.Fatalf("capture status = %d", rec.Code)
