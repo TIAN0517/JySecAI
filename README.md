@@ -26,11 +26,11 @@ JySecAI connects planning, execution, human oversight, evidence, and replay in o
 <tr>
 <td width="50%" align="center">
 <strong>Light Mode</strong><br/>
-<img src="./images/dashboard.png" alt="System Dashboard (Light)" width="100%">
+<img src="./images/os.png" alt="System Dashboard (Light)" width="100%">
 </td>
 <td width="50%" align="center">
 <strong>Dark Mode</strong><br/>
-<img src="./images/dark.png" alt="System Dashboard (Dark)" width="100%">
+<img src="./images/so.png" alt="System Dashboard (Dark)" width="100%">
 </td>
 </tr>
 </table>
