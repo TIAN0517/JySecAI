@@ -311,12 +311,12 @@ func (h *XssHandler) Capture(w http.ResponseWriter, r *http.Request, token strin
 	}
 
 	if _, err := h.db.CreateXssCapture(payload.ID, payload.Token, cookie, sourceURL, payload.Domain, userAgent, ip, extra); err != nil {
-		h.logger.Error("XSS capture persistence failed", zap.Error(err), zap.String("token", token), zap.String("ip", ip))
+		h.logger.Error("XSS capture persistence failed", zap.Error(err), zap.Int64("payload_id", payload.ID), zap.String("ip", ip))
 		http.Error(w, "capture persistence failed", http.StatusInternalServerError)
 		return
 	}
 
-	h.logger.Info("XSS capture received", zap.String("token", token), zap.String("ip", ip), zap.String("url", sourceURL))
+	h.logger.Info("XSS capture received", zap.Int64("payload_id", payload.ID), zap.String("ip", ip), zap.String("url", sourceURL))
 	writeTransparentGIF(w, http.StatusOK)
 }
 
@@ -457,8 +457,7 @@ func (h *XssHandler) CreatePayload(c *gin.Context) {
 
 	if h.audit != nil {
 		h.audit.RecordOK(c, "xss", "payload_create", "创建 XSS 载荷", "xss_payload", strconv.FormatInt(id, 10), map[string]interface{}{
-			"token": token,
-			"name":  req.Name,
+			"name": req.Name,
 		})
 	}
 
