@@ -115,15 +115,30 @@ func (h *XssHandler) serveCollector(w http.ResponseWriter, r *http.Request) {
 	path := strings.Trim(strings.TrimPrefix(r.URL.Path, "/xss/"), "/")
 	switch {
 	case strings.HasSuffix(path, ".js"):
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+			w.Header().Set("Allow", "GET, HEAD")
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
 		h.ServeCollectorJS(w, r, strings.TrimSuffix(path, ".js"))
 		return
 	case strings.HasSuffix(path, ".gif"):
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+			w.Header().Set("Allow", "GET, HEAD")
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
 		h.ServeCollectorGIF(w, r, strings.TrimSuffix(path, ".gif"))
 		return
 	}
 
 	parts := strings.SplitN(path, "/", 2)
 	if len(parts) == 2 && parts[1] == "capture" {
+		if r.Method != http.MethodPost {
+			w.Header().Set("Allow", "POST")
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
 		h.Capture(w, r, parts[0])
 		return
 	}
@@ -137,7 +152,23 @@ func (h *XssHandler) publicCollectorURL() string {
 	return fmt.Sprintf("http://%s:%d", h.cfg.BindHost, h.cfg.BindPort)
 }
 
+func validXssToken(token string) bool {
+	token = strings.TrimSpace(token)
+	if len(token) != 40 {
+		return false
+	}
+	for _, ch := range token {
+		if !((ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F')) {
+			return false
+		}
+	}
+	return true
+}
+
 func (h *XssHandler) loadActivePayload(token string) (*database.XssPayload, error) {
+	if !validXssToken(token) {
+		return nil, nil
+	}
 	payload, err := h.db.GetXssPayloadByToken(strings.TrimSpace(token))
 	if err != nil || payload == nil {
 		return nil, err
@@ -254,6 +285,7 @@ var transparentGIF = []byte{
 func writeTransparentGIF(w http.ResponseWriter, status int) {
 	w.Header().Set("Content-Type", "image/gif")
 	w.Header().Set("Cache-Control", "no-store, private, max-age=0")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.WriteHeader(status)
 	if status >= 200 && status < 300 {
 		_, _ = w.Write(transparentGIF)
@@ -271,6 +303,7 @@ func (h *XssHandler) ServeCollectorJS(w http.ResponseWriter, r *http.Request, to
 	js := h.renderCollectorJS(payload)
 	w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
 	w.Header().Set("Cache-Control", "no-store")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte(js))
 }
@@ -286,6 +319,12 @@ func (h *XssHandler) renderCollectorJS(payload *database.XssPayload) string {
 // Capture accepts an authorized callback and persists a hit. Empty document.cookie
 // is still a valid hit (for example, when all cookies are HttpOnly).
 func (h *XssHandler) Capture(w http.ResponseWriter, r *http.Request, token string) {
+	r.Body = http.MaxBytesReader(w, r.Body, 128*1024)
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "invalid capture body", http.StatusRequestEntityTooLarge)
+		return
+	}
+
 	payload, err := h.loadActivePayload(token)
 	if err != nil || payload == nil || !payloadAllowsRequest(payload, r) {
 		http.NotFound(w, r)
@@ -302,6 +341,10 @@ func (h *XssHandler) Capture(w http.ResponseWriter, r *http.Request, token strin
 	sourceURL := requestSourceURL(r)
 	userAgent := requestUserAgent(r)
 	referrer := r.FormValue("document_referrer")
+	if len(cookie) > 64*1024 || len(sourceURL) > 8*1024 || len(userAgent) > 4*1024 || len(referrer) > 8*1024 {
+		http.Error(w, "capture fields too large", http.StatusRequestEntityTooLarge)
+		return
+	}
 	if referrer == "" {
 		referrer = r.Referer()
 	}
@@ -316,7 +359,7 @@ func (h *XssHandler) Capture(w http.ResponseWriter, r *http.Request, token strin
 		return
 	}
 
-	h.logger.Info("XSS capture received", zap.Int64("payload_id", payload.ID), zap.String("ip", ip), zap.String("url", sourceURL))
+	h.logger.Info("XSS capture received", zap.Int64("payload_id", payload.ID), zap.String("ip", ip), zap.String("source_host", requestHost(sourceURL)))
 	writeTransparentGIF(w, http.StatusOK)
 }
 
@@ -335,6 +378,10 @@ func (h *XssHandler) ServeCollectorGIF(w http.ResponseWriter, r *http.Request, t
 
 	cookie := r.URL.Query().Get("cookie")
 	sourceURL := r.URL.Query().Get("url")
+	if len(cookie) > 64*1024 || len(sourceURL) > 8*1024 {
+		http.Error(w, "capture fields too large", http.StatusRequestEntityTooLarge)
+		return
+	}
 	if sourceURL == "" {
 		sourceURL = r.Referer()
 	}
