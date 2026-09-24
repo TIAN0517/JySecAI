@@ -273,3 +273,21 @@ func TestAssignedScopeCannotMutateProcessGlobalAssets(t *testing.T) {
 		})
 	}
 }
+
+func TestXSSRoutesRequireDedicatedPermissions(t *testing.T) {
+	for _, tc := range []struct {
+		method string
+		path   string
+		want   string
+	}{
+		{http.MethodGet, "/api/xss/config", "xss:read"},
+		{http.MethodGet, "/api/xss/payloads", "xss:read"},
+		{http.MethodPost, "/api/xss/payloads", "xss:write"},
+		{http.MethodDelete, "/api/xss/payloads/1", "xss:delete"},
+		{http.MethodGet, "/api/xss/captures", "xss:read"},
+	} {
+		if got := permissionForRequest(tc.method, tc.path); got != tc.want {
+			t.Fatalf("permissionForRequest(%s, %s) = %q, want %q", tc.method, tc.path, got, tc.want)
+		}
+	}
+}
