@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"net"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
@@ -24,9 +25,15 @@ import (
 // The Authorization layer MUST operate on Normalized.Host or Normalized.IP
 // only — never on the original input string — to prevent suffix-matching
 // bypasses such as `example.com.attacker.invalid`.
+//
+// Execution argv, by contrast, MUST use the full canonical URL
+// (scheme + host[:port][/path][?query]) via Canonical() so the tool
+// receives the precise resource the caller asked to scan. Replacing
+// the execution argument with host-only data would silently change the
+// scan target and is forbidden.
 type Normalized struct {
 	// Original is the unmodified caller-supplied target (for diagnostics
-	// only — never for authorization).
+	// only — never for authorization, never for execution).
 	Original string
 	// Kind discriminates URL vs bare hostname vs IP literal.
 	Kind Kind
@@ -40,6 +47,51 @@ type Normalized struct {
 	IP net.IP
 	// Port is the explicit port when present in the input; 0 otherwise.
 	Port int
+	// Path is the URL path component when Kind == KindURL; empty otherwise.
+	// Preserved verbatim so the canonical form passed to the scanner is
+	// byte-identical to what the user requested.
+	Path string
+	// RawQuery is the URL query string (no leading '?') when Kind ==
+	// KindURL; empty otherwise.
+	RawQuery string
+}
+
+// Canonical returns the full, byte-stable form of the normalized target,
+// suitable for use as the execution argv. The shape is:
+//
+//	URL:      scheme://host[:port][/path][?query]
+//	Hostname: host
+//	IP:       ip
+//
+// Authorization MUST NOT rely on Canonical — it operates on Host / IP only.
+func (n *Normalized) Canonical() string {
+	if n == nil {
+		return ""
+	}
+	switch n.Kind {
+	case KindURL:
+		var b strings.Builder
+		b.WriteString(n.Scheme)
+		b.WriteString("://")
+		b.WriteString(n.Host)
+		if n.Port > 0 {
+			b.WriteString(":")
+			b.WriteString(strconv.Itoa(n.Port))
+		}
+		if n.Path != "" {
+			b.WriteString(n.Path)
+		}
+		if n.RawQuery != "" {
+			b.WriteString("?")
+			b.WriteString(n.RawQuery)
+		}
+		return b.String()
+	case KindIP:
+		return n.Host
+	case KindHostname:
+		return n.Host
+	}
+	return n.Original
 }
 
 // Kind discriminates how the target was classified.
@@ -86,6 +138,7 @@ func Normalize(raw string) (*Normalized, error) {
 			return &Normalized{
 				Original: raw, Kind: KindURL, Scheme: strings.ToLower(u.Scheme),
 				Host: low, IP: ip, Port: portOf(u),
+				Path: u.EscapedPath(), RawQuery: u.RawQuery,
 			}, nil
 		}
 		if !validHostname(low) {
@@ -94,6 +147,7 @@ func Normalize(raw string) (*Normalized, error) {
 		return &Normalized{
 			Original: raw, Kind: KindURL, Scheme: strings.ToLower(u.Scheme),
 			Host: low, Port: portOf(u),
+			Path: u.EscapedPath(), RawQuery: u.RawQuery,
 		}, nil
 	}
 	// Try IP literal.

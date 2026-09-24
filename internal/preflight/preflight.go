@@ -15,6 +15,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"jysecai/internal/failure"
 )
@@ -96,7 +97,19 @@ type Nuclei struct {
 	// RunProbe is overridable for tests; production uses a real
 	// exec.CommandContext with a short timeout.
 	RunProbe func(ctx context.Context, bin string) error
+	// VersionProbeTimeout overrides the bounded child context used for
+	// the version probe. Zero means use DefaultVersionProbeTimeout. This
+	// field exists so tests can exercise the bounded-timeout path with a
+	// short deadline without making the test suite wait the production 5s.
+	VersionProbeTimeout time.Duration
 }
+
+// DefaultVersionProbeTimeout bounds the version-probe subprocess. The
+// value is deliberately small: nuclei -version should return in well
+// under a second on any sane system, and a longer hang here would
+// block the whole preflight. Tests may override via
+// Nuclei.VersionProbeTimeout.
+const DefaultVersionProbeTimeout = 5 * time.Second
 
 // Name implements Preflight.
 func (n *Nuclei) Name() string { return "nuclei" }
@@ -105,7 +118,7 @@ func (n *Nuclei) Name() string { return "nuclei" }
 //
 //	1. binary on PATH (or in the configured Command path)
 //	2. binary executable
-//	3. version probe responds
+//	3. version probe responds (bounded by VersionProbeTimeout)
 //	4. target syntax (delegated to upstream normalization; here we just
 //	   confirm the target was supplied when schema requires it)
 //	5. template path (only if the caller supplied one)
@@ -135,10 +148,17 @@ func (n *Nuclei) Run(ctx context.Context, pctx Context) failure.Result {
 		return failure.New(failure.CodeBinaryUnavailable, "nuclei",
 			fmt.Sprintf("nuclei binary %q is not executable", resolved))
 	}
+	timeout := n.VersionProbeTimeout
+	if timeout <= 0 {
+		timeout = DefaultVersionProbeTimeout
+	}
 	probe := n.RunProbe
 	if probe == nil {
-		probe = func(ctx context.Context, b string) error {
-			cctx, cancel := context.WithTimeout(ctx, versionProbeTimeout)
+		// Production probe: create an explicit bounded child context
+		// so the version check never hangs indefinitely, even if the
+		// caller-supplied ctx has no deadline.
+		probe = func(parent context.Context, b string) error {
+			cctx, cancel := context.WithTimeout(parent, timeout)
 			defer cancel()
 			cmd := exec.CommandContext(cctx, b, "-version")
 			cmd.Stdout = nil
@@ -163,8 +183,3 @@ func (n *Nuclei) Run(ctx context.Context, pctx Context) failure.Result {
 	}
 	return failure.Result{}
 }
-
-// versionProbeTimeout bounds the version-probe subprocess. The value is
-// deliberately small: nuclei -version should return in well under a second on
-// any sane system, and a longer hang here would block the whole preflight.
-const versionProbeTimeout = 5 * 1_000_000_000 // 5s in nanoseconds

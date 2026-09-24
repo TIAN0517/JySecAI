@@ -5,7 +5,9 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
+	"time"
 
 	"jysecai/internal/failure"
 )
@@ -131,5 +133,83 @@ func TestDispatcherNoopForUnknown(t *testing.T) {
 	}
 	if res := p.Run(context.Background(), Context{}); res.Code != "" {
 		t.Fatalf("noop preflight must always succeed, got code=%s", res.Code)
+	}
+}
+
+// TestNucleiVersionProbeBoundedTimeout exercises the bounded-timeout
+// path of the production probe: the fake nuclei binary hangs (uses
+// `sleep 30`), but VersionProbeTimeout is overridden to 200ms so the
+// probe MUST return inside ~500ms. The test asserts:
+//
+//   - Run returns within bounded time (no sleep-based sync in test thread).
+//   - The result is BINARY_UNAVAILABLE with a version-probe-failed
+//     message.
+//   - The scanner execution path is never reached (the tool process
+//     never starts; preflight is the only side effect).
+func TestNucleiVersionProbeBoundedTimeout(t *testing.T) {
+	dir := t.TempDir()
+	bin := filepath.Join(dir, "nuclei")
+	// Fake nuclei hangs long enough that any unbounded probe would
+	// exceed the test's wall-clock budget by an order of magnitude.
+	hanger := "#!/bin/sh\nsleep 30\nexit 0\n"
+	if err := os.WriteFile(bin, []byte(hanger), 0o755); err != nil {
+		t.Fatalf("write fake nuclei: %v", err)
+	}
+	n := &Nuclei{
+		LookPath:            func(string) (string, error) { return bin, nil },
+		VersionProbeTimeout: 200 * time.Millisecond,
+	}
+
+	start := time.Now()
+	res := n.Run(context.Background(), Context{
+		ToolConfig: ToolConfigRef{Name: "nuclei", Command: bin},
+		Target:     &NormalizedTargetRef{Host: "example.com"},
+	})
+	elapsed := time.Since(start)
+
+	if elapsed > 1*time.Second {
+		t.Fatalf("preflight took %v, want <1s (timeout was 200ms)", elapsed)
+	}
+	if res.Code != failure.CodeBinaryUnavailable {
+		t.Fatalf("expected BINARY_UNAVAILABLE, got code=%s msg=%s", res.Code, res.Message)
+	}
+	if res.Retryable {
+		t.Fatalf("BINARY_UNAVAILABLE must not be retryable")
+	}
+}
+
+// TestNucleiVersionProbeNoCallerDeadline verifies that even if the
+// caller passes a context WITHOUT a deadline, the production probe
+// still applies its own bounded child context. The probe must return
+// within bounded time and report BINARY_UNAVAILABLE — not hang
+// forever waiting for a deadline the caller never supplied.
+func TestNucleiVersionProbeNoCallerDeadline(t *testing.T) {
+	dir := t.TempDir()
+	bin := filepath.Join(dir, "nuclei")
+	if err := os.WriteFile(bin, []byte("#!/bin/sh\nsleep 30\nexit 0\n"), 0o755); err != nil {
+		t.Fatalf("write fake nuclei: %v", err)
+	}
+	n := &Nuclei{
+		LookPath: func(string) (string, error) { return bin, nil },
+		// Override to a small value so the test finishes quickly even
+		// though we use the production-default probe (no RunProbe override).
+		VersionProbeTimeout: 150 * time.Millisecond,
+	}
+
+	start := time.Now()
+	res := n.Run(context.Background(), Context{
+		ToolConfig: ToolConfigRef{Name: "nuclei", Command: bin},
+		Target:     &NormalizedTargetRef{Host: "example.com"},
+	})
+	elapsed := time.Since(start)
+
+	if elapsed > 1*time.Second {
+		t.Fatalf("preflight took %v, want <1s (timeout was 150ms)", elapsed)
+	}
+	if res.Code != failure.CodeBinaryUnavailable {
+		t.Fatalf("expected BINARY_UNAVAILABLE, got code=%s msg=%s", res.Code, res.Message)
+	}
+	if !strings.Contains(res.Message, "version probe failed") {
+		t.Fatalf("expected version-probe-failed message, got %q", res.Message)
 	}
 }

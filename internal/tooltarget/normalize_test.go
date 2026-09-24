@@ -65,6 +65,38 @@ func TestNormalizeAcceptsBareHostname(t *testing.T) {
 	}
 }
 
+// TestCanonicalPreservesAllComponents verifies the canonical form contains
+// every component the user supplied: scheme, host, port, path, query.
+func TestCanonicalPreservesAllComponents(t *testing.T) {
+	cases := []struct {
+		in, want string
+	}{
+		{"http://127.0.0.1:18080/path?q=1", "http://127.0.0.1:18080/path?q=1"},
+		{"https://example.com:8443/a", "https://example.com:8443/a"},
+		{"192.0.2.10", "192.0.2.10"},
+		{"example.com", "example.com"},
+		{"HTTPS://Example.COM/A/B?x=1&y=2", "https://example.com/A/B?x=1&y=2"},
+	}
+	for _, tc := range cases {
+		n, err := Normalize(tc.in)
+		if err != nil {
+			t.Fatalf("normalize(%q): %v", tc.in, err)
+		}
+		got := n.Canonical()
+		if got != tc.want {
+			t.Fatalf("Canonical(%q) = %q, want %q", tc.in, got, tc.want)
+		}
+	}
+}
+
+// TestCanonicalNilSafe verifies Canonical handles a nil receiver.
+func TestCanonicalNilSafe(t *testing.T) {
+	var n *Normalized
+	if got := n.Canonical(); got != "" {
+		t.Fatalf("nil Canonical must return \"\", got %q", got)
+	}
+}
+
 func TestNormalizeRejectsScheme(t *testing.T) {
 	if _, err := Normalize("ftp://example.com"); err == nil {
 		t.Fatalf("expected error on ftp scheme")

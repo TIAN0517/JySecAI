@@ -137,9 +137,12 @@ func (e *Executor) runScannerPreExec(ctx context.Context, toolName string, toolC
 				return scannerPreExecResult{Failure: &fr}
 			}
 		}
-		// Replace the raw target with the normalized form so downstream
-		// code (preflight, exec argv) sees the canonical value.
-		args["target"] = norm.Host
+		// Preserve the full canonical URL (scheme://host[:port][/path][?query])
+		// in args["target"] so the scanner argv receives the exact resource
+		// the caller asked to scan. Authorization above already operated on
+		// norm.Host / norm.IP only — exec uses norm.Canonical() so it
+		// cannot drift away from what the user typed.
+		args["target"] = norm.Canonical()
 		if norm.IP != nil {
 			args["target_ip"] = norm.IP.String()
 		}
