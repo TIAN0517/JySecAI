@@ -167,17 +167,18 @@ func Normalize(raw string) (*Normalized, error) {
 }
 
 // portOf extracts the explicit port from a parsed URL; 0 if absent.
+//
+// Only ports the caller explicitly supplied are returned. Default ports
+// (443 for HTTPS, 80 for HTTP) are NOT injected here, matching the
+// Normalized.Port docstring and the Canonical() format
+// `scheme://host[:port][/path][?query]` where `[:port]` is optional.
+// Pre-existing callers that rely on the implicit-default behavior must
+// apply it explicitly at their own boundary.
 func portOf(u *url.URL) int {
 	if p := u.Port(); p != "" {
 		var port int
 		fmt.Sscanf(p, "%d", &port)
 		return port
-	}
-	if strings.EqualFold(u.Scheme, "https") {
-		return 443
-	}
-	if strings.EqualFold(u.Scheme, "http") {
-		return 80
 	}
 	return 0
 }

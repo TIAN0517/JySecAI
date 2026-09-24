@@ -173,7 +173,7 @@ func (e *Executor) ExecuteTool(ctx context.Context, toolName string, args map[st
 		var env scannerErrorEnvelope
 		if pre.StopForInput != nil {
 			env = scannerErrorEnvelope{
-				Code:              pre.StopForInput.Code,
+				Code:              string(pre.StopForInput.Code),
 				Tool:              pre.StopForInput.Tool,
 				Message:           pre.StopForInput.HumanMessage,
 				Retryable:         false,
