@@ -83,23 +83,32 @@ func (h *XssHandler) StartCollector() {
 	h.collectorSrv = srv
 
 	go func() {
+		<-ctx.Done()
+		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer shutdownCancel()
+		if err := srv.Shutdown(shutdownCtx); err != nil && err != http.ErrServerClosed {
+			h.logger.Warn("XSS collector shutdown error", zap.Error(err))
+		}
+	}()
+
+	go func() {
 		h.logger.Info("XSS collector server started", zap.String("addr", addr))
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			h.logger.Error("XSS collector server error", zap.Error(err))
 		}
-		<-ctx.Done()
-		_ = srv.Close()
 	}()
 }
 
 func (h *XssHandler) StopCollector() {
 	h.collectorMu.Lock()
-	defer h.collectorMu.Unlock()
-	if h.collectorCancel != nil {
-		h.collectorCancel()
-		h.collectorCancel = nil
-	}
+	cancel := h.collectorCancel
+	h.collectorCancel = nil
 	h.collectorSrv = nil
+	h.collectorMu.Unlock()
+
+	if cancel != nil {
+		cancel()
+	}
 }
 
 func (h *XssHandler) serveCollector(w http.ResponseWriter, r *http.Request) {
