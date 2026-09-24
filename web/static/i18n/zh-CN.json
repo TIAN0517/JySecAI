@@ -113,6 +113,9 @@
     "c2Payloads": "载荷",
     "c2Events": "事件",
     "c2Profiles": "流量伪装",
+    "xss": "XSS",
+    "xssPayloads": "载荷",
+    "xssCaptures": "捕获记录",
     "platformRbac": "平台权限"
   },
   "navGroups": {
@@ -1759,6 +1762,7 @@
       "hitl": "人机协同",
       "knowledge": "知识库",
       "c2": "C2",
+      "xss": "XSS",
       "robots": "机器人设置",
       "terminal": "终端",
       "security": "安全设置",
@@ -1801,6 +1805,18 @@
       "sectionTitle": "内置 C2",
       "enableLabel": "启用内置 C2（监听器、会话、Payload、MCP 工具等）",
       "enableHint": "关闭后不再启动监听器、不注册 C2 相关 MCP 工具，侧栏 C2 入口将隐藏；仅本机使用对话与知识库时可关闭以节省资源。修改后请点击「应用配置」。"
+    },
+    "xss": {
+      "title": "XSS 平台设置",
+      "sectionTitle": "XSS 平台",
+      "enableLabel": "启用 XSS 平台（Cookie 采集器 + 管理面板）",
+      "enableHint": "启用后将启动独立的 Cookie 采集器服务器，生成可用于实战的 XSS payload。修改后请点击「应用配置」。",
+      "bindHost": "采集器绑定主机",
+      "bindPort": "采集器绑定端口",
+      "publicURL": "公网访问 URL",
+      "publicURLHint": "用于生成的 payload/JS 回连地址，例如：https://victim.example.com，留空则自动使用绑定地址",
+      "cooldownSeconds": "重复捕获冷却（秒）",
+      "cooldownHint": "防止同一浏览器短时间内重复上报；0 表示不限制"
     },
     "robots": {
       "title": "机器人设置",

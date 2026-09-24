@@ -48,6 +48,60 @@ type Config struct {
 	MultiAgent  MultiAgentConfig      `yaml:"multi_agent,omitempty" json:"multi_agent,omitempty"`
 	Project     ProjectConfig         `yaml:"project,omitempty" json:"project,omitempty"`
 	Vision      VisionConfig          `yaml:"vision,omitempty" json:"vision,omitempty"`
+	Xss         XssConfig             `yaml:"xss,omitempty" json:"xss,omitempty"`
+}
+
+// XssConfig XSS 收割平台配置
+type XssConfig struct {
+	Enabled         bool   `yaml:"enabled" json:"enabled"`
+	Token           string `yaml:"token,omitempty" json:"token,omitempty"`
+	BindHost        string `yaml:"bind_host,omitempty" json:"bind_host,omitempty"`
+	BindPort        int    `yaml:"bind_port,omitempty" json:"bind_port,omitempty"`
+	CooldownSeconds int    `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
+	PublicURL       string `yaml:"public_url,omitempty" json:"public_url,omitempty"`
+}
+
+func (c XssConfig) EnabledEffective() bool {
+	return c.Enabled
+}
+
+// XssBindHostEffective returns the bind host for the XSS collector; defaults to 127.0.0.1.
+func (c XssConfig) XssBindHostEffective() string {
+	if c.BindHost == "" {
+		return "127.0.0.1"
+	}
+	return c.BindHost
+}
+
+// XssBindPortEffective returns the bind port for the XSS collector; defaults to 18877.
+func (c XssConfig) XssBindPortEffective() int {
+	if c.BindPort <= 0 {
+		return 18877
+	}
+	return c.BindPort
+}
+
+// XssCooldownSecondsEffective returns the cooldown in seconds; defaults to 60.
+func (c XssConfig) XssCooldownSecondsEffective() int {
+	if c.CooldownSeconds <= 0 {
+		return 60
+	}
+	return c.CooldownSeconds
+}
+
+// XssPublicURLEffective returns the public URL for the XSS collector; empty means use local bind.
+func (c XssConfig) XssPublicURLEffective() string {
+	return strings.TrimSpace(c.PublicURL)
+}
+
+// XssTokenEffective returns the token, generating one if empty.
+func (c *XssConfig) XssTokenEffective() string {
+	if c.Token == "" {
+		if token, err := generateRandomToken(); err == nil {
+			c.Token = token
+		}
+	}
+	return c.Token
 }
 
 type EnsureLocalConfigResult struct {
@@ -2028,6 +2082,12 @@ func Default() *Config {
 				RetryDelayMs:          1000,
 				SubIndexes:            nil,
 			},
+		},
+		Xss: XssConfig{
+			Enabled:         true,
+			BindHost:        "127.0.0.1",
+			BindPort:        18877,
+			CooldownSeconds: 60,
 		},
 	}
 }

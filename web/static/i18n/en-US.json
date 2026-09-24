@@ -113,6 +113,9 @@
     "c2Payloads": "Payload",
     "c2Events": "Events",
     "c2Profiles": "Traffic profiles",
+    "xss": "XSS",
+    "xssPayloads": "Payloads",
+    "xssCaptures": "Captures",
     "platformRbac": "Platform Access"
   },
   "navGroups": {
@@ -1771,6 +1774,7 @@
       "hitl": "Human-in-the-loop",
       "knowledge": "Knowledge base",
       "c2": "C2",
+      "xss": "XSS",
       "robots": "Bots",
       "terminal": "Terminal",
       "security": "Security",
@@ -1813,6 +1817,18 @@
       "sectionTitle": "Built-in C2",
       "enableLabel": "Enable built-in C2 (listeners, sessions, payloads, MCP tools)",
       "enableHint": "When off, listeners are not started and C2 MCP tools are not registered; the C2 sidebar is hidden—useful for local-only chat/knowledge deployments. Click Apply to save."
+    },
+    "xss": {
+      "title": "XSS Platform",
+      "sectionTitle": "XSS Platform",
+      "enableLabel": "Enable XSS platform (Cookie collector + admin panel)",
+      "enableHint": "Enables the collector server and admin panel for real Cookie capture. Click Apply to save.",
+      "bindHost": "Collector bind host",
+      "bindPort": "Collector bind port",
+      "publicURL": "Public access URL",
+      "publicURLHint": "Base URL for generated payloads/JS endpoints, e.g. https://victim.example.com. Leave empty to auto-construct from bind host.",
+      "cooldownSeconds": "Repeat capture cooldown (seconds)",
+      "cooldownHint": "Prevents the same browser from reporting repeatedly within a short window; 0 = unlimited."
     },
     "robots": {
       "title": "Bot settings",

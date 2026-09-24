@@ -31,6 +31,7 @@ var rbacAssignableResourceTables = map[string]string{
 	"webshell":      "webshell_connections",
 	"batch_task":    "batch_task_queues",
 	"c2_listener":   "c2_listeners",
+	"xss_payload":   "xss_payloads",
 }
 
 // RBACUser is a local platform account.
@@ -643,6 +644,8 @@ func (db *DB) userOwnsResource(userID, resourceType, resourceID string) bool {
 		table = "batch_task_queues"
 	case "c2_listener":
 		table = "c2_listeners"
+	case "xss_payload":
+		table = "xss_payloads"
 	default:
 		return false
 	}
@@ -672,6 +675,8 @@ func (db *DB) SetResourceOwner(resourceType, resourceID, userID string) error {
 		table = "batch_task_queues"
 	case "c2_listener":
 		table = "c2_listeners"
+	case "xss_payload":
+		table = "xss_payloads"
 	default:
 		return nil
 	}
@@ -696,6 +701,8 @@ func (db *DB) GetResourceOwner(resourceType, resourceID string) string {
 		table = "batch_task_queues"
 	case "c2_listener":
 		table = "c2_listeners"
+	case "xss_payload":
+		table = "xss_payloads"
 	default:
 		return ""
 	}
@@ -1075,7 +1082,7 @@ func (db *DB) AssignResourcesToUserAuto(userID string, resourceIDs []string) (in
 		{"project", "projects"}, {"conversation", "conversations"},
 		{"vulnerability", "vulnerabilities"}, {"webshell", "webshell_connections"},
 		{"asset", "assets"},
-		{"batch_task", "batch_task_queues"}, {"c2_listener", "c2_listeners"},
+		{"batch_task", "batch_task_queues"}, {"c2_listener", "c2_listeners"}, {"xss_payload", "xss_payloads"},
 	}
 	detected := make(map[string]string, len(uniqueIDs))
 	for _, resourceID := range uniqueIDs {
