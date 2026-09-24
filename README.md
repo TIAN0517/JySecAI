@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="images/logo.png" alt="JySecAI Logo" width="200" >
+  <img src="images/jysecai-logo.png" alt="JySecAI Logo" width="200" >
 </div>
 
 # JySecAI
