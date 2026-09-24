@@ -7,11 +7,11 @@ import (
 	"strings"
 	"testing"
 
+	"go.uber.org/zap"
 	"jysecai/internal/config"
 	"jysecai/internal/observability"
 	"jysecai/internal/toolschema"
 	"jysecai/internal/tooltarget"
-	"go.uber.org/zap"
 )
 
 // TestExecutionTargetPreservation asserts that the argv passed to nuclei

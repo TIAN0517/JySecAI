@@ -37,7 +37,7 @@ const (
 // model without re-wrapping.
 type ValidationResult struct {
 	Status        ValidationStatus `json:"status"`
-	Code          string           `json:"code,omitempty"`
+	Code          failure.Code     `json:"code,omitempty"`
 	Tool          string           `json:"tool"`
 	MissingFields []string         `json:"missing_fields,omitempty"`
 	InvalidFields []string         `json:"invalid_fields,omitempty"`
@@ -170,13 +170,13 @@ func hasArg(args map[string]interface{}, key string) bool {
 // distinguishable from ValidationResult so that the Agent loop can route it
 // to the human channel rather than treating it as a transient tool failure.
 type StopForInputResult struct {
-	Code             string   `json:"code"`
-	Tool             string   `json:"tool"`
-	MissingFields    []string `json:"missing_fields"`
-	HumanMessage     string   `json:"human_message"`
-	SchemaHash       string   `json:"schema_hash,omitempty"`
-	Retryable        bool     `json:"retryable"`
-	RequiresUserInput bool    `json:"requires_user_input"`
+	Code              failure.Code `json:"code"`
+	Tool              string       `json:"tool"`
+	MissingFields     []string     `json:"missing_fields"`
+	HumanMessage      string       `json:"human_message"`
+	SchemaHash        string       `json:"schema_hash,omitempty"`
+	Retryable         bool         `json:"retryable"`
+	RequiresUserInput bool         `json:"requires_user_input"`
 }
 
 // BuildStopForInput turns a failed ValidationResult into the Agent loop

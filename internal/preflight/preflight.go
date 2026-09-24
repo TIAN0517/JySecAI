@@ -116,12 +116,12 @@ func (n *Nuclei) Name() string { return "nuclei" }
 
 // Run implements Preflight. The order of checks is:
 //
-//	1. binary on PATH (or in the configured Command path)
-//	2. binary executable
-//	3. version probe responds (bounded by VersionProbeTimeout)
-//	4. target syntax (delegated to upstream normalization; here we just
-//	   confirm the target was supplied when schema requires it)
-//	5. template path (only if the caller supplied one)
+//  1. binary on PATH (or in the configured Command path)
+//  2. binary executable
+//  3. version probe responds (bounded by VersionProbeTimeout)
+//  4. target syntax (delegated to upstream normalization; here we just
+//     confirm the target was supplied when schema requires it)
+//  5. template path (only if the caller supplied one)
 //
 // Any failure here is non-retryable.
 func (n *Nuclei) Run(ctx context.Context, pctx Context) failure.Result {

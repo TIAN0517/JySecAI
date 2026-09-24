@@ -148,12 +148,12 @@ func Normalize(toolName, msg string) Result {
 		code = CodeTargetNotAuthorized
 	case strings.Contains(low, "policy denied") || strings.Contains(low, "additional_args"):
 		code = CodePolicyDenied
+	case strings.Contains(low, "binary") || strings.Contains(low, "executable"):
+		code = CodeBinaryUnavailable
 	case strings.Contains(low, "not found") || strings.Contains(low, "未找到"):
 		code = CodeToolNotFound
 	case strings.Contains(low, "ambiguous"):
 		code = CodeToolAmbiguous
-	case strings.Contains(low, "binary") || strings.Contains(low, "executable"):
-		code = CodeBinaryUnavailable
 	case strings.Contains(low, "template"):
 		code = CodeTemplateUnavailable
 	case strings.Contains(low, "invalid target") || strings.Contains(low, "userinfo"):

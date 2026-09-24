@@ -3,10 +3,10 @@
 //
 // Order of operations (also enforced by Executor):
 //
-//	1. schema validate    (internal/toolargs)
-//	2. target normalize   (this package)
-//	3. authorization      (this package)
-//	4. preflight          (internal/preflight)
+//  1. schema validate    (internal/toolargs)
+//  2. target normalize   (this package)
+//  3. authorization      (this package)
+//  4. preflight          (internal/preflight)
 //
 // The normalization step is intentionally tolerant of common input shapes
 // (URLs, bare hostnames, IPv4) but rejects anything ambiguous: empty host,

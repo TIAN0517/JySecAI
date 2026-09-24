@@ -20,11 +20,11 @@ import (
 //	  ...
 //	}
 type stopForInputEnvelope struct {
-	Code                string   `json:"code"`
-	Tool                string   `json:"tool"`
-	RequiresUserInput   bool     `json:"requires_user_input"`
-	Message             string   `json:"message"`
-	MissingFields       []string `json:"missing_fields"`
+	Code              string   `json:"code"`
+	Tool              string   `json:"tool"`
+	RequiresUserInput bool     `json:"requires_user_input"`
+	Message           string   `json:"message"`
+	MissingFields     []string `json:"missing_fields"`
 }
 
 // einoToolResultRequiresUserInput reports whether a tool result body

@@ -20,11 +20,12 @@ const (
 
 // Decision is the typed outcome of an authorization check.
 type Decision struct {
-	Allowed         bool   `json:"allowed"`
-	Reason          string `json:"reason,omitempty"`
-	NormalizedTarget *Normalized `json:"normalized_target,omitempty"`
-	Scope           Scope  `json:"scope"`
-	Code            failure.Code `json:"code,omitempty"`
+	Allowed          bool          `json:"allowed"`
+	Reason           string        `json:"reason,omitempty"`
+	NormalizedTarget *Normalized   `json:"normalized_target,omitempty"`
+	Scope            Scope         `json:"scope"`
+	Code             failure.Code  `json:"code,omitempty"`
+	Note             string        `json:"note,omitempty"`
 }
 
 // Policy is the interface every authorization backend must satisfy. The
@@ -137,19 +138,20 @@ func (p *ConfigAuthorizedTargetPolicy) Check(toolName string, target *Normalized
 	}
 	if entry, ok := p.entries[toolName][key]; ok {
 		return Decision{
-			Allowed:         true,
+			Allowed:          true,
 			NormalizedTarget: target,
-			Scope:           scope,
-			Code:            "",
+			Scope:            scope,
+			Code:             "",
+			Note:             entry.Note,
 		}
 	}
 	if entry, ok := p.anyTool[key]; ok {
-		_ = entry
 		return Decision{
-			Allowed:         true,
+			Allowed:          true,
 			NormalizedTarget: target,
-			Scope:           scope,
-			Code:            "",
+			Scope:            scope,
+			Code:             "",
+			Note:             entry.Note,
 		}
 	}
 	return Decision{

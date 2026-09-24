@@ -76,11 +76,11 @@ type scannerErrorEnvelope struct {
 
 // runScannerPreExec implements the mandatory pre-exec order:
 //
-//	1. schema validate      (toolargs.ValidateToolArgs)
-//	2. target normalize     (tooltarget.Normalize, when the tool has a target)
-//	3. authorization        (tooltarget.Policy.Check, when normalize succeeded)
-//	4. execution policy     (additional_args gating, etc.)
-//	5. preflight            (tool-specific binary / template checks)
+//  1. schema validate      (toolargs.ValidateToolArgs)
+//  2. target normalize     (tooltarget.Normalize, when the tool has a target)
+//  3. authorization        (tooltarget.Policy.Check, when normalize succeeded)
+//  4. execution policy     (additional_args gating, etc.)
+//  5. preflight            (tool-specific binary / template checks)
 //
 // Any failure short-circuits the chain. The function never starts the tool
 // process. The caller MUST treat a non-nil StopForInput as terminal for the
