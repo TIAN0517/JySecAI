@@ -9,9 +9,9 @@ import (
 	"sync"
 	"time"
 
+	"crypto/rand"
 	_ "github.com/mattn/go-sqlite3"
 	"go.uber.org/zap"
-	"crypto/rand"
 )
 
 const (
@@ -664,6 +664,8 @@ func (db *DB) initTables() error {
 		description   TEXT,
 		domain        TEXT,
 		domain_only   INTEGER DEFAULT 0,
+		dns_exfil_domain TEXT,
+		script        TEXT DEFAULT '',
 		created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
 		updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
 		created_by    TEXT,
@@ -963,9 +965,9 @@ func (db *DB) initTables() error {
 		"c2_files":     createC2FilesTable,
 		"c2_events":    createC2EventsTable,
 		"c2_profiles":  createC2ProfilesTable,
-		"xss_payloads":  createXssPayloadsTable,
-		"xss_captures":  createXssCapturesTable,
-		"xss_config":    createXssConfigTable,
+		"xss_payloads": createXssPayloadsTable,
+		"xss_captures": createXssCapturesTable,
+		"xss_config":   createXssConfigTable,
 	} {
 		if _, err := db.Exec(ddl); err != nil {
 			return fmt.Errorf("创建%s表失败: %w", tableName, err)
@@ -1814,22 +1816,23 @@ func (db *DB) migrateKnowledgeEmbeddingsColumns() error {
 
 // XssPayload represents a stored XSS payload used for cookie harvesting.
 type XssPayload struct {
-	ID           int64
-	Token        string
-	Name         string
-	Type         string
-	Payload      string
-	Config       []byte
-	ProjectID    string
-	Enabled      int
-	Description  string
-	Domain       string
-	DomainOnly   int
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
-	CreatedBy    string
-	OwnerUserID  string
-	CaptureCount int
+	ID             int64
+	Token          string
+	Name           string
+	Type           string
+	Payload        string
+	Config         []byte
+	ProjectID      string
+	Enabled        int
+	Description    string
+	Domain         string
+	DomainOnly     int
+	DNSExfilDomain string
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	CreatedBy      string
+	OwnerUserID    string
+	CaptureCount   int
 }
 
 // XssCapture represents a captured cookie / data from an XSS hit.
@@ -1848,9 +1851,17 @@ type XssCapture struct {
 
 // CreateXssPayload stores a new XSS payload and returns its database ID.
 func (db *DB) CreateXssPayload(p *XssPayload) (int64, error) {
+	var projectID interface{} = nil
+	if p.ProjectID != "" {
+		projectID = p.ProjectID
+	}
+	var ownerUserID interface{} = nil
+	if p.OwnerUserID != "" {
+		ownerUserID = p.OwnerUserID
+	}
 	result, err := db.Exec(
-		`INSERT INTO xss_payloads (token, name, type, payload, config, project_id, enabled, description, domain, domain_only, created_by, owner_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		p.Token, p.Name, p.Type, p.Payload, p.Config, p.ProjectID, p.Enabled, p.Description, p.Domain, p.DomainOnly, p.CreatedBy, p.OwnerUserID,
+		`INSERT INTO xss_payloads (token, name, type, payload, config, project_id, enabled, description, domain, domain_only, dns_exfil_domain, script, created_by, owner_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', ?, ?)`,
+		p.Token, p.Name, p.Type, p.Payload, p.Config, projectID, p.Enabled, p.Description, p.Domain, p.DomainOnly, p.DNSExfilDomain, p.CreatedBy, ownerUserID,
 	)
 	if err != nil {
 		return 0, err
@@ -1860,7 +1871,7 @@ func (db *DB) CreateXssPayload(p *XssPayload) (int64, error) {
 
 // ListXssPayloads returns all XSS payloads, most recent first, with capture counts.
 func (db *DB) ListXssPayloads() ([]*XssPayload, error) {
-	rows, err := db.Query(`SELECT p.id, p.token, COALESCE(p.name,''), COALESCE(p.type,'image'), p.payload, COALESCE(p.config,'{}'), COALESCE(p.project_id,''), p.enabled, COALESCE(p.description,''), COALESCE(p.domain,''), COALESCE(p.domain_only,0), p.created_at, p.updated_at, COALESCE(p.created_by,''), COUNT(c.id) as capture_count FROM xss_payloads p LEFT JOIN xss_captures c ON c.payload_id = p.id GROUP BY p.id ORDER BY p.created_at DESC`)
+	rows, err := db.Query(`SELECT p.id, p.token, COALESCE(p.name,''), COALESCE(p.type,'image'), p.payload, COALESCE(p.config,'{}'), COALESCE(p.project_id,''), p.enabled, COALESCE(p.description,''), COALESCE(p.domain,''), COALESCE(p.domain_only,0), COALESCE(p.dns_exfil_domain,''), p.created_at, p.updated_at, COALESCE(p.created_by,''), COUNT(c.id) as capture_count FROM xss_payloads p LEFT JOIN xss_captures c ON c.payload_id = p.id GROUP BY p.id ORDER BY p.created_at DESC`)
 	if err != nil {
 		return nil, err
 	}
@@ -1870,10 +1881,10 @@ func (db *DB) ListXssPayloads() ([]*XssPayload, error) {
 	for rows.Next() {
 		var p XssPayload
 		var configVal []byte
-		var nameVal, typeVal, projVal, descVal, domainVal, createdByVal string
+		var nameVal, typeVal, projVal, descVal, domainVal, createdByVal, dnsExfilVal string
 		var domainOnlyVal, enabledVal int
 		var createdAt, updatedAt time.Time
-		if err := rows.Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &createdAt, &updatedAt, &createdByVal, &p.CaptureCount); err != nil {
+		if err := rows.Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &dnsExfilVal, &createdAt, &updatedAt, &createdByVal, &p.CaptureCount); err != nil {
 			return nil, err
 		}
 		p.Name = nameVal
@@ -1884,6 +1895,7 @@ func (db *DB) ListXssPayloads() ([]*XssPayload, error) {
 		p.Description = descVal
 		p.Domain = domainVal
 		p.DomainOnly = domainOnlyVal
+		p.DNSExfilDomain = dnsExfilVal
 		p.CreatedAt = createdAt
 		p.UpdatedAt = updatedAt
 		p.CreatedBy = createdByVal
@@ -1895,15 +1907,15 @@ func (db *DB) ListXssPayloads() ([]*XssPayload, error) {
 // GetXssPayload retrieves a payload by its numeric ID.
 func (db *DB) GetXssPayload(id int64) (*XssPayload, error) {
 	var p XssPayload
-	var nameVal, typeVal, projVal, descVal, domainVal, createdByVal string
+	var nameVal, typeVal, projVal, descVal, domainVal, createdByVal, dnsExfilVal string
 	var domainOnlyVal, enabledVal int
 	var configVal []byte
 	var createdAt, updatedAt time.Time
 	var captureCount int
 	err := db.QueryRow(
-		`SELECT p.id, p.token, COALESCE(p.name,''), COALESCE(p.type,'image'), p.payload, COALESCE(p.config,'{}'), COALESCE(p.project_id,''), p.enabled, COALESCE(p.description,''), COALESCE(p.domain,''), COALESCE(p.domain_only,0), p.created_at, p.updated_at, COALESCE(p.created_by,''), COUNT(c.id) as capture_count FROM xss_payloads p LEFT JOIN xss_captures c ON c.payload_id = p.id WHERE p.id = ? GROUP BY p.id`,
+		`SELECT p.id, p.token, COALESCE(p.name,''), COALESCE(p.type,'image'), p.payload, COALESCE(p.config,'{}'), COALESCE(p.project_id,''), p.enabled, COALESCE(p.description,''), COALESCE(p.domain,''), COALESCE(p.domain_only,0), COALESCE(p.dns_exfil_domain,''), p.created_at, p.updated_at, COALESCE(p.created_by,''), COUNT(c.id) as capture_count FROM xss_payloads p LEFT JOIN xss_captures c ON c.payload_id = p.id WHERE p.id = ? GROUP BY p.id`,
 		id,
-	).Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &createdAt, &updatedAt, &createdByVal, &captureCount)
+	).Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &dnsExfilVal, &createdAt, &updatedAt, &createdByVal, &captureCount)
 	if err != nil {
 		return nil, err
 	}
@@ -1915,6 +1927,7 @@ func (db *DB) GetXssPayload(id int64) (*XssPayload, error) {
 	p.Description = descVal
 	p.Domain = domainVal
 	p.DomainOnly = domainOnlyVal
+	p.DNSExfilDomain = dnsExfilVal
 	p.CreatedAt = createdAt
 	p.UpdatedAt = updatedAt
 	p.CreatedBy = createdByVal
@@ -1925,14 +1938,14 @@ func (db *DB) GetXssPayload(id int64) (*XssPayload, error) {
 // GetXssPayloadByToken retrieves a payload by its token (used by the collector endpoint).
 func (db *DB) GetXssPayloadByToken(token string) (*XssPayload, error) {
 	var p XssPayload
-	var nameVal, typeVal, projVal, descVal, domainVal, createdByVal string
+	var nameVal, typeVal, projVal, descVal, domainVal, createdByVal, dnsExfilVal string
 	var domainOnlyVal, enabledVal int
 	var configVal []byte
 	var createdAt, updatedAt time.Time
 	err := db.QueryRow(
-		`SELECT id, token, COALESCE(name,''), COALESCE(type,'image'), payload, COALESCE(config,'{}'), COALESCE(project_id,''), enabled, COALESCE(description,''), COALESCE(domain,''), COALESCE(domain_only,0), created_at, updated_at, COALESCE(created_by,'') FROM xss_payloads WHERE token = ?`,
+		`SELECT id, token, COALESCE(name,''), COALESCE(type,'image'), payload, COALESCE(config,'{}'), COALESCE(project_id,''), enabled, COALESCE(description,''), COALESCE(domain,''), COALESCE(domain_only,0), COALESCE(dns_exfil_domain,''), created_at, updated_at, COALESCE(created_by,'') FROM xss_payloads WHERE token = ?`,
 		token,
-	).Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &createdAt, &updatedAt, &createdByVal)
+	).Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &dnsExfilVal, &createdAt, &updatedAt, &createdByVal)
 	if err != nil {
 		return nil, err
 	}
@@ -1944,6 +1957,7 @@ func (db *DB) GetXssPayloadByToken(token string) (*XssPayload, error) {
 	p.Description = descVal
 	p.Domain = domainVal
 	p.DomainOnly = domainOnlyVal
+	p.DNSExfilDomain = dnsExfilVal
 	p.CreatedAt = createdAt
 	p.UpdatedAt = updatedAt
 	p.CreatedBy = createdByVal
@@ -2050,6 +2064,8 @@ func (db *DB) migrateXssPayloadsTable() error {
 		{"description", "ALTER TABLE xss_payloads ADD COLUMN description TEXT"},
 		{"domain", "ALTER TABLE xss_payloads ADD COLUMN domain TEXT"},
 		{"domain_only", "ALTER TABLE xss_payloads ADD COLUMN domain_only INTEGER DEFAULT 0"},
+		{"dns_exfil_domain", "ALTER TABLE xss_payloads ADD COLUMN dns_exfil_domain TEXT"},
+		{"script", "ALTER TABLE xss_payloads ADD COLUMN script TEXT DEFAULT ''"},
 	} {
 		if err := db.addColumnIfMissing("xss_payloads", col.name, col.stmt); err != nil {
 			return err

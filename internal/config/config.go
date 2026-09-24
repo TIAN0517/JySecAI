@@ -59,6 +59,7 @@ type XssConfig struct {
 	BindPort        int    `yaml:"bind_port,omitempty" json:"bind_port,omitempty"`
 	CooldownSeconds int    `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
 	PublicURL       string `yaml:"public_url,omitempty" json:"public_url,omitempty"`
+	DNSExfilDomain  string `yaml:"dns_exfil_domain,omitempty" json:"dns_exfil_domain,omitempty"`
 }
 
 func (c XssConfig) EnabledEffective() bool {
