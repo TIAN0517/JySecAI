@@ -41,6 +41,8 @@ type Executor struct {
 	shellNoOutputTimeoutSec int // execute/exec 无新输出空闲秒数；0=默认 300；-1=关闭（见 SetShellNoOutputTimeoutSeconds）
 	toolOutputMaxBytes      int
 	spillRootDir            string
+	hooksMu                 sync.Mutex
+	hooks                   *scannerHooks // 可选：Scanner Runtime Optimization v2 pre-exec 管线（PHASE 1–8）
 }
 
 // NewExecutor 创建新的执行器
@@ -157,6 +159,53 @@ func (e *Executor) ExecuteTool(ctx context.Context, toolName string, args map[st
 			zap.String("command", toolConfig.Command),
 		)
 		return e.executeInternalTool(ctx, toolName, toolConfig.Command, args)
+	}
+
+	// Scanner Runtime Optimization v2 pre-exec pipeline:
+	//   1. schema validate
+	//   2. target normalize
+	//   3. authorization
+	//   4. execution policy
+	//   5. preflight
+	// This runs before buildCommandArgs so a failure short-circuits the rest
+	// of the chain and never reaches exec.CommandContext.
+	if pre := e.runScannerPreExec(ctx, toolName, toolConfig, args); pre.StopForInput != nil || pre.Failure != nil {
+		var env scannerErrorEnvelope
+		if pre.StopForInput != nil {
+			env = scannerErrorEnvelope{
+				Code:              pre.StopForInput.Code,
+				Tool:              pre.StopForInput.Tool,
+				Message:           pre.StopForInput.HumanMessage,
+				Retryable:         false,
+				RequiresUserInput: true,
+				MissingFields:     pre.StopForInput.MissingFields,
+				SchemaHash:        pre.StopForInput.SchemaHash,
+			}
+		} else {
+			env = scannerErrorEnvelope{
+				Code:              string(pre.Failure.Code),
+				Tool:              pre.Failure.Tool,
+				Message:           pre.Failure.Message,
+				Retryable:         pre.Failure.Retryable,
+				RequiresUserInput: pre.Failure.RequiresUserInput,
+				MissingFields:     pre.Failure.MissingFields,
+				SchemaHash:        pre.Failure.SchemaHash,
+			}
+		}
+		e.logger.Warn("scanner pre-exec rejected call",
+			zap.String("tool", toolName),
+			zap.String("code", env.Code),
+			zap.Bool("stop_for_input", env.RequiresUserInput),
+			zap.Strings("missing_fields", env.MissingFields),
+		)
+		return &mcp.ToolResult{
+			Content: []mcp.Content{{
+				Type: "text",
+				Text: fmt.Sprintf("{\"code\":%q,\"tool\":%q,\"retryable\":%t,\"requires_user_input\":%t,\"message\":%q,\"missing_fields\":%q,\"schema_hash\":%q}",
+					env.Code, env.Tool, env.Retryable, env.RequiresUserInput, env.Message, env.MissingFields, env.SchemaHash),
+			}},
+			IsError: true,
+		}, nil
 	}
 
 	// 构建命令 - 根据工具类型使用不同的参数格式
