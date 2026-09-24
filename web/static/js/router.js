@@ -519,6 +519,11 @@ async function initPage(pageId) {
                 initWebshellPage();
             }
             break;
+        case 'xss':
+            if (window.XSS && typeof window.XSS.init === 'function') {
+                window.XSS.init();
+            }
+            break;
         case 'chat-files':
             if (typeof initChatFilesPage === 'function') {
                 initChatFilesPage();
