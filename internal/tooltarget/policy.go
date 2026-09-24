@@ -20,12 +20,12 @@ const (
 
 // Decision is the typed outcome of an authorization check.
 type Decision struct {
-	Allowed          bool          `json:"allowed"`
-	Reason           string        `json:"reason,omitempty"`
-	NormalizedTarget *Normalized   `json:"normalized_target,omitempty"`
-	Scope            Scope         `json:"scope"`
-	Code             failure.Code  `json:"code,omitempty"`
-	Note             string        `json:"note,omitempty"`
+	Allowed          bool         `json:"allowed"`
+	Reason           string       `json:"reason,omitempty"`
+	NormalizedTarget *Normalized  `json:"normalized_target,omitempty"`
+	Scope            Scope        `json:"scope"`
+	Code             failure.Code `json:"code,omitempty"`
+	Note             string       `json:"note,omitempty"`
 }
 
 // Policy is the interface every authorization backend must satisfy. The
@@ -129,11 +129,11 @@ func (p *ConfigAuthorizedTargetPolicy) Check(toolName string, target *Normalized
 	key, scope := keyForTarget(target)
 	if key == "" {
 		return Decision{
-			Allowed:         false,
-			Reason:          "target has no host or IP",
+			Allowed:          false,
+			Reason:           "target has no host or IP",
 			NormalizedTarget: target,
-			Scope:           ScopeNone,
-			Code:            failure.CodeInvalidTarget,
+			Scope:            ScopeNone,
+			Code:             failure.CodeInvalidTarget,
 		}
 	}
 	if entry, ok := p.entries[toolName][key]; ok {
@@ -155,11 +155,11 @@ func (p *ConfigAuthorizedTargetPolicy) Check(toolName string, target *Normalized
 		}
 	}
 	return Decision{
-		Allowed:         false,
-		Reason:          fmt.Sprintf("%s not in authorized target list", key),
+		Allowed:          false,
+		Reason:           fmt.Sprintf("%s not in authorized target list", key),
 		NormalizedTarget: target,
-		Scope:           ScopeNone,
-		Code:            failure.CodeTargetNotAuthorized,
+		Scope:            ScopeNone,
+		Code:             failure.CodeTargetNotAuthorized,
 	}
 }
 

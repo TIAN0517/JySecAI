@@ -239,6 +239,9 @@ func (e *Executor) ExecuteTool(ctx context.Context, toolName string, args map[st
 	}
 
 	// 执行命令
+	if e.hooks != nil && e.hooks.metrics != nil {
+		e.hooks.metrics.IncExecution(toolName)
+	}
 	cmd := exec.CommandContext(ctx, toolConfig.Command, cmdArgs...)
 	applyDefaultTerminalEnv(cmd)
 	attachNonInteractiveStdin(cmd)

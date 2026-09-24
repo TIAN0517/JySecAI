@@ -57,6 +57,12 @@ func einoToolResultRequiresUserInput(body string) bool {
 	if !env.RequiresUserInput {
 		return false
 	}
+	if env.Tool == "" {
+		// No tool name => not a STOP_FOR_INPUT envelope we trust.
+		// Bare {"code":"MISSING_REQUIRED_ARGUMENT","requires_user_input":true}
+		// from non-scanner sources would otherwise false-positive here.
+		return false
+	}
 	switch env.Code {
 	case "MISSING_REQUIRED_ARGUMENT", "INVALID_ARGUMENT":
 		return true
