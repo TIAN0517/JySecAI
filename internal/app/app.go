@@ -167,6 +167,17 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	executor.SetToolOutputMaxBytes(cfg.MultiAgent.EinoMiddleware.ReductionMaxLengthForTruncEffective())
 	executor.SetToolOutputSpillRoot(cfg.MultiAgent.EinoMiddleware.ReductionRootDir)
 
+	// Scanner Runtime Optimization v2：預執行管線。
+	// 預設 cfg.Security.Scanner.AuthorizedTargets 為空 → deny-all；
+	// 必須在 config.yaml 顯式列出允許的 host/IP 才會放行掃描器呼叫。
+	// Agent 路徑使用 ExecutionModeAgent：additional_args 會被視為 POLICY_DENIED。
+	scannerMetrics := security.WireScannerRuntime(executor, &cfg.Security, security.ExecutionModeAgent)
+	log.Logger.Info("scanner runtime hooks wired",
+		zap.String("mode", string(security.ExecutionModeAgent)),
+		zap.Int("authorized_targets", len(cfg.Security.Scanner.AuthorizedTargets)),
+		zap.String("metrics_snapshot", scannerMetrics.Snapshot().String()),
+	)
+
 	// 注册工具
 	executor.RegisterTools(mcpServer)
 

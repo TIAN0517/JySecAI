@@ -44,6 +44,21 @@ func main() {
 	// 创建安全工具执行器
 	executor := security.NewExecutor(&cfg.Security, mcpServer, log.Logger)
 
+	// Scanner Runtime Optimization v2：stdio / 操作員路徑使用 Manual 模式。
+	// 與 Agent 自動循環的差異：
+	//   - ExecutionModeManual：保留 additional_args 向後相容行為（既有
+	//     YAML / CLI 操作員可手動傳遞額外 flag）。
+	//   - ExecutionModeAgent：  additional_args 非空 → POLICY_DENIED，
+	//     防止 Agent 自動呼叫鏈注入任意參數。
+	// 同樣的 cfg.Security.Scanner.AuthorizedTargets 仍為單一 allowlist
+	// 來源：空清單 = 拒絕所有外部掃描器目標（與 HTTP 主進程一致）。
+	scannerMetrics := security.WireScannerRuntime(executor, &cfg.Security, security.ExecutionModeManual)
+	log.Logger.Info("stdio scanner runtime hooks wired",
+		zap.String("mode", string(security.ExecutionModeManual)),
+		zap.Int("authorized_targets", len(cfg.Security.Scanner.AuthorizedTargets)),
+		zap.String("metrics_snapshot", scannerMetrics.Snapshot().String()),
+	)
+
 	// 注册工具
 	executor.RegisterTools(mcpServer)
 	mcp.RegisterExecutionControlTools(mcpServer, nil)

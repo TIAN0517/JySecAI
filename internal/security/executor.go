@@ -198,11 +198,15 @@ func (e *Executor) ExecuteTool(ctx context.Context, toolName string, args map[st
 			zap.Bool("stop_for_input", env.RequiresUserInput),
 			zap.Strings("missing_fields", env.MissingFields),
 		)
+		body, marshalErr := json.Marshal(env)
+		if marshalErr != nil {
+			body = []byte(fmt.Sprintf(`{"code":%q,"tool":%q,"message":%q,"retryable":false,"requires_user_input":false}`,
+				env.Code, env.Tool, "scanner pre-exec envelope marshal failed: "+marshalErr.Error()))
+		}
 		return &mcp.ToolResult{
 			Content: []mcp.Content{{
 				Type: "text",
-				Text: fmt.Sprintf("{\"code\":%q,\"tool\":%q,\"retryable\":%t,\"requires_user_input\":%t,\"message\":%q,\"missing_fields\":%q,\"schema_hash\":%q}",
-					env.Code, env.Tool, env.Retryable, env.RequiresUserInput, env.Message, env.MissingFields, env.SchemaHash),
+				Text: string(body),
 			}},
 			IsError: true,
 		}, nil
