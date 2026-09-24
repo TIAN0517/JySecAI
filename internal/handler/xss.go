@@ -344,12 +344,12 @@ func (h *XssHandler) ServeCollectorGIF(w http.ResponseWriter, r *http.Request, t
 	}
 
 	if _, err := h.db.CreateXssCapture(payload.ID, payload.Token, cookie, sourceURL, payload.Domain, userAgent, ip, ""); err != nil {
-		h.logger.Error("XSS image-beacon persistence failed", zap.Error(err), zap.String("token", token), zap.String("ip", ip))
+		h.logger.Error("XSS image-beacon persistence failed", zap.Error(err), zap.Int64("payload_id", payload.ID), zap.String("ip", ip))
 		writeTransparentGIF(w, http.StatusInternalServerError)
 		return
 	}
 
-	h.logger.Info("XSS capture (img beacon) received", zap.String("token", token), zap.String("ip", ip))
+	h.logger.Info("XSS capture (img beacon) received", zap.Int64("payload_id", payload.ID), zap.String("ip", ip))
 	writeTransparentGIF(w, http.StatusOK)
 }
 
