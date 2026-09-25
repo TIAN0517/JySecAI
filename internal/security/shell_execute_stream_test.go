@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -43,6 +44,9 @@ func TestEinoStreamingShell_StreamsStderrBeforeStdoutEOF(t *testing.T) {
 }
 
 func TestEinoStreamingShell_SudoFailsFast(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip(`EUID=0: sudo always succeeds under root, no failure mode to assert; refactor to run under an unprivileged user in a separate change`)
+	}
 	shell := NewEinoStreamingShell()
 	cmd := PrepareNonInteractiveShellCommand("sudo whoami && sudo cat /etc/os-release")
 	sr, err := shell.ExecuteStreaming(context.Background(), &filesystem.ExecuteRequest{Command: cmd})
