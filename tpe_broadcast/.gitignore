@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.pyo
+*.log
+data/*.log
+data/*.json
+data/*.txt
+tpe119_token.json

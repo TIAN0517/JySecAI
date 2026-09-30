@@ -1,0 +1,159 @@
+=== EPCR Config Endpoint Probes ===
+  Port 4000/config: [200] len=1057 server=? ct=application/json; charset=utf-8
+    JSON keys: ['port', 'hostname', 'vitalSignVideoServer', 'historyVideoPath', 'imagePath', 'HospitalServer', 'VideoPath', 'authServer', 'doctorServer', 'historyVoicePath', 'merBridge', 'merServer', 'printServer', 'statUrl', 'mciServer', 'monitorServer', 'epcrServer', 'ntpcCloud', 'captcha', 'MAX_IDLE_DURATION', 'NO_IDLE_DETECTION_STATES', 'RealTimeVideoPath']
+    port: 4000
+    hostname: https://epcr.tpf.gov.tw
+    vitalSignVideoServer: https://epcr.tpf.gov.tw:4001
+    historyVideoPath: /videoData/getFile/
+    imagePath: /imageData/getFile/
+    HospitalServer: https://epcr.tpf.gov.tw:4002
+    VideoPath: rtmp://mer2voip.tpf.gov.tw/rtmp/live
+    authServer: https://epcr.tpf.gov.tw:4004
+    doctorServer: https://epcr.tpf.gov.tw:4003
+    historyVoicePath: /voiceData/getFile/
+    merBridge: https://epcr.tpf.gov.tw:4006
+    merServer: https://mer2.tpf.gov.tw:7000
+    printServer: http://epcr.tpf.gov.tw:9000
+    statUrl: https://epcr.tpf.gov.tw:4007/statIndex.html#/
+    mciServer: http://epcr.tpf.gov.tw:4008/client/
+    monitorServer: http://epcr.tpf.gov.tw:4005
+    epcrServer: http://epcr.tpf.gov.tw:4000
+    ntpcCloud: https://cloud2.ntpc.gov.tw/home
+    captcha: {'enable': True, 'captchaImg': '/captcha'}
+    MAX_IDLE_DURATION: 900000
+    NO_IDLE_DETECTION_STATES: ['login', 'caseDetailPrint']
+    RealTimeVideoPath: [{'path': 'https://mer2voip.tpf.gov.tw:30080/live?app=rtmp&stream=live${dispatchRecordUuid}', 'type': 'mse', 'isLive': True}]
+  Port 4001/config: [404] len=160 server=? ct=text/html; charset=utf-8
+  Port 4002/config: [200] len=375 server=? ct=application/json; charset=utf-8
+    JSON keys: ['SELF_URL', 'EPCRServer', 'authServer', 'vitalSignVideoServer', 'MerBridge', 'Redir', 'MerServer', 'captcha']
+    SELF_URL: https://epcr.tpf.gov.tw:4002
+    EPCRServer: https://epcr.tpf.gov.tw:4000
+    authServer: https://epcr.tpf.gov.tw:4004
+    vitalSignVideoServer: https://epcr.tpf.gov.tw:4001
+    MerBridge: https://epcr.tpf.gov.tw:4006
+    Redir: https://mer2.tpf.gov.tw/Views/CreateSession.aspx
+    MerServer: https://mer2.tpf.gov.tw
+    captcha: {'enable': True, 'captchaImg': '/captcha'}
+  Port 4003/config: [200] len=187 server=? ct=application/json; charset=utf-8
+    JSON keys: ['EPCRServer', 'authServer', 'hospitalServer', 'captcha']
+    EPCRServer: https://epcr.tpf.gov.tw:4000
+    authServer: https://epcr.tpf.gov.tw:4004
+    hospitalServer: https://epcr.tpf.gov.tw:4002
+    captcha: {'enable': True, 'captchaImg': '/captcha'}
+  Port 4004/config: [401] len=183 server=? ct=text/html; charset=utf-8
+  Port 4005/config: [200] len=313 server=? ct=application/json; charset=utf-8
+    JSON keys: ['EPCRServer', 'authServer', 'hospitalServer', 'doctorServer', 'MerSocketio', 'ConnWatcher', 'captcha']
+    EPCRServer: https://epcr.tpf.gov.tw:4000
+    authServer: https://epcr.tpf.gov.tw:4004
+    hospitalServer: https://epcr.tpf.gov.tw:4002
+    doctorServer: https://epcr.tpf.gov.tw:4002
+    MerSocketio: http://172.28.4.12:8080
+    ConnWatcher: http://172.28.4.12:8188
+    captcha: {'enable': True, 'captchaImg': '/captcha'}
+  Port 4006/config: [403] len=14 server=? ct=text/html; charset=utf-8
+  Port 4007/config: [200] len=870 server=? ct=application/json; charset=utf-8
+    JSON keys: ['port', 'hostname', 'vitalSignVideoServer', 'historyVideoPath', 'imagePath', 'HospitalServer', 'VideoPath', 'authServer', 'doctorServer', 'historyVoicePath', 'merBridge', 'merServer', 'printServer', 'statUrl', 'mciServer', 'monitorServer', 'epcrServer', 'captcha', 'MAX_IDLE_DURATION', 'NO_IDLE_DETECTION_STATES']
+    port: 4000
+    hostname: https://epcr.tpf.gov.tw
+    vitalSignVideoServer: https://epcr.tpf.gov.tw:4001
+    historyVideoPath: /videoData/getFile/
+    imagePath: /imageData/getFile/
+    HospitalServer: https://epcr.tpf.gov.tw:4002
+    VideoPath: rtmp://mer2voip.tpf.gov.tw/rtmp/live
+    authServer: https://epcr.tpf.gov.tw:4004
+    doctorServer: https://epcr.tpf.gov.tw:4003
+    historyVoicePath: /voiceData/getFile/
+    merBridge: https://epcr.tpf.gov.tw:4006
+    merServer: https://mer2.tpf.gov.tw:7000
+    printServer: http://epcr.tpf.gov.tw:9000
+    statUrl: https://epcr.tpf.gov.tw:4007/statIndex.html#/
+    mciServer: http://epcr.tpf.gov.tw:4008/client/
+    monitorServer: http://epcr.tpf.gov.tw:4005
+    epcrServer: http://epcr.tpf.gov.tw:4000
+    captcha: {'enable': True, 'captchaImg': '/captcha'}
+    MAX_IDLE_DURATION: 900000
+    NO_IDLE_DETECTION_STATES: ['login', 'caseDetailPrint']
+  Port 4008/config: [404] len=41 server=? ct=text/html; charset=utf-8
+
+=== EPCR Version Probes ===
+  :4000/version: [200] len=9 ct=text/html; charset=utf-8
+  :4000/health: [401] len=183 ct=text/html; charset=utf-8
+  :4000/healthz: [401] len=183 ct=text/html; charset=utf-8
+  :4000/api/version: [401] len=183 ct=text/html; charset=utf-8
+  :4000/api/health: [401] len=183 ct=text/html; charset=utf-8
+  :4000/status: [401] len=183 ct=text/html; charset=utf-8
+  :4004/version: [401] len=183 ct=text/html; charset=utf-8
+  :4004/health: [401] len=183 ct=text/html; charset=utf-8
+  :4004/healthz: [401] len=183 ct=text/html; charset=utf-8
+  :4004/api/version: [401] len=183 ct=text/html; charset=utf-8
+  :4004/api/health: [401] len=183 ct=text/html; charset=utf-8
+  :4004/status: [401] len=183 ct=text/html; charset=utf-8
+
+=== EPCR API Endpoints (no-auth probe) ===
+  GET :4000/config: [200] len=1057 ct=application/json; charset=utf-8 srv=?
+  GET :4000/version: [200] len=9 ct=text/html; charset=utf-8 srv=?
+  GET :4000/ambulances: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/Ambulances: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/branches: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/Branches: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/DispatchRecords: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/Dispatches: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/Hospitals: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/hospitals: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/Activities/search: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/Branches/listBranchWithCaseRecordAndAmbulance: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/Ambulances/byUserRole: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/json/isSimulation.json: [200] len=67 ct=application/json; charset=UTF-8 srv=?
+  GET :4000/json/hasTP.json: [200] len=65 ct=application/json; charset=UTF-8 srv=?
+  GET :4000/stat/stat1: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/stat/stat42To45: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/EcgImages/OfDispatchRecord/: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/Pcrs/pcrCaseList: [401] len=183 ct=text/html; charset=utf-8 srv=?
+  GET :4000/Activities/record: [401] len=183 ct=text/html; charset=utf-8 srv=?
+
+=== FSM 119 Gov Taipei Backend Disclosure ===
+  GET fsm/.env: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/Web.config: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/web.config: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/.git/config: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/config: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/phpinfo: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/info.php: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/test: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/console: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/admin: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/w/fsm119/index: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/w/fsm119/login: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/api: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/api/config: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/api/login: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/api/auth/genToken: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/auth/fetchServerData: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/oauth/token: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/sso/login: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/cas/login: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/w/fsm119/api/config: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+  GET fsm/w/fsm119/api/login: ERROR - SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443
+
+=== EPCR Auth Server (port 4004) Direct Probe ===
+  GET :4004/login: [404] len=160 srv=? ct=text/html; charset=utf-8
+  GET :4004/ssoLogin: [404] len=160 srv=? ct=text/html; charset=utf-8
+  GET :4004/captcha: [200] len=17646 srv=? ct=application/octet-stream
+  GET :4004/refreshToken: [404] len=160 srv=? ct=text/html; charset=utf-8
+  GET :4004/config: [401] len=183 srv=? ct=text/html; charset=utf-8
+  GET :4004/version: [401] len=183 srv=? ct=text/html; charset=utf-8
+  GET :4004/logout: [401] len=183 srv=? ct=text/html; charset=utf-8
+  GET :4004/register: [401] len=183 srv=? ct=text/html; charset=utf-8
+  GET :4004/users: [401] len=183 srv=? ct=text/html; charset=utf-8
+  GET :4004/oauth/token: [401] len=183 srv=? ct=text/html; charset=utf-8
+  GET :4004/oauth2/authorize: [401] len=183 srv=? ct=text/html; charset=utf-8
+  GET :4004/swagger: [401] len=183 srv=? ct=text/html; charset=utf-8
+  GET :4004/api-docs: [401] len=183 srv=? ct=text/html; charset=utf-8
+  GET :4004/v1/api-docs: [401] len=183 srv=? ct=text/html; charset=utf-8
+  GET :4004/actuator/health: [401] len=183 srv=? ct=text/html; charset=utf-8
+  GET :4004/actuator/info: [401] len=183 srv=? ct=text/html; charset=utf-8
+  GET :4004/api/v1/users: [401] len=183 srv=? ct=text/html; charset=utf-8
+  GET :4004/api/v1/config: [401] len=183 srv=? ct=text/html; charset=utf-8
+
+=== Results saved to /mnt/c/Users/Administrator/desktop/JySecAI/tpe119_evidence/backend_info_extraction.json ===
+Total endpoints probed: 38

@@ -1,0 +1,225 @@
+======================================================================
+LOGIN ENDPOINT DISCOVERY - CRITICAL 119 HOSTS
+======================================================================
+
+[*] Probing: https://service119.tfd.gov.tw/service119
+  [403] / (146b) [nginx] (auth: 403)
+  [500] /auth/genToken (129b) [nginx]
+  [500] /citizen/auth/genToken (129b) [nginx]
+  [500] /auth/fetchServerData (129b) [nginx]
+  [403] /swagger-ui.html (146b) [nginx] (auth: 403)
+  [403] /.env (146b) [nginx] (auth: 403)
+  [500] /citizenCase/caseList (129b) [nginx]
+
+[*] Probing: https://appservice119.tfd.gov.tw
+  [200] / (46b) [Apache/2.4.68 (Win64) OpenSSL/3.6.3 PHP/] <-- OK
+    Body: <html><body><h1>It works!</h1></body></html> 
+  [200] /index.html (46b) [Apache/2.4.68 (Win64) OpenSSL/3.6.3 PHP/] <-- OK
+    Body: <html><body><h1>It works!</h1></body></html> 
+  [200] /.well-known/ (938b) [Apache/2.4.68 (Win64) OpenSSL/3.6.3 PHP/] <-- OK
+    Body: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> <html>  <head>   <title>Index
+
+[*] Probing: https://www.119.gov.taipei
+  [200] /.env (250b) [] <-- OK
+    Body: <html><head><title>Request Rejected</title></head><body>為了您的資安防護，此網站(IP)已被資安情資設備阻擋。<br>如有相關疑問，煩請與客服中心聯繫，將幫您轉接資安小組。<br>客服
+
+[*] Probing: https://fsm.119.gov.taipei
+  [ERR] /: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /index: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /index.html: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /login: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /Login: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /admin/login: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /api/login: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /auth/login: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /auth/genToken: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /citizen/auth/genToken: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /auth/fetchServerData: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /api/getUserToken: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /user/login: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /api/v1/login: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /api/v1/auth: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /oauth/token: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /oauth2/authorize: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /sso/login: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /cas/login: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /j_spring_security_check: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /admin: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /console: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /dashboard: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /management: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /swagger: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /swagger-ui.html: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /api-docs: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /v1/api-docs: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /config: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /config.json: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /robots.txt: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /favicon.ico: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /.well-known/: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /security.txt: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /.env: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /index.php: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /index.jsp: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /index.asp: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /caseList: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /caseList.jsp: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /citizenCase: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /citizenCase/caseList: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /dispatch: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /dispatchLogin: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /ambulance: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /ems: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /websocket: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /socket.io/: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /mer2: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /merBridge: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /vitalsign: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+  [ERR] /vitalsignvideoserver: ConnectionError: HTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded w
+
+[*] Probing: https://www.af-search.119.gov.taipei
+  [200] / (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /index (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /index.html (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /login (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /Login (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /admin/login (4691b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /api/login (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /auth/login (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /auth/genToken (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /citizen/auth/genToken (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /auth/fetchServerData (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /api/getUserToken (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /user/login (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /api/v1/login (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /api/v1/auth (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /oauth/token (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /oauth2/authorize (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /sso/login (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /cas/login (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /j_spring_security_check (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [302] /admin (438b) [Apache] <-- redirect -> https://www.af-search.119.gov.taipei/admin/login
+    Body: <!DOCTYPE html> <html>     <head>         <meta charset="UTF-8" />         <meta http-equiv="refresh" content="0;url='ht
+  [200] /console (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /dashboard (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /management (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /swagger (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /swagger-ui.html (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /api-docs (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /v1/api-docs (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /config (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /config.json (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /robots.txt (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /favicon.ico (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [301] /.well-known/ (256b) [Apache] <-- redirect -> https://www.af-search.119.gov.taipei/.well-known
+    Body: <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"> <html><head> <title>301 Moved Permanently</title> </head><body> <h1>M
+  [200] /security.txt (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /.env (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /index.php (4965b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /index.jsp (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /index.asp (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /caseList (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /caseList.jsp (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /citizenCase (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /citizenCase/caseList (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /dispatch (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /dispatchLogin (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /ambulance (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /ems (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /websocket (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [301] /socket.io/ (254b) [Apache] <-- redirect -> https://www.af-search.119.gov.taipei/socket.io
+    Body: <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"> <html><head> <title>301 Moved Permanently</title> </head><body> <h1>M
+  [200] /mer2 (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /merBridge (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /vitalsign (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+  [200] /vitalsignvideoserver (4935b) [Apache] <-- OK
+    Body: <!DOCTYPE html> <html lang="zh-Hant-TW"> <head>     <meta charset="utf-8">     <meta http-equiv="X-UA-Compatible" conten
+
+[*] Probing: https://service119.119.gov.taipei
+  [200] / (896b) [nginx] <-- OK
+    Body: <!DOCTYPE html> <html> <head> <title>Welcome to nginx!</title> <style> html { color-scheme: light dark; } body { width: 
+  [200] /index.html (896b) [nginx] <-- OK
+    Body: <!DOCTYPE html> <html> <head> <title>Welcome to nginx!</title> <style> html { color-scheme: light dark; } body { width: 
+  [403] /.env (146b) [nginx] (auth: 403)
+
+[*] Probing: https://taipeiciiis.119.gov.taipei
+
+[*] Probing: https://taipeiciiis-dashboard.119.gov.taipei
+  [403] / (146b) [nginx] (auth: 403)
+  [403] /.well-known/ (146b) [nginx] (auth: 403)
+
+[*] Probing: https://camcall.119.gov.taipei
+
+[*] Probing: https://bnoc.119.gov.taipei
+
+[*] Probing: https://pnoc.119.gov.taipei
+
+[*] Probing: https://tfdus.119.gov.taipei
+
+[*] Probing: https://www.firesignal.119.gov.taipei
+
+[*] Probing: https://www.rfd119.119.gov.taipei
+
+[*] Probing: https://www.tpeusar.119.gov.taipei
+  [200] / (21767b) [Microsoft-IIS/10.0] <-- OK
+    Body:   <!DOCTYPE html>  <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-tw"> <head><meta charset="utf-8" /><meta http-equ
+  [403] /.well-known/ (1147b) [Microsoft-IIS/10.0] (auth: 403)
+
+[*] Probing: https://www.rfd119en.119.gov.taipei
+
+[*] Probing: https://english.119.gov.taipei
+  [200] /.env (250b) [] <-- OK
+    Body: <html><head><title>Request Rejected</title></head><body>為了您的資安防護，此網站(IP)已被資安情資設備阻擋。<br>如有相關疑問，煩請與客服中心聯繫，將幫您轉接資安小組。<br>客服
+  [ERR] /ems: ConnectionError: HTTPSConnectionPool(host='english.119.gov.taipei', port=443): Max retries exceed
+  [ERR] /websocket: ConnectionError: HTTPSConnectionPool(host='english.119.gov.taipei', port=443): Max retries exceed
+  [ERR] /socket.io/: ConnectionError: HTTPSConnectionPool(host='english.119.gov.taipei', port=443): Max retries exceed
+
+[*] Probing: https://taipeiciiis-dt.119.gov.taipei
