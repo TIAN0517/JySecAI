@@ -170,9 +170,15 @@ func (db *DB) CreateC2Listener(l *C2Listener) error {
 			implant_token, status, config_json, remark, owner_user_id, created_at, started_at, last_error)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
+	// 寫入前加密金鑰與 implant token；用複本處理，維持呼叫端結構為明文。
+	sealed := *l
+	if err := sealListenerSecrets(&sealed); err != nil {
+		db.logger.Error("加密 C2 listener 机密字段失败", zap.Error(err), zap.String("id", l.ID))
+		return err
+	}
 	_, err := db.Exec(query,
-		l.ID, strings.TrimSpace(l.ProjectID), l.Name, l.Type, l.BindHost, l.BindPort, l.ProfileID, l.EncryptionKey,
-		l.ImplantToken, l.Status, l.ConfigJSON, l.Remark, l.OwnerUserID, l.CreatedAt, l.StartedAt, l.LastError,
+		sealed.ID, strings.TrimSpace(sealed.ProjectID), sealed.Name, sealed.Type, sealed.BindHost, sealed.BindPort, sealed.ProfileID, sealed.EncryptionKey,
+		sealed.ImplantToken, sealed.Status, sealed.ConfigJSON, sealed.Remark, sealed.OwnerUserID, sealed.CreatedAt, sealed.StartedAt, sealed.LastError,
 	)
 	if err != nil {
 		db.logger.Error("创建 C2 监听器失败", zap.Error(err), zap.String("id", l.ID))
@@ -195,9 +201,14 @@ func (db *DB) UpdateC2Listener(l *C2Listener) error {
 			implant_token = ?, status = ?, config_json = ?, remark = ?, owner_user_id = ?, started_at = ?, last_error = ?
 		WHERE id = ?
 	`
+	sealed := *l
+	if err := sealListenerSecrets(&sealed); err != nil {
+		db.logger.Error("加密 C2 listener 机密字段失败", zap.Error(err), zap.String("id", l.ID))
+		return err
+	}
 	res, err := db.Exec(query,
-		strings.TrimSpace(l.ProjectID), l.Name, l.Type, l.BindHost, l.BindPort, l.ProfileID, l.EncryptionKey,
-		l.ImplantToken, l.Status, l.ConfigJSON, l.Remark, l.OwnerUserID, l.StartedAt, l.LastError, l.ID,
+		strings.TrimSpace(sealed.ProjectID), sealed.Name, sealed.Type, sealed.BindHost, sealed.BindPort, sealed.ProfileID, sealed.EncryptionKey,
+		sealed.ImplantToken, sealed.Status, sealed.ConfigJSON, sealed.Remark, sealed.OwnerUserID, sealed.StartedAt, sealed.LastError, sealed.ID,
 	)
 	if err != nil {
 		db.logger.Error("更新 C2 监听器失败", zap.Error(err), zap.String("id", l.ID))
@@ -254,6 +265,10 @@ func (db *DB) GetC2Listener(id string) (*C2Listener, error) {
 		t := startedAt.Time
 		l.StartedAt = &t
 	}
+	if err := openListenerSecrets(&l); err != nil {
+		db.logger.Error("解密 C2 listener 机密字段失败", zap.Error(err), zap.String("id", id))
+		return nil, err
+	}
 	return &l, nil
 }
 
@@ -287,6 +302,10 @@ func (db *DB) ListC2Listeners() ([]*C2Listener, error) {
 		if startedAt.Valid {
 			t := startedAt.Time
 			l.StartedAt = &t
+		}
+		if err := openListenerSecrets(&l); err != nil {
+			db.logger.Warn("解密 C2 listener 机密字段失败", zap.Error(err), zap.String("id", l.ID))
+			continue
 		}
 		list = append(list, &l)
 	}
@@ -334,6 +353,10 @@ func (db *DB) ListC2ListenersForAccess(access RBACListAccess, projectID string) 
 		if startedAt.Valid {
 			t := startedAt.Time
 			l.StartedAt = &t
+		}
+		if err := openListenerSecrets(&l); err != nil {
+			db.logger.Warn("解密 C2 listener 机密字段失败", zap.Error(err), zap.String("id", l.ID))
+			continue
 		}
 		list = append(list, &l)
 	}

@@ -99,6 +99,18 @@ WebShell:
 - write/delete/execute requires approval;
 - delete connections after project end.
 
+## At-Rest Secret Encryption
+
+C2 listener `encryption_key` / `implant_token` and WebShell `password` are stored in SQLite encrypted with AES-256-GCM. The master key comes from the `JY_SECMASTER_KEY` environment variable — 32 bytes as 64 hex characters, e.g. `openssl rand -hex 32`.
+
+- set `JY_SECMASTER_KEY` before starting the service; the key is never written to the config file, the database, the repository, or backups;
+- back the key up **separately** from the database — a database backup without the key cannot be decrypted, and a key without the database is worthless;
+- a fresh install with no stored secrets starts without the key. Once any secret exists, a missing, malformed, or mismatched key makes startup **fail** rather than fall back to plaintext;
+- a wrong key does not corrupt data: reads of affected rows error out instead of returning garbage;
+- legacy plaintext values are migrated in place at startup and marked with a `v1:` prefix; the migration is idempotent and re-verifies every row it rewrites.
+
+There is no automated key rotation. Changing `JY_SECMASTER_KEY` while encrypted values exist will block startup by design; rotating requires re-encrypting those rows out of band (export with the old key, restart with the new key, re-import).
+
 ## Retention
 
 Suggested:

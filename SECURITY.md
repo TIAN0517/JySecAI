@@ -67,6 +67,7 @@ Before production use:
 - keep C2 disabled unless explicitly needed;
 - review external MCP servers before enabling them;
 - keep high-risk tools out of global HITL allowlists;
+- set `JY_SECMASTER_KEY` (32 bytes, hex) and back it up separately from `data/`;
 - back up `config.yaml`, `data/`, and custom resource directories.
 
 See:
@@ -142,6 +143,7 @@ Shell 执行、WebShell 管理、C2、payload 生成、外部 MCP 工具、批�
 - 不需要 C2 时保持关闭；
 - 启用外部 MCP 前进行审查；
 - 高风险工具不要加入全局 HITL 白名单；
+- 设置 `JY_SECMASTER_KEY`（32 字节十六进制），并与 `data/` 分开备份；
 - 备份 `config.yaml`、`data/` 和自定义资源目录。
 
 参见：

@@ -160,6 +160,12 @@ func NewDB(dbPath string, logger *zap.Logger) (*DB, error) {
 		_ = db.Close()
 		return nil, fmt.Errorf("迁移历史安全拦截记录失败: %w", err)
 	}
+	// 把 C2 金鑰 / implant token / WebShell 密碼由明文升級為 at-rest 密文。
+	// 缺少主金鑰且資料庫確有受保護欄位時，這裡會讓啟動失敗（fail closed）。
+	if err := database.migrateSecretColumns(); err != nil {
+		_ = db.Close()
+		return nil, fmt.Errorf("迁移机密字段加密失败: %w", err)
+	}
 	database.startPassiveCheckpointLoop("conversations")
 
 	return database, nil
