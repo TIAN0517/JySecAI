@@ -62,7 +62,7 @@ func TestUploadPathForTaskConfinesPath(t *testing.T) {
 }
 
 func TestNormalizeResultBlobSuffix(t *testing.T) {
-	for _, suffix := range []string{"", "bin", ".bin", "png", ".png", ".jpg", ".jpeg"} {
+	for _, suffix := range []string{"", "bin", ".bin", "png", ".png", ".jpg", ".jpeg", ".gif", ".zip"} {
 		if _, err := normalizeResultBlobSuffix(suffix); err != nil {
 			t.Fatalf("suffix %q rejected: %v", suffix, err)
 		}
@@ -73,6 +73,32 @@ func TestNormalizeResultBlobSuffix(t *testing.T) {
 	} {
 		if _, err := normalizeResultBlobSuffix(suffix); err == nil {
 			t.Fatalf("suffix %q unexpectedly accepted", suffix)
+		}
+	}
+}
+
+func TestEnsurePathInDirRejectsNonCanonicalBoundaries(t *testing.T) {
+	root := filepath.Join(t.TempDir(), "results")
+	if err := os.MkdirAll(root, 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, path := range []string{
+		filepath.Join(root, "task.bin"),
+		filepath.Join(root, "nested", "..", "task.bin"),
+	} {
+		if err := ensurePathInDir(root, path); err != nil {
+			t.Fatalf("path %q should stay inside root: %v", path, err)
+		}
+	}
+
+	for _, path := range []string{
+		root,
+		filepath.Join(root, "..", "outside"),
+		root + "-sibling" + string(filepath.Separator) + "task.bin",
+	} {
+		if err := ensurePathInDir(root, path); err == nil {
+			t.Fatalf("path %q unexpectedly accepted outside root", path)
 		}
 	}
 }

@@ -48,7 +48,10 @@ test('session info and file names escape special characters in text and attribut
         `C2.renderFileList = ${renderFileList};`
     ].join('\n'), ctx);
 
-    const sessionHTML = ctx.sessionInfoRow('Implant UUID', special, { copy: true });
+    const sessionHTML = [
+        ctx.sessionInfoRow('Implant UUID', special, { copy: true }),
+        ctx.sessionInfoRow('Internal IP', special, { copy: true })
+    ].join('');
     const fileContainer = { innerHTML: '' };
     ctx.document.getElementById = () => fileContainer;
     ctx.C2.parseLsLine = () => ({ name: special, isDir: false, size: 1, mode: 'file' });
