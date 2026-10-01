@@ -242,7 +242,7 @@ func (m *ExternalMCPManager) LoadConfigs(cfg *config.ExternalMCPConfig) {
 
 	m.configs = make(map[string]config.ExternalMCPServerConfig)
 	for name, serverCfg := range cfg.Servers {
-		m.configs[name] = serverCfg
+		m.configs[name] = serverCfg.Clone()
 	}
 }
 
@@ -253,13 +253,16 @@ func (m *ExternalMCPManager) GetConfigs() map[string]config.ExternalMCPServerCon
 
 	result := make(map[string]config.ExternalMCPServerConfig)
 	for k, v := range m.configs {
-		result[k] = v
+		result[k] = v.Clone()
 	}
 	return result
 }
 
 // AddOrUpdateConfig 添加或更新配置
 func (m *ExternalMCPManager) AddOrUpdateConfig(name string, serverCfg config.ExternalMCPServerConfig) error {
+	// Callers retain their own config. Manager-owned slices/maps are immutable
+	// after publication; scalar state changes replace structs under m.mu.
+	serverCfg = serverCfg.Clone()
 	m.mu.Lock()
 	defer m.mu.Unlock()
 

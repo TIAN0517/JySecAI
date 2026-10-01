@@ -32,6 +32,7 @@ var rbacAssignableResourceTables = map[string]string{
 	"batch_task":    "batch_task_queues",
 	"c2_listener":   "c2_listeners",
 	"xss_payload":   "xss_payloads",
+	"xss_capture":   "xss_captures",
 }
 
 // RBACUser is a local platform account.
@@ -770,6 +771,10 @@ func (db *DB) ListAssignableRBACResourcesPage(resourceType, search string, limit
 		query = `SELECT id, COALESCE(NULLIF(title, ''), id), status FROM batch_task_queues
 			WHERE LOWER(COALESCE(NULLIF(title, ''), id)) LIKE ? ESCAPE '\' OR LOWER(id) LIKE ? ESCAPE '\'
 			ORDER BY created_at DESC LIMIT ? OFFSET ?`
+	case "xss_payload":
+		query = `SELECT id,name,status FROM xss_payloads WHERE LOWER(name) LIKE ? ESCAPE '\' OR LOWER(id) LIKE ? ESCAPE '\' ORDER BY created_at DESC LIMIT ? OFFSET ?`
+	case "xss_capture":
+		query = `SELECT id,page_title,status FROM xss_captures WHERE LOWER(page_title) LIKE ? ESCAPE '\' OR LOWER(id) LIKE ? ESCAPE '\' ORDER BY created_at DESC LIMIT ? OFFSET ?`
 	case "c2_listener":
 		query = `SELECT id, name, type || ' · ' || status FROM c2_listeners
 			WHERE LOWER(name) LIKE ? ESCAPE '\' OR LOWER(id) LIKE ? ESCAPE '\'
@@ -821,6 +826,10 @@ func (db *DB) CountAssignableRBACResources(resourceType, search string) (int, er
 		query = `SELECT COUNT(*) FROM webshell_connections WHERE LOWER(COALESCE(NULLIF(remark, ''), url)) LIKE ? ESCAPE '\' OR LOWER(id) LIKE ? ESCAPE '\'`
 	case "batch_task":
 		query = `SELECT COUNT(*) FROM batch_task_queues WHERE LOWER(COALESCE(NULLIF(title, ''), id)) LIKE ? ESCAPE '\' OR LOWER(id) LIKE ? ESCAPE '\'`
+	case "xss_payload":
+		query = `SELECT COUNT(*) FROM xss_payloads WHERE LOWER(name) LIKE ? ESCAPE '\' OR LOWER(id) LIKE ? ESCAPE '\'`
+	case "xss_capture":
+		query = `SELECT COUNT(*) FROM xss_captures WHERE LOWER(page_title) LIKE ? ESCAPE '\' OR LOWER(id) LIKE ? ESCAPE '\'`
 	case "c2_listener":
 		query = `SELECT COUNT(*) FROM c2_listeners WHERE LOWER(name) LIKE ? ESCAPE '\' OR LOWER(id) LIKE ? ESCAPE '\'`
 	}
@@ -915,6 +924,10 @@ func (db *DB) lookupRBACResourceOptionsByIDs(resourceType string, ids []string) 
 		query = `SELECT id, COALESCE(NULLIF(remark, ''), url), type FROM webshell_connections WHERE id IN (` + placeholders + `)`
 	case "batch_task":
 		query = `SELECT id, COALESCE(NULLIF(title, ''), id), status FROM batch_task_queues WHERE id IN (` + placeholders + `)`
+	case "xss_payload":
+		query = `SELECT id,name,status FROM xss_payloads WHERE id IN (` + placeholders + `)`
+	case "xss_capture":
+		query = `SELECT id,page_title,status FROM xss_captures WHERE id IN (` + placeholders + `)`
 	case "c2_listener":
 		query = `SELECT id, name, type || ' · ' || status FROM c2_listeners WHERE id IN (` + placeholders + `)`
 	default:
@@ -1082,7 +1095,7 @@ func (db *DB) AssignResourcesToUserAuto(userID string, resourceIDs []string) (in
 		{"project", "projects"}, {"conversation", "conversations"},
 		{"vulnerability", "vulnerabilities"}, {"webshell", "webshell_connections"},
 		{"asset", "assets"},
-		{"batch_task", "batch_task_queues"}, {"c2_listener", "c2_listeners"}, {"xss_payload", "xss_payloads"},
+		{"batch_task", "batch_task_queues"}, {"c2_listener", "c2_listeners"}, {"xss_payload", "xss_payloads"}, {"xss_capture", "xss_captures"},
 	}
 	detected := make(map[string]string, len(uniqueIDs))
 	for _, resourceID := range uniqueIDs {

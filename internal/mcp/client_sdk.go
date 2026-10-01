@@ -54,7 +54,7 @@ type lazySDKClient struct {
 
 func newLazySDKClient(serverCfg config.ExternalMCPServerConfig, logger *zap.Logger) *lazySDKClient {
 	return &lazySDKClient{
-		serverCfg: serverCfg,
+		serverCfg: serverCfg.Clone(),
 		logger:    logger,
 		status:    "connecting",
 	}

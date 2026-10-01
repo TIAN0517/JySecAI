@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"crypto/rand"
+	"context"
 	_ "github.com/mattn/go-sqlite3"
 	"go.uber.org/zap"
 )
@@ -123,6 +123,9 @@ func (db *DB) runPassiveCheckpoint(trigger string) {
 
 // NewDB 创建数据库连接
 func NewDB(dbPath string, logger *zap.Logger) (*DB, error) {
+	if err := preflightXSSFile(dbPath); err != nil {
+		return nil, err
+	}
 	db, err := sql.Open("sqlite3", dbPath+"?_journal_mode=WAL&_foreign_keys=1&_busy_timeout=5000&_synchronous=NORMAL")
 	if err != nil {
 		return nil, fmt.Errorf("打开数据库失败: %w", err)
@@ -652,44 +655,8 @@ func (db *DB) initTables() error {
 		created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 )`
 
-	createXssPayloadsTable := `CREATE TABLE IF NOT EXISTS xss_payloads (
-		id            INTEGER PRIMARY KEY AUTOINCREMENT,
-		token         TEXT NOT NULL UNIQUE,
-		name          TEXT,
-		type          TEXT DEFAULT 'image',
-		payload       TEXT NOT NULL,
-		config        TEXT,
-		project_id    TEXT,
-		enabled       INTEGER DEFAULT 1,
-		description   TEXT,
-		domain        TEXT,
-		domain_only   INTEGER DEFAULT 0,
-		dns_exfil_domain TEXT,
-		script        TEXT DEFAULT '',
-		created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
-		updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
-		created_by    TEXT,
-		owner_user_id TEXT
-	)`
-
-	createXssCapturesTable := `CREATE TABLE IF NOT EXISTS xss_captures (
-		id            INTEGER PRIMARY KEY AUTOINCREMENT,
-		payload_id    INTEGER NOT NULL REFERENCES xss_payloads(id) ON DELETE CASCADE,
-		token         TEXT NOT NULL,
-		cookie        TEXT NOT NULL,
-		url           TEXT,
-		domain        TEXT,
-		user_agent    TEXT,
-		ip            TEXT,
-		extra         TEXT,
-		created_at    DATETIME DEFAULT CURRENT_TIMESTAMP
-	)`
-
-	createXssConfigTable := `CREATE TABLE IF NOT EXISTS xss_config (
-		config_key    TEXT PRIMARY KEY,
-		config_value  TEXT,
-		updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP
-	)`
+	createXssPayloadsTable := xssPayloadsDDL
+	createXssCapturesTable := xssCapturesDDL
 
 	createWorkflowDefinitionsTable := `
 	CREATE TABLE IF NOT EXISTS workflow_definitions (
@@ -841,10 +808,10 @@ func (db *DB) initTables() error {
 	CREATE INDEX IF NOT EXISTS idx_workflow_package_inspections_creator_expiry ON workflow_package_inspections(created_by, expires_at);
 	CREATE UNIQUE INDEX IF NOT EXISTS uq_workflow_package_imports_actor_key ON workflow_package_imports(actor_user_id, idempotency_key);
 	CREATE UNIQUE INDEX IF NOT EXISTS uq_workflow_package_imports_inspection_success ON workflow_package_imports(inspection_id) WHERE result IN ('created','overwritten','renamed','kept_existing','skipped_identical');
-	CREATE INDEX IF NOT EXISTS idx_xss_payloads_token ON xss_payloads(token);
-	CREATE INDEX IF NOT EXISTS idx_xss_captures_payload_id ON xss_captures(payload_id);
-	CREATE INDEX IF NOT EXISTS idx_xss_captures_created_at ON xss_captures(created_at);
-	CREATE INDEX IF NOT EXISTS idx_xss_captures_token ON xss_captures(token);
+
+
+
+
 	`
 
 	if _, err := db.Exec(createConversationsTable); err != nil {
@@ -967,7 +934,6 @@ func (db *DB) initTables() error {
 		"c2_profiles":  createC2ProfilesTable,
 		"xss_payloads": createXssPayloadsTable,
 		"xss_captures": createXssCapturesTable,
-		"xss_config":   createXssConfigTable,
 	} {
 		if _, err := db.Exec(ddl); err != nil {
 			return fmt.Errorf("创建%s表失败: %w", tableName, err)
@@ -1011,11 +977,8 @@ func (db *DB) initTables() error {
 	if err := db.migrateC2ListenersTable(); err != nil {
 		db.logger.Warn("迁移c2_listeners表失败", zap.Error(err))
 	}
-	if err := db.migrateXssPayloadsTable(); err != nil {
-		return fmt.Errorf("迁移 xss_payloads 表失败: %w", err)
-	}
-	if err := db.migrateXssCapturesTable(); err != nil {
-		return fmt.Errorf("迁移 xss_captures 表失败: %w", err)
+	if err := MigrateXSSV2(context.Background(), db.DB); err != nil {
+		return err
 	}
 	if err := db.migrateWorkflowRunsTable(); err != nil {
 		db.logger.Warn("迁移workflow_runs表失败", zap.Error(err))
@@ -1808,288 +1771,6 @@ func (db *DB) migrateKnowledgeEmbeddingsColumns() error {
 			continue
 		}
 		if _, err := db.Exec(m.stmt); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// XssPayload represents a stored XSS payload used for cookie harvesting.
-type XssPayload struct {
-	ID             int64
-	Token          string
-	Name           string
-	Type           string
-	Payload        string
-	Config         []byte
-	ProjectID      string
-	Enabled        int
-	Description    string
-	Domain         string
-	DomainOnly     int
-	DNSExfilDomain string
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	CreatedBy      string
-	OwnerUserID    string
-	CaptureCount   int
-}
-
-// XssCapture represents a captured cookie / data from an XSS hit.
-type XssCapture struct {
-	ID        int64
-	PayloadID int64
-	Token     string
-	Cookie    string
-	URL       string
-	Domain    string
-	UserAgent string
-	IP        string
-	Extra     string
-	CreatedAt time.Time
-}
-
-// CreateXssPayload stores a new XSS payload and returns its database ID.
-func (db *DB) CreateXssPayload(p *XssPayload) (int64, error) {
-	var projectID interface{} = nil
-	if p.ProjectID != "" {
-		projectID = p.ProjectID
-	}
-	var ownerUserID interface{} = nil
-	if p.OwnerUserID != "" {
-		ownerUserID = p.OwnerUserID
-	}
-	result, err := db.Exec(
-		`INSERT INTO xss_payloads (token, name, type, payload, config, project_id, enabled, description, domain, domain_only, dns_exfil_domain, script, created_by, owner_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', ?, ?)`,
-		p.Token, p.Name, p.Type, p.Payload, p.Config, projectID, p.Enabled, p.Description, p.Domain, p.DomainOnly, p.DNSExfilDomain, p.CreatedBy, ownerUserID,
-	)
-	if err != nil {
-		return 0, err
-	}
-	return result.LastInsertId()
-}
-
-// ListXssPayloads returns all XSS payloads, most recent first, with capture counts.
-func (db *DB) ListXssPayloads() ([]*XssPayload, error) {
-	rows, err := db.Query(`SELECT p.id, p.token, COALESCE(p.name,''), COALESCE(p.type,'image'), p.payload, COALESCE(p.config,'{}'), COALESCE(p.project_id,''), p.enabled, COALESCE(p.description,''), COALESCE(p.domain,''), COALESCE(p.domain_only,0), COALESCE(p.dns_exfil_domain,''), p.created_at, p.updated_at, COALESCE(p.created_by,''), COUNT(c.id) as capture_count FROM xss_payloads p LEFT JOIN xss_captures c ON c.payload_id = p.id GROUP BY p.id ORDER BY p.created_at DESC`)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var payloads []*XssPayload
-	for rows.Next() {
-		var p XssPayload
-		var configVal []byte
-		var nameVal, typeVal, projVal, descVal, domainVal, createdByVal, dnsExfilVal string
-		var domainOnlyVal, enabledVal int
-		var createdAt, updatedAt time.Time
-		if err := rows.Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &dnsExfilVal, &createdAt, &updatedAt, &createdByVal, &p.CaptureCount); err != nil {
-			return nil, err
-		}
-		p.Name = nameVal
-		p.Type = typeVal
-		p.Config = configVal
-		p.ProjectID = projVal
-		p.Enabled = enabledVal
-		p.Description = descVal
-		p.Domain = domainVal
-		p.DomainOnly = domainOnlyVal
-		p.DNSExfilDomain = dnsExfilVal
-		p.CreatedAt = createdAt
-		p.UpdatedAt = updatedAt
-		p.CreatedBy = createdByVal
-		payloads = append(payloads, &p)
-	}
-	return payloads, rows.Err()
-}
-
-// GetXssPayload retrieves a payload by its numeric ID.
-func (db *DB) GetXssPayload(id int64) (*XssPayload, error) {
-	var p XssPayload
-	var nameVal, typeVal, projVal, descVal, domainVal, createdByVal, dnsExfilVal string
-	var domainOnlyVal, enabledVal int
-	var configVal []byte
-	var createdAt, updatedAt time.Time
-	var captureCount int
-	err := db.QueryRow(
-		`SELECT p.id, p.token, COALESCE(p.name,''), COALESCE(p.type,'image'), p.payload, COALESCE(p.config,'{}'), COALESCE(p.project_id,''), p.enabled, COALESCE(p.description,''), COALESCE(p.domain,''), COALESCE(p.domain_only,0), COALESCE(p.dns_exfil_domain,''), p.created_at, p.updated_at, COALESCE(p.created_by,''), COUNT(c.id) as capture_count FROM xss_payloads p LEFT JOIN xss_captures c ON c.payload_id = p.id WHERE p.id = ? GROUP BY p.id`,
-		id,
-	).Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &dnsExfilVal, &createdAt, &updatedAt, &createdByVal, &captureCount)
-	if err != nil {
-		return nil, err
-	}
-	p.Name = nameVal
-	p.Type = typeVal
-	p.Config = configVal
-	p.ProjectID = projVal
-	p.Enabled = enabledVal
-	p.Description = descVal
-	p.Domain = domainVal
-	p.DomainOnly = domainOnlyVal
-	p.DNSExfilDomain = dnsExfilVal
-	p.CreatedAt = createdAt
-	p.UpdatedAt = updatedAt
-	p.CreatedBy = createdByVal
-	p.CaptureCount = captureCount
-	return &p, nil
-}
-
-// GetXssPayloadByToken retrieves a payload by its token (used by the collector endpoint).
-func (db *DB) GetXssPayloadByToken(token string) (*XssPayload, error) {
-	var p XssPayload
-	var nameVal, typeVal, projVal, descVal, domainVal, createdByVal, dnsExfilVal string
-	var domainOnlyVal, enabledVal int
-	var configVal []byte
-	var createdAt, updatedAt time.Time
-	err := db.QueryRow(
-		`SELECT id, token, COALESCE(name,''), COALESCE(type,'image'), payload, COALESCE(config,'{}'), COALESCE(project_id,''), enabled, COALESCE(description,''), COALESCE(domain,''), COALESCE(domain_only,0), COALESCE(dns_exfil_domain,''), created_at, updated_at, COALESCE(created_by,'') FROM xss_payloads WHERE token = ?`,
-		token,
-	).Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &dnsExfilVal, &createdAt, &updatedAt, &createdByVal)
-	if err != nil {
-		return nil, err
-	}
-	p.Name = nameVal
-	p.Type = typeVal
-	p.Config = configVal
-	p.ProjectID = projVal
-	p.Enabled = enabledVal
-	p.Description = descVal
-	p.Domain = domainVal
-	p.DomainOnly = domainOnlyVal
-	p.DNSExfilDomain = dnsExfilVal
-	p.CreatedAt = createdAt
-	p.UpdatedAt = updatedAt
-	p.CreatedBy = createdByVal
-	return &p, nil
-}
-
-// DeleteXssPayload removes a payload and all associated captures.
-func (db *DB) DeleteXssPayload(id int64) error {
-	_, err := db.Exec(`DELETE FROM xss_payloads WHERE id = ?`, id)
-	return err
-}
-
-// CreateXssCapture stores a cookie capture from a victim and returns its ID.
-func (db *DB) CreateXssCapture(payloadID int64, token, cookie, url, domain, userAgent, ip, extra string) (int64, error) {
-	result, err := db.Exec(
-		`INSERT INTO xss_captures (payload_id, token, cookie, url, domain, user_agent, ip, extra) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-		payloadID, token, cookie, url, domain, userAgent, ip, extra,
-	)
-	if err != nil {
-		return 0, err
-	}
-	return result.LastInsertId()
-}
-
-// ListXssCaptures returns all captures, most recent first.
-func (db *DB) ListXssCaptures() ([]*XssCapture, error) {
-	rows, err := db.Query(`SELECT id, payload_id, token, cookie, url, domain, user_agent, ip, extra, created_at FROM xss_captures ORDER BY created_at DESC`)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var captures []*XssCapture
-	for rows.Next() {
-		var c XssCapture
-		if err := rows.Scan(&c.ID, &c.PayloadID, &c.Token, &c.Cookie, &c.URL, &c.Domain, &c.UserAgent, &c.IP, &c.Extra, &c.CreatedAt); err != nil {
-			return nil, err
-		}
-		captures = append(captures, &c)
-	}
-	return captures, rows.Err()
-}
-
-// ListXssCapturesByPayload returns captures for a specific payload, most recent first.
-func (db *DB) ListXssCapturesByPayload(payloadID int64) ([]*XssCapture, error) {
-	rows, err := db.Query(`SELECT id, payload_id, token, cookie, url, domain, user_agent, ip, extra, created_at FROM xss_captures WHERE payload_id = ? ORDER BY created_at DESC`, payloadID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var captures []*XssCapture
-	for rows.Next() {
-		var c XssCapture
-		if err := rows.Scan(&c.ID, &c.PayloadID, &c.Token, &c.Cookie, &c.URL, &c.Domain, &c.UserAgent, &c.IP, &c.Extra, &c.CreatedAt); err != nil {
-			return nil, err
-		}
-		captures = append(captures, &c)
-	}
-	return captures, rows.Err()
-}
-
-// GetPayloadCaptureCount returns the number of captures for a given payload.
-func (db *DB) GetPayloadCaptureCount(payloadID int64) (int, error) {
-	var count int
-	err := db.QueryRow(`SELECT COUNT(*) FROM xss_captures WHERE payload_id = ?`, payloadID).Scan(&count)
-	return count, err
-}
-
-// GenerateXssToken generates a 40-char hex token for XSS payloads.
-func GenerateXssToken() string {
-	b := make([]byte, 20)
-	if _, err := rand.Read(b); err != nil {
-		return fmt.Sprintf("%x", time.Now().UnixNano())
-	}
-	return fmt.Sprintf("%x", b)
-}
-
-// GenerateXssTokenShort generates a short random hex token for IDs.
-func GenerateXssTokenShort() string {
-	b := make([]byte, 8)
-	if _, err := rand.Read(b); err != nil {
-		return fmt.Sprintf("%x", time.Now().UnixNano())
-	}
-	return fmt.Sprintf("%x", b)
-}
-
-// migrateXssPayloadsTable ensures new columns (name, type, config,
-// project_id, updated_at) exist on pre-existing XSS databases.
-func (db *DB) migrateXssPayloadsTable() error {
-	for _, col := range []struct {
-		name string
-		stmt string
-	}{
-		{"name", "ALTER TABLE xss_payloads ADD COLUMN name TEXT"},
-		{"type", "ALTER TABLE xss_payloads ADD COLUMN type TEXT DEFAULT 'image'"},
-		{"config", "ALTER TABLE xss_payloads ADD COLUMN config TEXT"},
-		{"project_id", "ALTER TABLE xss_payloads ADD COLUMN project_id TEXT"},
-		{"updated_at", "ALTER TABLE xss_payloads ADD COLUMN updated_at DATETIME DEFAULT CURRENT_TIMESTAMP"},
-		{"owner_user_id", "ALTER TABLE xss_payloads ADD COLUMN owner_user_id TEXT"},
-		{"token", "ALTER TABLE xss_payloads ADD COLUMN token TEXT"},
-		{"payload", "ALTER TABLE xss_payloads ADD COLUMN payload TEXT"},
-		{"enabled", "ALTER TABLE xss_payloads ADD COLUMN enabled INTEGER DEFAULT 1"},
-		{"description", "ALTER TABLE xss_payloads ADD COLUMN description TEXT"},
-		{"domain", "ALTER TABLE xss_payloads ADD COLUMN domain TEXT"},
-		{"domain_only", "ALTER TABLE xss_payloads ADD COLUMN domain_only INTEGER DEFAULT 0"},
-		{"dns_exfil_domain", "ALTER TABLE xss_payloads ADD COLUMN dns_exfil_domain TEXT"},
-		{"script", "ALTER TABLE xss_payloads ADD COLUMN script TEXT DEFAULT ''"},
-	} {
-		if err := db.addColumnIfMissing("xss_payloads", col.name, col.stmt); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// migrateXssCapturesTable ensures columns (token, cookie, url, domain, user_agent,
-// ip, extra) exist on pre-existing xss_captures tables.
-func (db *DB) migrateXssCapturesTable() error {
-	for _, col := range []struct {
-		name string
-		stmt string
-	}{
-		{"token", "ALTER TABLE xss_captures ADD COLUMN token TEXT"},
-		{"cookie", "ALTER TABLE xss_captures ADD COLUMN cookie TEXT"},
-		{"url", "ALTER TABLE xss_captures ADD COLUMN url TEXT"},
-		{"domain", "ALTER TABLE xss_captures ADD COLUMN domain TEXT"},
-		{"user_agent", "ALTER TABLE xss_captures ADD COLUMN user_agent TEXT"},
-		{"ip", "ALTER TABLE xss_captures ADD COLUMN ip TEXT"},
-		{"extra", "ALTER TABLE xss_captures ADD COLUMN extra TEXT"},
-	} {
-		if err := db.addColumnIfMissing("xss_captures", col.name, col.stmt); err != nil {
 			return err
 		}
 	}
