@@ -7,7 +7,8 @@ import (
 
 var sensitiveKeySubstrings = []string{
 	"password", "api_key", "apikey", "secret", "token", "authorization",
-	"credential", "private_key", "access_key",
+	"credential", "private_key", "access_key", "passphrase", "cookie",
+	"bearer", "signature", "webhook_key",
 }
 
 // SanitizeDetail redacts sensitive keys and truncates serialized size.

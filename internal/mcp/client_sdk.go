@@ -3,11 +3,17 @@ package mcp
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
+	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -357,6 +363,9 @@ func mustJSON(v interface{}) []byte {
 // createSDKClient 根据配置创建并连接外部 MCP 客户端（使用官方 SDK），返回实现 ExternalMCPClient 的 *sdkClient
 // 若连接失败返回 (nil, error)。ctx 用于连接超时与取消。
 func createSDKClient(ctx context.Context, serverCfg config.ExternalMCPServerConfig, logger *zap.Logger) (ExternalMCPClient, error) {
+	if err := ValidateExternalMCPServerSecurity(serverCfg); err != nil {
+		return nil, err
+	}
 	timeout := time.Duration(serverCfg.Timeout) * time.Second
 	if timeout <= 0 {
 		timeout = 30 * time.Second
@@ -386,12 +395,15 @@ func createSDKClient(ctx context.Context, serverCfg config.ExternalMCPServerConf
 		if serverCfg.Command == "" {
 			return nil, fmt.Errorf("stdio 模式需要配置 command")
 		}
+		commandPath, err := validateExternalMCPCommand(serverCfg)
+		if err != nil {
+			return nil, err
+		}
 		// 必须用 exec.Command 而非 CommandContext：doConnect 返回后 ctx 会被 cancel，
 		// 若用 CommandContext(ctx) 会立刻杀掉子进程，导致 ListTools 等后续请求失败、显示 0 工具
-		cmd := exec.Command(serverCfg.Command, serverCfg.Args...)
-		if len(serverCfg.Env) > 0 {
-			cmd.Env = append(cmd.Env, envMapToSlice(serverCfg.Env)...)
-		}
+		cmd := exec.Command(commandPath, serverCfg.Args...)
+		cmd.Dir = strings.TrimSpace(serverCfg.WorkingDirectory)
+		cmd.Env = envMapToSlice(serverCfg.Env, serverCfg.InheritParentEnv)
 		ct := &mcp.CommandTransport{Command: cmd}
 		if serverCfg.TerminateDuration > 0 {
 			ct.TerminateDuration = time.Duration(serverCfg.TerminateDuration) * time.Second
@@ -403,7 +415,7 @@ func createSDKClient(ctx context.Context, serverCfg config.ExternalMCPServerConf
 		}
 		// SSE 是长连接（GET 流持续打开），不能设置 http.Client.Timeout（会在超时后杀掉整个连接导致 EOF）。
 		// 超时由每次 ListTools/CallTool 的 context 单独控制。
-		httpClient := httpClientForLongLived(serverCfg.Headers)
+		httpClient := httpClientForLongLived(serverCfg.Headers, serverCfg.AllowInsecureHTTP)
 		t = &mcp.SSEClientTransport{
 			Endpoint:   serverCfg.URL,
 			HTTPClient: httpClient,
@@ -412,7 +424,7 @@ func createSDKClient(ctx context.Context, serverCfg config.ExternalMCPServerConf
 		if serverCfg.URL == "" {
 			return nil, fmt.Errorf("http 模式需要配置 url")
 		}
-		httpClient := httpClientWithTimeoutAndHeaders(timeout, serverCfg.Headers)
+		httpClient := httpClientWithTimeoutAndHeaders(timeout, serverCfg.Headers, serverCfg.AllowInsecureHTTP)
 		st := &mcp.StreamableClientTransport{
 			Endpoint:   serverCfg.URL,
 			HTTPClient: httpClient,
@@ -433,11 +445,25 @@ func createSDKClient(ctx context.Context, serverCfg config.ExternalMCPServerConf
 	return newSDKClientFromSession(session, client, logger), nil
 }
 
-func envMapToSlice(env map[string]string) []string {
+func envMapToSlice(env map[string]string, inheritParent bool) []string {
 	m := make(map[string]string)
-	for _, s := range os.Environ() {
-		if i := strings.IndexByte(s, '='); i > 0 {
-			m[s[:i]] = s[i+1:]
+	if inheritParent {
+		for _, s := range os.Environ() {
+			if i := strings.IndexByte(s, '='); i > 0 {
+				m[s[:i]] = s[i+1:]
+			}
+		}
+	} else {
+		// 保留启动常见运行时所需的非凭证变量；云端 token/API key 不会被隐式继承。
+		for _, key := range []string{
+			"PATH", "PATHEXT", "SYSTEMROOT", "WINDIR", "COMSPEC",
+			"HOME", "USERPROFILE", "APPDATA", "LOCALAPPDATA", "PROGRAMDATA",
+			"TMP", "TEMP", "LANG", "LC_ALL", "XDG_CACHE_HOME", "XDG_CONFIG_HOME", "XDG_DATA_HOME",
+			"NUMBER_OF_PROCESSORS", "PROCESSOR_ARCHITECTURE",
+		} {
+			if value, ok := os.LookupEnv(key); ok {
+				m[key] = value
+			}
 		}
 	}
 	for k, v := range env {
@@ -450,7 +476,99 @@ func envMapToSlice(env map[string]string) []string {
 	return out
 }
 
-func httpClientWithTimeoutAndHeaders(timeout time.Duration, headers map[string]string) *http.Client {
+func ValidateExternalMCPServerSecurity(cfg config.ExternalMCPServerConfig) error {
+	transport := cfg.GetTransportType()
+	if transport != "http" && transport != "sse" {
+		return nil
+	}
+	u, err := url.Parse(strings.TrimSpace(cfg.URL))
+	if err != nil || u.Hostname() == "" {
+		return fmt.Errorf("MCP URL 无效")
+	}
+	if u.User != nil {
+		return fmt.Errorf("MCP URL 不允许内嵌账号或凭证，请使用 headers")
+	}
+	if strings.EqualFold(u.Scheme, "https") {
+		return nil
+	}
+	if !strings.EqualFold(u.Scheme, "http") {
+		return fmt.Errorf("MCP URL 仅支持 https；本机相容模式可使用 http")
+	}
+	host := strings.ToLower(u.Hostname())
+	loopback := isLoopbackHost(host)
+	if !loopback && !cfg.AllowInsecureHTTP {
+		return fmt.Errorf("远端 MCP 必须使用 HTTPS；若为受控旧环境，请显式设置 allow_insecure_http")
+	}
+	return nil
+}
+
+// netParseIP 独立封装，便于测试 URL 主机验证且不触发 DNS。
+var netParseIP = net.ParseIP
+
+func isLoopbackHost(host string) bool {
+	host = strings.ToLower(strings.TrimSpace(host))
+	ip := netParseIP(host)
+	return host == "localhost" || (ip != nil && ip.IsLoopback())
+}
+
+func validateExternalMCPCommand(cfg config.ExternalMCPServerConfig) (string, error) {
+	commandPath, err := exec.LookPath(strings.TrimSpace(cfg.Command))
+	if err != nil {
+		return "", fmt.Errorf("找不到 MCP 命令: %w", err)
+	}
+	commandPath, err = filepath.Abs(commandPath)
+	if err != nil {
+		return "", fmt.Errorf("解析 MCP 命令路径失败: %w", err)
+	}
+	resolvedPath, err := filepath.EvalSymlinks(commandPath)
+	if err != nil {
+		return "", fmt.Errorf("解析 MCP 命令符号链接失败: %w", err)
+	}
+	if len(cfg.AllowedCommandRoots) > 0 {
+		allowed := false
+		for _, root := range cfg.AllowedCommandRoots {
+			rootAbs, rootErr := filepath.Abs(strings.TrimSpace(root))
+			if rootErr != nil {
+				continue
+			}
+			rootResolved, rootErr := filepath.EvalSymlinks(rootAbs)
+			if rootErr == nil && pathWithinRoot(rootResolved, resolvedPath) {
+				allowed = true
+				break
+			}
+		}
+		if !allowed {
+			return "", fmt.Errorf("MCP 命令不在 allowed_command_roots 内")
+		}
+	}
+	wantHash := strings.ToLower(strings.TrimSpace(cfg.CommandSHA256))
+	if wantHash != "" {
+		if len(wantHash) != 64 {
+			return "", fmt.Errorf("command_sha256 必须是 64 位十六进制")
+		}
+		f, openErr := os.Open(resolvedPath)
+		if openErr != nil {
+			return "", fmt.Errorf("读取 MCP 命令失败: %w", openErr)
+		}
+		h := sha256.New()
+		_, copyErr := io.Copy(h, f)
+		closeErr := f.Close()
+		if copyErr != nil || closeErr != nil {
+			return "", fmt.Errorf("计算 MCP 命令摘要失败")
+		}
+		if fmt.Sprintf("%x", h.Sum(nil)) != wantHash {
+			return "", fmt.Errorf("MCP 命令 SHA-256 不匹配")
+		}
+	}
+	return resolvedPath, nil
+}
+
+func pathWithinRoot(root, target string) bool {
+	rel, err := filepath.Rel(root, target)
+	return err == nil && rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator))
+}
+
+func httpClientWithTimeoutAndHeaders(timeout time.Duration, headers map[string]string, allowInsecureHTTP bool) *http.Client {
 	transport := http.DefaultTransport
 	if len(headers) > 0 {
 		transport = &headerRoundTripper{
@@ -459,15 +577,16 @@ func httpClientWithTimeoutAndHeaders(timeout time.Duration, headers map[string]s
 		}
 	}
 	return &http.Client{
-		Timeout:   timeout,
-		Transport: transport,
+		Timeout:       timeout,
+		Transport:     transport,
+		CheckRedirect: secureMCPRedirectPolicy(allowInsecureHTTP),
 	}
 }
 
 // httpClientForLongLived 创建不设超时的 HTTP 客户端，用于 SSE 等长连接传输。
 // SSE 的 GET 流会持续打开，http.Client.Timeout 会在超时后强制关闭连接导致 EOF。
 // 超时由调用方通过 context 控制。
-func httpClientForLongLived(headers map[string]string) *http.Client {
+func httpClientForLongLived(headers map[string]string, allowInsecureHTTP bool) *http.Client {
 	transport := http.DefaultTransport
 	if len(headers) > 0 {
 		transport = &headerRoundTripper{
@@ -476,8 +595,32 @@ func httpClientForLongLived(headers map[string]string) *http.Client {
 		}
 	}
 	return &http.Client{
-		Transport: transport,
+		Transport:     transport,
+		CheckRedirect: secureMCPRedirectPolicy(allowInsecureHTTP),
 		// 不设 Timeout，SSE 长连接的超时由 per-request context 控制
+	}
+}
+
+func secureMCPRedirectPolicy(allowInsecureHTTP bool) func(*http.Request, []*http.Request) error {
+	return func(req *http.Request, via []*http.Request) error {
+		if len(via) >= 10 {
+			return errors.New("stopped after 10 redirects")
+		}
+		if strings.EqualFold(req.URL.Scheme, "https") {
+			return nil
+		}
+		host := strings.ToLower(req.URL.Hostname())
+		if strings.EqualFold(req.URL.Scheme, "http") {
+			if allowInsecureHTTP {
+				return nil
+			}
+			// localhost HTTP is only a compatibility path for a request that was
+			// already local; a remote HTTPS server must not redirect into loopback.
+			if isLoopbackHost(host) && len(via) > 0 && isLoopbackHost(via[0].URL.Hostname()) {
+				return nil
+			}
+		}
+		return fmt.Errorf("拒绝 MCP 重定向到不安全 URL")
 	}
 }
 

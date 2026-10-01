@@ -135,6 +135,10 @@ func (h *C2Handler) CreateListener(c *gin.Context) {
 // GetListener 获取单个监听器
 func (h *C2Handler) GetListener(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_listener", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	listener, err := h.mgr().DB().GetC2Listener(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -152,6 +156,10 @@ func (h *C2Handler) GetListener(c *gin.Context) {
 // UpdateListener 更新监听器
 func (h *C2Handler) UpdateListener(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_listener", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	listener, err := h.mgr().DB().GetC2Listener(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -228,6 +236,10 @@ func (h *C2Handler) UpdateListener(c *gin.Context) {
 // DeleteListener 删除监听器
 func (h *C2Handler) DeleteListener(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_listener", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	if err := h.mgr().DeleteListener(id); err != nil {
 		code := http.StatusInternalServerError
 		if e, ok := err.(*c2.CommonError); ok {
@@ -245,6 +257,10 @@ func (h *C2Handler) DeleteListener(c *gin.Context) {
 // StartListener 启动监听器
 func (h *C2Handler) StartListener(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_listener", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	listener, err := h.mgr().StartListener(id)
 	if err != nil {
 		code := http.StatusInternalServerError
@@ -265,6 +281,10 @@ func (h *C2Handler) StartListener(c *gin.Context) {
 // StopListener 停止监听器
 func (h *C2Handler) StopListener(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_listener", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	if err := h.mgr().StopListener(id); err != nil {
 		code := http.StatusInternalServerError
 		if e, ok := err.(*c2.CommonError); ok {
@@ -312,6 +332,10 @@ func (h *C2Handler) ListSessions(c *gin.Context) {
 // GetSession 获取单个会话
 func (h *C2Handler) GetSession(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_session", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	session, err := h.mgr().DB().GetC2Session(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -337,6 +361,10 @@ func (h *C2Handler) GetSession(c *gin.Context) {
 // DeleteSession 删除会话
 func (h *C2Handler) DeleteSession(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_session", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	if err := h.mgr().DB().DeleteC2Session(id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -380,6 +408,10 @@ func (h *C2Handler) DeleteSessions(c *gin.Context) {
 // SetSessionSleep 设置会话的 sleep/jitter，并下发 sleep 任务到植入体
 func (h *C2Handler) SetSessionSleep(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_session", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	var req struct {
 		SleepSeconds  int `json:"sleep_seconds"`
 		JitterPercent int `json:"jitter_percent"`
@@ -420,6 +452,10 @@ func (h *C2Handler) SetSessionSleep(c *gin.Context) {
 // SetSessionNote 更新会话备注（仅服务端元数据，不下发植入体）
 func (h *C2Handler) SetSessionNote(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_session", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	var req struct {
 		Note string `json:"note"`
 	}
@@ -571,6 +607,10 @@ func (h *C2Handler) DeleteTasks(c *gin.Context) {
 // GetTask 获取单个任务
 func (h *C2Handler) GetTask(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_task", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	task, err := h.mgr().DB().GetC2Task(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -641,6 +681,10 @@ func (h *C2Handler) CreateTask(c *gin.Context) {
 // CancelTask 取消任务
 func (h *C2Handler) CancelTask(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_task", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	if err := h.mgr().CancelTask(id); err != nil {
 		code := http.StatusInternalServerError
 		if e, ok := err.(*c2.CommonError); ok {
@@ -658,6 +702,10 @@ func (h *C2Handler) CancelTask(c *gin.Context) {
 // WaitTask 等待任务完成
 func (h *C2Handler) WaitTask(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_task", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	timeout := 60 * time.Second
 	if t := c.Query("timeout"); t != "" {
 		if n, err := strconv.Atoi(t); err == nil && n > 0 {

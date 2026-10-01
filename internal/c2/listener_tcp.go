@@ -29,11 +29,11 @@ type TCPReverseListener struct {
 	manager *Manager
 	logger  *zap.Logger
 
-	mu        sync.Mutex
-	listener  net.Listener
-	stopCh    chan struct{}
-	conns     map[string]*tcpReverseConn // session_id → 连接
-	stopOnce  sync.Once
+	mu       sync.Mutex
+	listener net.Listener
+	stopCh   chan struct{}
+	conns    map[string]*tcpReverseConn // session_id → 连接
+	stopOnce sync.Once
 }
 
 // tcpReverseConn 单个反弹会话的运行时状态
@@ -274,7 +274,7 @@ func (l *TCPReverseListener) runTaskOnConn(c *tcpReverseConn, env TaskEnvelope) 
 	startedAt := NowUnixMillis()
 	cmd, ok := buildTCPCommand(TaskType(env.TaskType), env.Payload)
 	if !ok {
-		l.reportTaskResult(env.TaskID, startedAt, false, "", "tcp_reverse listener 不支持该任务类型: "+env.TaskType, "", "")
+		l.reportTaskResult(c.sessionID, env.TaskID, startedAt, false, "", "tcp_reverse listener 不支持该任务类型: "+env.TaskType, "", "")
 		return
 	}
 
@@ -294,7 +294,7 @@ func (l *TCPReverseListener) runTaskOnConn(c *tcpReverseConn, env TaskEnvelope) 
 	_ = c.conn.SetWriteDeadline(time.Now().Add(15 * time.Second))
 	if _, err := c.conn.Write([]byte(wrapped)); err != nil {
 		c.writeMu.Unlock()
-		l.reportTaskResult(env.TaskID, startedAt, false, "", "写命令失败: "+err.Error(), "", "")
+		l.reportTaskResult(c.sessionID, env.TaskID, startedAt, false, "", "写命令失败: "+err.Error(), "", "")
 		return
 	}
 	c.writeMu.Unlock()
@@ -303,22 +303,22 @@ func (l *TCPReverseListener) runTaskOnConn(c *tcpReverseConn, env TaskEnvelope) 
 	defer cancel()
 	output, err := readUntilMarker(ctx, c.reader, endMark)
 	if err != nil {
-		l.reportTaskResult(env.TaskID, startedAt, false, output, "读取结果失败: "+err.Error(), "", "")
+		l.reportTaskResult(c.sessionID, env.TaskID, startedAt, false, output, "读取结果失败: "+err.Error(), "", "")
 		return
 	}
 	cleaned := cleanShellOutput(output, cmd)
 	if TaskType(env.TaskType) == TaskTypeDownload {
 		if errMsg := detectDownloadShellError(cleaned); errMsg != "" {
-			l.reportTaskResult(env.TaskID, startedAt, false, cleaned, errMsg, "", "")
+			l.reportTaskResult(c.sessionID, env.TaskID, startedAt, false, cleaned, errMsg, "", "")
 			return
 		}
 	}
-	l.reportTaskResult(env.TaskID, startedAt, true, cleaned, "", "", "")
+	l.reportTaskResult(c.sessionID, env.TaskID, startedAt, true, cleaned, "", "", "")
 }
 
-// reportTaskResult 适配 Manager.IngestTaskResult，统一报告路径
-func (l *TCPReverseListener) reportTaskResult(taskID string, startedAtMS int64, success bool, output, errMsg, blobB64, blobSuffix string) {
-	_ = l.manager.IngestTaskResult(TaskResultReport{
+// reportTaskResult 适配 Manager.IngestTaskResultForSession，统一报告路径
+func (l *TCPReverseListener) reportTaskResult(sessionID, taskID string, startedAtMS int64, success bool, output, errMsg, blobB64, blobSuffix string) {
+	_ = l.manager.IngestTaskResultForSession(sessionID, TaskResultReport{
 		TaskID:     taskID,
 		Success:    success,
 		Output:     output,

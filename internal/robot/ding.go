@@ -93,7 +93,7 @@ func handleDingMessage(ctx context.Context, msg *chatbot.BotCallbackDataModel, c
 		logger.Debug("钉钉消息内容为空，已忽略", zap.String("msgtype", msg.Msgtype))
 		return
 	}
-	logger.Info("钉钉收到消息", zap.String("sender", msg.SenderId), zap.String("content", content))
+	logger.Info("钉钉收到消息", zap.String("sender", msg.SenderId), zap.Int("content_bytes", len(content)))
 	tenantKey := strings.TrimSpace(cfg.ClientID)
 	if tenantKey == "" {
 		tenantKey = "default"

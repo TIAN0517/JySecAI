@@ -135,6 +135,10 @@ agent:
   system_prompt_path: ""
 # 调用拦截：在「安全防护 → 调用拦截」编辑并保存后立即生效；与 HITL 审批白名单独立。
 # 旧配置省略 tool_guard 时也默认启用政府域名保护。手动修改 YAML 后需重启。
+#
+# scope（授权范围）：有正式授权书/服务契约的渗透测试案件，把范围内目标列在
+# scope 中即可正常探测，范围外的政府/关键基础设施仍会被拦截。
+# 省略或留空 = 全部拦截（与旧版本行为完全一致）。
 tool_guard:
   enabled: true
   rules:
@@ -145,6 +149,37 @@ tool_guard:
       pattern: '(?i)(?:^|[^\p{L}\p{M}\p{N}_.-])(?P<match>(?:(?:[\p{L}\p{M}\p{N}_*-]+\.)+gov(?:\.[\p{L}\p{M}\p{N}_*-]+)*|gov(?:\.[\p{L}\p{M}\p{N}_*-]+)+|\.gov(?:\.[\p{L}\p{M}\p{N}_*-]+)*)\.?)(?:$|[^\p{L}\p{M}\p{N}_.-])'
       # 支持 {match}、{tool}、{rule}；留空使用通用提醒。
       message: '识别到 {match}，禁止攻击政府网站。请检查目标与授权范围，并更换为已获授权的非政府目标。'
+
+  # ---- 授权范围（engagement scope）----
+  # 只列出来源可查的目标。建议在项目档案中保存授权证明（案号、期间、联络窗口），
+  # 与本清单一并归档，便于交付与稽核。
+  # 命中 scope 的目标：跳过政府域名规则，正常执行。
+  # 未命中：维持原拦截行为。
+  #
+  # 四种写法可混用：
+  #   domains          精确主机名（不含 scheme/port/path）
+  #   domain_suffixes  后缀，必须以 "." 开头；只匹配更长的主机
+  #                    ".city.gov.example" 会命中 status.city.gov.example，
+  #                    但不会命中 "city.gov.example.evil.test"（防后缀走私）
+  #   wildcards        shell 风格通配；* 不跨越 "."，即 "*.gov.tw" 不匹配 "a.b.gov.tw"
+  #   cidrs            IPv4/IPv6 网段，IP 直连时使用
+  scope:
+    domains: []
+    domain_suffixes: []
+    wildcards: []
+    cidrs: []
+    # 填写示例（有授权时改成实际范围）：
+    # domains:
+    #   - portal.agency.gov.example
+    #   - api.department.gov.example
+    # domain_suffixes:
+    #   - .city.gov.example
+    #   - .department.gov.example
+    # wildcards:
+    #   - "*.agency.gov.example"
+    # cidrs:
+    #   - 192.0.2.10/32
+    #   - 198.51.100.0/24
 
 # 人机协同（HITL）全局白名单：此处列出的工具始终免审批，与对话页「白名单工具（免审批，逗号分隔）」合并为并集；侧栏「应用」可合并写入本列表并立即生效。
 # 非白名单工具在审批方=审计 Agent 时，按会话 HITL 模式选用提示词：

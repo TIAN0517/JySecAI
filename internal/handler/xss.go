@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -16,6 +17,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
+
+func xssTokenHint(token string) string {
+	sum := sha256.Sum256([]byte(token))
+	return fmt.Sprintf("%x", sum[:6])
+}
 
 // XssHandler handles the XSS cookie-harvesting platform endpoints.
 // Public (collector) endpoints run on a dedicated HTTP server that does
@@ -189,9 +195,9 @@ func (h *XssHandler) Capture(w http.ResponseWriter, r *http.Request, token strin
 
 	_, _ = h.db.CreateXssCapture(payload.ID, payload.Token, cookie, url, payload.Domain, userAgent, ip, extra)
 	h.logger.Info("XSS capture received",
-		zap.String("token", token),
+		zap.String("token_hint", xssTokenHint(token)),
 		zap.String("ip", ip),
-		zap.String("url", url),
+		zap.Int("url_bytes", len(url)),
 	)
 
 	// Return a 1x1 transparent GIF so the image-beacon fallback also succeeds
@@ -223,7 +229,7 @@ func (h *XssHandler) ServeCollectorGIF(w http.ResponseWriter, r *http.Request, t
 	if cookie != "" {
 		_, _ = h.db.CreateXssCapture(payload.ID, payload.Token, cookie, url, payload.Domain, userAgent, ip, "")
 		h.logger.Info("XSS capture (img beacon) received",
-			zap.String("token", token),
+			zap.String("token_hint", xssTokenHint(token)),
 			zap.String("ip", ip),
 		)
 	}

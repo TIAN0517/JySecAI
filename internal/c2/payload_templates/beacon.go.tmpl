@@ -125,7 +125,7 @@ func main() {
 		Timeout: 60 * time.Second,
 		Transport: &http.Transport{
 			DisableKeepAlives:   true,
-			TLSClientConfig:   &tls.Config{InsecureSkipVerify: true},
+			TLSClientConfig:   &tls.Config{InsecureSkipVerify: {{.TLSInsecureSkipVerify}}, MinVersion: tls.VersionTLS12},
 			TLSHandshakeTimeout: 10 * time.Second,
 		},
 	}

@@ -60,6 +60,7 @@ type DB struct {
 	closeOnce                sync.Once
 	closeErr                 error
 	vulnerabilityCreatedHook func(*Vulnerability)
+	credentialCipher         *credentialCipher
 }
 
 // startPassiveCheckpointLoop 启动后台 PASSIVE checkpoint 循环。
@@ -123,6 +124,10 @@ func (db *DB) runPassiveCheckpoint(trigger string) {
 
 // NewDB 创建数据库连接
 func NewDB(dbPath string, logger *zap.Logger) (*DB, error) {
+	credentialCipher, err := newCredentialCipher(dbPath)
+	if err != nil {
+		return nil, fmt.Errorf("初始化凭证加密失败: %w", err)
+	}
 	db, err := sql.Open("sqlite3", dbPath+"?_journal_mode=WAL&_foreign_keys=1&_busy_timeout=5000&_synchronous=NORMAL")
 	if err != nil {
 		return nil, fmt.Errorf("打开数据库失败: %w", err)
@@ -140,8 +145,9 @@ func NewDB(dbPath string, logger *zap.Logger) (*DB, error) {
 	}
 
 	database := &DB{
-		DB:     db,
-		logger: logger,
+		DB:               db,
+		logger:           logger,
+		credentialCipher: credentialCipher,
 	}
 	// Keep conversation-scoped artifacts near database files, so cleanup can follow conversation lifecycle.
 	baseDir := filepath.Join(filepath.Dir(dbPath), "conversation_artifacts")
@@ -159,6 +165,10 @@ func NewDB(dbPath string, logger *zap.Logger) (*DB, error) {
 	if err := database.migrateLegacyToolGuardBlocks(); err != nil {
 		_ = db.Close()
 		return nil, fmt.Errorf("迁移历史安全拦截记录失败: %w", err)
+	}
+	if err := database.migrateCredentialEncryption(); err != nil {
+		_ = db.Close()
+		return nil, fmt.Errorf("迁移数据库凭证加密失败: %w", err)
 	}
 	database.startPassiveCheckpointLoop("conversations")
 

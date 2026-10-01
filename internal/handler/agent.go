@@ -1963,6 +1963,10 @@ func (h *AgentHandler) CreateBatchQueue(c *gin.Context) {
 // GetBatchQueue 获取批量任务队列
 func (h *AgentHandler) GetBatchQueue(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	queue, exists := h.batchTaskManager.GetBatchQueue(queueID)
 	if !exists {
 		c.JSON(http.StatusNotFound, gin.H{"error": "队列不存在"})
@@ -2052,6 +2056,10 @@ func (h *AgentHandler) ListBatchQueues(c *gin.Context) {
 // StartBatchQueue 开始执行批量任务队列
 func (h *AgentHandler) StartBatchQueue(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	h.batchTaskManager.ClearSingleRunTask(queueID)
 	ok, err := h.startBatchQueueExecution(queueID, false)
 	if err != nil {
@@ -2071,6 +2079,10 @@ func (h *AgentHandler) StartBatchQueue(c *gin.Context) {
 // RerunBatchQueue 重跑批量任务队列（重置所有子任务后重新执行）
 func (h *AgentHandler) RerunBatchQueue(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	queue, exists := h.batchTaskManager.GetBatchQueue(queueID)
 	if !exists {
 		c.JSON(http.StatusNotFound, gin.H{"error": "队列不存在"})
@@ -2103,6 +2115,10 @@ func (h *AgentHandler) RerunBatchQueue(c *gin.Context) {
 // PauseBatchQueue 暂停批量任务队列
 func (h *AgentHandler) PauseBatchQueue(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	success := h.batchTaskManager.PauseQueue(queueID)
 	if !success {
 		c.JSON(http.StatusNotFound, gin.H{"error": "队列不存在或无法暂停"})
@@ -2117,6 +2133,10 @@ func (h *AgentHandler) PauseBatchQueue(c *gin.Context) {
 // UpdateBatchQueueMetadata 修改批量任务队列的标题、角色和代理模式
 func (h *AgentHandler) UpdateBatchQueueMetadata(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	var req struct {
 		Title       string `json:"title"`
 		Role        string `json:"role"`
@@ -2138,6 +2158,10 @@ func (h *AgentHandler) UpdateBatchQueueMetadata(c *gin.Context) {
 // UpdateBatchQueueSchedule 修改批量任务队列的调度配置（scheduleMode / cronExpr）
 func (h *AgentHandler) UpdateBatchQueueSchedule(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	queue, exists := h.batchTaskManager.GetBatchQueue(queueID)
 	if !exists {
 		c.JSON(http.StatusNotFound, gin.H{"error": "队列不存在"})
@@ -2180,6 +2204,10 @@ func (h *AgentHandler) UpdateBatchQueueSchedule(c *gin.Context) {
 // SetBatchQueueScheduleEnabled 开启/关闭 Cron 自动调度（手工执行不受影响）
 func (h *AgentHandler) SetBatchQueueScheduleEnabled(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	if _, exists := h.batchTaskManager.GetBatchQueue(queueID); !exists {
 		c.JSON(http.StatusNotFound, gin.H{"error": "队列不存在"})
 		return
@@ -2202,6 +2230,10 @@ func (h *AgentHandler) SetBatchQueueScheduleEnabled(c *gin.Context) {
 // DeleteBatchQueue 删除批量任务队列
 func (h *AgentHandler) DeleteBatchQueue(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	if err := h.batchTaskManager.DeleteQueue(queueID); err != nil {
 		switch {
 		case errors.Is(err, ErrBatchQueueNotFound):
@@ -2232,6 +2264,10 @@ func (h *AgentHandler) DeleteBatchQueue(c *gin.Context) {
 func (h *AgentHandler) UpdateBatchTask(c *gin.Context) {
 	queueID := c.Param("queueId")
 	taskID := c.Param("taskId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 
 	var req struct {
 		Message string `json:"message" binding:"required"`
@@ -2264,6 +2300,10 @@ func (h *AgentHandler) UpdateBatchTask(c *gin.Context) {
 // AddBatchTask 添加任务到批量任务队列
 func (h *AgentHandler) AddBatchTask(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 
 	var req struct {
 		Message string `json:"message" binding:"required"`
@@ -2297,6 +2337,10 @@ func (h *AgentHandler) AddBatchTask(c *gin.Context) {
 func (h *AgentHandler) RunSingleBatchTask(c *gin.Context) {
 	queueID := c.Param("queueId")
 	taskID := c.Param("taskId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 
 	if err := h.batchTaskManager.PrepareSingleTaskRun(queueID, taskID); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -2344,6 +2388,10 @@ func (h *AgentHandler) RunSingleBatchTask(c *gin.Context) {
 func (h *AgentHandler) DeleteBatchTask(c *gin.Context) {
 	queueID := c.Param("queueId")
 	taskID := c.Param("taskId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 
 	err := h.batchTaskManager.DeleteTask(queueID, taskID)
 	if err != nil {
@@ -2363,6 +2411,14 @@ func (h *AgentHandler) DeleteBatchTask(c *gin.Context) {
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "任务已删除", "queue": queue})
+}
+
+func (h *AgentHandler) batchQueueResourceAllowed(c *gin.Context, queueID string) bool {
+	if h.db == nil {
+		return false
+	}
+	session, ok := security.CurrentSession(c)
+	return ok && h.db.UserCanAccessResource(session.UserID, session.Scope, "batch_task", strings.TrimSpace(queueID))
 }
 
 func (h *AgentHandler) nextBatchQueueRunAt(cronExpr string, from time.Time) (*time.Time, error) {

@@ -53,7 +53,7 @@ func TestHTTPBeaconListener_CheckInMatrix(t *testing.T) {
 		EncryptionKey: keyB64,
 		ImplantToken:  token,
 		Status:        "stopped",
-		ConfigJSON:    `{"beacon_check_in_path":"/check_in"}`,
+		ConfigJSON:    `{"beacon_check_in_path":"/check_in","allow_plaintext_check_in":true}`,
 		CreatedAt:     time.Now(),
 	}
 	if err := db.CreateC2Listener(rec); err != nil {
@@ -129,6 +129,29 @@ func TestHTTPBeaconListener_CheckInMatrix(t *testing.T) {
 			t.Fatalf("bad response: %+v", out)
 		}
 	})
+}
+
+func TestHTTPBeaconListener_CheckInRejectsPlaintextByDefault(t *testing.T) {
+	keyB64, err := GenerateAESKey()
+	if err != nil {
+		t.Fatal(err)
+	}
+	l := &HTTPBeaconListener{
+		rec:    &database.C2Listener{EncryptionKey: keyB64, ImplantToken: "test-checkin-token"},
+		cfg:    &ListenerConfig{},
+		logger: zap.NewNop(),
+	}
+	req := httptest.NewRequest(http.MethodPost, "/check_in", strings.NewReader(`{"hostname":"plaintext"}`))
+	req.Header.Set("X-Implant-Token", "test-checkin-token")
+	req.Header.Set("Content-Type", "application/json")
+	rr := httptest.NewRecorder()
+	l.handleCheckIn(rr, req)
+	if rr.Code != http.StatusBadRequest {
+		t.Fatalf("status=%d body=%q", rr.Code, rr.Body.String())
+	}
+	if !strings.Contains(rr.Body.String(), "invalid encrypted check-in") {
+		t.Fatalf("unexpected body: %q", rr.Body.String())
+	}
 }
 
 func TestHTTPBeaconListener_HandleFileServe(t *testing.T) {
@@ -305,10 +328,10 @@ func TestHTTPBeaconListener_HandleResultRejectsPlaintextJSON(t *testing.T) {
 
 	l.handleResult(rr, req)
 
-	if rr.Code != http.StatusNotFound {
+	if rr.Code != http.StatusBadRequest {
 		t.Fatalf("status=%d body=%q", rr.Code, rr.Body.String())
 	}
-	if !strings.Contains(rr.Body.String(), "404 Not Found") {
-		t.Fatalf("expected disguised 404 body, got %q", rr.Body.String())
+	if !strings.Contains(rr.Body.String(), "invalid encrypted result") {
+		t.Fatalf("expected encrypted-result rejection, got %q", rr.Body.String())
 	}
 }

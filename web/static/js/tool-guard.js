@@ -297,10 +297,23 @@
         if (!config || typeof config.enabled !== 'boolean' || (config.rules != null && !Array.isArray(config.rules))) {
             throw new Error(tr('invalidResponse'));
         }
-        return { enabled: config.enabled, rules: (config.rules || []).map((rule) => ({
+        const normalized = { enabled: config.enabled, rules: (config.rules || []).map((rule) => ({
             id: String(rule.id || ''), name: String(rule.name || ''), enabled: !!rule.enabled,
             pattern: String(rule.pattern || ''), message: String(rule.message || '')
         })) };
+        if (config.scope !== undefined && config.scope !== null) {
+            if (typeof config.scope !== 'object' || Array.isArray(config.scope)) throw new Error(tr('invalidResponse'));
+            normalized.scope = {};
+            for (const key of ['domains', 'domain_suffixes', 'wildcards', 'cidrs']) {
+                const values = config.scope[key];
+                if (values === undefined || values === null) continue;
+                if (!Array.isArray(values) || values.some((value) => typeof value !== 'string')) {
+                    throw new Error(tr('invalidResponse'));
+                }
+                normalized.scope[key] = values.slice();
+            }
+        }
+        return normalized;
     }
 
     async function loadConfig() {
@@ -326,7 +339,10 @@
 
     function configForRequest(selected = null) {
         if (!state.config) throw new Error(tr('loadFirst'));
-        const config = selected ? { enabled: true, rules: [{ ...copy(selected), enabled: true }] } : copy(state.config);
+        const config = selected
+            ? { enabled: true, rules: [{ ...copy(selected), enabled: true }],
+                ...(state.config.scope === undefined ? {} : { scope: copy(state.config.scope) }) }
+            : copy(state.config);
         const utf8 = new TextEncoder();
         for (const [index, rule] of config.rules.entries()) {
             for (const key of ['name', 'pattern', 'message']) {

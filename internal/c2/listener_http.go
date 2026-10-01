@@ -182,9 +182,13 @@ func (l *HTTPBeaconListener) handleCheckIn(w http.ResponseWriter, r *http.Reques
 			return
 		}
 	} else {
-		// 解密失败：尝试当作明文 JSON（兼容 curl oneliner 等轻量级客户端）
+		if l.cfg == nil || !l.cfg.AllowPlaintextCheckIn {
+			http.Error(w, "invalid encrypted check-in", http.StatusBadRequest)
+			return
+		}
+		// 显式兼容模式：仅在监听器配置开启时接受旧 curl/oneliner 明文 JSON。
 		if err := json.Unmarshal(body, &req); err != nil {
-			l.disguisedReject(w)
+			http.Error(w, "invalid check-in", http.StatusBadRequest)
 			return
 		}
 	}
@@ -254,7 +258,7 @@ func (l *HTTPBeaconListener) handleTasks(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	session, err := l.manager.DB().GetC2Session(sessionID)
-	if err != nil || session == nil {
+	if err != nil || session == nil || session.ListenerID != l.rec.ID {
 		l.disguisedReject(w)
 		return
 	}
@@ -292,14 +296,23 @@ func (l *HTTPBeaconListener) handleResult(w http.ResponseWriter, r *http.Request
 	var report TaskResultReport
 	plaintext, decErr := DecryptAESGCM(l.rec.EncryptionKey, string(body))
 	if decErr != nil {
-		l.disguisedReject(w)
+		http.Error(w, "invalid encrypted result", http.StatusBadRequest)
 		return
 	}
 	if err := json.Unmarshal(plaintext, &report); err != nil {
-		l.disguisedReject(w)
+		http.Error(w, "invalid result payload", http.StatusBadRequest)
 		return
 	}
-	if err := l.manager.IngestTaskResult(report); err != nil {
+	if err := l.manager.IngestTaskResultForListener(l.rec.ID, report); err != nil {
+		var common *CommonError
+		if errors.Is(err, ErrTaskNotFound) || (errors.As(err, &common) && common.HTTP == http.StatusNotFound) {
+			l.disguisedReject(w)
+			return
+		}
+		if errors.As(err, &common) && common.HTTP > 0 {
+			http.Error(w, "ingest result rejected", common.HTTP)
+			return
+		}
 		http.Error(w, "ingest result failed", http.StatusInternalServerError)
 		return
 	}
@@ -347,7 +360,11 @@ func (l *HTTPBeaconListener) handleUpload(w http.ResponseWriter, r *http.Request
 		http.Error(w, "mkdir failed", http.StatusInternalServerError)
 		return
 	}
-	if err := os.WriteFile(dst, plaintext, 0o644); err != nil {
+	if err := ensurePathInDir(dir, dst); err != nil {
+		l.disguisedReject(w)
+		return
+	}
+	if err := osWriteFileAtomic(dst, plaintext, 0o644); err != nil {
 		http.Error(w, "save failed", http.StatusInternalServerError)
 		return
 	}
@@ -525,6 +542,9 @@ func shortHash(s string) string {
 // isPlaintextClient 判断请求是否来自明文客户端（curl oneliner 等）
 // 完整 beacon 二进制会设置 Content-Type: application/octet-stream
 func (l *HTTPBeaconListener) isPlaintextClient(r *http.Request) bool {
+	if l.cfg == nil || !l.cfg.AllowPlaintextCheckIn {
+		return false
+	}
 	ct := r.Header.Get("Content-Type")
 	accept := r.Header.Get("Accept")
 	return strings.Contains(ct, "application/json") ||

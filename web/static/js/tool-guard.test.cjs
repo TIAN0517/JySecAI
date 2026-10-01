@@ -161,10 +161,17 @@ test('draft survives navigation, save errors preserve it, and discard restores l
 
 test('successful save explicitly persists enabled and all rule fields through dedicated endpoint', async () => {
     const h = harness();
-    h.reply(config());
+    const initial = config();
+    initial.scope = {
+        domains: ['authorized.gov.tw'],
+        domain_suffixes: ['.lab.gov.tw'],
+        wildcards: ['*.exercise.gov.tw'],
+        cidrs: ['192.0.2.0/24']
+    };
+    h.reply(initial);
     await h.window.loadToolGuardConfig();
     h.window.changeToolGuardEnabled(false);
-    const saved = config();
+    const saved = structuredClone(initial);
     saved.enabled = false;
     h.reply(saved);
     await h.window.saveToolGuardConfig();

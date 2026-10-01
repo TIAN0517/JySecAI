@@ -9,7 +9,6 @@ import (
 	"jysecai/internal/audit"
 	"jysecai/internal/config"
 	"jysecai/internal/mcp"
-	"jysecai/internal/security"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -121,10 +120,7 @@ func (h *ExternalMCPHandler) GetExternalMCP(c *gin.Context) {
 	})
 }
 
-func externalMCPConfigForResponse(c *gin.Context, cfg config.ExternalMCPServerConfig) config.ExternalMCPServerConfig {
-	if security.SessionHasPermission(c, "mcp:write") {
-		return cfg
-	}
+func externalMCPConfigForResponse(_ *gin.Context, cfg config.ExternalMCPServerConfig) config.ExternalMCPServerConfig {
 	copyCfg := cfg
 	if len(cfg.Env) > 0 {
 		copyCfg.Env = make(map[string]string, len(cfg.Env))
@@ -139,6 +135,34 @@ func externalMCPConfigForResponse(c *gin.Context, cfg config.ExternalMCPServerCo
 		}
 	}
 	return copyCfg
+}
+
+func mergeExternalMCPSecrets(in, current config.ExternalMCPServerConfig) config.ExternalMCPServerConfig {
+	mergeMap := func(values, old map[string]string) map[string]string {
+		if values == nil {
+			if old == nil {
+				return nil
+			}
+			out := make(map[string]string, len(old))
+			for key, value := range old {
+				out[key] = value
+			}
+			return out
+		}
+		out := make(map[string]string, len(values))
+		for key, value := range values {
+			if value == "***" {
+				if oldValue, ok := old[key]; ok {
+					value = oldValue
+				}
+			}
+			out[key] = value
+		}
+		return out
+	}
+	in.Env = mergeMap(in.Env, current.Env)
+	in.Headers = mergeMap(in.Headers, current.Headers)
+	return in
 }
 
 // externalMCPStatusError 在 error/disconnected 状态下返回最近错误（含断连原因）。
@@ -161,6 +185,9 @@ func (h *ExternalMCPHandler) AddOrUpdateExternalMCP(c *gin.Context) {
 	if name == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "名称不能为空"})
 		return
+	}
+	if old, ok := h.manager.GetConfigs()[name]; ok {
+		req.Config = mergeExternalMCPSecrets(req.Config, old)
 	}
 
 	// 验证配置
@@ -369,7 +396,7 @@ func (h *ExternalMCPHandler) validateConfig(cfg config.ExternalMCPServerConfig) 
 		return fmt.Errorf("不支持的传输模式: %s，支持的模式: http, stdio, sse", transport)
 	}
 
-	return nil
+	return mcp.ValidateExternalMCPServerSecurity(cfg)
 }
 
 // isEnabled 检查是否启用
@@ -394,8 +421,11 @@ func (h *ExternalMCPHandler) saveConfig() error {
 	if err != nil {
 		return fmt.Errorf("解析配置文件失败: %w", err)
 	}
-
-	updateExternalMCPConfig(root, h.config.ExternalMCP)
+	_, protectedExternalMCP, err := config.ProtectSensitiveConfig(h.configPath, h.config.Robots, h.config.ExternalMCP)
+	if err != nil {
+		return fmt.Errorf("加密配置凭证失败: %w", err)
+	}
+	updateExternalMCPConfig(root, protectedExternalMCP)
 
 	if err := writeYAMLDocument(h.configPath, root); err != nil {
 		return fmt.Errorf("保存配置文件失败: %w", err)
@@ -438,6 +468,18 @@ func updateExternalMCPConfig(doc *yaml.Node, cfg config.ExternalMCPConfig) {
 				setStringInMap(envNode, envKey, envValue)
 			}
 		}
+		if serverCfg.WorkingDirectory != "" {
+			setStringInMap(serverNode, "working_directory", serverCfg.WorkingDirectory)
+		}
+		if serverCfg.CommandSHA256 != "" {
+			setStringInMap(serverNode, "command_sha256", serverCfg.CommandSHA256)
+		}
+		if len(serverCfg.AllowedCommandRoots) > 0 {
+			setStringArrayInMap(serverNode, "allowed_command_roots", serverCfg.AllowedCommandRoots)
+		}
+		if serverCfg.InheritParentEnv {
+			setBoolInMap(serverNode, "inherit_parent_env", true)
+		}
 		if serverCfg.URL != "" {
 			setStringInMap(serverNode, "url", serverCfg.URL)
 		}
@@ -446,6 +488,9 @@ func updateExternalMCPConfig(doc *yaml.Node, cfg config.ExternalMCPConfig) {
 			for k, v := range serverCfg.Headers {
 				setStringInMap(headersNode, k, v)
 			}
+		}
+		if serverCfg.AllowInsecureHTTP {
+			setBoolInMap(serverNode, "allow_insecure_http", true)
 		}
 		if serverCfg.Description != "" {
 			setStringInMap(serverNode, "description", serverCfg.Description)

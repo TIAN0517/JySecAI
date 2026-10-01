@@ -19,6 +19,16 @@ config.yaml.backup
 *.pem
 *.key
 *.crt
+*.pub.pem
+*.priv.pem
+# 任何檔名內含 token / secret / credential / password 的憑證檔（保險用）
+*token*.json
+*cookie*.json
+*credential*
+*password*
+# 根目錄暫存金鑰（歷史上曾誤提交 .tmp-ds.key）
+/.tmp-*.key
+/data/.jy-gateway.key
 
 # Upgrade / settings backups
 .upgrade-backup/
@@ -77,6 +87,31 @@ evidence/
 tpe119_evidence/
 erpc/
 _archive/
+
+# ===== 個案研究工作區：含第三方憑證、session token、個資，禁止進版控 =====
+# 說明：以下目錄為特定滲透測試個案的執行產物，含真實帳密、JWT、
+# session cookie、下載之第三方資料與截圖。屬於「本機工作檔」性質，
+# 不應隨專案發布。若需保留，請改用加密保管或獨立私有儲存庫。
+tpe_broadcast/
+okbank_evidence/
+poc_scripts/
+zoomeye_results/
+broadcast_gui_core_20261001/
+skills/cyberstrike-eino-demo/scripts/
+# 掃描輸出與根目錄 phase*/probe 腳本（個案腳本，會寫死目標與憑證）
+/*_output.txt
+/entities.txt
+/headers.txt
+/cj_test.txt
+/sydney_*.txt
+/phase[0-9]*.py
+/phase67_final_report.py
+/fofa_*.py
+/login_*.py
+/tpe119_carpet*.py
+/ocp_tpe_broadcast.py
+# 下載取得之第三方資料樣本
+**/samples/*.png
 
 # Local logs
 /logs/

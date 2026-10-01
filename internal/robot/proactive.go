@@ -102,11 +102,11 @@ func sendWecomProactive(ctx context.Context, cfg config.RobotWecomConfig, userID
 	tokenURL := "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=" + cfg.CorpID + "&corpsecret=" + cfg.Secret
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, tokenURL, nil)
 	if err != nil {
-		return err
+		return safeRobotHTTPError("wecom token request", err)
 	}
 	resp, err := nilSafeHTTPClient().Do(req)
 	if err != nil {
-		return err
+		return safeRobotHTTPError("wecom token", err)
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
@@ -130,12 +130,12 @@ func sendWecomProactive(ctx context.Context, cfg config.RobotWecomConfig, userID
 	})
 	sendReq, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token="+tokenResp.AccessToken, bytes.NewReader(payload))
 	if err != nil {
-		return err
+		return safeRobotHTTPError("wecom send request", err)
 	}
 	sendReq.Header.Set("Content-Type", "application/json")
 	sendResp, err := nilSafeHTTPClient().Do(sendReq)
 	if err != nil {
-		return err
+		return safeRobotHTTPError("wecom send", err)
 	}
 	defer sendResp.Body.Close()
 	result, _ := io.ReadAll(sendResp.Body)

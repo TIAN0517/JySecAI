@@ -100,6 +100,54 @@ type ConfigHandler struct {
 	lastEmbeddingConfig        *config.EmbeddingConfig // 上一次的嵌入模型配置（用于检测变更）
 }
 
+const maskedConfigSecret = "********"
+
+func maskRobotSecrets(in config.RobotsConfig) config.RobotsConfig {
+	out := in
+	mask := func(value string) string {
+		if strings.TrimSpace(value) == "" {
+			return ""
+		}
+		return maskedConfigSecret
+	}
+	out.Wechat.BotToken = mask(out.Wechat.BotToken)
+	out.Wecom.Token = mask(out.Wecom.Token)
+	out.Wecom.EncodingAESKey = mask(out.Wecom.EncodingAESKey)
+	out.Wecom.Secret = mask(out.Wecom.Secret)
+	out.Dingtalk.ClientSecret = mask(out.Dingtalk.ClientSecret)
+	out.Lark.AppSecret = mask(out.Lark.AppSecret)
+	out.Lark.VerifyToken = mask(out.Lark.VerifyToken)
+	out.Telegram.BotToken = mask(out.Telegram.BotToken)
+	out.Slack.BotToken = mask(out.Slack.BotToken)
+	out.Slack.AppToken = mask(out.Slack.AppToken)
+	out.Discord.BotToken = mask(out.Discord.BotToken)
+	out.QQ.ClientSecret = mask(out.QQ.ClientSecret)
+	return out
+}
+
+func mergeRobotSecrets(in, current config.RobotsConfig) config.RobotsConfig {
+	out := in
+	preserve := func(value, old string) string {
+		if strings.TrimSpace(value) == "" || value == maskedConfigSecret {
+			return old
+		}
+		return value
+	}
+	out.Wechat.BotToken = preserve(out.Wechat.BotToken, current.Wechat.BotToken)
+	out.Wecom.Token = preserve(out.Wecom.Token, current.Wecom.Token)
+	out.Wecom.EncodingAESKey = preserve(out.Wecom.EncodingAESKey, current.Wecom.EncodingAESKey)
+	out.Wecom.Secret = preserve(out.Wecom.Secret, current.Wecom.Secret)
+	out.Dingtalk.ClientSecret = preserve(out.Dingtalk.ClientSecret, current.Dingtalk.ClientSecret)
+	out.Lark.AppSecret = preserve(out.Lark.AppSecret, current.Lark.AppSecret)
+	out.Lark.VerifyToken = preserve(out.Lark.VerifyToken, current.Lark.VerifyToken)
+	out.Telegram.BotToken = preserve(out.Telegram.BotToken, current.Telegram.BotToken)
+	out.Slack.BotToken = preserve(out.Slack.BotToken, current.Slack.BotToken)
+	out.Slack.AppToken = preserve(out.Slack.AppToken, current.Slack.AppToken)
+	out.Discord.BotToken = preserve(out.Discord.BotToken, current.Discord.BotToken)
+	out.QQ.ClientSecret = preserve(out.QQ.ClientSecret, current.QQ.ClientSecret)
+	return out
+}
+
 func (h *ConfigHandler) SetDB(db *database.DB) {
 	h.db = db
 }
@@ -349,13 +397,13 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		subAgentCount = len(agents.MergeYAMLAndMarkdown(h.config.MultiAgent.SubAgents, load.SubAgents))
 	}
 	multiPub := config.MultiAgentPublic{
-		Enabled:                               h.config.MultiAgent.Enabled,
-		RobotDefaultAgentMode:                 config.NormalizeRobotAgentMode(h.config.MultiAgent),
-		BatchUseMultiAgent:                    h.config.MultiAgent.BatchUseMultiAgent,
-		SubAgentCount:                         subAgentCount,
-		Orchestration:                         config.NormalizeMultiAgentOrchestration(h.config.MultiAgent.Orchestration),
-		PlanExecuteLoopMaxIterations:          h.config.MultiAgent.PlanExecuteLoopMaxIterations,
-		SummarizationUserIntentLedgerMaxRunes: h.config.MultiAgent.EinoMiddleware.SummarizationUserIntentLedgerMaxRunesEffective(),
+		Enabled:                                    h.config.MultiAgent.Enabled,
+		RobotDefaultAgentMode:                      config.NormalizeRobotAgentMode(h.config.MultiAgent),
+		BatchUseMultiAgent:                         h.config.MultiAgent.BatchUseMultiAgent,
+		SubAgentCount:                              subAgentCount,
+		Orchestration:                              config.NormalizeMultiAgentOrchestration(h.config.MultiAgent.Orchestration),
+		PlanExecuteLoopMaxIterations:               h.config.MultiAgent.PlanExecuteLoopMaxIterations,
+		SummarizationUserIntentLedgerMaxRunes:      h.config.MultiAgent.EinoMiddleware.SummarizationUserIntentLedgerMaxRunesEffective(),
 		SummarizationUserIntentLedgerEntryMaxRunes: h.config.MultiAgent.EinoMiddleware.SummarizationUserIntentLedgerEntryMaxRunesEffective(),
 		LatestUserMessageMaxRunes:                  h.config.MultiAgent.EinoMiddleware.LatestUserMessageMaxRunesEffective(),
 		LatestUserMessageHeadRunes:                 h.config.MultiAgent.EinoMiddleware.LatestUserMessageHeadRunesEffective(),
@@ -385,7 +433,7 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		Hitl:       h.config.Hitl,
 		Knowledge:  h.config.Knowledge,
 		C2:         h.config.C2.Public(),
-		Robots:     h.config.Robots,
+		Robots:     maskRobotSecrets(h.config.Robots),
 		MultiAgent: multiPub,
 	})
 }
@@ -939,19 +987,20 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 
 	// 更新机器人配置
 	if req.Robots != nil {
-		if err := config.ValidateWecomConfig(req.Robots.Wecom); err != nil {
+		robots := mergeRobotSecrets(*req.Robots, h.config.Robots)
+		if err := config.ValidateWecomConfig(robots.Wecom); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		if err := config.ValidateRobotsAuthorization(*req.Robots); err != nil {
+		if err := config.ValidateRobotsAuthorization(robots); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		if err := h.validateRobotServiceAccounts(*req.Robots); err != nil {
+		if err := h.validateRobotServiceAccounts(robots); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		h.config.Robots = *req.Robots
+		h.config.Robots = robots
 		h.logger.Info("更新机器人配置",
 			zap.Bool("wechat_enabled", h.config.Robots.Wechat.Enabled),
 			zap.Bool("wecom_enabled", h.config.Robots.Wecom.Enabled),
@@ -1766,6 +1815,10 @@ func (h *ConfigHandler) saveConfig() error {
 	if err != nil {
 		return fmt.Errorf("解析配置文件失败: %w", err)
 	}
+	protectedRobots, protectedExternalMCP, err := config.ProtectSensitiveConfig(h.configPath, h.config.Robots, h.config.ExternalMCP)
+	if err != nil {
+		return fmt.Errorf("加密配置凭证失败: %w", err)
+	}
 
 	updateAgentConfig(root, h.config.Agent)
 	updateMCPConfig(root, h.config.MCP)
@@ -1778,11 +1831,11 @@ func (h *ConfigHandler) saveConfig() error {
 	updateSpaceSearchConfig(root, "shodan", h.config.Shodan)
 	updateKnowledgeConfig(root, h.config.Knowledge)
 	updateC2Config(root, h.config.C2)
-	updateRobotsConfig(root, h.config.Robots)
+	updateRobotsConfig(root, protectedRobots)
 	updateHitlConfig(root, h.config.Hitl)
 	updateMultiAgentConfig(root, h.config.MultiAgent)
 	// 更新外部MCP配置（使用external_mcp.go中的函数，同一包中可直接调用）
-	updateExternalMCPConfig(root, h.config.ExternalMCP)
+	updateExternalMCPConfig(root, protectedExternalMCP)
 
 	if err := writeYAMLDocument(h.configPath, root); err != nil {
 		return fmt.Errorf("保存配置文件失败: %w", err)
@@ -2217,6 +2270,11 @@ func updateRobotsConfig(doc *yaml.Node, cfg config.RobotsConfig) {
 	if cfg.Session.StrictUserIdentity != nil {
 		sessionNode := ensureMap(robotsNode, "session")
 		setBoolInMap(sessionNode, "strict_user_identity", *cfg.Session.StrictUserIdentity)
+	}
+	if cfg.Session.RateLimitPerMinute > 0 || cfg.Session.RateLimitBurst > 0 {
+		sessionNode := ensureMap(robotsNode, "session")
+		setIntInMap(sessionNode, "rate_limit_per_minute", cfg.Session.RateLimitPerMinute)
+		setIntInMap(sessionNode, "rate_limit_burst", cfg.Session.RateLimitBurst)
 	}
 
 	wechatNode := ensureMap(robotsNode, "wechat")

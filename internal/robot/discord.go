@@ -71,7 +71,7 @@ func runDiscordSession(ctx context.Context, cfg config.RobotDiscordConfig, h Mes
 			}
 		}
 		userID := discordSessionKey(m.GuildID, m.Author.ID)
-		logger.Info("Discord 收到消息", zap.String("from", userID), zap.String("content", text))
+		logger.Info("Discord 收到消息", zap.String("from", userID), zap.Int("content_bytes", len(text)))
 		reply := h.HandleMessage(discordPlatform, userID, text)
 		discordPostReply(s, m.ChannelID, reply, logger)
 	})

@@ -2,13 +2,18 @@ package handler
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"crypto/tls"
+	"crypto/x509"
 	"database/sql"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -329,6 +334,31 @@ type WebShellHandler struct {
 	audit  *audit.Service
 }
 
+func (h *WebShellHandler) recordOperationAudit(c *gin.Context, action, result, connectionID, targetURL, subject string, detail map[string]interface{}) {
+	if h.audit == nil {
+		return
+	}
+	if detail == nil {
+		detail = map[string]interface{}{}
+	}
+	subjectHash := sha256.Sum256([]byte(subject))
+	detail["subject_sha256"] = fmt.Sprintf("%x", subjectHash[:8])
+	detail["subject_bytes"] = len(subject)
+	if parsed, err := url.Parse(targetURL); err == nil {
+		hostHash := sha256.Sum256([]byte(strings.ToLower(parsed.Host)))
+		detail["target_host_sha256"] = fmt.Sprintf("%x", hostHash[:8])
+	}
+	resourceID := strings.TrimSpace(connectionID)
+	if resourceID == "" {
+		resourceID = "unsaved"
+	}
+	h.audit.Record(c, audit.Entry{
+		Category: "webshell", Action: action, Result: result,
+		ResourceType: "webshell", ResourceID: resourceID,
+		Message: "WebShell 操作已执行（命令与路径仅记录摘要）", Detail: detail,
+	})
+}
+
 // SetAudit wires platform audit logging.
 func (h *WebShellHandler) SetAudit(s *audit.Service) {
 	h.audit = s
@@ -339,15 +369,78 @@ func NewWebShellHandler(logger *zap.Logger, db *database.DB) *WebShellHandler {
 	return &WebShellHandler{
 		logger: logger,
 		client: &http.Client{
-			Timeout: 30 * time.Second,
-			Transport: &http.Transport{
-				DisableKeepAlives: false,
-				// WebShell 场景常见自签证书或 IP 访问（证书无 IP SAN）；默认跳过校验，与蚁剑等客户端一致。
-				TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, //nolint:gosec // intentional for webshell proxy
-			},
+			Timeout:   30 * time.Second,
+			Transport: newWebShellTransport(logger),
 		},
 		db: db,
 	}
+}
+
+// newWebShellTransport 构造 WebShell 出站 HTTP 客户端。
+//
+// 默认使用系统 CA 并要求 TLS 1.2；旧式自签目标可用自定义 CA，或显式开启不安全相容模式。
+//
+//	JYSSECAI_WEBSHELL_CA_FILE   指定 CA 证书文件（PEM），启用证书校验
+//	JYSSECAI_WEBSHELL_CA_SERVER 指定 CA 发行机构（如 DigiCert Global Root G2）
+//	JYSSECAI_WEBSHELL_INSECURE  显式设为 1/true 时跳过证书校验（仅相容模式）
+func newWebShellTransport(logger *zap.Logger) *http.Transport {
+	tr := &http.Transport{DisableKeepAlives: false}
+
+	insecure := strings.TrimSpace(os.Getenv("JYSSECAI_WEBSHELL_INSECURE"))
+	if insecure == "1" || strings.EqualFold(insecure, "true") {
+		tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true, MinVersion: tls.VersionTLS12} //nolint:gosec // explicit legacy compatibility switch
+		if logger != nil {
+			logger.Warn("WebShell TLS: 已显式启用不安全相容模式，证书不会被验证",
+				zap.String("insecure", insecure))
+		}
+		return tr
+	}
+
+	pool, err := buildWebShellCAPool()
+	if err != nil {
+		// 自定义 CA 配置错误时维持安全默认值；请求会使用系统 CA，而不是静默降级。
+		if logger != nil {
+			logger.Warn("WebShell TLS: 加载自定义 CA 失败，回退系统 CA", zap.Error(err))
+		}
+		pool, _ = x509.SystemCertPool()
+		tr.TLSClientConfig = &tls.Config{RootCAs: pool, MinVersion: tls.VersionTLS12}
+		return tr
+	}
+
+	tr.TLSClientConfig = &tls.Config{RootCAs: pool, MinVersion: tls.VersionTLS12}
+	if logger != nil {
+		logger.Debug("WebShell TLS: 已启用证书校验",
+			zap.String("ca_file", os.Getenv("JYSSECAI_WEBSHELL_CA_FILE")),
+			zap.String("ca_server", os.Getenv("JYSSECAI_WEBSHELL_CA_SERVER")))
+	}
+	return tr
+}
+
+// buildWebShellCAPool 依据环境变量构建 CA 池。
+func buildWebShellCAPool() (*x509.CertPool, error) {
+	if caFile := os.Getenv("JYSSECAI_WEBSHELL_CA_FILE"); caFile != "" {
+		pem, err := os.ReadFile(caFile)
+		if err != nil {
+			return nil, fmt.Errorf("读取 CA 文件失败: %w", err)
+		}
+		pool := x509.NewCertPool()
+		if !pool.AppendCertsFromPEM(pem) {
+			return nil, errors.New("CA 文件不含有效 PEM 凭证")
+		}
+		return pool, nil
+	}
+
+	// 指定发行机构时，在系统信任池基础上仅追加该机构签发的凭证。
+	// 当前实现保留系统池（自签 WebShell 目标通常由内部 CA 签发），
+	// CA_SERVER 供后续按需收窄时使用。
+	pool, err := x509.SystemCertPool()
+	if err != nil {
+		return nil, fmt.Errorf("取得系统 CA 池失败: %w", err)
+	}
+	if pool == nil {
+		return nil, errors.New("系统 CA 池为空")
+	}
+	return pool, nil
 }
 
 // CreateConnectionRequest 创建连接请求
@@ -390,6 +483,9 @@ func (h *WebShellHandler) ListConnections(c *gin.Context) {
 	}
 	if list == nil {
 		list = []database.WebShellConnection{}
+	}
+	for i := range list {
+		list[i].Password = ""
 	}
 	c.JSON(http.StatusOK, list)
 }
@@ -457,6 +553,7 @@ func (h *WebShellHandler) CreateConnection(c *gin.Context) {
 			"host": host, "type": shellType,
 		})
 	}
+	conn.Password = ""
 	c.JSON(http.StatusOK, conn)
 }
 
@@ -469,6 +566,19 @@ func (h *WebShellHandler) UpdateConnection(c *gin.Context) {
 	id := strings.TrimSpace(c.Param("id"))
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+		return
+	}
+	if !h.webshellResourceAllowed(c, id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
+	existing, err := h.db.GetWebshellConnection(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if existing == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "connection not found"})
 		return
 	}
 	var req UpdateConnectionRequest
@@ -498,11 +608,15 @@ func (h *WebShellHandler) UpdateConnection(c *gin.Context) {
 	if shellType == "" {
 		shellType = "php"
 	}
+	password := strings.TrimSpace(req.Password)
+	if password == "" {
+		password = existing.Password
+	}
 	conn := &database.WebShellConnection{
 		ID:        id,
 		ProjectID: projectID,
 		URL:       req.URL,
-		Password:  strings.TrimSpace(req.Password),
+		Password:  password,
 		Type:      shellType,
 		Method:    method,
 		CmdParam:  strings.TrimSpace(req.CmdParam),
@@ -520,8 +634,10 @@ func (h *WebShellHandler) UpdateConnection(c *gin.Context) {
 	}
 	updated, _ := h.db.GetWebshellConnection(id)
 	if updated != nil {
+		updated.Password = ""
 		c.JSON(http.StatusOK, updated)
 	} else {
+		conn.Password = ""
 		c.JSON(http.StatusOK, conn)
 	}
 }
@@ -535,6 +651,10 @@ func (h *WebShellHandler) DeleteConnection(c *gin.Context) {
 	id := strings.TrimSpace(c.Param("id"))
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+		return
+	}
+	if !h.webshellResourceAllowed(c, id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
 		return
 	}
 	if err := h.db.DeleteWebshellConnection(id); err != nil {
@@ -560,6 +680,10 @@ func (h *WebShellHandler) GetConnectionState(c *gin.Context) {
 	id := strings.TrimSpace(c.Param("id"))
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+		return
+	}
+	if !h.webshellResourceAllowed(c, id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
 		return
 	}
 	conn, err := h.db.GetWebshellConnection(id)
@@ -592,6 +716,10 @@ func (h *WebShellHandler) SaveConnectionState(c *gin.Context) {
 	id := strings.TrimSpace(c.Param("id"))
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+		return
+	}
+	if !h.webshellResourceAllowed(c, id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
 		return
 	}
 	conn, err := h.db.GetWebshellConnection(id)
@@ -641,6 +769,10 @@ func (h *WebShellHandler) GetAIHistory(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
 		return
 	}
+	if !h.webshellResourceAllowed(c, id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	conv, err := h.db.GetConversationByWebshellConnectionID(id)
 	if err != nil {
 		h.logger.Warn("获取 WebShell AI 对话失败", zap.String("connectionId", id), zap.Error(err))
@@ -663,6 +795,10 @@ func (h *WebShellHandler) ListAIConversations(c *gin.Context) {
 	id := strings.TrimSpace(c.Param("id"))
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+		return
+	}
+	if !h.webshellResourceAllowed(c, id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
 		return
 	}
 	list, err := h.db.ListConversationsByWebshellConnectionID(id)
@@ -774,6 +910,7 @@ func (h *WebShellHandler) Exec(c *gin.Context) {
 	}
 	if err != nil {
 		h.logger.Warn("webshell exec NewRequest", zap.Error(err))
+		h.recordOperationAudit(c, "command_execute", "failure", req.ConnectionID, req.URL, req.Command, map[string]interface{}{"stage": "build_request"})
 		c.JSON(http.StatusInternalServerError, ExecResponse{OK: false, Error: err.Error()})
 		return
 	}
@@ -782,6 +919,7 @@ func (h *WebShellHandler) Exec(c *gin.Context) {
 	resp, err := h.client.Do(httpReq)
 	if err != nil {
 		h.logger.Warn("webshell exec Do", zap.String("url", req.URL), zap.Error(err))
+		h.recordOperationAudit(c, "command_execute", "failure", req.ConnectionID, req.URL, req.Command, map[string]interface{}{"stage": "transport"})
 		c.JSON(http.StatusOK, ExecResponse{OK: false, Error: err.Error()})
 		return
 	}
@@ -795,6 +933,11 @@ func (h *WebShellHandler) Exec(c *gin.Context) {
 	httpCode := resp.StatusCode
 
 	ok := resp.StatusCode == http.StatusOK
+	auditResult := "failure"
+	if ok && readErr == nil {
+		auditResult = "success"
+	}
+	h.recordOperationAudit(c, "command_execute", auditResult, req.ConnectionID, req.URL, req.Command, map[string]interface{}{"http_code": httpCode, "response_bytes": len(out)})
 	c.JSON(http.StatusOK, ExecResponse{
 		OK:       ok,
 		Output:   output,
@@ -888,6 +1031,7 @@ func (h *WebShellHandler) FileOp(c *gin.Context) {
 		ShellType:  req.Type,
 	})
 	if cmdErr != nil {
+		h.recordOperationAudit(c, "file_operation", "failure", req.ConnectionID, req.URL, req.Path, map[string]interface{}{"operation": req.Action, "stage": "validation"})
 		c.JSON(http.StatusBadRequest, FileOpResponse{OK: false, Error: cmdErr.Error()})
 		return
 	}
@@ -907,6 +1051,7 @@ func (h *WebShellHandler) FileOp(c *gin.Context) {
 		httpReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	}
 	if err != nil {
+		h.recordOperationAudit(c, "file_operation", "failure", req.ConnectionID, req.URL, req.Path, map[string]interface{}{"operation": req.Action, "stage": "build_request"})
 		c.JSON(http.StatusInternalServerError, FileOpResponse{OK: false, Error: err.Error()})
 		return
 	}
@@ -914,6 +1059,7 @@ func (h *WebShellHandler) FileOp(c *gin.Context) {
 
 	resp, err := h.client.Do(httpReq)
 	if err != nil {
+		h.recordOperationAudit(c, "file_operation", "failure", req.ConnectionID, req.URL, req.Path, map[string]interface{}{"operation": req.Action, "stage": "transport"})
 		c.JSON(http.StatusOK, FileOpResponse{OK: false, Error: err.Error()})
 		return
 	}
@@ -924,6 +1070,14 @@ func (h *WebShellHandler) FileOp(c *gin.Context) {
 		h.logger.Warn("webshell fileop read body", zap.Error(readErr))
 	}
 	output := decodeWebshellOutput(out, req.Encoding)
+	ok := resp.StatusCode == http.StatusOK && readErr == nil
+	auditResult := "failure"
+	if ok {
+		auditResult = "success"
+	}
+	h.recordOperationAudit(c, "file_operation", auditResult, req.ConnectionID, req.URL, req.Path, map[string]interface{}{
+		"operation": req.Action, "http_code": resp.StatusCode, "response_bytes": len(out), "content_bytes": len(req.Content),
+	})
 
 	c.JSON(http.StatusOK, FileOpResponse{
 		OK:         resp.StatusCode == http.StatusOK,
@@ -954,6 +1108,14 @@ func (h *WebShellHandler) authorizedWebshellConnection(c *gin.Context, connectio
 	return conn, true
 }
 
+func (h *WebShellHandler) webshellResourceAllowed(c *gin.Context, connectionID string) bool {
+	if h.db == nil {
+		return false
+	}
+	session, ok := security.CurrentSession(c)
+	return ok && h.db.UserCanAccessResource(session.UserID, session.Scope, "webshell", strings.TrimSpace(connectionID))
+}
+
 func (h *WebShellHandler) canAccessProject(c *gin.Context, projectID string) bool {
 	projectID = strings.TrimSpace(projectID)
 	if projectID == "" || h.db == nil {
@@ -976,6 +1138,7 @@ func (h *WebShellHandler) ExecWithConnection(conn *database.WebShellConnection, 
 	}
 	command = strings.TrimSpace(command)
 	if command == "" {
+		h.recordOperationAudit(nil, "command_execute", "failure", conn.ID, conn.URL, command, map[string]interface{}{"stage": "validation", "source": "internal"})
 		return "", false, "command is required"
 	}
 	useGET := strings.ToUpper(strings.TrimSpace(conn.Method)) == "GET"
@@ -994,11 +1157,13 @@ func (h *WebShellHandler) ExecWithConnection(conn *database.WebShellConnection, 
 		httpReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	}
 	if err != nil {
+		h.recordOperationAudit(nil, "command_execute", "failure", conn.ID, conn.URL, command, map[string]interface{}{"stage": "build_request", "source": "internal"})
 		return "", false, err.Error()
 	}
 	httpReq.Header.Set("User-Agent", "Mozilla/5.0 (compatible; JySecAI-WebShell/1.0)")
 	resp, err := h.client.Do(httpReq)
 	if err != nil {
+		h.recordOperationAudit(nil, "command_execute", "failure", conn.ID, conn.URL, command, map[string]interface{}{"stage": "transport", "source": "internal"})
 		return "", false, err.Error()
 	}
 	defer resp.Body.Close()
@@ -1006,7 +1171,13 @@ func (h *WebShellHandler) ExecWithConnection(conn *database.WebShellConnection, 
 	if readErr != nil {
 		h.logger.Warn("webshell ExecWithConnection read body", zap.Error(readErr))
 	}
-	return decodeWebshellOutput(out, conn.Encoding), resp.StatusCode == http.StatusOK, ""
+	ok = resp.StatusCode == http.StatusOK
+	auditResult := "failure"
+	if ok && readErr == nil {
+		auditResult = "success"
+	}
+	h.recordOperationAudit(nil, "command_execute", auditResult, conn.ID, conn.URL, command, map[string]interface{}{"source": "internal", "http_code": resp.StatusCode, "response_bytes": len(out)})
+	return decodeWebshellOutput(out, conn.Encoding), ok, ""
 }
 
 // FileOpWithConnection 在指定 WebShell 连接上执行文件操作（供 MCP/Agent 调用），支持 list / read / write
@@ -1020,6 +1191,7 @@ func (h *WebShellHandler) FileOpWithConnection(conn *database.WebShellConnection
 	case "list", "read", "write":
 		// 支持的动作
 	default:
+		h.recordOperationAudit(nil, "file_operation", "failure", conn.ID, conn.URL, path, map[string]interface{}{"operation": action, "stage": "validation", "source": "internal"})
 		return "", false, "unsupported action: " + action + " (supported: list, read, write)"
 	}
 
@@ -1045,6 +1217,7 @@ func (h *WebShellHandler) FileOpWithConnection(conn *database.WebShellConnection
 		ShellType:  conn.Type,
 	})
 	if cmdErr != nil {
+		h.recordOperationAudit(nil, "file_operation", "failure", conn.ID, conn.URL, path, map[string]interface{}{"operation": action, "stage": "validation", "source": "internal"})
 		return "", false, cmdErr.Error()
 	}
 	useGET := strings.ToUpper(strings.TrimSpace(conn.Method)) == "GET"
@@ -1063,11 +1236,13 @@ func (h *WebShellHandler) FileOpWithConnection(conn *database.WebShellConnection
 		httpReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	}
 	if err != nil {
+		h.recordOperationAudit(nil, "file_operation", "failure", conn.ID, conn.URL, path, map[string]interface{}{"operation": action, "stage": "build_request", "source": "internal"})
 		return "", false, err.Error()
 	}
 	httpReq.Header.Set("User-Agent", "Mozilla/5.0 (compatible; JySecAI-WebShell/1.0)")
 	resp, err := h.client.Do(httpReq)
 	if err != nil {
+		h.recordOperationAudit(nil, "file_operation", "failure", conn.ID, conn.URL, path, map[string]interface{}{"operation": action, "stage": "transport", "source": "internal"})
 		return "", false, err.Error()
 	}
 	defer resp.Body.Close()
@@ -1075,5 +1250,13 @@ func (h *WebShellHandler) FileOpWithConnection(conn *database.WebShellConnection
 	if readErr != nil {
 		h.logger.Warn("webshell FileOpWithConnection read body", zap.Error(readErr))
 	}
-	return decodeWebshellOutput(out, conn.Encoding), resp.StatusCode == http.StatusOK, ""
+	ok = resp.StatusCode == http.StatusOK
+	auditResult := "failure"
+	if ok && readErr == nil {
+		auditResult = "success"
+	}
+	h.recordOperationAudit(nil, "file_operation", auditResult, conn.ID, conn.URL, path, map[string]interface{}{
+		"operation": action, "source": "internal", "http_code": resp.StatusCode, "response_bytes": len(out), "content_bytes": len(content),
+	})
+	return decodeWebshellOutput(out, conn.Encoding), ok, ""
 }

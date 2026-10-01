@@ -100,6 +100,71 @@ func TestWebshellFileOpRequiresConnectionAccessWhenConnectionIDProvided(t *testi
 	}
 }
 
+func TestWebshellConnectionEndpointsRejectForeignIDs(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	db, user, _, hidden := setupWebshellRBACTest(t)
+	handler := NewWebShellHandler(zap.NewNop(), db)
+
+	tests := []struct {
+		name   string
+		method string
+		path   string
+		body   map[string]interface{}
+		fn     gin.HandlerFunc
+	}{
+		{"update", http.MethodPut, "/api/webshell/connections/" + hidden.ID, map[string]interface{}{"url": hidden.URL}, handler.UpdateConnection},
+		{"delete", http.MethodDelete, "/api/webshell/connections/" + hidden.ID, nil, handler.DeleteConnection},
+		{"get state", http.MethodGet, "/api/webshell/connections/" + hidden.ID + "/state", nil, handler.GetConnectionState},
+		{"save state", http.MethodPut, "/api/webshell/connections/" + hidden.ID + "/state", map[string]interface{}{"state": map[string]interface{}{}}, handler.SaveConnectionState},
+		{"ai history", http.MethodGet, "/api/webshell/connections/" + hidden.ID + "/ai-history", nil, handler.GetAIHistory},
+		{"ai conversations", http.MethodGet, "/api/webshell/connections/" + hidden.ID + "/ai-conversations", nil, handler.ListAIConversations},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			w := performWebshellIDJSON(user, tc.method, tc.path, hidden.ID, tc.body, tc.fn)
+			if w.Code != http.StatusForbidden {
+				t.Fatalf("status = %d, want %d: %s", w.Code, http.StatusForbidden, w.Body.String())
+			}
+		})
+	}
+}
+
+func TestWebshellAPIRedactsPasswordAndBlankUpdatePreservesIt(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	db, user, allowed, _ := setupWebshellRBACTest(t)
+	handler := NewWebShellHandler(zap.NewNop(), db)
+
+	w := performWebshellJSON(user, http.MethodGet, "/api/webshell/connections", nil, handler.ListConnections)
+	if w.Code != http.StatusOK {
+		t.Fatalf("list status = %d: %s", w.Code, w.Body.String())
+	}
+	var list []database.WebShellConnection
+	if err := json.Unmarshal(w.Body.Bytes(), &list); err != nil {
+		t.Fatal(err)
+	}
+	if len(list) != 1 || list[0].ID != allowed.ID || list[0].Password != "" {
+		t.Fatalf("list leaked or omitted connection: %#v", list)
+	}
+
+	w = performWebshellIDJSON(user, http.MethodPut, "/api/webshell/connections/"+allowed.ID, allowed.ID, map[string]interface{}{
+		"url": allowed.URL, "type": allowed.Type, "method": allowed.Method, "cmd_param": allowed.CmdParam,
+	}, handler.UpdateConnection)
+	if w.Code != http.StatusOK {
+		t.Fatalf("update status = %d: %s", w.Code, w.Body.String())
+	}
+	var response database.WebShellConnection
+	if err := json.Unmarshal(w.Body.Bytes(), &response); err != nil {
+		t.Fatal(err)
+	}
+	if response.Password != "" {
+		t.Fatalf("update response leaked password: %#v", response)
+	}
+	stored, err := db.GetWebshellConnection(allowed.ID)
+	if err != nil || stored == nil || stored.Password != "allowed-secret" {
+		t.Fatalf("blank password did not preserve stored credential: conn=%#v err=%v", stored, err)
+	}
+}
+
 func setupWebshellRBACTest(t *testing.T) (*database.DB, *database.RBACUser, *database.WebShellConnection, *database.WebShellConnection) {
 	t.Helper()
 	db, err := database.NewDB(filepath.Join(t.TempDir(), "webshell-rbac.db"), zap.NewNop())
@@ -114,6 +179,7 @@ func setupWebshellRBACTest(t *testing.T) (*database.DB, *database.RBACUser, *dat
 	allowed := &database.WebShellConnection{
 		ID:        "ws_allowed",
 		URL:       "http://127.0.0.1/allowed.php",
+		Password:  "allowed-secret",
 		Type:      "php",
 		Method:    "post",
 		CmdParam:  "cmd",
@@ -122,6 +188,7 @@ func setupWebshellRBACTest(t *testing.T) (*database.DB, *database.RBACUser, *dat
 	hidden := &database.WebShellConnection{
 		ID:        "ws_hidden",
 		URL:       "http://127.0.0.1/hidden.php",
+		Password:  "hidden-secret",
 		Type:      "php",
 		Method:    "post",
 		CmdParam:  "cmd",
@@ -149,6 +216,23 @@ func performWebshellJSON(user *database.RBACUser, method, path string, body map[
 		UserID:      user.ID,
 		Username:    user.Username,
 		Permissions: map[string]bool{"webshell:write": true},
+		Scope:       database.RBACScopeAssigned,
+	})
+	handler(c)
+	return w
+}
+
+func performWebshellIDJSON(user *database.RBACUser, method, path, id string, body map[string]interface{}, handler gin.HandlerFunc) *httptest.ResponseRecorder {
+	payload, _ := json.Marshal(body)
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
+	c.Request = httptest.NewRequest(method, path, bytes.NewReader(payload))
+	c.Request.Header.Set("Content-Type", "application/json")
+	c.Params = gin.Params{{Key: "id", Value: id}}
+	c.Set(security.ContextSessionKey, security.Session{
+		UserID:      user.ID,
+		Username:    user.Username,
+		Permissions: map[string]bool{"webshell:read": true, "webshell:write": true, "webshell:delete": true},
 		Scope:       database.RBACScopeAssigned,
 	})
 	handler(c)

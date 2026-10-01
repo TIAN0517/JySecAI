@@ -92,7 +92,7 @@ func handleSlackMessage(ctx context.Context, api *slack.Client, teamID string, e
 		return
 	}
 	userID := slackSessionKey(teamID, ev.User)
-	logger.Info("Slack 收到消息", zap.String("from", userID), zap.String("content", text))
+	logger.Info("Slack 收到消息", zap.String("from", userID), zap.Int("content_bytes", len(text)))
 	reply := h.HandleMessage(slackPlatform, userID, text)
 	slackPostReply(ctx, api, ev.Channel, reply, logger)
 }
@@ -106,7 +106,7 @@ func handleSlackAppMention(ctx context.Context, api *slack.Client, teamID string
 		return
 	}
 	userID := slackSessionKey(teamID, ev.User)
-	logger.Info("Slack 收到 @ 消息", zap.String("from", userID), zap.String("content", text))
+	logger.Info("Slack 收到 @ 消息", zap.String("from", userID), zap.Int("content_bytes", len(text)))
 	reply := h.HandleMessage(slackPlatform, userID, text)
 	slackPostReply(ctx, api, ev.Channel, reply, logger)
 }

@@ -120,20 +120,21 @@ func (b *PayloadBuilder) BuildBeacon(in PayloadBuilderInput) (*BuildResult, erro
 	}
 
 	data := map[string]string{
-		"Transport":         transport,
-		"TCPDialAddr":       tcpDialAddr,
-		"TransportMetadata": transportMeta,
-		"ServerURL":         serverURL,
-		"ImplantToken":      listener.ImplantToken,
-		"AESKeyB64":         listener.EncryptionKey,
-		"SleepSeconds":      fmt.Sprintf("%d", firstPositive(in.SleepSeconds, cfg.DefaultSleep, 5)),
-		"JitterPercent":     fmt.Sprintf("%d", clamp(in.JitterPercent, 0, 100)),
-		"CheckInPath":       cfg.BeaconCheckInPath,
-		"TasksPath":         cfg.BeaconTasksPath,
-		"ResultPath":        cfg.BeaconResultPath,
-		"UploadPath":        cfg.BeaconUploadPath,
-		"FilePath":          cfg.BeaconFilePath,
-		"UserAgent":         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+		"Transport":             transport,
+		"TCPDialAddr":           tcpDialAddr,
+		"TransportMetadata":     transportMeta,
+		"ServerURL":             serverURL,
+		"ImplantToken":          listener.ImplantToken,
+		"AESKeyB64":             listener.EncryptionKey,
+		"SleepSeconds":          fmt.Sprintf("%d", firstPositive(in.SleepSeconds, cfg.DefaultSleep, 5)),
+		"JitterPercent":         fmt.Sprintf("%d", clamp(in.JitterPercent, 0, 100)),
+		"CheckInPath":           cfg.BeaconCheckInPath,
+		"TasksPath":             cfg.BeaconTasksPath,
+		"ResultPath":            cfg.BeaconResultPath,
+		"UploadPath":            cfg.BeaconUploadPath,
+		"FilePath":              cfg.BeaconFilePath,
+		"UserAgent":             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+		"TLSInsecureSkipVerify": fmt.Sprintf("%t", cfg.TLSInsecureSkipVerify),
 	}
 
 	// 执行模板

@@ -22,11 +22,15 @@ func (c *Config) EffectiveToolGuard() toolguard.Config {
 // section could silently turn the enabled-by-default protection off. Pointer
 // fields distinguish false/[] from omitted or null values, and the YAML decoder
 // continues to support aliases and merged configuration mappings.
+//
+// scope is optional: omitting it yields an empty authorization scope, which
+// keeps the historical behaviour (every government target stays blocked).
 func validateToolGuardYAML(data []byte) error {
 	var document struct {
 		ToolGuard *struct {
 			Enabled *bool             `yaml:"enabled"`
 			Rules   *[]toolguard.Rule `yaml:"rules"`
+			Scope   *toolguard.Scope  `yaml:"scope"`
 		} `yaml:"tool_guard"`
 	}
 	if err := yaml.Unmarshal(data, &document); err != nil {

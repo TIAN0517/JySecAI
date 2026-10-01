@@ -16,9 +16,9 @@ import (
 )
 
 const (
-	telegramPlatform       = "telegram"
-	telegramAPIBase        = "https://api.telegram.org"
-	telegramLongPollSec    = 30
+	telegramPlatform        = "telegram"
+	telegramAPIBase         = "https://api.telegram.org"
+	telegramLongPollSec     = 30
 	telegramMaxMessageRunes = 4096
 )
 
@@ -28,10 +28,10 @@ type telegramUpdate struct {
 }
 
 type telegramMessage struct {
-	MessageID int64           `json:"message_id"`
-	Chat      telegramChat    `json:"chat"`
-	From      *telegramUser   `json:"from"`
-	Text      string          `json:"text"`
+	MessageID int64            `json:"message_id"`
+	Chat      telegramChat     `json:"chat"`
+	From      *telegramUser    `json:"from"`
+	Text      string           `json:"text"`
 	Entities  []telegramEntity `json:"entities"`
 }
 
@@ -60,8 +60,9 @@ type telegramGetUpdatesResp struct {
 }
 
 type telegramBotMe struct {
-	OK     bool `json:"ok"`
-	Result struct {
+	OK          bool   `json:"ok"`
+	Description string `json:"description"`
+	Result      struct {
 		ID       int64  `json:"id"`
 		Username string `json:"username"`
 	} `json:"result"`
@@ -140,7 +141,7 @@ func runTelegramPoll(ctx context.Context, cfg config.RobotTelegramConfig, h Mess
 				}
 			}
 			userID := telegramSessionKey(chatType, u.Message.Chat.ID, u.Message.From.ID)
-			logger.Info("Telegram 收到消息", zap.String("from", userID), zap.String("content", text))
+			logger.Info("Telegram 收到消息", zap.String("from", userID), zap.Int("content_bytes", len(text)))
 			reply := h.HandleMessage(telegramPlatform, userID, text)
 			if err := telegramSendReply(ctx, client, token, u.Message.Chat.ID, reply); err != nil {
 				logger.Warn("Telegram 发送回复失败", zap.String("to", userID), zap.Error(err))
@@ -184,11 +185,11 @@ func telegramAPIURL(token, method string) string {
 func telegramGetMe(ctx context.Context, token string) (string, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, telegramAPIURL(token, "getMe"), nil)
 	if err != nil {
-		return "", err
+		return "", safeRobotHTTPError("telegram getMe request", err)
 	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return "", err
+		return "", safeRobotHTTPError("telegram getMe", err)
 	}
 	defer resp.Body.Close()
 	body, _ := io.ReadAll(resp.Body)
@@ -197,7 +198,7 @@ func telegramGetMe(ctx context.Context, token string) (string, error) {
 		return "", err
 	}
 	if !parsed.OK {
-		return "", fmt.Errorf("getMe failed: %s", string(body))
+		return "", fmt.Errorf("getMe failed: %s", parsed.Description)
 	}
 	return parsed.Result.Username, nil
 }
@@ -209,11 +210,11 @@ func telegramGetUpdates(ctx context.Context, client *http.Client, token string, 
 	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, err
+		return nil, safeRobotHTTPError("telegram getUpdates request", err)
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, safeRobotHTTPError("telegram getUpdates", err)
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
@@ -228,7 +229,7 @@ func telegramGetUpdates(ctx context.Context, client *http.Client, token string, 
 		if parsed.Description != "" {
 			return nil, fmt.Errorf("getUpdates: %s", parsed.Description)
 		}
-		return nil, fmt.Errorf("getUpdates failed: %s", string(body))
+		return nil, fmt.Errorf("getUpdates failed without a description")
 	}
 	return parsed.Result, nil
 }
@@ -246,12 +247,12 @@ func telegramSendReply(ctx context.Context, client *http.Client, token string, c
 		body, _ := json.Marshal(payload)
 		req, err := http.NewRequestWithContext(ctx, http.MethodPost, telegramAPIURL(token, "sendMessage"), bytes.NewReader(body))
 		if err != nil {
-			return err
+			return safeRobotHTTPError("telegram sendMessage request", err)
 		}
 		req.Header.Set("Content-Type", "application/json")
 		resp, err := client.Do(req)
 		if err != nil {
-			return err
+			return safeRobotHTTPError("telegram sendMessage", err)
 		}
 		resp.Body.Close()
 		if resp.StatusCode != http.StatusOK {

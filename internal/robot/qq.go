@@ -134,7 +134,7 @@ func handleQQC2CMessage(payload *dto.WSPayload, data *dto.WSC2CMessageData) erro
 	if h == nil || api == nil {
 		return nil
 	}
-	logger.Info("QQ 收到 C2C 消息", zap.String("from", userID), zap.String("content", text))
+	logger.Info("QQ 收到 C2C 消息", zap.String("from", userID), zap.Int("content_bytes", len(text)))
 	reply := h.HandleMessage(qqPlatform, userID, text)
 	return qqPostC2CReply(context.Background(), api, userOpenID, payload, data.ID, reply, logger)
 }
@@ -161,7 +161,7 @@ func handleQQGroupATMessage(payload *dto.WSPayload, data *dto.WSGroupATMessageDa
 	if h == nil || api == nil {
 		return nil
 	}
-	logger.Info("QQ 收到群 @ 消息", zap.String("from", userID), zap.String("content", text))
+	logger.Info("QQ 收到群 @ 消息", zap.String("from", userID), zap.Int("content_bytes", len(text)))
 	reply := h.HandleMessage(qqPlatform, userID, text)
 	return qqPostGroupReply(context.Background(), api, groupID, payload, data.ID, reply, logger)
 }

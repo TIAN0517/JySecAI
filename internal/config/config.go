@@ -677,6 +677,23 @@ func (c RobotAuthorizationConfig) ExternalUserAllowed(externalUserID string) boo
 // RobotSessionConfig 机器人会话隔离策略
 type RobotSessionConfig struct {
 	StrictUserIdentity *bool `yaml:"strict_user_identity,omitempty" json:"strict_user_identity,omitempty"` // true 时只允许真实用户标识，不允许会话/群 ID 兜底
+	RateLimitPerMinute int   `yaml:"rate_limit_per_minute,omitempty" json:"rate_limit_per_minute,omitempty"`
+	RateLimitBurst     int   `yaml:"rate_limit_burst,omitempty" json:"rate_limit_burst,omitempty"`
+}
+
+func (c RobotSessionConfig) EffectiveRateLimit() (perMinute, burst int) {
+	perMinute = c.RateLimitPerMinute
+	if perMinute <= 0 {
+		perMinute = 30
+	}
+	burst = c.RateLimitBurst
+	if burst <= 0 {
+		burst = 10
+	}
+	if burst > perMinute {
+		burst = perMinute
+	}
+	return perMinute, burst
 }
 
 // StrictUserIdentityEnabled 返回是否启用严格用户身份模式；未配置时默认 true。
@@ -1424,13 +1441,18 @@ type ExternalMCPServerConfig struct {
 	Type string `yaml:"type,omitempty" json:"type,omitempty"`
 
 	// stdio 模式配置
-	Command string            `yaml:"command,omitempty" json:"command,omitempty"`
-	Args    []string          `yaml:"args,omitempty" json:"args,omitempty"`
-	Env     map[string]string `yaml:"env,omitempty" json:"env,omitempty"`
+	Command             string            `yaml:"command,omitempty" json:"command,omitempty"`
+	Args                []string          `yaml:"args,omitempty" json:"args,omitempty"`
+	Env                 map[string]string `yaml:"env,omitempty" json:"env,omitempty"`
+	WorkingDirectory    string            `yaml:"working_directory,omitempty" json:"working_directory,omitempty"`
+	CommandSHA256       string            `yaml:"command_sha256,omitempty" json:"command_sha256,omitempty"`
+	AllowedCommandRoots []string          `yaml:"allowed_command_roots,omitempty" json:"allowed_command_roots,omitempty"`
+	InheritParentEnv    bool              `yaml:"inherit_parent_env,omitempty" json:"inherit_parent_env,omitempty"`
 
 	// HTTP/SSE 模式配置
-	URL     string            `yaml:"url,omitempty" json:"url,omitempty"`
-	Headers map[string]string `yaml:"headers,omitempty" json:"headers,omitempty"`
+	URL               string            `yaml:"url,omitempty" json:"url,omitempty"`
+	Headers           map[string]string `yaml:"headers,omitempty" json:"headers,omitempty"`
+	AllowInsecureHTTP bool              `yaml:"allow_insecure_http,omitempty" json:"allow_insecure_http,omitempty"`
 
 	// 官方标准字段
 	Disabled    bool     `yaml:"disabled,omitempty" json:"disabled,omitempty"`       // 禁用服务器（官方字段）
@@ -1498,6 +1520,9 @@ func Load(path string) (*Config, error) {
 	var cfg Config
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		return nil, fmt.Errorf("解析配置文件失败: %w", err)
+	}
+	if err := unprotectSensitiveConfig(path, &cfg); err != nil {
+		return nil, fmt.Errorf("解密配置凭证失败: %w", err)
 	}
 	if cfg.ToolGuard != nil {
 		if err := validateToolGuardYAML(data); err != nil {
