@@ -867,7 +867,7 @@ func normalizeResultBlobSuffix(suffix string) (string, error) {
 		suffix = "." + suffix
 	}
 	switch suffix {
-	case ".bin", ".png", ".jpg", ".jpeg":
+	case ".bin", ".png", ".jpg", ".jpeg", ".gif", ".zip":
 	default:
 		return "", fmt.Errorf("invalid blob suffix")
 	}
