@@ -3589,6 +3589,9 @@
                             <div class="xss-form-group">
                                 <label>来源（目标触发点 URL，可选）</label>
                                 <input type="text" id="xss-generate-source" class="form-control" placeholder="https://target.example/login">
+                                <label>Allowed domain (optional)</label>
+                                <input type="text" id="xss-generate-domain" class="form-control" maxlength="253">
+                                <label><input type="checkbox" id="xss-generate-domain-only"> Restrict callbacks to this domain and its subdomains</label>
                             </div>
                             <div class="xss-modal-actions">
                                 <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.generatePayload()">生成</button>
@@ -3629,7 +3632,7 @@
                                 <input type="number" id="xss-config-cooldown" class="form-control" readonly>
                             </div>
                             <div class="xss-modal-actions">
-                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.saveConfig()">保存</button>
+                                <span class="xss-modal-hint">Read-only deployment configuration.</span>
                                 <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)">关闭</button>
                             </div>
                         </div>

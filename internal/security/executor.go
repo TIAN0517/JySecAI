@@ -41,6 +41,8 @@ type Executor struct {
 	shellNoOutputTimeoutSec int // execute/exec 无新输出空闲秒数；0=默认 300；-1=关闭（见 SetShellNoOutputTimeoutSeconds）
 	toolOutputMaxBytes      int
 	spillRootDir            string
+	hooksMu                 sync.Mutex
+	hooks                   *scannerHooks // 可选：Scanner Runtime Optimization v2 pre-exec 管线（PHASE 1–8）
 }
 
 // NewExecutor 创建新的执行器
@@ -159,6 +161,57 @@ func (e *Executor) ExecuteTool(ctx context.Context, toolName string, args map[st
 		return e.executeInternalTool(ctx, toolName, toolConfig.Command, args)
 	}
 
+	// Scanner Runtime Optimization v2 pre-exec pipeline:
+	//   1. schema validate
+	//   2. target normalize
+	//   3. authorization
+	//   4. execution policy
+	//   5. preflight
+	// This runs before buildCommandArgs so a failure short-circuits the rest
+	// of the chain and never reaches exec.CommandContext.
+	if pre := e.runScannerPreExec(ctx, toolName, toolConfig, args); pre.StopForInput != nil || pre.Failure != nil {
+		var env scannerErrorEnvelope
+		if pre.StopForInput != nil {
+			env = scannerErrorEnvelope{
+				Code:              string(pre.StopForInput.Code),
+				Tool:              pre.StopForInput.Tool,
+				Message:           pre.StopForInput.HumanMessage,
+				Retryable:         false,
+				RequiresUserInput: true,
+				MissingFields:     pre.StopForInput.MissingFields,
+				SchemaHash:        pre.StopForInput.SchemaHash,
+			}
+		} else {
+			env = scannerErrorEnvelope{
+				Code:              string(pre.Failure.Code),
+				Tool:              pre.Failure.Tool,
+				Message:           pre.Failure.Message,
+				Retryable:         pre.Failure.Retryable,
+				RequiresUserInput: pre.Failure.RequiresUserInput,
+				MissingFields:     pre.Failure.MissingFields,
+				SchemaHash:        pre.Failure.SchemaHash,
+			}
+		}
+		e.logger.Warn("scanner pre-exec rejected call",
+			zap.String("tool", toolName),
+			zap.String("code", env.Code),
+			zap.Bool("stop_for_input", env.RequiresUserInput),
+			zap.Strings("missing_fields", env.MissingFields),
+		)
+		body, marshalErr := json.Marshal(env)
+		if marshalErr != nil {
+			body = []byte(fmt.Sprintf(`{"code":%q,"tool":%q,"message":%q,"retryable":false,"requires_user_input":false}`,
+				env.Code, env.Tool, "scanner pre-exec envelope marshal failed: "+marshalErr.Error()))
+		}
+		return &mcp.ToolResult{
+			Content: []mcp.Content{{
+				Type: "text",
+				Text: string(body),
+			}},
+			IsError: true,
+		}, nil
+	}
+
 	// 构建命令 - 根据工具类型使用不同的参数格式
 	cmdArgs := e.buildCommandArgs(toolName, toolConfig, args)
 
@@ -186,6 +239,9 @@ func (e *Executor) ExecuteTool(ctx context.Context, toolName string, args map[st
 	}
 
 	// 执行命令
+	if e.hooks != nil && e.hooks.metrics != nil {
+		e.hooks.metrics.IncExecution(toolName)
+	}
 	cmd := exec.CommandContext(ctx, toolConfig.Command, cmdArgs...)
 	applyDefaultTerminalEnv(cmd)
 	attachNonInteractiveStdin(cmd)

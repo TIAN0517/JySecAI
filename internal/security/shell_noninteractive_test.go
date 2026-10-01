@@ -107,13 +107,19 @@ func TestNonInteractiveStdinReadBlocksWithoutRedirect(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer r.Close()
+	defer w.Close()
 	// 保持 w 打开且不写数据，模拟「等待用户输入」
 
 	cmd := exec.Command("sh", "-c", `read x; echo done`)
 	cmd.Stdin = r
 
+	// Start publishes Process synchronously before the timeout branch can use
+	// it. Only Wait runs in the goroutine; every path below joins that wait.
+	if err := cmd.Start(); err != nil {
+		t.Fatalf("start blocked-stdin child: %v", err)
+	}
 	done := make(chan error, 1)
-	go func() { done <- cmd.Run() }()
+	go func() { done <- cmd.Wait() }()
 
 	select {
 	case err := <-done:

@@ -16,7 +16,7 @@ func TestEnrichHitlApprovalPayload(t *testing.T) {
 	if err != nil {
 		t.Fatalf("db: %v", err)
 	}
-	defer os.RemoveAll(tmp)
+	defer func() { _ = db.Close(); _ = os.RemoveAll(tmp) }()
 
 	conv, err := db.CreateConversation("hitl ctx", database.ConversationCreateMeta{})
 	if err != nil {

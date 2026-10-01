@@ -53,13 +53,13 @@ type Config struct {
 
 // XssConfig XSS 收割平台配置
 type XssConfig struct {
-	Enabled         bool   `yaml:"enabled" json:"enabled"`
-	Token           string `yaml:"token,omitempty" json:"token,omitempty"`
-	BindHost        string `yaml:"bind_host,omitempty" json:"bind_host,omitempty"`
-	BindPort        int    `yaml:"bind_port,omitempty" json:"bind_port,omitempty"`
-	CooldownSeconds int    `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
-	PublicURL       string `yaml:"public_url,omitempty" json:"public_url,omitempty"`
-	DNSExfilDomain  string `yaml:"dns_exfil_domain,omitempty" json:"dns_exfil_domain,omitempty"`
+	TrustedLocalProxies []string `yaml:"trusted_local_proxies,omitempty" json:"trusted_local_proxies,omitempty"`
+	Enabled             bool     `yaml:"enabled" json:"enabled"`
+	Token               string   `yaml:"token,omitempty" json:"token,omitempty"`
+	BindHost            string   `yaml:"bind_host,omitempty" json:"bind_host,omitempty"`
+	BindPort            int      `yaml:"bind_port,omitempty" json:"bind_port,omitempty"`
+	CooldownSeconds     int      `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
+	PublicURL           string   `yaml:"public_url,omitempty" json:"public_url,omitempty"`
 }
 
 func (c XssConfig) EnabledEffective() bool {
@@ -1132,6 +1132,27 @@ type SecurityConfig struct {
 	Tools               []ToolConfig `yaml:"tools,omitempty"`                 // 向后兼容：支持在主配置文件中定义工具
 	ToolsDir            string       `yaml:"tools_dir,omitempty"`             // 工具配置文件目录（新方式）
 	ToolDescriptionMode string       `yaml:"tool_description_mode,omitempty"` // 工具描述模式: "short" | "full"，默认 short
+	// Scanner 控制外部掃描器（nuclei 等）的預執行管線。
+	// 預設：空清單 = 拒絕所有外部目標（deny-by-default）。
+	// 僅支援 exact hostname / exact IP / entry.Tool 限定；無 wildcard。
+	Scanner ScannerConfig `yaml:"scanner,omitempty"`
+}
+
+// ScannerConfig 外部掃描器授權設定。空清單 → 拒絕所有掃描器呼叫。
+type ScannerConfig struct {
+	// AuthorizedTargets 顯式 allowlist。空清單 = deny-all。
+	// 每條 entry 僅支援 exact host 或 exact IP；Tool 留空表示對所有
+	// scanner 工具生效。
+	AuthorizedTargets []ScannerAuthorizedTarget `yaml:"authorized_targets,omitempty"`
+}
+
+// ScannerAuthorizedTarget 單一授權條目。Host 與 IP 二選一（或同時設定，
+// 但代表同一資源以便在不同表示法下都通過檢查）。
+type ScannerAuthorizedTarget struct {
+	Tool string `yaml:"tool,omitempty"` // 留空 = 對所有 scanner 工具生效
+	Host string `yaml:"host,omitempty"` // exact hostname（小寫比對）
+	IP   string `yaml:"ip,omitempty"`   // exact IP literal
+	Note string `yaml:"note,omitempty"` // 自由註記，僅供稽核
 }
 
 type DatabaseConfig struct {
