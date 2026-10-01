@@ -90,6 +90,7 @@ C2:
 - disabled by default;
 - enabled only during authorized window;
 - listener ports separated from admin UI;
+- `allow_legacy_shell` and `allow_plaintext_checkin` both default to off. Enabling either puts sessions or beacon traffic on the wire in cleartext — hostnames, usernames, internal IPs and dispatched task commands become readable to anyone on the path. Keep them off outside a lab network;
 - cleanup payloads, sessions, tasks, and events.
 
 WebShell:

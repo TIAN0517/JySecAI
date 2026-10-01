@@ -100,6 +100,7 @@ C2：
 - 默认关闭。
 - 演练窗口临时开启。
 - Listener 端口与管理端口分离。
+- `allow_legacy_shell` 与 `allow_plaintext_checkin` 默认关闭。开启任一项都会让会话或 beacon 流量以明文过链路 —— 主机名、账号、内网 IP 与下发的任务指令将对链路上的任何人可读。除实验网段外请保持关闭。
 - 结束后清理 payload、session、task、event。
 
 WebShell：

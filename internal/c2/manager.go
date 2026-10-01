@@ -796,6 +796,11 @@ func normalizeResultBlobSuffix(suffix string) (string, error) {
 	return suffix, nil
 }
 
+// ensurePathInDir 兩層防護：
+//  1. 字面檢查：path 在字面上確實位於 dir 之內（擋 ../ 與絕對路徑）。
+//  2. 符號連結檢查：dir 或 path 不是通往別處的符號連結。
+//
+// 第 1 層是字串比較，看不到符號連結；第 2 層補上這個缺口。兩者都要通過才放行。
 func ensurePathInDir(dir, path string) error {
 	absDir, err := filepath.Abs(dir)
 	if err != nil {
@@ -812,7 +817,7 @@ func ensurePathInDir(dir, path string) error {
 	if rel == "." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) || rel == ".." || filepath.IsAbs(rel) {
 		return fmt.Errorf("path escapes result directory")
 	}
-	return nil
+	return ensureNoSymlinkEscape(absDir, absPath)
 }
 
 // ----------------------------------------------------------------------------
