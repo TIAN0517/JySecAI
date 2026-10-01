@@ -1,0 +1,90 @@
+# Line ending normalization
+#
+# Goal: enforce LF line endings on all source files for cross-platform
+# consistency (gofmt 1.25+, git diff readability, blame hygiene).
+#
+# History: the JySecAI scanner-runtime-v2 integration commit chain
+# (985010af, 630eb81e, 3d9c7c41, e38fdac0) introduced mixed line endings
+# after VPS4 gofmt -w forced LF on touched files while the surrounding
+# files remained CRLF. This .gitattributes file formalizes the policy:
+# Go and shell sources are LF; markdown/YAML/JSON are LF; nothing is CRLF
+# by default. Windows checkouts that previously worked with CRLF will
+# normalize on next `git add --renormalize` or fresh clone.
+
+# Default: detect text vs binary, normalize to LF on input, LF on output
+* text=auto eol=lf
+
+# Go source must always be LF (gofmt enforces LF output)
+*.go text eol=lf
+
+# CGo / C sources follow Go convention
+*.c text eol=lf
+*.h text eol=lf
+
+# Build / script sources
+*.mod text eol=lf
+*.sum text eol=lf
+*.sh text eol=lf
+*.bash text eol=lf
+*.zsh text eol=lf
+*.ps1 text eol=lf
+*.bat text eol=lf
+*.cmd text eol=lf
+*.py text eol=lf
+*.toml text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.csv text eol=lf
+*.tsv text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.jsx text eol=lf
+*.vue text eol=lf
+*.svelte text eol=lf
+*.proto text eol=lf
+*.sql text eol=lf
+
+# Makefile conventionally uses LF
+Makefile text eol=lf
+GNUmakefile text eol=lf
+*.mk text eol=lf
+
+# Dockerfile / container
+Dockerfile text eol=lf
+*.dockerfile text eol=lf
+
+# Git-internal text files
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.gitmodules text eol=lf
+
+# Binary files (force LF handling off to avoid corruption)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar binary
+*.gz binary
+*.bz2 binary
+*.xz binary
+*.7z binary
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.a binary
+*.o binary
+*.obj binary
+*.lib binary
+*.pdb binary
+*.wasm binary
