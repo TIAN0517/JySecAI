@@ -3,10 +3,11 @@ name: Linux Build
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 jobs:
-  build-linux:
+  go-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,8 +21,51 @@ jobs:
       - name: Install CGO dependencies
         run: sudo apt-get update && sudo apt-get install -y build-essential
 
+      - name: Vet
+        run: go vet ./...
+
+      # internal/handler、internal/logger、internal/security 目前存在既有失敗
+      # （不是本次變更造成，已在乾淨基線上以 git stash 確認過）。
+      # 在這些缺陷修好前先排除，讓本 job 的紅燈只代表新回歸。
+      # 修好後請從清單移除，恢復完整覆蓋。
       - name: Test
-        run: go test ./internal/multiagent/...
+        run: |
+          go list ./... \
+            | grep -vE '/(handler|logger|security)$' \
+            | xargs go test
+
+  frontend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # 這三個前端測試檔有既有失敗（與本次變更無關）：
+      #   chat-scroll-refresh (4)、hitl-approval-ui (3)、hitl-conversation-isolation (1)
+      # 修好後請從排除清單移除。
+      - name: Test
+        run: |
+          node --test $(ls web/static/js/*.test.cjs \
+            | grep -vE '(chat-scroll-refresh|hitl-approval-ui|hitl-conversation-isolation)\.test\.cjs$')
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.x'
+
+      - name: Install CGO dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential
 
       - name: Build Linux production binary
         env:
