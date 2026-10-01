@@ -385,7 +385,7 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		Hitl:       h.config.Hitl,
 		Knowledge:  h.config.Knowledge,
 		C2:         h.config.C2.Public(),
-		Robots:     h.config.Robots,
+		Robots:     h.config.Robots.Public(),
 		MultiAgent: multiPub,
 	})
 }
@@ -951,7 +951,9 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		h.config.Robots = *req.Robots
+		// GetConfig 回傳的憑證欄位是 "***" 遮罩值；前端讀-改-寫會原樣送回。
+		// 這裡把遮罩值還原為現有憑證，避免設定頁的存檔動作清空機器人 Token。
+		h.config.Robots = h.config.Robots.WithPreservedSecrets(*req.Robots)
 		h.logger.Info("更新机器人配置",
 			zap.Bool("wechat_enabled", h.config.Robots.Wechat.Enabled),
 			zap.Bool("wecom_enabled", h.config.Robots.Wecom.Enabled),

@@ -23,6 +23,41 @@ type WebShellConnection struct {
 	CreatedAt time.Time `json:"createdAt"`
 }
 
+// RedactedSecretPlaceholder 表示「該欄位有值但已遮罩」，見 config.RedactedSecretPlaceholder。
+const RedactedSecretPlaceholder = "***"
+
+// Redacted 回傳適合回傳給 API 用戶的副本：密碼以佔位符取代，其餘欄位原樣保留。
+//
+// /api/webshell/connections 的授權本身是正確的（ListWebshellConnectionsForAccess
+// 會過濾 owner 與 RBAC 授權），但 WebShellConnection 的 Password 帶有
+// json:"password" 標籤且 handler 直接序列化整個結構，等於把範圍內所有 WebShell
+// 的憑證一次回傳。持有 WebShell 密碼等同於可直接在目標主機下任意指令，
+// 因此回應中只保留「是否已設定」的資訊。
+//
+// 對既有流程無影響：/api/webshell/exec 與檔案端點在帶 connection_id 時，
+// handler 會以 DB 值覆寫請求帶來的密碼（見 authorizedWebshellConnection 呼叫處），
+// 客戶端回傳的 password 本來就不被採用。
+func (c WebShellConnection) Redacted() WebShellConnection {
+	out := c
+	if out.Password != "" {
+		out.Password = RedactedSecretPlaceholder
+	}
+	return out
+}
+
+// RedactedWebshellConnections 批次套用 Redacted；nil 輸入回傳空切片而非 nil，
+// 避免序列化結果從 [] 變成 null。
+func RedactedWebshellConnections(list []WebShellConnection) []WebShellConnection {
+	if list == nil {
+		return []WebShellConnection{}
+	}
+	out := make([]WebShellConnection, 0, len(list))
+	for _, c := range list {
+		out = append(out, c.Redacted())
+	}
+	return out
+}
+
 // GetWebshellConnectionState 获取连接关联的持久化状态 JSON，不存在时返回 "{}"
 func (db *DB) GetWebshellConnectionState(connectionID string) (string, error) {
 	var stateJSON string

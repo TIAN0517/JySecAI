@@ -1528,6 +1528,8 @@
     "urlPlaceholder": "http(s)://target.com/shell.php",
     "password": "连接密码/密钥",
     "passwordPlaceholder": "如冰蝎/蚁剑的连接密码",
+    "clearPassword": "清除已保存的密码",
+    "passwordKeepHint": "已保存的密码不会回显；留空表示保持不变。",
     "method": "请求方式",
     "methodPost": "POST",
     "methodGet": "GET",

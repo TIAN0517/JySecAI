@@ -4966,6 +4966,12 @@ function showAddWebshellModal() {
     if (editIdEl) editIdEl.value = '';
     document.getElementById('webshell-url').value = '';
     document.getElementById('webshell-password').value = '';
+    var clearWrapAdd = document.getElementById('webshell-clear-password-wrap');
+    if (clearWrapAdd) clearWrapAdd.style.display = 'none';
+    var keepHintAdd = document.getElementById('webshell-password-keep-hint');
+    if (keepHintAdd) keepHintAdd.style.display = 'none';
+    var clearElAdd = document.getElementById('webshell-clear-password');
+    if (clearElAdd) { clearElAdd.checked = false; clearElAdd.disabled = false; }
     document.getElementById('webshell-type').value = 'php';
     document.getElementById('webshell-method').value = 'post';
     document.getElementById('webshell-cmd-param').value = '';
@@ -4995,7 +5001,20 @@ function showEditWebshellModal(connId) {
         var editIdEl = document.getElementById('webshell-edit-id');
         if (editIdEl) editIdEl.value = conn.id;
         document.getElementById('webshell-url').value = conn.url || '';
-        document.getElementById('webshell-password').value = conn.password || '';
+        // 连接密码在 API 响应中已被遮罩为 "***"，不回填到输入框。
+        // 留空表示保持现有密码不变；要清除需勾选「清除已保存的密码」。
+        var pwdEl = document.getElementById('webshell-password');
+        if (pwdEl) pwdEl.value = '';
+        var hasSavedPassword = conn.password === '***';
+        var clearWrap = document.getElementById('webshell-clear-password-wrap');
+        var keepHint = document.getElementById('webshell-password-keep-hint');
+        if (clearWrap) clearWrap.style.display = hasSavedPassword ? '' : 'none';
+        if (keepHint) keepHint.style.display = hasSavedPassword ? '' : 'none';
+        var clearEl = document.getElementById('webshell-clear-password');
+        if (clearEl) {
+            clearEl.checked = false;
+            clearEl.disabled = !hasSavedPassword;
+        }
         document.getElementById('webshell-type').value = conn.type || 'php';
         document.getElementById('webshell-method').value = (conn.method || 'post').toLowerCase();
         document.getElementById('webshell-cmd-param').value = conn.cmdParam || '';
@@ -5240,19 +5259,25 @@ function testWebshellConnection() {
         return;
     }
     // 连通性使用 Windows/Linux 都识别的最小内建命令作为探测（echo token 在 cmd 和 sh 下行为等价）
+    // 编辑既有连接时密码框留空表示「沿用已保存的密码」，带上 connection_id 让后端
+    // 以 DB 中的凭据执行（后端对带 connection_id 的请求一律以 DB 值为准）。
+    var probeEditIdEl = document.getElementById('webshell-edit-id');
+    var probeEditId = probeEditIdEl ? probeEditIdEl.value.trim() : '';
+    var probeBody = {
+        url: url,
+        password: password || '',
+        type: type,
+        method: method === 'get' ? 'get' : 'post',
+        cmd_param: cmdParam || '',
+        encoding: encoding,
+        os: osTag,
+        command: buildWebshellProbeCommand(probeToken)
+    };
+    if (probeEditId) probeBody.connection_id = probeEditId;
     apiFetch('/api/webshell/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            url: url,
-            password: password || '',
-            type: type,
-            method: method === 'get' ? 'get' : 'post',
-            cmd_param: cmdParam || '',
-            encoding: encoding,
-            os: osTag,
-            command: buildWebshellProbeCommand(probeToken)
-        })
+        body: JSON.stringify(probeBody)
     })
         .then(function (r) { return r.json(); })
         .then(function (data) {
@@ -5306,7 +5331,11 @@ function saveWebshellConnection() {
     var editId = editIdEl ? editIdEl.value.trim() : '';
     var projectId = (document.getElementById('webshell-project-id') || {}).value || '';
     if (projectId && typeof projectId.trim === 'function') projectId = projectId.trim(); else projectId = '';
+    var clearPwdEl = document.getElementById('webshell-clear-password');
     var body = { url: url, password: password, type: type, method: method === 'get' ? 'get' : 'post', cmd_param: cmdParam, encoding: encoding, os: osTag, remark: remark || url, project_id: projectId };
+    // 编辑既有连接且密码框留空时，password 为空字符串；后端会沿用已保存的密码。
+    // 只有显式勾选清除时才送出 clear_password。
+    if (editId && clearPwdEl && clearPwdEl.checked) body.clear_password = true;
     if (typeof apiFetch === 'undefined') return;
 
     var reqUrl = editId ? ('/api/webshell/connections/' + encodeURIComponent(editId)) : '/api/webshell/connections';

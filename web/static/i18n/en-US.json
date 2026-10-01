@@ -1540,6 +1540,8 @@
     "urlPlaceholder": "http(s)://target.com/shell.php",
     "password": "Password / Key",
     "passwordPlaceholder": "e.g. IceSword/AntSword connection password",
+    "clearPassword": "Clear the saved password",
+    "passwordKeepHint": "The saved password is never shown again; leave blank to keep it unchanged.",
     "method": "Request method",
     "methodPost": "POST",
     "methodGet": "GET",
