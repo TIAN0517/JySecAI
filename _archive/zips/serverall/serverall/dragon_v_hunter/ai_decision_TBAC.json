@@ -1,0 +1,27 @@
+{
+  "target_name": "TBAC",
+  "recommended_action": "scheduled",
+  "priority_score": 76.72500000000001,
+  "confidence_level": 0.3875,
+  "reasoning": [
+    "目标属于Banking行业，该行业通常具有较高价值",
+    "位于Thailand，属于优先级目标地区",
+    "预期成功率较高（77.5%）",
+    "发现SQL Injection漏洞类型，具有较高利用价值"
+  ],
+  "expected_success_rate": 0.775,
+  "estimated_impact": "财务损失 50-100亿泰铢（高概率实现）",
+  "recommended_methods": [
+    "UNION查询注入",
+    "时间盲注",
+    "错误信息注入"
+  ],
+  "estimated_risk": "极高（成功概率高，风险加剧）",
+  "next_steps": [
+    "安排授权时间窗口",
+    "准备测试工具和环境",
+    "进行初步风险评估",
+    "安排专人监控",
+    "准备应急方案"
+  ]
+}

@@ -1,0 +1,26 @@
+order_id,user_id,product_name,quantity,price,total_amount,status,shipping_address,phone,order_date,payment_method,tracking_number,shipping_company,estimated_delivery
+ORD20251025_10000,1011,AirPods Pro,3,29251113,7778846,processing,"101 Tran Hung Dao Street, District 5, Ho Chi Minh City",0704060295,2025-10-24,bank_transfer,VTN6531615,VNPost,2025-10-30
+ORD20251025_10001,1014,MacBook Air M2,5,33215063,18389743,delivered,"789 Dong Khoi Street, District 1, Ho Chi Minh City",0423191337,2025-10-25,bank_transfer,VTN5910003,Viettel Post,2025-10-30
+ORD20251025_10002,1010,Sony WH-1000XM4,1,37784232,45483867,shipped,"202 Nguyen Trai Street, District 1, Ho Chi Minh City",0785169779,2025-10-24,cash_on_delivery,VTN5559278,Viettel Post,2025-10-27
+ORD20251025_10003,1007,Laptop Dell Vostro,5,9914628,20007789,processing,"202 Nguyen Trai Street, District 1, Ho Chi Minh City",0979506997,2025-10-25,bank_transfer,VTN1691902,VNPost,2025-10-30
+ORD20251025_10004,1013,AirPods Pro,5,16333621,15723450,cancelled,"123 Nguyen Hue Street, District 1, Ho Chi Minh City",0744317325,2025-10-25,cash_on_delivery,VTN3484692,J&T Express,2025-10-30
+ORD20251025_10005,1001,Samsung Galaxy S23,3,27787791,49614580,processing,"101 Tran Hung Dao Street, District 5, Ho Chi Minh City",0392663587,2025-10-24,cash_on_delivery,VTN5408930,GHTK,2025-10-31
+ORD20251025_10006,1015,MacBook Air M2,1,44230144,47141500,delivered,"101 Tran Hung Dao Street, District 5, Ho Chi Minh City",0384695199,2025-10-25,cash_on_delivery,VTN7307539,J&T Express,2025-10-31
+ORD20251025_10007,1003,iPhone 15 Pro,2,43376105,27657182,cancelled,"101 Tran Hung Dao Street, District 5, Ho Chi Minh City",0139414311,2025-10-24,bank_transfer,VTN8435801,Viettel Post,2025-10-29
+ORD20251025_10008,1005,MacBook Air M2,2,10894395,22948627,delivered,"789 Dong Khoi Street, District 1, Ho Chi Minh City",0502412833,2025-10-24,paypal,VTN6235350,GHTK,2025-10-30
+ORD20251025_10009,1006,Samsung Galaxy S23,4,43340204,28444443,delivered,"456 Le Loi Street, District 1, Ho Chi Minh City",0966762297,2025-10-24,bank_transfer,VTN3450929,VNPost,2025-10-26
+ORD20251025_10010,1008,Samsung Galaxy S23,2,5303251,12131804,pending,"456 Le Loi Street, District 1, Ho Chi Minh City",0977960726,2025-10-24,bank_transfer,VTN9082695,VNPost,2025-10-28
+ORD20251025_10011,1011,Samsung Galaxy S23,3,36462409,8241125,pending,"101 Tran Hung Dao Street, District 5, Ho Chi Minh City",0480145636,2025-10-24,credit_card,VTN5910658,J&T Express,2025-10-31
+ORD20251025_10012,1001,Laptop Dell Vostro,5,27824670,44870082,shipped,"123 Nguyen Hue Street, District 1, Ho Chi Minh City",0623057445,2025-10-25,bank_transfer,VTN2116202,GHN,2025-10-28
+ORD20251025_10013,1013,iPhone 15 Pro,3,37094455,45003944,cancelled,"789 Dong Khoi Street, District 1, Ho Chi Minh City",0336101815,2025-10-24,paypal,VTN2715614,J&T Express,2025-10-27
+ORD20251025_10014,1015,Laptop Dell Vostro,5,46114778,23946393,delivered,"202 Nguyen Trai Street, District 1, Ho Chi Minh City",0780425761,2025-10-24,cash_on_delivery,VTN3428518,GHTK,2025-10-30
+ORD20251025_10015,1008,AirPods Pro,1,19562668,14435931,cancelled,"101 Tran Hung Dao Street, District 5, Ho Chi Minh City",0850366258,2025-10-24,paypal,VTN4458635,J&T Express,2025-10-27
+ORD20251025_10016,1005,Sony WH-1000XM4,3,16363574,45204937,pending,"456 Le Loi Street, District 1, Ho Chi Minh City",0609123239,2025-10-24,bank_transfer,VTN4168193,J&T Express,2025-10-31
+ORD20251025_10017,1011,MacBook Air M2,5,15080287,14165349,shipped,"101 Tran Hung Dao Street, District 5, Ho Chi Minh City",0308584918,2025-10-24,cash_on_delivery,VTN2208211,VNPost,2025-10-29
+ORD20251025_10018,1003,AirPods Pro,3,25563241,36596373,pending,"123 Nguyen Hue Street, District 1, Ho Chi Minh City",0441312053,2025-10-24,bank_transfer,VTN4723261,J&T Express,2025-10-27
+ORD20251025_10019,1001,AirPods Pro,2,19041812,37233737,pending,"123 Nguyen Hue Street, District 1, Ho Chi Minh City",0902443470,2025-10-25,cash_on_delivery,VTN8721431,Viettel Post,2025-10-28
+ORD20251025_10020,1005,Samsung Galaxy S23,2,14797915,44888956,processing,"456 Le Loi Street, District 1, Ho Chi Minh City",0708102412,2025-10-24,cash_on_delivery,VTN8787420,Viettel Post,2025-10-30
+ORD20251025_10021,1007,Sony WH-1000XM4,2,17331625,13386305,delivered,"101 Tran Hung Dao Street, District 5, Ho Chi Minh City",0294447660,2025-10-25,paypal,VTN6156053,VNPost,2025-10-30
+ORD20251025_10022,1007,Sony WH-1000XM4,4,30079096,46208634,delivered,"456 Le Loi Street, District 1, Ho Chi Minh City",0853741697,2025-10-24,paypal,VTN2063992,GHTK,2025-11-01
+ORD20251025_10023,1012,iPad Pro 11寸,4,41298079,20262940,processing,"789 Dong Khoi Street, District 1, Ho Chi Minh City",0943666053,2025-10-24,paypal,VTN4822435,GHN,2025-10-31
+ORD20251025_10024,1006,iPad Pro 11寸,5,23737100,17655774,pending,"101 Tran Hung Dao Street, District 5, Ho Chi Minh City",0628359192,2025-10-24,bank_transfer,VTN6935222,GHN,2025-10-28

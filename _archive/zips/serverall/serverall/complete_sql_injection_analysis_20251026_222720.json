@@ -1,0 +1,78 @@
+{
+  "vulnerability_analysis": {
+    "summary": {
+      "total_vulnerabilities": 1,
+      "high_risk_vulnerabilities": 1,
+      "databases_found": [
+        "MySQL"
+      ],
+      "tables_found": [
+        "users",
+        "products"
+      ],
+      "data_retrieved": 150
+    },
+    "details": [
+      {
+        "vulnerable": true,
+        "technique": "Boolean-based blind",
+        "database": "MySQL",
+        "tables": [
+          "users",
+          "products"
+        ],
+        "columns": [
+          "username",
+          "password",
+          "email"
+        ],
+        "data_count": 150,
+        "risk_level": "High",
+        "confidence": "High"
+      }
+    ],
+    "recommendations": [
+      "立即修复发现的SQL注入漏洞",
+      "实施参数化查询或预处理语句",
+      "加强输入验证和过滤机制",
+      "部署Web应用防火墙(WAF)",
+      "定期进行安全代码审计",
+      "更新数据库访问权限控制"
+    ]
+  },
+  "poc_effectiveness": {
+    "timestamp": "2025-10-26T22:27:20.652334",
+    "poc_components": {
+      "detection_methods": [
+        "布尔盲注",
+        "时间盲注",
+        "联合查询",
+        "错误注入"
+      ],
+      "bypass_techniques": [
+        "编码绕过",
+        "注释绕过",
+        "大小写绕过",
+        "特殊字符"
+      ],
+      "analysis_tools": [
+        "SQLMap",
+        "自定义脚本",
+        "手动验证"
+      ]
+    },
+    "effectiveness_metrics": {
+      "detection_rate": 85,
+      "false_positive_rate": 5,
+      "bypass_success_rate": 70,
+      "data_extraction_success": 80
+    },
+    "improvement_suggestions": [
+      "增强WAF绕过能力",
+      "优化检测算法精度",
+      "增加更多数据库类型支持",
+      "改进错误处理机制"
+    ]
+  },
+  "generated_at": "2025-10-26T22:27:20.652334"
+}

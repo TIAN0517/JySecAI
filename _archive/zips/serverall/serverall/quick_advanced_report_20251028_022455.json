@@ -1,0 +1,23 @@
+{
+  "timestamp": "2025-10-28T02:24:55.222193",
+  "results": {
+    "https://www.uob.co.th": {
+      "status": "安全"
+    },
+    "https://www.investree.co.th": {
+      "status": "有漏洞",
+      "vulnerabilities": [
+        "SQL注入"
+      ]
+    },
+    "https://fundingsocieties.co.th": {
+      "status": "有漏洞",
+      "vulnerabilities": [
+        "SQL注入"
+      ]
+    },
+    "https://www.scb.co.th": {
+      "status": "安全"
+    }
+  }
+}

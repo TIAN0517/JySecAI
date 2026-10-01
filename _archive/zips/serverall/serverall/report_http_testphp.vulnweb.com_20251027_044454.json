@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "scanner": "Dragon-V Ultimate v2.0",
+    "target": "http://testphp.vulnweb.com",
+    "timestamp": "2025-10-27T04:44:54.089309",
+    "version": "2.0"
+  },
+  "statistics": {
+    "total_vulnerabilities": 2,
+    "high_severity": 1,
+    "medium_severity": 1,
+    "low_severity": 0,
+    "vulnerability_types": {
+      "SQL Injection": 1,
+      "Cross-Site Scripting (XSS)": 1
+    },
+    "average_confidence": 0.8999999999999999,
+    "average_cvss": 7.3
+  },
+  "vulnerabilities": [
+    {
+      "id": "vuln_001",
+      "type": "SQL Injection",
+      "severity": "High",
+      "confidence": 0.95,
+      "target": "http://testphp.vulnweb.com",
+      "payload": "1' OR '1'='1",
+      "evidence": "页面返回数据库错误信息",
+      "timestamp": "2025-10-27 04:44:54.082308",
+      "cve_id": "CVE-2023-12345",
+      "cvss_score": 8.5,
+      "impact": "可能导致数据库完全泄露",
+      "remediation": "使用参数化查询或预编译语句",
+      "references": null
+    },
+    {
+      "id": "vuln_002",
+      "type": "Cross-Site Scripting (XSS)",
+      "severity": "Medium",
+      "confidence": 0.85,
+      "target": "http://testphp.vulnweb.com",
+      "payload": "<script>alert('XSS')</script>",
+      "evidence": "载荷在响应中未经过滤",
+      "timestamp": "2025-10-27 04:44:54.083308",
+      "cve_id": "CVE-2023-12346",
+      "cvss_score": 6.1,
+      "impact": "可能窃取用户会话或执行恶意操作",
+      "remediation": "对用户输入进行适当的编码和过滤",
+      "references": null
+    }
+  ]
+}

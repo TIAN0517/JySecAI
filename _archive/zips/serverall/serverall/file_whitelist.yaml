@@ -1,0 +1,108 @@
+# 文件读取白名单配置
+# 用于安全扫描和文件访问控制
+
+# 允许读取的Python文件类型
+python_files:
+  - "*.py"
+  - "*.pyw"
+  - "*.pyc"
+
+# 允许读取的配置文件类型
+config_files:
+  - "*.yaml"
+  - "*.yml"
+  - "*.json"
+  - "*.toml"
+  - "*.ini"
+  - "*.cfg"
+  - "*.conf"
+  - "*.env"
+  - "*.properties"
+
+# 允许读取的数据文件类型
+data_files:
+  - "*.csv"
+  - "*.tsv"
+  - "*.xlsx"
+  - "*.xls"
+  - "*.db"
+  - "*.sqlite"
+  - "*.sql"
+  - "*.xml"
+
+# 允许读取的文档文件类型
+document_files:
+  - "*.md"
+  - "*.txt"
+  - "*.rst"
+  - "*.pdf"
+  - "*.docx"
+  - "*.doc"
+  - "*.rtf"
+
+# 允许读取的日志文件类型
+log_files:
+  - "*.log"
+  - "*.out"
+  - "*.err"
+
+# 允许读取的脚本文件类型
+script_files:
+  - "*.sh"
+  - "*.bat"
+  - "*.cmd"
+  - "*.ps1"
+
+# 允许读取的Web文件类型
+web_files:
+  - "*.html"
+  - "*.htm"
+  - "*.css"
+  - "*.js"
+  - "*.php"
+  - "*.jsp"
+  - "*.asp"
+
+# 允许读取的密钥文件类型
+key_files:
+  - "*.key"
+  - "*.pem"
+  - "*.crt"
+  - "*.cer"
+  - "*.pfx"
+
+# 允许读取的压缩文件类型
+archive_files:
+  - "*.zip"
+  - "*.tar"
+  - "*.gz"
+  - "*.rar"
+  - "*.7z"
+
+# 排除的文件和目录（黑名单）
+exclude_patterns:
+  - "__pycache__"
+  - ".git"
+  - ".pytest_cache"
+  - "*.bin"
+  - "*.tmp"
+  - "temp"
+  - "tmp"
+  - "cache"
+  - "backup"
+  - "logs"
+
+# 关键安全目录（需要特殊权限）
+security_directories:
+  - "configs"
+  - "dbs"
+  - "encryption"
+  - "keys"
+  - "secrets"
+
+# 扫描深度配置
+scan_config:
+  max_depth: 5
+  follow_symlinks: false
+  include_hidden: false
+  skip_binary_files: true

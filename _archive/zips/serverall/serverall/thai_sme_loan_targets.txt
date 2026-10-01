@@ -1,0 +1,5 @@
+# 泰国SME贷款网站测试目标
+http://example.com
+https://example.com
+http://test.thai-loan.com
+https://demo.thai-sme-loan.com

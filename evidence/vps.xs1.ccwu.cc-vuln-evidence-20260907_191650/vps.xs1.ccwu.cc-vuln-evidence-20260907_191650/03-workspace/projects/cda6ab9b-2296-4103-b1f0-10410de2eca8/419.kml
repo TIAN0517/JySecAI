@@ -1,0 +1,253 @@
+﻿<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2"><Document><name>營建署危險建物</name><Style id="STYLE_紅單"><IconStyle><scale>1</scale><Icon><href>https://gis2.emic.gov.tw/EMICT/uploadFile/mmlayer/icon/紅單危險建物.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="STYLE_黃單"><IconStyle><scale>1</scale><Icon><href>https://gis2.emic.gov.tw/EMICT/uploadFile/mmlayer/icon/黃單危險建物.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Placemark><name>醫療</name><description>
+      &lt;div style='width:320px;padding:5px;' &gt;
+        &lt;table style='width:350px;border: 1px solid #AA9;' &gt;
+            
+            &lt;tr &gt;
+                &lt;td&gt; 危險建物名稱 &lt;/td&gt; 
+                &lt;td&gt; 鳳林鎮衛生所A(測試)&lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+                &lt;td&gt; 危險建物地址 &lt;/td&gt; 
+                &lt;td&gt; 975花蓮縣鳳林鎮光華路95號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+                &lt;td&gt; 危險等級 &lt;/td&gt; 
+                &lt;td&gt; 紅單 &lt;/td&gt;
+            &lt;/tr&gt;
+       
+        &lt;/table&gt;
+     &lt;/ div &gt;   
+      </description><styleUrl>#STYLE_紅單</styleUrl><Point><coordinates>121.45142,23.74516,0</coordinates></Point></Placemark><Placemark><name>消防</name><description>
+      &lt;div style='width:320px;padding:5px;' &gt;
+        &lt;table style='width:350px;border: 1px solid #AA9;' &gt;
+            
+            &lt;tr &gt;
+                &lt;td&gt; 危險建物名稱 &lt;/td&gt; 
+                &lt;td&gt; 花蓮縣消防局壽豐分隊(測試)&lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+                &lt;td&gt; 危險建物地址 &lt;/td&gt; 
+                &lt;td&gt; 974花蓮縣壽豐鄉中山路6段4號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+                &lt;td&gt; 危險等級 &lt;/td&gt; 
+                &lt;td&gt; 紅單 &lt;/td&gt;
+            &lt;/tr&gt;
+       
+        &lt;/table&gt;
+     &lt;/ div &gt;   
+      </description><styleUrl>#STYLE_紅單</styleUrl><Point><coordinates>121.50991,23.87003,0</coordinates></Point></Placemark><Placemark><name>警政</name><description>
+      &lt;div style='width:320px;padding:5px;' &gt;
+        &lt;table style='width:350px;border: 1px solid #AA9;' &gt;
+            
+            &lt;tr &gt;
+                &lt;td&gt; 危險建物名稱 &lt;/td&gt; 
+                &lt;td&gt; 花蓮縣警察局玉里分局觀音派出所(測試)&lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+                &lt;td&gt; 危險建物地址 &lt;/td&gt; 
+                &lt;td&gt; 981花蓮縣玉里鎮觀音里16鄰觀音14號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+                &lt;td&gt; 危險等級 &lt;/td&gt; 
+                &lt;td&gt; 紅單 &lt;/td&gt;
+            &lt;/tr&gt;
+       
+        &lt;/table&gt;
+     &lt;/ div &gt;   
+      </description><styleUrl>#STYLE_紅單</styleUrl><Point><coordinates>121.35825,23.39565,0</coordinates></Point></Placemark><Placemark><name>校舍</name><description>
+      &lt;div style='width:320px;padding:5px;' &gt;
+        &lt;table style='width:350px;border: 1px solid #AA9;' &gt;
+            
+            &lt;tr &gt;
+                &lt;td&gt; 危險建物名稱 &lt;/td&gt; 
+                &lt;td&gt; 國立花蓮高農 森林科綜合實驗室(測試)&lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+                &lt;td&gt; 危險建物地址 &lt;/td&gt; 
+                &lt;td&gt; 970花蓮縣花蓮市建國路161號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+                &lt;td&gt; 危險等級 &lt;/td&gt; 
+                &lt;td&gt; 紅單 &lt;/td&gt;
+            &lt;/tr&gt;
+       
+        &lt;/table&gt;
+     &lt;/ div &gt;   
+      </description><styleUrl>#STYLE_紅單</styleUrl><Point><coordinates>121.59943,23.98429,0</coordinates></Point></Placemark><Placemark><name>活動中心</name><description>
+      &lt;div style='width:320px;padding:5px;' &gt;
+        &lt;table style='width:350px;border: 1px solid #AA9;' &gt;
+            
+            &lt;tr &gt;
+                &lt;td&gt; 危險建物名稱 &lt;/td&gt; 
+                &lt;td&gt; 花蓮縣吉安鄉勝安社區活動中心(測試)&lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+                &lt;td&gt; 危險建物地址 &lt;/td&gt; 
+                &lt;td&gt; 973花蓮縣吉安鄉慈惠一街30號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+                &lt;td&gt; 危險等級 &lt;/td&gt; 
+                &lt;td&gt; 紅單 &lt;/td&gt;
+            &lt;/tr&gt;
+       
+        &lt;/table&gt;
+     &lt;/ div &gt;   
+      </description><styleUrl>#STYLE_紅單</styleUrl><Point><coordinates>121.58696,23.97541,0</coordinates></Point></Placemark><Placemark><name>消防</name><description>
+      &lt;div style='width:320px;padding:5px;' &gt;
+        &lt;table style='width:350px;border: 1px solid #AA9;' &gt;
+            
+            &lt;tr &gt;
+                &lt;td&gt; 危險建物名稱 &lt;/td&gt; 
+                &lt;td&gt; 宜蘭縣消防局長隧道救援救護整合中心(測試)&lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+                &lt;td&gt; 危險建物地址 &lt;/td&gt; 
+                &lt;td&gt; 262宜蘭縣礁溪鄉礁溪路七段82號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+                &lt;td&gt; 危險等級 &lt;/td&gt; 
+                &lt;td&gt; 紅單 &lt;/td&gt;
+            &lt;/tr&gt;
+       
+        &lt;/table&gt;
+     &lt;/ div &gt;   
+      </description><styleUrl>#STYLE_紅單</styleUrl><Point><coordinates>121.78778,24.83706,0</coordinates></Point></Placemark><Placemark><name>校舍</name><description>
+      &lt;div style='width:320px;padding:5px;' &gt;
+        &lt;table style='width:350px;border: 1px solid #AA9;' &gt;
+            
+            &lt;tr &gt;
+                &lt;td&gt; 危險建物名稱 &lt;/td&gt; 
+                &lt;td&gt; 國立羅東高中 輔導室(測試)&lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+                &lt;td&gt; 危險建物地址 &lt;/td&gt; 
+                &lt;td&gt; 265宜蘭縣羅東鎮公正路324號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+                &lt;td&gt; 危險等級 &lt;/td&gt; 
+                &lt;td&gt; 紅單 &lt;/td&gt;
+            &lt;/tr&gt;
+       
+        &lt;/table&gt;
+     &lt;/ div &gt;   
+      </description><styleUrl>#STYLE_紅單</styleUrl><Point><coordinates>121.76214,24.68073,0</coordinates></Point></Placemark><Placemark><name>活動中心</name><description>
+      &lt;div style='width:320px;padding:5px;' &gt;
+        &lt;table style='width:350px;border: 1px solid #AA9;' &gt;
+            
+            &lt;tr &gt;
+                &lt;td&gt; 危險建物名稱 &lt;/td&gt; 
+                &lt;td&gt; 員山鄉員山社區活動中心(測試)&lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+                &lt;td&gt; 危險建物地址 &lt;/td&gt; 
+                &lt;td&gt; 264宜蘭縣員山鄉員山村慈惠路95號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+                &lt;td&gt; 危險等級 &lt;/td&gt; 
+                &lt;td&gt; 紅單 &lt;/td&gt;
+            &lt;/tr&gt;
+       
+        &lt;/table&gt;
+     &lt;/ div &gt;   
+      </description><styleUrl>#STYLE_紅單</styleUrl><Point><coordinates>121.72731,24.7445,0</coordinates></Point></Placemark><Placemark><name>校舍</name><description>
+      &lt;div style='width:320px;padding:5px;' &gt;
+        &lt;table style='width:350px;border: 1px solid #AA9;' &gt;
+            
+            &lt;tr &gt;
+                &lt;td&gt; 危險建物名稱 &lt;/td&gt; 
+                &lt;td&gt; 教學大樓(測試)&lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+                &lt;td&gt; 危險建物地址 &lt;/td&gt; 
+                &lt;td&gt; 260宜蘭縣宜蘭市神農路1段1號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+                &lt;td&gt; 危險等級 &lt;/td&gt; 
+                &lt;td&gt; 黃單 &lt;/td&gt;
+            &lt;/tr&gt;
+       
+        &lt;/table&gt;
+     &lt;/ div &gt;   
+      </description><styleUrl>#STYLE_黃單</styleUrl><Point><coordinates>121.74581,24.74554,0</coordinates></Point></Placemark><Placemark><name>校舍</name><description>
+      &lt;div style='width:320px;padding:5px;' &gt;
+        &lt;table style='width:350px;border: 1px solid #AA9;' &gt;
+            
+            &lt;tr &gt;
+                &lt;td&gt; 危險建物名稱 &lt;/td&gt; 
+                &lt;td&gt; 國立蘇澳海事 食品科工場(測試)&lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+                &lt;td&gt; 危險建物地址 &lt;/td&gt; 
+                &lt;td&gt; 270宜蘭縣蘇澳鎮蘇港路213號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+                &lt;td&gt; 危險等級 &lt;/td&gt; 
+                &lt;td&gt; 黃單 &lt;/td&gt;
+            &lt;/tr&gt;
+       
+        &lt;/table&gt;
+     &lt;/ div &gt;   
+      </description><styleUrl>#STYLE_黃單</styleUrl><Point><coordinates>121.84565,24.59407,0</coordinates></Point></Placemark><Placemark><name>市場</name><description>
+      &lt;div style='width:320px;padding:5px;' &gt;
+        &lt;table style='width:350px;border: 1px solid #AA9;' &gt;
+            
+            &lt;tr &gt;
+                &lt;td&gt; 危險建物名稱 &lt;/td&gt; 
+                &lt;td&gt; 新竹縣新埔鎮鎮公所(測試)&lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+                &lt;td&gt; 危險建物地址 &lt;/td&gt; 
+                &lt;td&gt; 305新竹縣新埔鎮中正路359巷 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+                &lt;td&gt; 危險等級 &lt;/td&gt; 
+                &lt;td&gt; 紅單 &lt;/td&gt;
+            &lt;/tr&gt;
+       
+        &lt;/table&gt;
+     &lt;/ div &gt;   
+      </description><styleUrl>#STYLE_紅單</styleUrl><Point><coordinates>121.0771014,24.8278902,0</coordinates></Point></Placemark><Placemark><name>活動中心</name><description>
+      &lt;div style='width:320px;padding:5px;' &gt;
+        &lt;table style='width:350px;border: 1px solid #AA9;' &gt;
+            
+            &lt;tr &gt;
+                &lt;td&gt; 危險建物名稱 &lt;/td&gt; 
+                &lt;td&gt; 苗栗縣苑裡鎮鎮公所(測試)&lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+                &lt;td&gt; 危險建物地址 &lt;/td&gt; 
+                &lt;td&gt; 358苗栗縣苑裡鎮客庄里8鄰116號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+                &lt;td&gt; 危險等級 &lt;/td&gt; 
+                &lt;td&gt; 紅單 &lt;/td&gt;
+            &lt;/tr&gt;
+       
+        &lt;/table&gt;
+     &lt;/ div &gt;   
+      </description><styleUrl>#STYLE_紅單</styleUrl><Point><coordinates>120.6469845,24.4362391,0</coordinates></Point></Placemark></Document></kml>

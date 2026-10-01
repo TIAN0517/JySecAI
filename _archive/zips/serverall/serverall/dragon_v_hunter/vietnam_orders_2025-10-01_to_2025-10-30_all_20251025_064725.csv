@@ -1,0 +1,151 @@
+order_id,customer_name,phone,email,address,product,price,status,order_time,payment_method,tracking_number,platform,extraction_date
+SHOPEE20251001001,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-01 00:00:00,信用卡,SGN000000001VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251001002,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-01 00:00:00,银行转账,SGN000000002VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251001003,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-01 00:00:00,支付宝,SGN000000003VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251001004,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-01 00:00:00,现金,SGN000000004VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251001005,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-01 00:00:00,信用卡,SGN000000005VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251002006,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-02 00:00:00,信用卡,SGN000000006VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251002007,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-02 00:00:00,银行转账,SGN000000007VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251002008,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-02 00:00:00,支付宝,SGN000000008VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251002009,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-02 00:00:00,现金,SGN000000009VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251002010,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-02 00:00:00,信用卡,SGN000000010VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251003011,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-03 00:00:00,信用卡,SGN000000011VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251003012,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-03 00:00:00,银行转账,SGN000000012VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251003013,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-03 00:00:00,支付宝,SGN000000013VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251003014,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-03 00:00:00,现金,SGN000000014VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251003015,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-03 00:00:00,信用卡,SGN000000015VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251004016,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-04 00:00:00,信用卡,SGN000000016VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251004017,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-04 00:00:00,银行转账,SGN000000017VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251004018,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-04 00:00:00,支付宝,SGN000000018VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251004019,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-04 00:00:00,现金,SGN000000019VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251004020,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-04 00:00:00,信用卡,SGN000000020VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251005021,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-05 00:00:00,信用卡,SGN000000021VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251005022,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-05 00:00:00,银行转账,SGN000000022VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251005023,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-05 00:00:00,支付宝,SGN000000023VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251005024,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-05 00:00:00,现金,SGN000000024VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251005025,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-05 00:00:00,信用卡,SGN000000025VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251006026,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-06 00:00:00,信用卡,SGN000000026VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251006027,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-06 00:00:00,银行转账,SGN000000027VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251006028,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-06 00:00:00,支付宝,SGN000000028VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251006029,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-06 00:00:00,现金,SGN000000029VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251006030,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-06 00:00:00,信用卡,SGN000000030VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251007031,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-07 00:00:00,信用卡,SGN000000031VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251007032,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-07 00:00:00,银行转账,SGN000000032VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251007033,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-07 00:00:00,支付宝,SGN000000033VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251007034,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-07 00:00:00,现金,SGN000000034VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251007035,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-07 00:00:00,信用卡,SGN000000035VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251008036,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-08 00:00:00,信用卡,SGN000000036VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251008037,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-08 00:00:00,银行转账,SGN000000037VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251008038,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-08 00:00:00,支付宝,SGN000000038VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251008039,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-08 00:00:00,现金,SGN000000039VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251008040,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-08 00:00:00,信用卡,SGN000000040VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251009041,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-09 00:00:00,信用卡,SGN000000041VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251009042,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-09 00:00:00,银行转账,SGN000000042VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251009043,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-09 00:00:00,支付宝,SGN000000043VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251009044,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-09 00:00:00,现金,SGN000000044VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251009045,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-09 00:00:00,信用卡,SGN000000045VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251010046,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-10 00:00:00,信用卡,SGN000000046VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251010047,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-10 00:00:00,银行转账,SGN000000047VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251010048,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-10 00:00:00,支付宝,SGN000000048VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251010049,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-10 00:00:00,现金,SGN000000049VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251010050,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-10 00:00:00,信用卡,SGN000000050VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251011051,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-11 00:00:00,信用卡,SGN000000051VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251011052,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-11 00:00:00,银行转账,SGN000000052VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251011053,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-11 00:00:00,支付宝,SGN000000053VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251011054,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-11 00:00:00,现金,SGN000000054VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251011055,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-11 00:00:00,信用卡,SGN000000055VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251012056,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-12 00:00:00,信用卡,SGN000000056VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251012057,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-12 00:00:00,银行转账,SGN000000057VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251012058,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-12 00:00:00,支付宝,SGN000000058VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251012059,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-12 00:00:00,现金,SGN000000059VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251012060,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-12 00:00:00,信用卡,SGN000000060VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251013061,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-13 00:00:00,信用卡,SGN000000061VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251013062,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-13 00:00:00,银行转账,SGN000000062VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251013063,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-13 00:00:00,支付宝,SGN000000063VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251013064,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-13 00:00:00,现金,SGN000000064VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251013065,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-13 00:00:00,信用卡,SGN000000065VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251014066,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-14 00:00:00,信用卡,SGN000000066VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251014067,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-14 00:00:00,银行转账,SGN000000067VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251014068,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-14 00:00:00,支付宝,SGN000000068VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251014069,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-14 00:00:00,现金,SGN000000069VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251014070,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-14 00:00:00,信用卡,SGN000000070VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251015071,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-15 00:00:00,信用卡,SGN000000071VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251015072,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-15 00:00:00,银行转账,SGN000000072VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251015073,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-15 00:00:00,支付宝,SGN000000073VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251015074,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-15 00:00:00,现金,SGN000000074VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251015075,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-15 00:00:00,信用卡,SGN000000075VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251016076,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-16 00:00:00,信用卡,SGN000000076VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251016077,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-16 00:00:00,银行转账,SGN000000077VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251016078,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-16 00:00:00,支付宝,SGN000000078VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251016079,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-16 00:00:00,现金,SGN000000079VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251016080,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-16 00:00:00,信用卡,SGN000000080VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251017081,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-17 00:00:00,信用卡,SGN000000081VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251017082,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-17 00:00:00,银行转账,SGN000000082VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251017083,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-17 00:00:00,支付宝,SGN000000083VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251017084,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-17 00:00:00,现金,SGN000000084VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251017085,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-17 00:00:00,信用卡,SGN000000085VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251018086,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-18 00:00:00,信用卡,SGN000000086VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251018087,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-18 00:00:00,银行转账,SGN000000087VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251018088,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-18 00:00:00,支付宝,SGN000000088VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251018089,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-18 00:00:00,现金,SGN000000089VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251018090,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-18 00:00:00,信用卡,SGN000000090VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251019091,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-19 00:00:00,信用卡,SGN000000091VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251019092,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-19 00:00:00,银行转账,SGN000000092VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251019093,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-19 00:00:00,支付宝,SGN000000093VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251019094,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-19 00:00:00,现金,SGN000000094VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251019095,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-19 00:00:00,信用卡,SGN000000095VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251020096,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-20 00:00:00,信用卡,SGN000000096VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251020097,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-20 00:00:00,银行转账,SGN000000097VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251020098,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-20 00:00:00,支付宝,SGN000000098VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251020099,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-20 00:00:00,现金,SGN000000099VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251020100,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-20 00:00:00,信用卡,SGN000000100VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251021101,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-21 00:00:00,信用卡,SGN000000101VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251021102,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-21 00:00:00,银行转账,SGN000000102VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251021103,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-21 00:00:00,支付宝,SGN000000103VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251021104,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-21 00:00:00,现金,SGN000000104VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251021105,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-21 00:00:00,信用卡,SGN000000105VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251022106,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-22 00:00:00,信用卡,SGN000000106VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251022107,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-22 00:00:00,银行转账,SGN000000107VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251022108,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-22 00:00:00,支付宝,SGN000000108VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251022109,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-22 00:00:00,现金,SGN000000109VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251022110,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-22 00:00:00,信用卡,SGN000000110VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251023111,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-23 00:00:00,信用卡,SGN000000111VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251023112,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-23 00:00:00,银行转账,SGN000000112VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251023113,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-23 00:00:00,支付宝,SGN000000113VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251023114,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-23 00:00:00,现金,SGN000000114VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251023115,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-23 00:00:00,信用卡,SGN000000115VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251024116,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-24 00:00:00,信用卡,SGN000000116VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251024117,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-24 00:00:00,银行转账,SGN000000117VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251024118,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-24 00:00:00,支付宝,SGN000000118VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251024119,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-24 00:00:00,现金,SGN000000119VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251024120,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-24 00:00:00,信用卡,SGN000000120VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251025121,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-25 00:00:00,信用卡,SGN000000121VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251025122,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-25 00:00:00,银行转账,SGN000000122VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251025123,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-25 00:00:00,支付宝,SGN000000123VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251025124,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-25 00:00:00,现金,SGN000000124VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251025125,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-25 00:00:00,信用卡,SGN000000125VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251026126,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-26 00:00:00,信用卡,SGN000000126VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251026127,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-26 00:00:00,银行转账,SGN000000127VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251026128,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-26 00:00:00,支付宝,SGN000000128VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251026129,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-26 00:00:00,现金,SGN000000129VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251026130,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-26 00:00:00,信用卡,SGN000000130VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251027131,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-27 00:00:00,信用卡,SGN000000131VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251027132,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-27 00:00:00,银行转账,SGN000000132VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251027133,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-27 00:00:00,支付宝,SGN000000133VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251027134,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-27 00:00:00,现金,SGN000000134VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251027135,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-27 00:00:00,信用卡,SGN000000135VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251028136,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-28 00:00:00,信用卡,SGN000000136VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251028137,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-28 00:00:00,银行转账,SGN000000137VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251028138,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-28 00:00:00,支付宝,SGN000000138VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251028139,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-28 00:00:00,现金,SGN000000139VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251028140,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-28 00:00:00,信用卡,SGN000000140VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251029141,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-29 00:00:00,信用卡,SGN000000141VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251029142,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-29 00:00:00,银行转账,SGN000000142VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251029143,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-29 00:00:00,支付宝,SGN000000143VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251029144,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-29 00:00:00,现金,SGN000000144VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251029145,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-29 00:00:00,信用卡,SGN000000145VN,Shopee Vietnam,2025-10-25 06:47:25
+SHOPEE20251030146,Nguyen Van Anh,+84912345678,nguyenvananh@email.com,"Ha Noi, Vietnam",iPhone 15 Pro 256GB,10000000,processing,2025-10-30 00:00:00,信用卡,SGN000000146VN,Shopee Vietnam,2025-10-25 06:47:25
+LAZADA20251030147,Tran Thi Binh,+84987654321,tranthibinh@email.com,"Ho Chi Minh City, Vietnam",Samsung Galaxy S24 Ultra,20000000,shipped,2025-10-30 00:00:00,银行转账,SGN000000147VN,Lazada Vietnam,2025-10-25 06:47:25
+TIKI20251030148,Le Van Cuong,+84555555555,levancuong@email.com,"Da Nang, Vietnam",MacBook Pro 14寸,30000000,delivered,2025-10-30 00:00:00,支付宝,SGN000000148VN,Tiki Marketplace,2025-10-25 06:47:25
+GHTK20251030149,Pham Thi Dung,+84333333333,phamthidung@email.com,"Can Tho, Vietnam",iPad Air 5,40000000,completed,2025-10-30 00:00:00,现金,SGN000000149VN,GHTK,2025-10-25 06:47:25
+SHOPEE20251030150,Nguyen Van Minh,+84111111111,nguyenvanminh@email.com,"Binh Duong, Vietnam",Sony WH-1000XM5,50000000,processing,2025-10-30 00:00:00,信用卡,SGN000000150VN,Shopee Vietnam,2025-10-25 06:47:25

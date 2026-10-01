@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta id="token" content="WxbLJVtwUCFWyjc5kBHU6sfiyRGSDvRohv6RBTZw">
+    <link rel="shortcut icon" type="image/x-icon"
+          href="https://ofa77.shop/uploads/web/2024/04/23/66276739431ae.ico"/>
+    <link rel="stylesheet" href="https://ofa77.shop/views/module/unionshop/asset/css/iconfont.css">
+    <link rel="stylesheet" href="https://ofa77.shop/views/module/unionshop/asset/css/global.css">
+    <link rel="stylesheet" href="https://ofa77.shop/views/module/unionshop/asset/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://ofa77.shop/views/module/unionshop/asset/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://ofa77.shop/views/module/unionshop/asset/css/swiper.min.css">
+    <link rel="stylesheet" href="https://ofa77.shop/views/module/unionshop/asset/css/styles.css">
+    <link rel="stylesheet" href="https://ofa77.shop/views/module/unionshop/asset/css/h-css.css">
+    <script src="https://ofa77.shop/views/module/unionshop/asset/js/jquery.1.12.4.min.js" charset="UTF-8"></script>
+    <script src="https://ofa77.shop/views/module/unionshop/asset/js/bootstrap.min.js" charset="UTF-8"></script>
+    <script src="https://ofa77.shop/views/module/unionshop/asset/js/swiper.min.js" charset="UTF-8"></script>
+    <script src="https://ofa77.shop/views/module/unionshop/asset/js/global.js" charset="UTF-8"></script>
+            <script src="https://ofa77.shop/views/module/unionshop/asset/js/jquery.DJMask.2.1.1.js" charset="UTF-8"></script>
+        <script src="https://ofa77.shop/views/module/unionshop/asset/js/layer/layer.js" charset="UTF-8"></script>
+    <title>
+        ofa77精品商城
+                    - 首頁
+            </title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <script>
+        var urlPre = 'https://ofa77.shop/module/unionshop/';
+        var login_uid = '0';
+    </script>
+    <script src="https://ofa77.shop/views/module/unionshop/asset/js/lang.js" charset="UTF-8"></script>
+<script>
+    function changeLangSelect(that, type = 1) {
+        var lang = 'tw';
+        if (type == 2) {
+            lang = that;
+        } else {
+            lang = $(that).val();
+        }
+        window.location = 'https://ofa77.shop/module/unionshop/home/changeLanguage?lang=' + lang;
+    }
+
+    //获取本地语言，没有则默认繁体
+    var storageLang = localStorage.getItem('local_lang');
+    storageLang = storageLang ? storageLang : 't';
+    localStorage.setItem('local_lang', storageLang);
+
+    function changeLang(val) {
+        zh_tran(val);
+        localStorage.setItem('local_lang', val);
+    }
+
+    /*function changeLangSelect(that) {
+        changeLang($(that).val());
+    }*/
+
+    function changeLangSelect2(lang) {
+        changeLang(lang);
+        $('.h-lightBox-lang').removeClass('open');
+    }
+
+    $('.h-switch-lang').click(function () {
+        $('.h-lightBox-lang').addClass('open');
+    });
+
+    /*$(function () {
+        zh_tran(storageLang);
+        if(storageLang=='t') storageLang = 'tw';
+        $('#changeLangSelect').val(storageLang);
+    });*/
+</script>    <script src="https://ofa77.shop/views/module/unionshop/asset/js/h-js.js" charset="UTF-8"></script>
+    <script src="https://ofa77.shop/views/module/unionshop/asset/js/common/h-common.js" charset="UTF-8"></script>
+
+    <script>
+        function noJumpStatus(goods_id) {
+            window.location = "https://ofa77.shop/module/unionshop/home/goods?goods_id=" + goods_id;
+            /*if (status == 3) {
+                layer.msg('商品已售完'.tran());
+            } else if (status == 4) {
+                layer.msg('商品即将开卖，记得回来购买哦'.tran());
+            }*/
+        }
+    </script>
+    <style>
+        .cat-box > .title {
+            width: 160px;
+            overflow: hidden;
+        }
+    </style>
+    <style>
+
+    
+
+
+        
+    
+    
+</style>
+<script>
+    $(function () {
+                $('.item-card .photo').mouseenter(function () {
+            $(this).parent('div').css({
+                "box-shadow": "0px 5px 20px 0px 90",
+            });
+        });
+        $('.item-card .photo').mouseleave(function () {
+            $(this).parent('div').css({
+                "box-shadow": "none",
+            });
+        });
+        $('.swiper-slide .picked-item').mouseenter(function () {
+            $(this).children('div.look_price').css({
+                "color": "#fff",
+                "background-color": "",
+            });
+        });
+        $('.swiper-slide .picked-item').mouseleave(function () {
+            $(this).children('div.look_price').css({
+                "color": "",
+                "background-color": "rgba(255,255,255,.8)",
+            });
+        });
+        $('.picked-box .picked-item').mouseenter(function () {
+            $(this).children('div.look_price').css({
+                "color": "#fff",
+                "background-color": "",
+            });
+        });
+        $('.picked-box .picked-item').mouseleave(function () {
+            $(this).children('div.look_price').css({
+                "color": "",
+                "background-color": "rgba(255,255,255,.8)",
+            });
+        });
+            });
+</script></head>
+<body><!-- 顶部tab -->
+<div class="tab-header">
+    <div class="inner">
+        <div class="pull-left">
+            <div class="pull-left">嗨，歡迎來到<span class="cr">ofa77精品商城</span></div>
+            
+            
+        </div>
+        <div class="pull-right">
+            <select id="changeLangSelect" onchange="changeLangSelect(this)"
+                    style="padding: 2px 10px;background-color: #f5f5f5;border: 1px solid #eee7e7;">
+                <option value="tw"  >繁體中文</option>
+                <option value="en"  >English</option>
+            </select>
+            <a href="https://ofa77.shop/module/unionshop/home/news/list">新聞</a>
+            <a href="https://ofa77.shop/module/unionshop/home/notice/list">公告</a>
+                                                                </div>
+    </div>
+</div><!-- 搜索栏 -->
+<div class="top-search">
+    <div class="inner">
+        <a class="logo" href="https://ofa77.shop/module/unionshop/home/index"><img
+                    src="https://ofa77.shop/uploads/web/2024/05/29/6656e22faceae.png"
+                    alt="ofa77精品商城" class="cover"></a>
+        <div class="search-box">
+            <form class="input-group" action="https://ofa77.shop/module/unionshop/home/goodsList" method="get">
+                <input type="hidden" name="cate_id" value="">
+                <input type="hidden" name="two_cate_id" value="">
+                <input type="hidden" name="three_cate_id" value="">
+                <input type="text" name="keyword" id="keyword" value="" autocomplete="off">
+                <span class="input-group-btn">
+						<button type="submit">
+							<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+						</button>
+					</span>
+            </form>
+            
+        </div>
+        <div class="cart-box">
+            <a href="https://ofa77.shop/module/unionshop/order/shopCartList" class="cart-but">
+                <i class="iconfont icon-shopcart cr fz16"></i> 購物車 0 件
+            </a>
+        </div>
+    </div>
+</div>
+<script>
+    $('#keyword').attr('placeholder', '蒐索商品名稱');
+</script>
+<!-- 首页导航栏 -->
+<style>
+    .h-home-cate {
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+</style>
+<div class="top-nav bg3">
+    <div class="nav-box inner">
+        <div class="all-cat">
+            <div class="title cur-pointer h-all-cate"><i class="iconfont icon-menu"></i> 全部分類</div>
+            <div class="cat-list__box h-home-cate h-d-none" style="z-index: 20;">
+                                    <div class="cat-box">
+                        <div class="title" style="cursor: pointer;"
+                             onclick="window.location='https://ofa77.shop/module/unionshop/home/goodsList?cate_id=42'">
+                            <i class="iconfont ce "></i>
+                            情人節專區
+                        </div>
+                        <ul class="cat-list clearfix">
+                                                    </ul>
+                        <div class="cat-list__deploy">
+                            <div class="deploy-box">
+                                                            </div>
+                        </div>
+                    </div>
+                                    <div class="cat-box">
+                        <div class="title" style="cursor: pointer;"
+                             onclick="window.location='https://ofa77.shop/module/unionshop/home/goodsList?cate_id=29'">
+                            <i class="iconfont ce icon-ticket"></i>
+                            票券專區
+                        </div>
+                        <ul class="cat-list clearfix">
+                                                    </ul>
+                        <div class="cat-list__deploy">
+                            <div class="deploy-box">
+                                                            </div>
+                        </div>
+                    </div>
+                                    <div class="cat-box">
+                        <div class="title" style="cursor: pointer;"
+                             onclick="window.location='https://ofa77.shop/module/unionshop/home/goodsList?cate_id=32'">
+                            <i class="iconfont ce icon-point"></i>
+                            轉運金
+                        </div>
+                        <ul class="cat-list clearfix">
+                                                    </ul>
+                        <div class="cat-list__deploy">
+                            <div class="deploy-box">
+                                                            </div>
+                        </div>
+                    </div>
+                                    <div class="cat-box">
+                        <div class="title" style="cursor: pointer;"
+                             onclick="window.location='https://ofa77.shop/module/unionshop/home/goodsList?cate_id=37'">
+                            <i class="iconfont ce icon-火辣嫩模"></i>
+                            火辣嫩模
+                        </div>
+                        <ul class="cat-list clearfix">
+                                                    </ul>
+                        <div class="cat-list__deploy">
+                            <div class="deploy-box">
+                                                            </div>
+                        </div>
+                    </div>
+                                    <div class="cat-box">
+                        <div class="title" style="cursor: pointer;"
+                             onclick="window.location='https://ofa77.shop/module/unionshop/home/goodsList?cate_id=34'">
+                            <i class="iconfont ce icon-刮刮樂"></i>
+                            刮刮樂
+                        </div>
+                        <ul class="cat-list clearfix">
+                                                    </ul>
+                        <div class="cat-list__deploy">
+                            <div class="deploy-box">
+                                                            </div>
+                        </div>
+                    </div>
+                                    <div class="cat-box">
+                        <div class="title" style="cursor: pointer;"
+                             onclick="window.location='https://ofa77.shop/module/unionshop/home/goodsList?cate_id=24'">
+                            <i class="iconfont ce icon-3c"></i>
+                            3c商品
+                        </div>
+                        <ul class="cat-list clearfix">
+                                                    </ul>
+                        <div class="cat-list__deploy">
+                            <div class="deploy-box">
+                                                            </div>
+                        </div>
+                    </div>
+                                    <div class="cat-box">
+                        <div class="title" style="cursor: pointer;"
+                             onclick="window.location='https://ofa77.shop/module/unionshop/home/goodsList?cate_id=30'">
+                            <i class="iconfont ce icon-wine"></i>
+                            奢華名酒、香檳
+                        </div>
+                        <ul class="cat-list clearfix">
+                                                    </ul>
+                        <div class="cat-list__deploy">
+                            <div class="deploy-box">
+                                                            </div>
+                        </div>
+                    </div>
+                                    <div class="cat-box">
+                        <div class="title" style="cursor: pointer;"
+                             onclick="window.location='https://ofa77.shop/module/unionshop/home/goodsList?cate_id=31'">
+                            <i class="iconfont ce icon-appliance"></i>
+                            家電用品
+                        </div>
+                        <ul class="cat-list clearfix">
+                                                    </ul>
+                        <div class="cat-list__deploy">
+                            <div class="deploy-box">
+                                                            </div>
+                        </div>
+                    </div>
+                                    <div class="cat-box">
+                        <div class="title" style="cursor: pointer;"
+                             onclick="window.location='https://ofa77.shop/module/unionshop/home/goodsList?cate_id=36'">
+                            <i class="iconfont ce icon-生活精品"></i>
+                            生活精品
+                        </div>
+                        <ul class="cat-list clearfix">
+                                                    </ul>
+                        <div class="cat-list__deploy">
+                            <div class="deploy-box">
+                                                            </div>
+                        </div>
+                    </div>
+                                    <div class="cat-box">
+                        <div class="title" style="cursor: pointer;"
+                             onclick="window.location='https://ofa77.shop/module/unionshop/home/goodsList?cate_id=25'">
+                            <i class="iconfont ce icon-fashion"></i>
+                            時尚精品
+                        </div>
+                        <ul class="cat-list clearfix">
+                                                    </ul>
+                        <div class="cat-list__deploy">
+                            <div class="deploy-box">
+                                                            </div>
+                        </div>
+                    </div>
+                                    <div class="cat-box">
+                        <div class="title" style="cursor: pointer;"
+                             onclick="window.location='https://ofa77.shop/module/unionshop/home/goodsList?cate_id=27'">
+                            <i class="iconfont ce icon-perfume"></i>
+                            香水、保養品
+                        </div>
+                        <ul class="cat-list clearfix">
+                                                    </ul>
+                        <div class="cat-list__deploy">
+                            <div class="deploy-box">
+                                                            </div>
+                        </div>
+                    </div>
+                                    <div class="cat-box">
+                        <div class="title" style="cursor: pointer;"
+                             onclick="window.location='https://ofa77.shop/module/unionshop/home/goodsList?cate_id=28'">
+                            <i class="iconfont ce icon-gaming"></i>
+                            電競專區
+                        </div>
+                        <ul class="cat-list clearfix">
+                                                    </ul>
+                        <div class="cat-list__deploy">
+                            <div class="deploy-box">
+                                                            </div>
+                        </div>
+                    </div>
+                                    <div class="cat-box">
+                        <div class="title" style="cursor: pointer;"
+                             onclick="window.location='https://ofa77.shop/module/unionshop/home/goodsList?cate_id=35'">
+                            <i class="iconfont ce icon-名錶"></i>
+                            名錶
+                        </div>
+                        <ul class="cat-list clearfix">
+                                                    </ul>
+                        <div class="cat-list__deploy">
+                            <div class="deploy-box">
+                                                            </div>
+                        </div>
+                    </div>
+                            </div>
+        </div>
+        <ul class="nva-list">
+            
+                            <a href=" https://ofa77.shop/module/unionshop/home/index ">
+                    <li class="">首页</li>
+                </a>
+                            <a href=" https://ofa77.shop/module/unionshop/home/goodsList ">
+                    <li class="">商品列表</li>
+                </a>
+                    </ul>
+        
+    </div>
+</div><!-- 顶部轮播 -->
+<div class="swiper-container banner-box" style="height: auto;">
+    <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                <a  >
+                    <img src="https://ofa77.shop/uploads/banner/2025/10/08/68e62061d5dcb.png" class="cover">
+                </a>
+            </div>
+            </div>
+    <div class="swiper-pagination"></div>
+</div>
+<!-- 首页楼层导航 -->
+<nav class="floor-nav visible-lg-block">
+    <span class="scroll-nav active">爆款推薦</span>
+            <span class="scroll-nav">票券專區</span>
+            <span class="scroll-nav">轉運金</span>
+            <span class="scroll-nav">火辣嫩模</span>
+            <span class="scroll-nav">刮刮樂</span>
+            <span class="scroll-nav">3c商品</span>
+            <span class="scroll-nav">奢華名酒、香檳</span>
+            <span class="scroll-nav">家電用品</span>
+            <span class="scroll-nav">生活精品</span>
+            <span class="scroll-nav">時尚精品</span>
+            <span class="scroll-nav">香水、保養品</span>
+            <span class="scroll-nav">電競專區</span>
+            <span class="scroll-nav">名錶</span>
+    
+</nav>
+<!-- 楼层内容 -->
+<div class="content inner" style="margin-bottom: 40px;">
+    <section class="scroll-floor floor-1 clearfix">
+        <div class="pull-left">
+            <div class="floor-title">
+                <i class="iconfont icon-tuijian fz16"></i> 爆款推薦
+                <a href="" class="more"><i class="iconfont icon-more"></i></a>
+            </div>
+            <div class="con-box">
+                
+                <div class="hot-box">
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=53"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bcf40d6d4.png" alt="CHANEL 22 大型背包 "
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">137215 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="CHANEL 22 大型背包 ">CHANEL 22 大型背包 </div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=87"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651c029f0c69.png" alt="麒麟 KIRIN冰結調酒-無糖檸檬(350mlx24入)"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">816 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="麒麟 KIRIN冰結調酒-無糖檸檬(350mlx24入)">麒麟 KIRIN冰結調酒-無糖檸檬(350mlx24入)</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=89"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651c04878384.png" alt="JC動作片影星"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">52000 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="JC動作片影星">JC動作片影星</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=56"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bdb9f3ae2.png" alt="Jaime 4.3鍊條肩背包"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">94250 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Jaime 4.3鍊條肩背包">Jaime 4.3鍊條肩背包</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=81"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bfe296d44.png" alt="王品集團Tasty西堤牛排餐券2張"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">799 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="王品集團Tasty西堤牛排餐券2張">王品集團Tasty西堤牛排餐券2張</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=68"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bececc0d3.png" alt="天胡一號 電動麻將桌(摺疊/餐桌) (附配件組★過山車款) "
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">16120 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="天胡一號 電動麻將桌(摺疊/餐桌) (附配件組★過山車款) ">天胡一號 電動麻將桌(摺疊/餐桌) (附配件組★過山車款) </div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=67"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bec2f2b49.png" alt="PlayStation®5 光碟版"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">8570 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="PlayStation®5 光碟版">PlayStation®5 光碟版</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=88"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651c03d25957.png" alt="JC嫩模"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">14625 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="JC嫩模">JC嫩模</div>
+                        </a>
+                                    </div>
+            </div>
+        </div>
+        <div class="pull-right">
+            <div class="floor-title">
+                <i class="iconfont icon-horn fz16"></i> ofa77精品商城 公告
+                <a href="https://ofa77.shop/module/unionshop/home/notice/list" class="more"><i
+                            class="iconfont icon-more"></i></a>
+            </div>
+            <div class="con-box">
+                <div class="notice-box bgf5">
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                                                            <a class="swiper-slide ep"
+                                   href="https://ofa77.shop/module/unionshop/home/notice/detail?id=3">
+                                    【公告】【鉅城精品商城條款與規則】
+                                </a>
+                                                    </div>
+                    </div>
+                </div>
+                <div class="buts-box bgf5">
+                    <div class="but-div">
+                        <a href="https://ofa77.shop/module/unionshop/order/orderList">
+                            <i class="but-icon"></i>
+                            <p>我的訂單</p>
+                        </a>
+                    </div>
+                    <div class="but-div">
+                        <a href="https://ofa77.shop/module/unionshop/home/goodsList">
+                            <i class="but-icon"></i>
+                            <p>商品列表</p>
+                        </a>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+            <section class="scroll-floor floor-2">
+            <div class="floor-title">
+                <i class="iconfont fz16 icon-ticket"></i> 票券專區
+                <div class="case-list fz0 pull-right">
+                                    </div>
+            </div>
+            <div class="con-box">
+                <a class="left-img hot-img" href="https://ofa77.shop/module/unionshop/home/goodsList?cate_id=29">
+                    <img src="https://ofa77.shop/uploads/category/2024/05/20/664af77d60297.png" alt="" class="cover">
+                </a>
+                <div class="right-box">
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=336"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a7988e283fdd.png"
+                                     alt="寒舍艾美 （一晚）"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">8499 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="寒舍艾美 （一晚）">寒舍艾美 （一晚）</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=80"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/10/24/671a0c8e4a9b2.png"
+                                     alt="100家樂福禮券"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">525 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="100家樂福禮券">100家樂福禮券</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=332"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a7983b056ce6.png"
+                                     alt="全家禮物卡1000元"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">550 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="全家禮物卡1000元">全家禮物卡1000元</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=79"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bfc117db7.png"
+                                     alt="1000全聯禮券"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">546 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="1000全聯禮券">1000全聯禮券</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=338"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a798b197338c.png"
+                                     alt="日月潭雲品 （一晚）"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">9499 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="日月潭雲品 （一晚）">日月潭雲品 （一晚）</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=82"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bffe88fd1.png"
+                                     alt="王品集團 王品牛排餐券-2張"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">1819 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="王品集團 王品牛排餐券-2張">王品集團 王品牛排餐券-2張</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=334"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a79851721bc3.png"
+                                     alt="旭集雙人餐券（平日晚餐）"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">2099 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="旭集雙人餐券（平日晚餐）">旭集雙人餐券（平日晚餐）</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=335"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a79886ad6446.png"
+                                     alt="夏慕尼雙人（平日晚餐）"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">2199 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="夏慕尼雙人（平日晚餐）">夏慕尼雙人（平日晚餐）</div>
+                        </a>
+                                    </div>
+            </div>
+        </section>
+            <section class="scroll-floor floor-2">
+            <div class="floor-title">
+                <i class="iconfont fz16 icon-point"></i> 轉運金
+                <div class="case-list fz0 pull-right">
+                                    </div>
+            </div>
+            <div class="con-box">
+                <a class="left-img hot-img" href="https://ofa77.shop/module/unionshop/home/goodsList?cate_id=32">
+                    <img src="https://ofa77.shop/uploads/category/2024/05/18/66485fff74314.png" alt="" class="cover">
+                </a>
+                <div class="right-box">
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=328"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/01/6a6dbb23f0c4a.png"
+                                     alt="鉅城JC幣 3888點"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">1264 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="鉅城JC幣 3888點">鉅城JC幣 3888點</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=323"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/01/6a6db455cb39d.png"
+                                     alt="鉅城JC幣128888點"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">41889 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="鉅城JC幣128888點">鉅城JC幣128888點</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=325"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/01/6a6db7e2d5950.png"
+                                     alt="鉅城JC幣 38888點"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">12639 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="鉅城JC幣 38888點">鉅城JC幣 38888點</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=326"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/01/6a6db9af7399f.png"
+                                     alt="鉅城JC幣 12888點"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">4189 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="鉅城JC幣 12888點">鉅城JC幣 12888點</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=324"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/01/6a6db6ba78bdd.png"
+                                     alt="鉅城JC幣 68888點"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">22389 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="鉅城JC幣 68888點">鉅城JC幣 68888點</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=327"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/01/6a6dba74ee18c.png"
+                                     alt="鉅城JC幣 5888點"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">1914 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="鉅城JC幣 5888點">鉅城JC幣 5888點</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=330"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/02/6a6f277edc33c.png"
+                                     alt="鉅城JC幣 1888點"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">614 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="鉅城JC幣 1888點">鉅城JC幣 1888點</div>
+                        </a>
+                                    </div>
+            </div>
+        </section>
+            <section class="scroll-floor floor-2">
+            <div class="floor-title">
+                <i class="iconfont fz16 icon-火辣嫩模"></i> 火辣嫩模
+                <div class="case-list fz0 pull-right">
+                                    </div>
+            </div>
+            <div class="con-box">
+                <a class="left-img hot-img" href="https://ofa77.shop/module/unionshop/home/goodsList?cate_id=37">
+                    <img src="https://ofa77.shop/uploads/category/2024/07/12/6690f7f20a7ae.png" alt="" class="cover">
+                </a>
+                <div class="right-box">
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=88"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651c03d25957.png"
+                                     alt="JC嫩模"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">14625 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="JC嫩模">JC嫩模</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=89"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651c04878384.png"
+                                     alt="JC動作片影星"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">52000 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="JC動作片影星">JC動作片影星</div>
+                        </a>
+                                    </div>
+            </div>
+        </section>
+            <section class="scroll-floor floor-2">
+            <div class="floor-title">
+                <i class="iconfont fz16 icon-刮刮樂"></i> 刮刮樂
+                <div class="case-list fz0 pull-right">
+                                    </div>
+            </div>
+            <div class="con-box">
+                <a class="left-img hot-img" href="https://ofa77.shop/module/unionshop/home/goodsList?cate_id=34">
+                    <img src="https://ofa77.shop/uploads/category/2024/05/19/6649a44c69be4.png" alt="" class="cover">
+                </a>
+                <div class="right-box">
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=24"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651814386130.png"
+                                     alt="台灣公益彩券刮刮樂 300 *10張"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">1560 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="台灣公益彩券刮刮樂 300 *10張">台灣公益彩券刮刮樂 300 *10張</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=23"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651812a9d99a.png"
+                                     alt="台灣公益彩券刮刮樂 200 *15張"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">1560 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="台灣公益彩券刮刮樂 200 *15張">台灣公益彩券刮刮樂 200 *15張</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=25"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/665183ea04c97.png"
+                                     alt="台灣公益彩券刮刮樂 500 *10張"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">2438 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="台灣公益彩券刮刮樂 500 *10張">台灣公益彩券刮刮樂 500 *10張</div>
+                        </a>
+                                    </div>
+            </div>
+        </section>
+            <section class="scroll-floor floor-2">
+            <div class="floor-title">
+                <i class="iconfont fz16 icon-3c"></i> 3c商品
+                <div class="case-list fz0 pull-right">
+                                    </div>
+            </div>
+            <div class="con-box">
+                <a class="left-img hot-img" href="https://ofa77.shop/module/unionshop/home/goodsList?cate_id=24">
+                    <img src="https://ofa77.shop/uploads/category/2024/05/19/6649a3ff1cafe.png" alt="" class="cover">
+                </a>
+                <div class="right-box">
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=90"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651c0597aeba.png"
+                                     alt="Macbook Pro 14吋"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">53235 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Macbook Pro 14吋">Macbook Pro 14吋</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=95"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/16/66457ed8867ff.png"
+                                     alt="AirPods Max"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">8770 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="AirPods Max">AirPods Max</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=91"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2025/10/08/68e6211f8f802.png"
+                                     alt="iPhone 17 256G"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">19500 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="iPhone 17 256G">iPhone 17 256G</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=93"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651c07fa3d1a.png"
+                                     alt="AirPods Pro(第三代)"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">3651 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="AirPods Pro(第三代)">AirPods Pro(第三代)</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=92"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651c073e76a7.png"
+                                     alt="iPad Pro 12.9+512G5 Wi-Fi+行動網路"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">15254 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="iPad Pro 12.9+512G5 Wi-Fi+行動網路">iPad Pro 12.9+512G5 Wi-Fi+行動網路</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=94"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/16/66457e7d7792a.png"
+                                     alt="Apple Watch Ultra 3 GPS+行動網路"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">13601 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Apple Watch Ultra 3 GPS+行動網路">Apple Watch Ultra 3 GPS+行動網路</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=97"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/27/66544a08e0fdb.png"
+                                     alt="Samsung S25 Ultra  (12GB/1TB)  "
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">36985 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Samsung S25 Ultra  (12GB/1TB)  ">Samsung S25 Ultra  (12GB/1TB)  </div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=96"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/10/09/67066783e09ce.png"
+                                     alt="Samsung Galaxy Z Fold7(12G/512GB)"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">43485 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Samsung Galaxy Z Fold7(12G/512GB)">Samsung Galaxy Z Fold7(12G/512GB)</div>
+                        </a>
+                                    </div>
+            </div>
+        </section>
+            <section class="scroll-floor floor-2">
+            <div class="floor-title">
+                <i class="iconfont fz16 icon-wine"></i> 奢華名酒、香檳
+                <div class="case-list fz0 pull-right">
+                                    </div>
+            </div>
+            <div class="con-box">
+                <a class="left-img hot-img" href="https://ofa77.shop/module/unionshop/home/goodsList?cate_id=30">
+                    <img src="https://ofa77.shop/uploads/category/2024/05/19/6649a481874cc.png" alt="" class="cover">
+                </a>
+                <div class="right-box">
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=111"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/27/66545a5f9a23a.png"
+                                     alt="麥卡倫 30年雪莉桶 (2018年)"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">154700 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="麥卡倫 30年雪莉桶 (2018年)">麥卡倫 30年雪莉桶 (2018年)</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=87"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651c029f0c69.png"
+                                     alt="麒麟 KIRIN冰結調酒-無糖檸檬(350mlx24入)"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">816 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="麒麟 KIRIN冰結調酒-無糖檸檬(350mlx24入)">麒麟 KIRIN冰結調酒-無糖檸檬(350mlx24入)</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=110"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/27/66545aaa83938.png"
+                                     alt="波摩 ASTON MARTIN 大師鉅作系列22年 第三版"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">17550 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="波摩 ASTON MARTIN 大師鉅作系列22年 第三版">波摩 ASTON MARTIN 大師鉅作系列22年 第三版</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=109"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/27/66545a840f199.png"
+                                     alt="大摩 築光大師系列 NO.2 2024限定版"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">9750 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="大摩 築光大師系列 NO.2 2024限定版">大摩 築光大師系列 NO.2 2024限定版</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=112"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/27/66545b1cd9de8.png"
+                                     alt="OMAR 14年原桶強度PX雪莉桶 寶島采風系列套組"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">65000 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="OMAR 14年原桶強度PX雪莉桶 寶島采風系列套組">OMAR 14年原桶強度PX雪莉桶 寶島采風系列套組</div>
+                        </a>
+                                    </div>
+            </div>
+        </section>
+            <section class="scroll-floor floor-2">
+            <div class="floor-title">
+                <i class="iconfont fz16 icon-appliance"></i> 家電用品
+                <div class="case-list fz0 pull-right">
+                                    </div>
+            </div>
+            <div class="con-box">
+                <a class="left-img hot-img" href="https://ofa77.shop/module/unionshop/home/goodsList?cate_id=31">
+                    <img src="https://ofa77.shop/uploads/category/2024/05/19/6649a49159497.png" alt="" class="cover">
+                </a>
+                <div class="right-box">
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=77"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bf602853e.png"
+                                     alt="SONY 索尼BRAVIA 5 75吋4K智慧聯網電視 Y-75XR50"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">51935 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="SONY 索尼BRAVIA 5 75吋4K智慧聯網電視 Y-75XR50">SONY 索尼BRAVIA 5 75吋4K智慧聯網電視 Y-75XR50</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=76"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bf50d1a4a.png"
+                                     alt="布萊恩沙發組(全組)"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">71494 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="布萊恩沙發組(全組)">布萊恩沙發組(全組)</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=75"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bf41712a9.png"
+                                     alt="Xiaomi掃拖機器人 X20 "
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">6335 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Xiaomi掃拖機器人 X20 ">Xiaomi掃拖機器人 X20 </div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=74"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bf30d3373.png"
+                                     alt="recolte Espresso 全自動義式咖啡機 (REC-1)"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">9701 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="recolte Espresso 全自動義式咖啡機 (REC-1)">recolte Espresso 全自動義式咖啡機 (REC-1)</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=70"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651beee8e855.png"
+                                     alt="HARMAN KARDON RADIANCE 2400(無線家庭劇院系統)"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">97494 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="HARMAN KARDON RADIANCE 2400(無線家庭劇院系統)">HARMAN KARDON RADIANCE 2400(無線家庭劇院系統)</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=98"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/27/66544a1d9c6b2.png"
+                                     alt="LG 782L InstaView敲敲看門中門冰球冰箱 GR-AQC82BS"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">77935 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="LG 782L InstaView敲敲看門中門冰球冰箱 GR-AQC82BS">LG 782L InstaView敲敲看門中門冰球冰箱 GR-AQC82BS</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=71"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bf0197950.png"
+                                     alt="BenQ GP520 4K 智慧調光投影機"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">20958 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="BenQ GP520 4K 智慧調光投影機">BenQ GP520 4K 智慧調光投影機</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=72"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bf134843a.png"
+                                     alt="Nintendo 任天堂Switch 2 (NS2) 遊戲主機"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">7010 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Nintendo 任天堂Switch 2 (NS2) 遊戲主機">Nintendo 任天堂Switch 2 (NS2) 遊戲主機</div>
+                        </a>
+                                    </div>
+            </div>
+        </section>
+            <section class="scroll-floor floor-2">
+            <div class="floor-title">
+                <i class="iconfont fz16 icon-生活精品"></i> 生活精品
+                <div class="case-list fz0 pull-right">
+                                    </div>
+            </div>
+            <div class="con-box">
+                <a class="left-img hot-img" href="https://ofa77.shop/module/unionshop/home/goodsList?cate_id=36">
+                    <img src="https://ofa77.shop/uploads/category/2024/05/29/665707d203d2e.png" alt="" class="cover">
+                </a>
+                <div class="right-box">
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=40"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/66518cfd6ac2d.png"
+                                     alt="BE@RBRICK Elmo Costume Ver.2.0 庫柏力克熊 400% BE@RBRICK-10 "
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">2828 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="BE@RBRICK Elmo Costume Ver.2.0 庫柏力克熊 400% BE@RBRICK-10 ">BE@RBRICK Elmo Costume Ver.2.0 庫柏力克熊 400% BE@RBRICK-10 </div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=42"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/66518d3377806.png"
+                                     alt="BEETLE BE@RBRICK FUJI OVERVIEW 衛星圖 日本 富士山 庫柏力克熊 1000%"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">9653 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="BEETLE BE@RBRICK FUJI OVERVIEW 衛星圖 日本 富士山 庫柏力克熊 1000%">BEETLE BE@RBRICK FUJI OVERVIEW 衛星圖 日本 富士山 庫柏力克熊 1000%</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=38"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/15/66448acd5bce4.png"
+                                     alt="BE@RBRICK LOTS-O COSTUME VER 400％ 熊抱哥 庫柏力克熊 400% BE@RBRICK-14 "
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">3062 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="BE@RBRICK LOTS-O COSTUME VER 400％ 熊抱哥 庫柏力克熊 400% BE@RBRICK-14 ">BE@RBRICK LOTS-O COSTUME VER 400％ 熊抱哥 庫柏力克熊 400% BE@RBRICK-14 </div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=37"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/66518c04b0bf4.png"
+                                     alt="Sorayama×2G Pink Gold Ver. 100% &amp; 400% 庫柏力克熊 BE@RBRICK-15 "
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">3803 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Sorayama×2G Pink Gold Ver. 100% &amp; 400% 庫柏力克熊 BE@RBRICK-15 ">Sorayama×2G Pink Gold Ver. 100% &amp; 400% 庫柏力克熊 BE@RBRICK-15 </div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=45"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bbe01dc26.png"
+                                     alt="BEETLE BE@RBRICK SNOW WHITE 1/6 限定 EARTH 地球 雪花 庫伯力克熊 400%"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">4778 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="BEETLE BE@RBRICK SNOW WHITE 1/6 限定 EARTH 地球 雪花 庫伯力克熊 400%">BEETLE BE@RBRICK SNOW WHITE 1/6 限定 EARTH 地球 雪花 庫伯力克熊 400%</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=36"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/66518bd198202.png"
+                                     alt="BE@RBRICK GARFIELD GOLD CHROME Ver. 100％＆400％ 黃金 加菲貓 庫柏力克熊 BE@RBRICK-17"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">2418 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="BE@RBRICK GARFIELD GOLD CHROME Ver. 100％＆400％ 黃金 加菲貓 庫柏力克熊 BE@RBRICK-17">BE@RBRICK GARFIELD GOLD CHROME Ver. 100％＆400％ 黃金 加菲貓 庫柏力克熊 BE@RBRICK-17</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=43"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/66518d4f5ac94.png"
+                                     alt="BEETLE BE@RBRICK KEITH HARING 凱斯哈林 藝術家 #8 白色 1000%"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">13114 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="BEETLE BE@RBRICK KEITH HARING 凱斯哈林 藝術家 #8 白色 1000%">BEETLE BE@RBRICK KEITH HARING 凱斯哈林 藝術家 #8 白色 1000%</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=41"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/66518d14c09a3.png"
+                                     alt="BEETLE BE@RBRICK ILLEST MOTORHEAD 迷彩 聯名 庫柏力克熊 1000%"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">19403 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="BEETLE BE@RBRICK ILLEST MOTORHEAD 迷彩 聯名 庫柏力克熊 1000%">BEETLE BE@RBRICK ILLEST MOTORHEAD 迷彩 聯名 庫柏力克熊 1000%</div>
+                        </a>
+                                    </div>
+            </div>
+        </section>
+            <section class="scroll-floor floor-2">
+            <div class="floor-title">
+                <i class="iconfont fz16 icon-fashion"></i> 時尚精品
+                <div class="case-list fz0 pull-right">
+                                    </div>
+            </div>
+            <div class="con-box">
+                <a class="left-img hot-img" href="https://ofa77.shop/module/unionshop/home/goodsList?cate_id=25">
+                    <img src="https://ofa77.shop/uploads/category/2024/05/29/6657079d8dc31.png" alt="" class="cover">
+                </a>
+                <div class="right-box">
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=49"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bc87260dc.png"
+                                     alt="經典小型口蓋皮夾"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">17209 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="經典小型口蓋皮夾">經典小型口蓋皮夾</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=50"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bca405827.png"
+                                     alt="Reykjavik Gradient 圍巾(LV)"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">18671 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Reykjavik Gradient 圍巾(LV)">Reykjavik Gradient 圍巾(LV)</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=48"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bc58634af.png"
+                                     alt="LV後背包 M55699"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">107900 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="LV後背包 M55699">LV後背包 M55699</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=53"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bcf40d6d4.png"
+                                     alt="CHANEL 22 大型背包 "
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">137215 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="CHANEL 22 大型背包 ">CHANEL 22 大型背包 </div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=46"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bc097cef8.png"
+                                     alt="LV Trainer 運動鞋"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">28925 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="LV Trainer 運動鞋">LV Trainer 運動鞋</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=56"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bdb9f3ae2.png"
+                                     alt="Jaime 4.3鍊條肩背包"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">94250 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Jaime 4.3鍊條肩背包">Jaime 4.3鍊條肩背包</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=51"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bcba47e5b.png"
+                                     alt="Dancing Swan 項鏈天鵝(施華洛)"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">3169 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Dancing Swan 項鏈天鵝(施華洛)">Dancing Swan 項鏈天鵝(施華洛)</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=340"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a798c03969cf.png"
+                                     alt="Louis Vuitton Christopher MM Monogram Eclipse 後背包"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">60999 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Louis Vuitton Christopher MM Monogram Eclipse 後背包">Louis Vuitton Christopher MM Monogram Eclipse 後背包</div>
+                        </a>
+                                    </div>
+            </div>
+        </section>
+            <section class="scroll-floor floor-2">
+            <div class="floor-title">
+                <i class="iconfont fz16 icon-perfume"></i> 香水、保養品
+                <div class="case-list fz0 pull-right">
+                                    </div>
+            </div>
+            <div class="con-box">
+                <a class="left-img hot-img" href="https://ofa77.shop/module/unionshop/home/goodsList?cate_id=27">
+                    <img src="https://ofa77.shop/uploads/category/2024/05/20/664af7614b96b.png" alt="" class="cover">
+                </a>
+                <div class="right-box">
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=58"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651be035dc23.png"
+                                     alt="SAUVAGE 曠野之心男性淡香水100ml"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">2169 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="SAUVAGE 曠野之心男性淡香水100ml">SAUVAGE 曠野之心男性淡香水100ml</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=60"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651be3e189de.png"
+                                     alt="sisley抗皺活膚御緻駐顏霜"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">8190 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="sisley抗皺活膚御緻駐顏霜">sisley抗皺活膚御緻駐顏霜</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=59"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651be1e7024f.png"
+                                     alt="DIPTYQUE 淡香水 100ml "
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">2535 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="DIPTYQUE 淡香水 100ml ">DIPTYQUE 淡香水 100ml </div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=61"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651be4d95d33.png"
+                                     alt="海洋拉娜創世紀原晶極萃30ml"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">14381 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="海洋拉娜創世紀原晶極萃30ml">海洋拉娜創世紀原晶極萃30ml</div>
+                        </a>
+                                    </div>
+            </div>
+        </section>
+            <section class="scroll-floor floor-2">
+            <div class="floor-title">
+                <i class="iconfont fz16 icon-gaming"></i> 電競專區
+                <div class="case-list fz0 pull-right">
+                                    </div>
+            </div>
+            <div class="con-box">
+                <a class="left-img hot-img" href="https://ofa77.shop/module/unionshop/home/goodsList?cate_id=28">
+                    <img src="https://ofa77.shop/uploads/category/2024/05/20/664af76f3b7c6.png" alt="" class="cover">
+                </a>
+                <div class="right-box">
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=343"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a798cf2eb698.png"
+                                     alt="Meta Quest 3 512GB VR 頭戴裝置"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">11499 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Meta Quest 3 512GB VR 頭戴裝置">Meta Quest 3 512GB VR 頭戴裝置</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=67"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651bec2f2b49.png"
+                                     alt="PlayStation®5 光碟版"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">8570 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="PlayStation®5 光碟版">PlayStation®5 光碟版</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=65"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651be9e8f8fd.png"
+                                     alt="SAMSUNG 三星 870 EVO 2TB 2.5吋 SATAIII 固態硬碟 (MZ-77E2T0BW)"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">4095 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="SAMSUNG 三星 870 EVO 2TB 2.5吋 SATAIII 固態硬碟 (MZ-77E2T0BW)">SAMSUNG 三星 870 EVO 2TB 2.5吋 SATAIII 固態硬碟 (MZ-77E2T0BW)</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=342"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a798ca830923.png"
+                                     alt="ASUS ROG Swift OLED PG27UCDM 27吋 4K OLED 電競螢幕"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">19999 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="ASUS ROG Swift OLED PG27UCDM 27吋 4K OLED 電競螢幕">ASUS ROG Swift OLED PG27UCDM 27吋 4K OLED 電競螢幕</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=64"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651be7c55c2d.png"
+                                     alt="森海塞爾HD 600耳機"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">5850 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="森海塞爾HD 600耳機">森海塞爾HD 600耳機</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=66"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651beb418718.png"
+                                     alt="【Razer雷蛇】Seiren V3 Chroma 魔音海妖 V3 幻彩版麥克風"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">2384 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="【Razer雷蛇】Seiren V3 Chroma 魔音海妖 V3 幻彩版麥克風">【Razer雷蛇】Seiren V3 Chroma 魔音海妖 V3 幻彩版麥克風</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=63"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2025/10/25/68fc813869a31.png"
+                                     alt="羅技 915X電競鍵盤"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">2595 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="羅技 915X電競鍵盤">羅技 915X電競鍵盤</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=344"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a798d372639d.png"
+                                     alt="Nintendo Switch 2 主機"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">7299 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Nintendo Switch 2 主機">Nintendo Switch 2 主機</div>
+                        </a>
+                                    </div>
+            </div>
+        </section>
+            <section class="scroll-floor floor-2">
+            <div class="floor-title">
+                <i class="iconfont fz16 icon-名錶"></i> 名錶
+                <div class="case-list fz0 pull-right">
+                                    </div>
+            </div>
+            <div class="con-box">
+                <a class="left-img hot-img" href="https://ofa77.shop/module/unionshop/home/goodsList?cate_id=35">
+                    <img src="https://ofa77.shop/uploads/category/2024/05/19/6649a42b9f64a.png" alt="" class="cover">
+                </a>
+                <div class="right-box">
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=346"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a799bba4eb1f.png"
+                                     alt="TAG Heuer Carrera Date 39mm WBN2110.BA0639（泰格豪雅 Carrera 日期腕錶）"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">61999 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="TAG Heuer Carrera Date 39mm WBN2110.BA0639（泰格豪雅 Carrera 日期腕錶）">TAG Heuer Carrera Date 39mm WBN2110.BA0639（泰格豪雅 Carrera 日期腕錶）</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=348"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a79a2a1226c7.png"
+                                     alt="Cartier Santos de Cartier Medium（卡地亞 Santos 中型腕錶）"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">137999 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Cartier Santos de Cartier Medium（卡地亞 Santos 中型腕錶）">Cartier Santos de Cartier Medium（卡地亞 Santos 中型腕錶）</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=30"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/29/6656dcaf6befe.png"
+                                     alt="Hublot 宇舶 Classic Fusion Titanium經典款"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">175500 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Hublot 宇舶 Classic Fusion Titanium經典款">Hublot 宇舶 Classic Fusion Titanium經典款</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=351"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a79a38cd7aa9.png"
+                                     alt="Omega Speedmaster Moonwatch Professional（歐米茄 超霸登月專業版）"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">145999 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Omega Speedmaster Moonwatch Professional（歐米茄 超霸登月專業版）">Omega Speedmaster Moonwatch Professional（歐米茄 超霸登月專業版）</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=349"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a79a2f2a4868.png"
+                                     alt="IWC Pilot&#039;s Watch Mark XX IW328201（萬國 飛行員 Mark XX）"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">106999 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="IWC Pilot&#039;s Watch Mark XX IW328201（萬國 飛行員 Mark XX）">IWC Pilot&#039;s Watch Mark XX IW328201（萬國 飛行員 Mark XX）</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=345"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a798dd44b239.png"
+                                     alt="Grand Seiko Heritage Collection SBGX261（冠藍獅 Heritage 石英腕錶）"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">36999 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Grand Seiko Heritage Collection SBGX261（冠藍獅 Heritage 石英腕錶）">Grand Seiko Heritage Collection SBGX261（冠藍獅 Heritage 石英腕錶）</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=347"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2026/08/10/6a79a25ab29e2.png"
+                                     alt="Longines Spirit Zulu Time 39mm L3.802.4.93.6（浪琴 Spirit Zulu Time 世界時區腕錶）"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">55999 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Longines Spirit Zulu Time 39mm L3.802.4.93.6（浪琴 Spirit Zulu Time 世界時區腕錶）">Longines Spirit Zulu Time 39mm L3.802.4.93.6（浪琴 Spirit Zulu Time 世界時區腕錶）</div>
+                        </a>
+                                            <a href="https://ofa77.shop/module/unionshop/home/goods?goods_id=31"
+                           class="floor-item">
+                            <div class="item-img hot-img">
+                                                                <img src="https://ofa77.shop/uploads/image/2024/05/25/6651876b42ad3.png"
+                                     alt="Omega海馬潛水300米系列"
+                                     class="cover">
+                            </div>
+                            <div class="price clearfix">
+                                <span class="pull-left cr fz16">120250 点</span>
+                                <span class="pull-right c6">售價</span>
+                            </div>
+                            <div class="name ep" title="Omega海馬潛水300米系列">Omega海馬潛水300米系列</div>
+                        </a>
+                                    </div>
+            </div>
+        </section>
+    </div>
+<script>
+    $(document).ready(function () {
+        // 顶部banner轮播
+        var banner_swiper = new Swiper('.banner-box', {
+            autoplayDisableOnInteraction: false,
+            pagination: '.banner-box .swiper-pagination',
+            paginationClickable: true,
+            autoplay: 5000,
+        });
+        // 新闻列表滚动
+        var notice_swiper = new Swiper('.notice-box .swiper-container', {
+            paginationClickable: true,
+            mousewheelControl: true,
+            direction: 'vertical',
+            slidesPerView: 10,
+            autoplay: 2e3,
+        });
+        // 楼层导航自动 active
+        $.scrollFloor();
+        // 页面下拉固定楼层导航
+        $('.floor-nav').smartFloat();
+        $('.to-top').toTop({position: false});
+    });
+</script>
+<!-- 右侧菜单 -->
+<div class="right-nav">
+    <ul class="r-with-gotop">
+        <li class="r-toolbar-item">
+            <a href="https://ofa77.shop/module/unionshop/user/info" class="r-item-hd">
+                <i class="iconfont icon-user"></i>
+                <div class="r-tip__box"><span class="r-tip-text">用戶中心</span></div>
+            </a>
+        </li>
+        <li class="r-toolbar-item">
+            <a href="https://ofa77.shop/module/unionshop/order/shopCartList" class="r-item-hd">
+                <i class="iconfont icon-cart" data-badge="0"></i>
+                <div class="r-tip__box"><span class="r-tip-text">購物車</span></div>
+            </a>
+        </li>
+        <li class="r-toolbar-item">
+            <a href="https://ofa77.shop/module/unionshop/order/collectionList" class="r-item-hd">
+                <i class="iconfont icon-aixin"></i>
+                <div class="r-tip__box"><span class="r-tip-text">我的收藏</span></div>
+            </a>
+        </li>
+        <li class="r-toolbar-item">
+            <a href="" class="r-item-hd" target="_blank">
+                <i class="iconfont icon-liaotian"></i>
+                <div class="r-tip__box"><span class="r-tip-text">聯系客服</span></div>
+            </a>
+        </li>
+        
+        <li class="r-toolbar-item to-top">
+            <i class="iconfont icon-top"></i>
+            <div class="r-tip__box"><span class="r-tip-text">返回頂部</span></div>
+        </li>
+    </ul>
+</div><!-- 底部信息 -->
+
+<div class="copy-box clearfix">
+    <!-- 版权 -->
+<p class="copyright">
+    © 2023-2026 ofa77精品商城 版權所有，並保留所有權利
+</p>
+
+</div>
+</body>
+</html>

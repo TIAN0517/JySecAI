@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>SVG XSS Load Verification</title>
+<style>
+body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+h2 { color: #333; border-bottom: 2px solid #666; }
+.frame { background: white; padding: 10px; margin: 10px 0; border: 1px solid #ddd; }
+.note { color: #c00; font-weight: bold; }
+#log { background: #000; color: #0f0; padding: 10px; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow: auto; }
+</style>
+</head>
+<body>
+<h1>SVG XSS 加载方式对比验证</h1>
+<p>目标: <a href="http://35.234.50.28:3100/imageData/getFile/1" target="_blank">http://35.234.50.28:3100/imageData/getFile/1</a> (212418B, onload=Initialize(evt))</p>
+
+<h2>测试 1: <code>&lt;img src&gt;</code>（应忽略 JS）</h2>
+<div class="frame">
+  <img id="img-test" src="http://35.234.50.28:3100/imageData/getFile/1" width="300">
+  <p class="note">img src → JS 不应执行，console 应抛 ReferenceError（如果执行了 Initialize）</p>
+</div>
+
+<h2>测试 2: <code>&lt;embed&gt;</code>（应执行 JS）</h2>
+<div class="frame">
+  <embed id="embed-test" src="http://35.234.50.28:3100/imageData/getFile/1" type="image/svg+xml" width="400" height="300">
+  <p class="note">embed → active SVG document，应执行 onload/CDATA script</p>
+</div>
+
+<h2>测试 3: <code>&lt;object&gt;</code>（应执行 JS）</h2>
+<div class="frame">
+  <object id="object-test" data="http://35.234.50.28:3100/imageData/getFile/1" type="image/svg+xml" width="400" height="300"></object>
+  <p class="note">object → active SVG document</p>
+</div>
+
+<h2>测试 4: <code>&lt;iframe&gt;</code>（应执行 JS）</h2>
+<div class="frame">
+  <iframe id="iframe-test" src="http://35.234.50.28:3100/imageData/getFile/1" width="400" height="300"></iframe>
+  <p class="note">iframe → 完整 SVG document 上下文</p>
+</div>
+
+<h2>测试 5: <code>&lt;iframe srcdoc&gt;</code> 内嵌 inline SVG（控制对比）</h2>
+<div class="frame">
+  <iframe id="inline-test" srcdoc='<svg xmlns="http://www.w3.org/2000/svg" onload="parent.__xssFired=[`svg_onload_${document.title||&quot;no_title&quot;}`, Date.now()]"><script>parent.__xssFired.push(`svg_script_${Date.now()}`)</script><text x="10" y="50">inline XSS test</text></svg>' width="400" height="100"></iframe>
+  <p class="note">inline SVG → 必应执行 onload + script（控制对比）</p>
+</div>
+
+<h2>捕获日志</h2>
+<div id="log">[waiting...]</div>
+
+<script>
+window.__xssLog = [];
+const logEl = document.getElementById('log');
+function log(msg) {
+  const line = `[${new Date().toISOString()}] ${msg}\n`;
+  window.__xssLog.push(line);
+  logEl.textContent = window.__xssLog.join('');
+  console.log(msg);
+}
+
+// 1. img src - 监听 error 验证是否被加载
+const img = document.getElementById('img-test');
+img.addEventListener('load', () => log('✓ img loaded (200 OK)'));
+img.addEventListener('error', () => log('✗ img load error'));
+
+// 2. embed - 监听 onload 验证 JS 是否执行（注意：embed 内部 SVG 的 onload 抛 ReferenceError）
+const embed = document.getElementById('embed-test');
+embed.addEventListener('load', () => log('✓ embed loaded (内部 SVG 激活)'));
+embed.addEventListener('error', () => log('✗ embed load error'));
+
+// 3. object
+const obj = document.getElementById('object-test');
+obj.addEventListener('load', () => log('✓ object loaded'));
+obj.addEventListener('error', () => log('✗ object load error'));
+
+// 4. iframe
+const iframe = document.getElementById('iframe-test');
+iframe.addEventListener('load', () => {
+  log('✓ iframe loaded');
+  try {
+    const inner = iframe.contentDocument || iframe.contentWindow.document;
+    log(`iframe inner title: ${inner.title || '(empty)'}`);
+    log(`iframe inner svg: ${inner.querySelector('svg') ? 'present' : 'absent'}`);
+    log(`iframe inner scripts: ${inner.scripts ? inner.scripts.length : 'unknown'}`);
+  } catch (e) {
+    log(`iframe cross-origin: ${e.message}`);
+  }
+});
+
+// 5. inline control
+window.__xssFired = [];
+const inline = document.getElementById('inline-test');
+inline.addEventListener('load', () => {
+  setTimeout(() => {
+    if (window.__xssFired.length > 0) {
+      log('✓ inline SVG XSS EXECUTED: ' + JSON.stringify(window.__xssFired));
+    } else {
+      log('✗ inline SVG did not execute (环境异常)');
+    }
+  }, 500);
+});
+
+// 全局错误监听
+window.addEventListener('error', (e) => {
+  log(`✗ GLOBAL ERROR: ${e.message} @ ${e.filename}:${e.lineno}:${e.colno}`);
+});
+window.addEventListener('unhandledrejection', (e) => {
+  log(`✗ UNHANDLED REJECTION: ${e.reason}`);
+});
+
+// 3 秒后汇总
+setTimeout(() => {
+  log('--- 3s summary ---');
+  log(`img.complete: ${img.complete}, naturalWidth: ${img.naturalWidth}`);
+}, 3000);
+</script>
+</body>
+</html>

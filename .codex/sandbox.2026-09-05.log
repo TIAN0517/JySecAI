@@ -1,0 +1,14 @@
+[2026-09-05 09:20:09.308 codex.exe] AUDIT: world-writable scan OK; checked=262; duration_ms=27
+[2026-09-05 09:20:09.333 codex.exe] AUDIT: world-writable scan OK; checked=262; duration_ms=19
+[2026-09-05 22:10:30.540 codex.exe] AUDIT: world-writable scan OK; checked=254; duration_ms=17
+[2026-09-05 22:11:10.664 codex.exe] AUDIT: world-writable scan OK; checked=254; duration_ms=18
+[2026-09-05 22:11:26.147 codex.exe] AUDIT: world-writable scan OK; checked=254; duration_ms=16
+[2026-09-05 22:12:55.268 codex.exe] AUDIT: world-writable scan OK; checked=254; duration_ms=18
+[2026-09-05 22:14:37.417 codex.exe] AUDIT: world-writable scan OK; checked=254; duration_ms=20
+[2026-09-05 22:16:07.833 codex.exe] AUDIT: world-writable scan OK; checked=254; duration_ms=19
+[2026-09-05 22:27:08.758 codex.exe] AUDIT: world-writable scan OK; checked=254; duration_ms=18
+[2026-09-05 22:28:30.832 codex.exe] AUDIT: world-writable scan OK; checked=254; duration_ms=17
+[2026-09-05 22:29:28.746 codex.exe] AUDIT: world-writable scan OK; checked=241; duration_ms=17
+[2026-09-05 22:31:48.688 codex.exe] AUDIT: world-writable scan OK; checked=241; duration_ms=18
+[2026-09-05 22:33:27.053 codex.exe] AUDIT: world-writable scan OK; checked=241; duration_ms=13
+[2026-09-05 22:33:27.075 codex.exe] AUDIT: world-writable scan OK; checked=241; duration_ms=15

@@ -1,0 +1,13 @@
+{
+  "target": "https://peacoop.or.th",
+  "timestamp": "2025-10-28 15:45:33",
+  "authentication": "bypassed",
+  "data": {
+    "accessible_endpoints": [
+      [
+        "文章API",
+        "https://peacoop.or.th/wp-json/wp/v2/posts"
+      ]
+    ]
+  }
+}

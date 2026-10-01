@@ -1,0 +1,5575 @@
+[
+  {
+    "id": 1,
+    "name": "新板",
+    "address": "新北市板橋區民族路57號",
+    "phone": "02-29557119",
+    "fax": "02-89647119",
+    "longitude": 121.464827,
+    "latitude": 25.009055,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:41:48.000Z",
+    "BranchGroupId": 1,
+    "ZipCodeId": 22,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 1,
+      "name": "第一大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-11T09:08:52.000Z",
+          "updatedAt": "2019-05-11T09:08:52.000Z",
+          "BranchId": 1,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "0a1b3057-b9bc-4efa-a9d1-79430ac8c8cb",
+        "name": "新北市立板橋醫院",
+        "disabled": false,
+        "createdAt": "2019-01-14T08:19:19.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:09:28.000Z",
+          "updatedAt": "2019-06-26T12:09:28.000Z",
+          "BranchId": 1,
+          "HospitalUuid": "0a1b3057-b9bc-4efa-a9d1-79430ac8c8cb"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:09:28.000Z",
+          "updatedAt": "2019-06-26T12:09:28.000Z",
+          "BranchId": 1,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      },
+      {
+        "uuid": "af1ede6f-cb56-44b6-95b7-cb2aa94af3b0",
+        "name": "板橋中興醫院",
+        "disabled": false,
+        "createdAt": "2019-01-27T01:57:08.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:09:28.000Z",
+          "updatedAt": "2019-06-26T12:09:28.000Z",
+          "BranchId": 1,
+          "HospitalUuid": "af1ede6f-cb56-44b6-95b7-cb2aa94af3b0"
+        }
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "泰山",
+    "address": "新北市泰山區明志路二段188號",
+    "phone": "02-22962640",
+    "fax": "02-22967510",
+    "longitude": 121.427287,
+    "latitude": 25.04854,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2023-11-11T03:46:58.000Z",
+    "BranchGroupId": 2,
+    "ZipCodeId": 40,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 2,
+      "name": "第二大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-06-14T11:30:56.000Z",
+          "updatedAt": "2025-06-14T11:30:56.000Z",
+          "BranchId": 2,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f",
+        "name": "輔大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T12:14:21.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-20T15:38:41.000Z",
+          "updatedAt": "2019-06-20T15:38:41.000Z",
+          "BranchId": 2,
+          "HospitalUuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f"
+        }
+      },
+      {
+        "uuid": "6f4ab75d-c4b3-43da-9204-ba5143338056",
+        "name": "衛福部台北醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:33.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-20T15:38:41.000Z",
+          "updatedAt": "2019-06-20T15:38:41.000Z",
+          "BranchId": 2,
+          "HospitalUuid": "6f4ab75d-c4b3-43da-9204-ba5143338056"
+        }
+      },
+      {
+        "uuid": "71d88ebd-973c-4749-8e8d-a4ad5f3afeff",
+        "name": "新莊新泰醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T04:41:45.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-06-14T11:30:56.000Z",
+          "updatedAt": "2025-06-14T11:30:56.000Z",
+          "BranchId": 2,
+          "HospitalUuid": "71d88ebd-973c-4749-8e8d-a4ad5f3afeff"
+        }
+      },
+      {
+        "uuid": "a638fbbc-bf02-45f2-a8ba-e68e58e870b3",
+        "name": "衛福部樂生迴龍分院",
+        "disabled": false,
+        "createdAt": "2019-01-27T11:57:22.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-06-14T11:30:56.000Z",
+          "updatedAt": "2025-06-14T11:30:56.000Z",
+          "BranchId": 2,
+          "HospitalUuid": "a638fbbc-bf02-45f2-a8ba-e68e58e870b3"
+        }
+      },
+      {
+        "uuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a",
+        "name": "林口長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:49:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-20T15:38:41.000Z",
+          "updatedAt": "2019-06-20T15:38:41.000Z",
+          "BranchId": 2,
+          "HospitalUuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a"
+        }
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "重陽",
+    "address": "新北市三重區重陽路一段123號",
+    "phone": "02-29889009",
+    "fax": "02-29873964",
+    "longitude": 121.48694,
+    "latitude": 25.06105,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:43:16.000Z",
+    "BranchGroupId": 3,
+    "ZipCodeId": 39,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 3,
+      "name": "第三大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "760c64bb-807e-4637-81f2-a28abfca3794",
+        "name": "北市新光醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T07:20:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-26T06:44:36.000Z",
+          "updatedAt": "2019-08-26T06:44:36.000Z",
+          "BranchId": 3,
+          "HospitalUuid": "760c64bb-807e-4637-81f2-a28abfca3794"
+        }
+      },
+      {
+        "uuid": "aa41b3dc-463a-41c4-8e9b-9eaa4913d225",
+        "name": "北市馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-27T13:15:36.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-26T06:44:36.000Z",
+          "updatedAt": "2019-08-26T06:44:36.000Z",
+          "BranchId": 3,
+          "HospitalUuid": "aa41b3dc-463a-41c4-8e9b-9eaa4913d225"
+        }
+      },
+      {
+        "uuid": "c28b21f7-6de6-46d7-944e-819b0b817038",
+        "name": "新北市立三重醫院",
+        "disabled": false,
+        "createdAt": "2019-01-23T12:09:37.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-26T06:44:36.000Z",
+          "updatedAt": "2019-08-26T06:44:36.000Z",
+          "BranchId": 3,
+          "HospitalUuid": "c28b21f7-6de6-46d7-944e-819b0b817038"
+        }
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "新店",
+    "address": "新北市新店區北新路一段98號5樓",
+    "phone": "02-29117947",
+    "fax": "02-29143925",
+    "longitude": 121.542103,
+    "latitude": 24.969064,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-08-25T00:57:44.000Z",
+    "BranchGroupId": 4,
+    "ZipCodeId": 30,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 4,
+      "name": "第四大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794",
+        "name": "慈濟醫院新店分院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:12:44.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-01T03:33:43.000Z",
+          "updatedAt": "2019-06-01T03:33:43.000Z",
+          "BranchId": 4,
+          "HospitalUuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794"
+        }
+      },
+      {
+        "uuid": "dfe906ed-e7ed-4fb7-bb4a-869520778ad4",
+        "name": "北市立萬芳醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:35:46.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-10-06T07:18:21.000Z",
+          "updatedAt": "2019-10-06T07:18:21.000Z",
+          "BranchId": 4,
+          "HospitalUuid": "dfe906ed-e7ed-4fb7-bb4a-869520778ad4"
+        }
+      },
+      {
+        "uuid": "f3a10a3d-064c-433e-acbd-1f55c456c390",
+        "name": "新店耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T11:05:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-01T03:33:43.000Z",
+          "updatedAt": "2019-06-01T03:33:43.000Z",
+          "BranchId": 4,
+          "HospitalUuid": "f3a10a3d-064c-433e-acbd-1f55c456c390"
+        }
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "清水",
+    "address": "新北市土城區青雲路35號",
+    "phone": "02-22615281",
+    "fax": "02-22742034",
+    "longitude": 121.460084,
+    "latitude": 24.988585,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:45:00.000Z",
+    "BranchGroupId": 5,
+    "ZipCodeId": 35,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 5,
+      "name": "第五大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T03:46:05.000Z",
+          "updatedAt": "2019-05-29T03:46:05.000Z",
+          "BranchId": 5,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "27fa4794-5e57-4312-a19a-0a7474cee894",
+        "name": "土城長庚醫院",
+        "disabled": false,
+        "createdAt": "2020-08-03T17:51:18.000Z",
+        "updatedAt": "2020-08-03T17:51:18.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-10-19T06:11:04.000Z",
+          "updatedAt": "2020-10-19T06:11:04.000Z",
+          "BranchId": 5,
+          "HospitalUuid": "27fa4794-5e57-4312-a19a-0a7474cee894"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T03:46:05.000Z",
+          "updatedAt": "2019-05-29T03:46:05.000Z",
+          "BranchId": 5,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      },
+      {
+        "uuid": "af1ede6f-cb56-44b6-95b7-cb2aa94af3b0",
+        "name": "板橋中興醫院",
+        "disabled": false,
+        "createdAt": "2019-01-27T01:57:08.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-11T09:27:28.000Z",
+          "updatedAt": "2019-09-11T09:27:28.000Z",
+          "BranchId": 5,
+          "HospitalUuid": "af1ede6f-cb56-44b6-95b7-cb2aa94af3b0"
+        }
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "淡水",
+    "address": "新北市淡水區新生街29號",
+    "phone": "02-26224566",
+    "fax": "02-26654343",
+    "longitude": 121.438502,
+    "latitude": 25.1725948,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:43:27.000Z",
+    "BranchGroupId": 3,
+    "ZipCodeId": 46,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 3,
+      "name": "第三大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "37daafb0-f825-4218-8515-c79a0daa910c",
+        "name": "淡水馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-25T00:36:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-01T03:33:57.000Z",
+          "updatedAt": "2019-06-01T03:33:57.000Z",
+          "BranchId": 6,
+          "HospitalUuid": "37daafb0-f825-4218-8515-c79a0daa910c"
+        }
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "海山",
+    "address": "新北市板橋區英士路151號",
+    "phone": "02-22596285",
+    "fax": "02-22510499",
+    "longitude": 121.459947,
+    "latitude": 25.024047,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:41:58.000Z",
+    "BranchGroupId": 1,
+    "ZipCodeId": 22,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 1,
+      "name": "第一大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T05:38:56.000Z",
+          "updatedAt": "2019-05-30T05:38:56.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "0a1b3057-b9bc-4efa-a9d1-79430ac8c8cb",
+        "name": "新北市立板橋醫院",
+        "disabled": false,
+        "createdAt": "2019-01-14T08:19:19.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T05:38:56.000Z",
+          "updatedAt": "2019-05-30T05:38:56.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "0a1b3057-b9bc-4efa-a9d1-79430ac8c8cb"
+        }
+      },
+      {
+        "uuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f",
+        "name": "北市台大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-15T09:01:06.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f"
+        }
+      },
+      {
+        "uuid": "0e3cfac1-d8cc-4b12-94a4-bd75871205cd",
+        "name": "北市立和平醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T13:18:13.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "0e3cfac1-d8cc-4b12-94a4-bd75871205cd"
+        }
+      },
+      {
+        "uuid": "267fce5b-a702-4414-afb8-5f704be3d2d1",
+        "name": "北市中興醫院",
+        "disabled": false,
+        "createdAt": "2019-01-31T06:12:15.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "267fce5b-a702-4414-afb8-5f704be3d2d1"
+        }
+      },
+      {
+        "uuid": "27fa4794-5e57-4312-a19a-0a7474cee894",
+        "name": "土城長庚醫院",
+        "disabled": false,
+        "createdAt": "2020-08-03T17:51:18.000Z",
+        "updatedAt": "2020-08-03T17:51:18.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-10-02T15:19:03.000Z",
+          "updatedAt": "2020-10-02T15:19:03.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "27fa4794-5e57-4312-a19a-0a7474cee894"
+        }
+      },
+      {
+        "uuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f",
+        "name": "輔大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T12:14:21.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f"
+        }
+      },
+      {
+        "uuid": "4b92d814-5963-4b0b-a12b-2a5c3c44aaa1",
+        "name": "國軍北投818院區",
+        "disabled": false,
+        "createdAt": "2019-06-16T05:35:13.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "4b92d814-5963-4b0b-a12b-2a5c3c44aaa1"
+        }
+      },
+      {
+        "uuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794",
+        "name": "慈濟醫院新店分院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:12:44.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794"
+        }
+      },
+      {
+        "uuid": "5bf98c01-1165-4629-91c3-0cb874ae5201",
+        "name": "永和耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-19T02:09:51.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "5bf98c01-1165-4629-91c3-0cb874ae5201"
+        }
+      },
+      {
+        "uuid": "5f12fac0-a651-4934-91b4-ac5c700528a1",
+        "name": "臺北市立聯合醫院松德院區",
+        "disabled": false,
+        "createdAt": "2019-03-27T01:17:27.000Z",
+        "updatedAt": "2019-03-27T01:17:27.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "5f12fac0-a651-4934-91b4-ac5c700528a1"
+        }
+      },
+      {
+        "uuid": "609608a9-5a1c-4b82-833a-2975f5262cb4",
+        "name": "北市榮民總醫院",
+        "disabled": false,
+        "createdAt": "2019-11-23T07:25:24.000Z",
+        "updatedAt": "2019-11-23T07:25:24.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "609608a9-5a1c-4b82-833a-2975f5262cb4"
+        }
+      },
+      {
+        "uuid": "6aec4b67-06d1-4170-860d-3509f562a973",
+        "name": "北市西園醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T05:33:39.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "6aec4b67-06d1-4170-860d-3509f562a973"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      },
+      {
+        "uuid": "6f4ab75d-c4b3-43da-9204-ba5143338056",
+        "name": "衛福部台北醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:33.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "6f4ab75d-c4b3-43da-9204-ba5143338056"
+        }
+      },
+      {
+        "uuid": "71d88ebd-973c-4749-8e8d-a4ad5f3afeff",
+        "name": "新莊新泰醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T04:41:45.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "71d88ebd-973c-4749-8e8d-a4ad5f3afeff"
+        }
+      },
+      {
+        "uuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a",
+        "name": "內湖國防醫學中心(三軍)",
+        "disabled": false,
+        "createdAt": "2019-02-01T11:07:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a"
+        }
+      },
+      {
+        "uuid": "98c3725a-c690-4cc4-98e4-8b948918d1dd",
+        "name": "八里療養院",
+        "disabled": false,
+        "createdAt": "2019-05-30T09:52:25.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "98c3725a-c690-4cc4-98e4-8b948918d1dd"
+        }
+      },
+      {
+        "uuid": "9de581d6-80b7-4f9a-9318-272e42d39fb0",
+        "name": "臺北榮總",
+        "disabled": false,
+        "createdAt": "2019-02-10T09:05:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "9de581d6-80b7-4f9a-9318-272e42d39fb0"
+        }
+      },
+      {
+        "uuid": "a2dd136e-770a-4386-8ae2-878d682a5302",
+        "name": "臺北市立聯合醫院仁愛院區",
+        "disabled": false,
+        "createdAt": "2019-06-17T09:59:34.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "a2dd136e-770a-4386-8ae2-878d682a5302"
+        }
+      },
+      {
+        "uuid": "aa41b3dc-463a-41c4-8e9b-9eaa4913d225",
+        "name": "北市馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-27T13:15:36.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "aa41b3dc-463a-41c4-8e9b-9eaa4913d225"
+        }
+      },
+      {
+        "uuid": "af1ede6f-cb56-44b6-95b7-cb2aa94af3b0",
+        "name": "板橋中興醫院",
+        "disabled": false,
+        "createdAt": "2019-01-27T01:57:08.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T05:38:56.000Z",
+          "updatedAt": "2019-05-30T05:38:56.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "af1ede6f-cb56-44b6-95b7-cb2aa94af3b0"
+        }
+      },
+      {
+        "uuid": "c28b21f7-6de6-46d7-944e-819b0b817038",
+        "name": "新北市立三重醫院",
+        "disabled": false,
+        "createdAt": "2019-01-23T12:09:37.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "c28b21f7-6de6-46d7-944e-819b0b817038"
+        }
+      },
+      {
+        "uuid": "f3a10a3d-064c-433e-acbd-1f55c456c390",
+        "name": "新店耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T11:05:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-01-10T07:56:34.000Z",
+          "updatedAt": "2020-01-10T07:56:34.000Z",
+          "BranchId": 7,
+          "HospitalUuid": "f3a10a3d-064c-433e-acbd-1f55c456c390"
+        }
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "莒光",
+    "address": "新北市板橋區莒光路161號1樓",
+    "phone": "02-22515614",
+    "fax": "02-22588263",
+    "longitude": 121.47389,
+    "latitude": 25.0241326,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:42:20.000Z",
+    "BranchGroupId": 1,
+    "ZipCodeId": 22,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 1,
+      "name": "第一大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:14:03.000Z",
+          "updatedAt": "2019-06-26T12:14:03.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "0a1b3057-b9bc-4efa-a9d1-79430ac8c8cb",
+        "name": "新北市立板橋醫院",
+        "disabled": false,
+        "createdAt": "2019-01-14T08:19:19.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:14:03.000Z",
+          "updatedAt": "2019-06-26T12:14:03.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "0a1b3057-b9bc-4efa-a9d1-79430ac8c8cb"
+        }
+      },
+      {
+        "uuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f",
+        "name": "北市台大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-15T09:01:06.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:14:03.000Z",
+          "updatedAt": "2019-06-26T12:14:03.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f"
+        }
+      },
+      {
+        "uuid": "0e3cfac1-d8cc-4b12-94a4-bd75871205cd",
+        "name": "北市立和平醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T13:18:13.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:14:03.000Z",
+          "updatedAt": "2019-06-26T12:14:03.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "0e3cfac1-d8cc-4b12-94a4-bd75871205cd"
+        }
+      },
+      {
+        "uuid": "267fce5b-a702-4414-afb8-5f704be3d2d1",
+        "name": "北市中興醫院",
+        "disabled": false,
+        "createdAt": "2019-01-31T06:12:15.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T13:04:21.000Z",
+          "updatedAt": "2019-06-28T13:04:21.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "267fce5b-a702-4414-afb8-5f704be3d2d1"
+        }
+      },
+      {
+        "uuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f",
+        "name": "輔大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T12:14:21.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T13:04:21.000Z",
+          "updatedAt": "2019-06-28T13:04:21.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f"
+        }
+      },
+      {
+        "uuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794",
+        "name": "慈濟醫院新店分院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:12:44.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T13:04:21.000Z",
+          "updatedAt": "2019-06-28T13:04:21.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794"
+        }
+      },
+      {
+        "uuid": "5bf98c01-1165-4629-91c3-0cb874ae5201",
+        "name": "永和耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-19T02:09:51.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T13:04:21.000Z",
+          "updatedAt": "2019-06-28T13:04:21.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "5bf98c01-1165-4629-91c3-0cb874ae5201"
+        }
+      },
+      {
+        "uuid": "6aec4b67-06d1-4170-860d-3509f562a973",
+        "name": "北市西園醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T05:33:39.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:14:03.000Z",
+          "updatedAt": "2019-06-26T12:14:03.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "6aec4b67-06d1-4170-860d-3509f562a973"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T13:04:21.000Z",
+          "updatedAt": "2019-06-28T13:04:21.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      },
+      {
+        "uuid": "6f4ab75d-c4b3-43da-9204-ba5143338056",
+        "name": "衛福部台北醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:33.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:14:03.000Z",
+          "updatedAt": "2019-06-26T12:14:03.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "6f4ab75d-c4b3-43da-9204-ba5143338056"
+        }
+      },
+      {
+        "uuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a",
+        "name": "內湖國防醫學中心(三軍)",
+        "disabled": false,
+        "createdAt": "2019-02-01T11:07:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T13:04:21.000Z",
+          "updatedAt": "2019-06-28T13:04:21.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a"
+        }
+      },
+      {
+        "uuid": "92e2a457-3246-443d-9e6f-82a335086ce9",
+        "name": "振興醫院",
+        "disabled": false,
+        "createdAt": "2019-02-14T09:07:45.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T13:04:21.000Z",
+          "updatedAt": "2019-06-28T13:04:21.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "92e2a457-3246-443d-9e6f-82a335086ce9"
+        }
+      },
+      {
+        "uuid": "9de581d6-80b7-4f9a-9318-272e42d39fb0",
+        "name": "臺北榮總",
+        "disabled": false,
+        "createdAt": "2019-02-10T09:05:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T13:04:21.000Z",
+          "updatedAt": "2019-06-28T13:04:21.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "9de581d6-80b7-4f9a-9318-272e42d39fb0"
+        }
+      },
+      {
+        "uuid": "a2dd136e-770a-4386-8ae2-878d682a5302",
+        "name": "臺北市立聯合醫院仁愛院區",
+        "disabled": false,
+        "createdAt": "2019-06-17T09:59:34.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T13:04:21.000Z",
+          "updatedAt": "2019-06-28T13:04:21.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "a2dd136e-770a-4386-8ae2-878d682a5302"
+        }
+      },
+      {
+        "uuid": "aa41b3dc-463a-41c4-8e9b-9eaa4913d225",
+        "name": "北市馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-27T13:15:36.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T13:04:21.000Z",
+          "updatedAt": "2019-06-28T13:04:21.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "aa41b3dc-463a-41c4-8e9b-9eaa4913d225"
+        }
+      },
+      {
+        "uuid": "af1ede6f-cb56-44b6-95b7-cb2aa94af3b0",
+        "name": "板橋中興醫院",
+        "disabled": false,
+        "createdAt": "2019-01-27T01:57:08.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T13:04:21.000Z",
+          "updatedAt": "2019-06-28T13:04:21.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "af1ede6f-cb56-44b6-95b7-cb2aa94af3b0"
+        }
+      },
+      {
+        "uuid": "c28b21f7-6de6-46d7-944e-819b0b817038",
+        "name": "新北市立三重醫院",
+        "disabled": false,
+        "createdAt": "2019-01-23T12:09:37.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T13:04:21.000Z",
+          "updatedAt": "2019-06-28T13:04:21.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "c28b21f7-6de6-46d7-944e-819b0b817038"
+        }
+      },
+      {
+        "uuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a",
+        "name": "林口長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:49:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T13:04:21.000Z",
+          "updatedAt": "2019-06-28T13:04:21.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a"
+        }
+      },
+      {
+        "uuid": "f3a10a3d-064c-433e-acbd-1f55c456c390",
+        "name": "新店耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T11:05:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T13:04:21.000Z",
+          "updatedAt": "2019-06-28T13:04:21.000Z",
+          "BranchId": 8,
+          "HospitalUuid": "f3a10a3d-064c-433e-acbd-1f55c456c390"
+        }
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "新莊",
+    "address": "新北市新莊區中正路170號1樓",
+    "phone": "02-29924050",
+    "fax": "02-29940524",
+    "longitude": 121.451036,
+    "latitude": 25.0359695,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:42:29.000Z",
+    "BranchGroupId": 2,
+    "ZipCodeId": 40,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 2,
+      "name": "第二大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:15:16.000Z",
+          "updatedAt": "2019-06-26T12:15:16.000Z",
+          "BranchId": 9,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "0a1b3057-b9bc-4efa-a9d1-79430ac8c8cb",
+        "name": "新北市立板橋醫院",
+        "disabled": false,
+        "createdAt": "2019-01-14T08:19:19.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:15:16.000Z",
+          "updatedAt": "2019-06-26T12:15:16.000Z",
+          "BranchId": 9,
+          "HospitalUuid": "0a1b3057-b9bc-4efa-a9d1-79430ac8c8cb"
+        }
+      },
+      {
+        "uuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f",
+        "name": "輔大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T12:14:21.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:15:16.000Z",
+          "updatedAt": "2019-06-26T12:15:16.000Z",
+          "BranchId": 9,
+          "HospitalUuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f"
+        }
+      },
+      {
+        "uuid": "6f4ab75d-c4b3-43da-9204-ba5143338056",
+        "name": "衛福部台北醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:33.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:15:16.000Z",
+          "updatedAt": "2019-06-26T12:15:16.000Z",
+          "BranchId": 9,
+          "HospitalUuid": "6f4ab75d-c4b3-43da-9204-ba5143338056"
+        }
+      },
+      {
+        "uuid": "71d88ebd-973c-4749-8e8d-a4ad5f3afeff",
+        "name": "新莊新泰醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T04:41:45.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:15:16.000Z",
+          "updatedAt": "2019-06-26T12:15:16.000Z",
+          "BranchId": 9,
+          "HospitalUuid": "71d88ebd-973c-4749-8e8d-a4ad5f3afeff"
+        }
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "福營",
+    "address": "新北市新莊區福營路279號",
+    "phone": "02-29032119",
+    "fax": "02-29060119",
+    "longitude": 121.427589,
+    "latitude": 25.0293679,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:42:41.000Z",
+    "BranchGroupId": 2,
+    "ZipCodeId": 40,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 2,
+      "name": "第二大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f",
+        "name": "輔大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T12:14:21.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:16:21.000Z",
+          "updatedAt": "2019-06-26T12:16:21.000Z",
+          "BranchId": 10,
+          "HospitalUuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f"
+        }
+      },
+      {
+        "uuid": "6f4ab75d-c4b3-43da-9204-ba5143338056",
+        "name": "衛福部台北醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:33.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:16:21.000Z",
+          "updatedAt": "2019-06-26T12:16:21.000Z",
+          "BranchId": 10,
+          "HospitalUuid": "6f4ab75d-c4b3-43da-9204-ba5143338056"
+        }
+      },
+      {
+        "uuid": "71d88ebd-973c-4749-8e8d-a4ad5f3afeff",
+        "name": "新莊新泰醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T04:41:45.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:16:21.000Z",
+          "updatedAt": "2019-06-26T12:16:21.000Z",
+          "BranchId": 10,
+          "HospitalUuid": "71d88ebd-973c-4749-8e8d-a4ad5f3afeff"
+        }
+      },
+      {
+        "uuid": "a638fbbc-bf02-45f2-a8ba-e68e58e870b3",
+        "name": "衛福部樂生迴龍分院",
+        "disabled": false,
+        "createdAt": "2019-01-27T11:57:22.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:16:21.000Z",
+          "updatedAt": "2019-06-26T12:16:21.000Z",
+          "BranchId": 10,
+          "HospitalUuid": "a638fbbc-bf02-45f2-a8ba-e68e58e870b3"
+        }
+      },
+      {
+        "uuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a",
+        "name": "林口長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:49:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:16:21.000Z",
+          "updatedAt": "2019-06-26T12:16:21.000Z",
+          "BranchId": 10,
+          "HospitalUuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a"
+        }
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "三重",
+    "address": "新北市三重區文化南路44號",
+    "phone": "02-29750105",
+    "fax": "02-29781570",
+    "longitude": 121.500562,
+    "latitude": 25.0601873,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:43:05.000Z",
+    "BranchGroupId": 3,
+    "ZipCodeId": 39,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 3,
+      "name": "第三大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f",
+        "name": "北市台大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-15T09:01:06.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:19:36.000Z",
+          "updatedAt": "2019-06-26T12:19:36.000Z",
+          "BranchId": 11,
+          "HospitalUuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f"
+        }
+      },
+      {
+        "uuid": "267fce5b-a702-4414-afb8-5f704be3d2d1",
+        "name": "北市中興醫院",
+        "disabled": false,
+        "createdAt": "2019-01-31T06:12:15.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:19:36.000Z",
+          "updatedAt": "2019-06-26T12:19:36.000Z",
+          "BranchId": 11,
+          "HospitalUuid": "267fce5b-a702-4414-afb8-5f704be3d2d1"
+        }
+      },
+      {
+        "uuid": "6f4ab75d-c4b3-43da-9204-ba5143338056",
+        "name": "衛福部台北醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:33.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:19:36.000Z",
+          "updatedAt": "2019-06-26T12:19:36.000Z",
+          "BranchId": 11,
+          "HospitalUuid": "6f4ab75d-c4b3-43da-9204-ba5143338056"
+        }
+      },
+      {
+        "uuid": "760c64bb-807e-4637-81f2-a28abfca3794",
+        "name": "北市新光醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T07:20:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-23T07:27:34.000Z",
+          "updatedAt": "2019-09-23T07:27:34.000Z",
+          "BranchId": 11,
+          "HospitalUuid": "760c64bb-807e-4637-81f2-a28abfca3794"
+        }
+      },
+      {
+        "uuid": "aa41b3dc-463a-41c4-8e9b-9eaa4913d225",
+        "name": "北市馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-27T13:15:36.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:19:36.000Z",
+          "updatedAt": "2019-06-26T12:19:36.000Z",
+          "BranchId": 11,
+          "HospitalUuid": "aa41b3dc-463a-41c4-8e9b-9eaa4913d225"
+        }
+      },
+      {
+        "uuid": "c28b21f7-6de6-46d7-944e-819b0b817038",
+        "name": "新北市立三重醫院",
+        "disabled": false,
+        "createdAt": "2019-01-23T12:09:37.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:19:36.000Z",
+          "updatedAt": "2019-06-26T12:19:36.000Z",
+          "BranchId": 11,
+          "HospitalUuid": "c28b21f7-6de6-46d7-944e-819b0b817038"
+        }
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "name": "中和",
+    "address": "新北市中和區中山路二段64巷11號",
+    "phone": "02-22491819",
+    "fax": "02-22464442",
+    "longitude": 121.50331,
+    "latitude": 25.005612,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:46:23.000Z",
+    "BranchGroupId": 7,
+    "ZipCodeId": 34,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 7,
+      "name": "第七大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "5bf98c01-1165-4629-91c3-0cb874ae5201",
+        "name": "永和耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-19T02:09:51.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-01T03:32:54.000Z",
+          "updatedAt": "2019-06-01T03:32:54.000Z",
+          "BranchId": 12,
+          "HospitalUuid": "5bf98c01-1165-4629-91c3-0cb874ae5201"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-01T03:32:54.000Z",
+          "updatedAt": "2019-06-01T03:32:54.000Z",
+          "BranchId": 12,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      },
+      {
+        "uuid": "f3a10a3d-064c-433e-acbd-1f55c456c390",
+        "name": "新店耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T11:05:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-01T03:32:54.000Z",
+          "updatedAt": "2019-06-01T03:32:54.000Z",
+          "BranchId": 12,
+          "HospitalUuid": "f3a10a3d-064c-433e-acbd-1f55c456c390"
+        }
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "name": "永利",
+    "address": "新北市永和區永利路72號之1",
+    "phone": "02-29280206",
+    "fax": "02-32338154",
+    "longitude": 121.52028,
+    "latitude": 25.0041175,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:46:12.000Z",
+    "BranchGroupId": 7,
+    "ZipCodeId": 33,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 7,
+      "name": "第七大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794",
+        "name": "慈濟醫院新店分院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:12:44.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:20:42.000Z",
+          "updatedAt": "2019-06-26T12:20:42.000Z",
+          "BranchId": 13,
+          "HospitalUuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794"
+        }
+      },
+      {
+        "uuid": "5bf98c01-1165-4629-91c3-0cb874ae5201",
+        "name": "永和耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-19T02:09:51.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:20:42.000Z",
+          "updatedAt": "2019-06-26T12:20:42.000Z",
+          "BranchId": 13,
+          "HospitalUuid": "5bf98c01-1165-4629-91c3-0cb874ae5201"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:20:42.000Z",
+          "updatedAt": "2019-06-26T12:20:42.000Z",
+          "BranchId": 13,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "name": "安和",
+    "address": "新北市新店區安和路3段3號",
+    "phone": "02-29486936",
+    "fax": "02-29486943",
+    "longitude": 121.517052,
+    "latitude": 24.9798214,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:44:12.000Z",
+    "BranchGroupId": 4,
+    "ZipCodeId": 30,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 4,
+      "name": "第四大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794",
+        "name": "慈濟醫院新店分院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:12:44.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:22:13.000Z",
+          "updatedAt": "2019-06-26T12:22:13.000Z",
+          "BranchId": 14,
+          "HospitalUuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:22:13.000Z",
+          "updatedAt": "2019-06-26T12:22:13.000Z",
+          "BranchId": 14,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      },
+      {
+        "uuid": "b53660ed-df9e-44f6-a8f4-9594c5486c81",
+        "name": "安康耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:06.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:22:13.000Z",
+          "updatedAt": "2019-06-26T12:22:13.000Z",
+          "BranchId": 14,
+          "HospitalUuid": "b53660ed-df9e-44f6-a8f4-9594c5486c81"
+        }
+      },
+      {
+        "uuid": "f3a10a3d-064c-433e-acbd-1f55c456c390",
+        "name": "新店耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T11:05:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:22:13.000Z",
+          "updatedAt": "2019-06-26T12:22:13.000Z",
+          "BranchId": 14,
+          "HospitalUuid": "f3a10a3d-064c-433e-acbd-1f55c456c390"
+        }
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "name": "社后",
+    "address": "新北市汐止區福德一路236號",
+    "phone": "02-86931911",
+    "fax": "02-86931995",
+    "longitude": 121.633925,
+    "latitude": 25.0650883,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:45:41.000Z",
+    "BranchGroupId": 6,
+    "ZipCodeId": 23,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 6,
+      "name": "第六大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "12073564-8433-41a8-b2c8-252122e367c3",
+        "name": "北市立忠孝醫院",
+        "disabled": false,
+        "createdAt": "2019-01-15T10:05:53.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-25T06:36:58.000Z",
+          "updatedAt": "2019-06-25T06:36:58.000Z",
+          "BranchId": 15,
+          "HospitalUuid": "12073564-8433-41a8-b2c8-252122e367c3"
+        }
+      },
+      {
+        "uuid": "21149e42-947f-470b-a5ef-2ec779d61ee5",
+        "name": "汐止國泰醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T04:08:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-25T06:36:58.000Z",
+          "updatedAt": "2019-06-25T06:36:58.000Z",
+          "BranchId": 15,
+          "HospitalUuid": "21149e42-947f-470b-a5ef-2ec779d61ee5"
+        }
+      },
+      {
+        "uuid": "3a19b9fc-da89-49ad-a1c0-c17990f3843a",
+        "name": "臺北市立聯合醫院松德院區",
+        "disabled": false,
+        "createdAt": "2019-06-14T15:48:39.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-25T06:36:58.000Z",
+          "updatedAt": "2019-06-25T06:36:58.000Z",
+          "BranchId": 15,
+          "HospitalUuid": "3a19b9fc-da89-49ad-a1c0-c17990f3843a"
+        }
+      },
+      {
+        "uuid": "77782b8d-ca77-4e16-a190-8d5b0ec53565",
+        "name": "臺北醫學大學",
+        "disabled": false,
+        "createdAt": "2019-02-01T10:31:06.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-25T06:36:58.000Z",
+          "updatedAt": "2019-06-25T06:36:58.000Z",
+          "BranchId": 15,
+          "HospitalUuid": "77782b8d-ca77-4e16-a190-8d5b0ec53565"
+        }
+      },
+      {
+        "uuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a",
+        "name": "內湖國防醫學中心(三軍)",
+        "disabled": false,
+        "createdAt": "2019-02-01T11:07:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-25T06:36:58.000Z",
+          "updatedAt": "2019-06-25T06:36:58.000Z",
+          "BranchId": 15,
+          "HospitalUuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a"
+        }
+      },
+      {
+        "uuid": "96600762-17ea-4664-8d4d-7ed2d90141f6",
+        "name": "基隆長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:18.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-25T06:36:58.000Z",
+          "updatedAt": "2019-06-25T06:36:58.000Z",
+          "BranchId": 15,
+          "HospitalUuid": "96600762-17ea-4664-8d4d-7ed2d90141f6"
+        }
+      },
+      {
+        "uuid": "aec7f2ed-c46b-466b-b5fc-345c5c6e8802",
+        "name": "北市康寧醫院",
+        "disabled": false,
+        "createdAt": "2019-04-03T10:45:16.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-25T06:36:58.000Z",
+          "updatedAt": "2019-06-25T06:36:58.000Z",
+          "BranchId": 15,
+          "HospitalUuid": "aec7f2ed-c46b-466b-b5fc-345c5c6e8802"
+        }
+      },
+      {
+        "uuid": "cce0c141-6af4-4d71-a5c7-319a424ec746",
+        "name": "部立基隆醫院",
+        "disabled": false,
+        "createdAt": "2019-02-19T19:43:50.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-25T06:36:58.000Z",
+          "updatedAt": "2019-06-25T06:36:58.000Z",
+          "BranchId": 15,
+          "HospitalUuid": "cce0c141-6af4-4d71-a5c7-319a424ec746"
+        }
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "name": "南勢",
+    "address": "新北市中和區南山路236號",
+    "phone": "02-29440056",
+    "fax": "02-29447080",
+    "longitude": 121.506469,
+    "latitude": 24.9897179,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:46:36.000Z",
+    "BranchGroupId": 7,
+    "ZipCodeId": 34,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 7,
+      "name": "第七大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794",
+        "name": "慈濟醫院新店分院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:12:44.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:23:27.000Z",
+          "updatedAt": "2019-06-26T12:23:27.000Z",
+          "BranchId": 16,
+          "HospitalUuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794"
+        }
+      },
+      {
+        "uuid": "5bf98c01-1165-4629-91c3-0cb874ae5201",
+        "name": "永和耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-19T02:09:51.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:23:27.000Z",
+          "updatedAt": "2019-06-26T12:23:27.000Z",
+          "BranchId": 16,
+          "HospitalUuid": "5bf98c01-1165-4629-91c3-0cb874ae5201"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-23T00:19:08.000Z",
+          "updatedAt": "2019-06-23T00:19:08.000Z",
+          "BranchId": 16,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      },
+      {
+        "uuid": "f3a10a3d-064c-433e-acbd-1f55c456c390",
+        "name": "新店耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T11:05:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:23:27.000Z",
+          "updatedAt": "2019-06-26T12:23:27.000Z",
+          "BranchId": 16,
+          "HospitalUuid": "f3a10a3d-064c-433e-acbd-1f55c456c390"
+        }
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "name": "慈福",
+    "address": "新北市三重區溪尾街301號",
+    "phone": "02-28575564",
+    "fax": "02-28572224",
+    "longitude": 121.487567,
+    "latitude": 25.083421,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:46:48.000Z",
+    "BranchGroupId": 8,
+    "ZipCodeId": 39,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 8,
+      "name": "特搜大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f",
+        "name": "北市台大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-15T09:01:06.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-12T07:36:14.000Z",
+          "updatedAt": "2019-09-12T07:36:14.000Z",
+          "BranchId": 17,
+          "HospitalUuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f"
+        }
+      },
+      {
+        "uuid": "267fce5b-a702-4414-afb8-5f704be3d2d1",
+        "name": "北市中興醫院",
+        "disabled": false,
+        "createdAt": "2019-01-31T06:12:15.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-12T07:36:14.000Z",
+          "updatedAt": "2019-09-12T07:36:14.000Z",
+          "BranchId": 17,
+          "HospitalUuid": "267fce5b-a702-4414-afb8-5f704be3d2d1"
+        }
+      },
+      {
+        "uuid": "760c64bb-807e-4637-81f2-a28abfca3794",
+        "name": "北市新光醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T07:20:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:24:12.000Z",
+          "updatedAt": "2019-06-26T12:24:12.000Z",
+          "BranchId": 17,
+          "HospitalUuid": "760c64bb-807e-4637-81f2-a28abfca3794"
+        }
+      },
+      {
+        "uuid": "92e2a457-3246-443d-9e6f-82a335086ce9",
+        "name": "振興醫院",
+        "disabled": false,
+        "createdAt": "2019-02-14T09:07:45.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-12T07:36:14.000Z",
+          "updatedAt": "2019-09-12T07:36:14.000Z",
+          "BranchId": 17,
+          "HospitalUuid": "92e2a457-3246-443d-9e6f-82a335086ce9"
+        }
+      },
+      {
+        "uuid": "9de581d6-80b7-4f9a-9318-272e42d39fb0",
+        "name": "臺北榮總",
+        "disabled": false,
+        "createdAt": "2019-02-10T09:05:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-12T07:36:14.000Z",
+          "updatedAt": "2019-09-12T07:36:14.000Z",
+          "BranchId": 17,
+          "HospitalUuid": "9de581d6-80b7-4f9a-9318-272e42d39fb0"
+        }
+      },
+      {
+        "uuid": "aa41b3dc-463a-41c4-8e9b-9eaa4913d225",
+        "name": "北市馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-27T13:15:36.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:24:12.000Z",
+          "updatedAt": "2019-06-26T12:24:12.000Z",
+          "BranchId": 17,
+          "HospitalUuid": "aa41b3dc-463a-41c4-8e9b-9eaa4913d225"
+        }
+      },
+      {
+        "uuid": "c28b21f7-6de6-46d7-944e-819b0b817038",
+        "name": "新北市立三重醫院",
+        "disabled": false,
+        "createdAt": "2019-01-23T12:09:37.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:24:12.000Z",
+          "updatedAt": "2019-06-26T12:24:12.000Z",
+          "BranchId": 17,
+          "HospitalUuid": "c28b21f7-6de6-46d7-944e-819b0b817038"
+        }
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "name": "樹林",
+    "address": "新北市樹林區中山路二段78-1號",
+    "phone": "02-29557119",
+    "fax": "02-89647119",
+    "longitude": 121.414945,
+    "latitude": 24.9841079,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:44:36.000Z",
+    "BranchGroupId": 5,
+    "ZipCodeId": 37,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 5,
+      "name": "第五大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:25:16.000Z",
+          "updatedAt": "2019-06-26T12:25:16.000Z",
+          "BranchId": 18,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23",
+        "name": "三峽恩主公醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T03:58:25.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:25:16.000Z",
+          "updatedAt": "2019-06-26T12:25:16.000Z",
+          "BranchId": 18,
+          "HospitalUuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23"
+        }
+      },
+      {
+        "uuid": "d748a557-6d14-453b-8e8b-4beb6b9f1175",
+        "name": "樹林仁愛醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T17:04:39.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:25:16.000Z",
+          "updatedAt": "2019-06-26T12:25:16.000Z",
+          "BranchId": 18,
+          "HospitalUuid": "d748a557-6d14-453b-8e8b-4beb6b9f1175"
+        }
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "name": "蘆洲",
+    "address": "新北市蘆洲區長榮路792號",
+    "phone": "02-22821119",
+    "fax": "02-22852701",
+    "longitude": 121.460872,
+    "latitude": 25.0927218,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2024-01-08T04:14:44.000Z",
+    "BranchGroupId": 3,
+    "ZipCodeId": 43,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 3,
+      "name": "第三大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 20,
+    "name": "鶯歌",
+    "address": "新北市鶯歌區建國路420號",
+    "phone": "02-26792082",
+    "fax": "02-26708545",
+    "longitude": 121.342832,
+    "latitude": 24.9519497,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-11T11:33:18.000Z",
+    "updatedAt": "2019-07-22T08:44:48.000Z",
+    "BranchGroupId": 5,
+    "ZipCodeId": 38,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 5,
+      "name": "第五大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T08:19:37.000Z",
+          "updatedAt": "2019-05-29T08:19:37.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "023297e5-9cf1-494a-a957-8d669160012f",
+        "name": "其他",
+        "disabled": false,
+        "createdAt": "2019-05-07T02:24:18.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-10-20T00:16:17.000Z",
+          "updatedAt": "2019-10-20T00:16:17.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "023297e5-9cf1-494a-a957-8d669160012f"
+        }
+      },
+      {
+        "uuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f",
+        "name": "北市台大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-15T09:01:06.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T08:19:37.000Z",
+          "updatedAt": "2019-05-29T08:19:37.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f"
+        }
+      },
+      {
+        "uuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23",
+        "name": "三峽恩主公醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T03:58:25.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T08:19:37.000Z",
+          "updatedAt": "2019-05-29T08:19:37.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23"
+        }
+      },
+      {
+        "uuid": "3a19b9fc-da89-49ad-a1c0-c17990f3843a",
+        "name": "臺北市立聯合醫院松德院區",
+        "disabled": false,
+        "createdAt": "2019-06-14T15:48:39.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-10-20T00:16:17.000Z",
+          "updatedAt": "2019-10-20T00:16:17.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "3a19b9fc-da89-49ad-a1c0-c17990f3843a"
+        }
+      },
+      {
+        "uuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794",
+        "name": "慈濟醫院新店分院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:12:44.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-10-20T00:16:17.000Z",
+          "updatedAt": "2019-10-20T00:16:17.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794"
+        }
+      },
+      {
+        "uuid": "5f12fac0-a651-4934-91b4-ac5c700528a1",
+        "name": "臺北市立聯合醫院松德院區",
+        "disabled": false,
+        "createdAt": "2019-03-27T01:17:27.000Z",
+        "updatedAt": "2019-03-27T01:17:27.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T08:21:14.000Z",
+          "updatedAt": "2019-05-29T08:21:14.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "5f12fac0-a651-4934-91b4-ac5c700528a1"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T08:21:14.000Z",
+          "updatedAt": "2019-05-29T08:21:14.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      },
+      {
+        "uuid": "7561ae6b-ff1e-4c12-a24b-c6e909137c60",
+        "name": "桃園榮總醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T13:17:43.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T08:19:37.000Z",
+          "updatedAt": "2019-05-29T08:19:37.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "7561ae6b-ff1e-4c12-a24b-c6e909137c60"
+        }
+      },
+      {
+        "uuid": "98c3725a-c690-4cc4-98e4-8b948918d1dd",
+        "name": "八里療養院",
+        "disabled": false,
+        "createdAt": "2019-05-30T09:52:25.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-10-20T00:16:17.000Z",
+          "updatedAt": "2019-10-20T00:16:17.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "98c3725a-c690-4cc4-98e4-8b948918d1dd"
+        }
+      },
+      {
+        "uuid": "9a25e226-37a0-4179-8c66-8753e7e40f42",
+        "name": "桃園療養院",
+        "disabled": false,
+        "createdAt": "2019-04-10T04:44:36.000Z",
+        "updatedAt": "2019-04-10T04:44:36.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T08:19:37.000Z",
+          "updatedAt": "2019-05-29T08:19:37.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "9a25e226-37a0-4179-8c66-8753e7e40f42"
+        }
+      },
+      {
+        "uuid": "9de581d6-80b7-4f9a-9318-272e42d39fb0",
+        "name": "臺北榮總",
+        "disabled": false,
+        "createdAt": "2019-02-10T09:05:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T08:19:37.000Z",
+          "updatedAt": "2019-05-29T08:19:37.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "9de581d6-80b7-4f9a-9318-272e42d39fb0"
+        }
+      },
+      {
+        "uuid": "b86882ff-32be-4878-b6ff-4c50cd27ee47",
+        "name": "署立桃園醫院",
+        "disabled": false,
+        "createdAt": "2019-06-16T11:53:52.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-10-20T00:16:17.000Z",
+          "updatedAt": "2019-10-20T00:16:17.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "b86882ff-32be-4878-b6ff-4c50cd27ee47"
+        }
+      },
+      {
+        "uuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a",
+        "name": "林口長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:49:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T08:19:37.000Z",
+          "updatedAt": "2019-05-29T08:19:37.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a"
+        }
+      },
+      {
+        "uuid": "d748a557-6d14-453b-8e8b-4beb6b9f1175",
+        "name": "樹林仁愛醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T17:04:39.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T08:19:37.000Z",
+          "updatedAt": "2019-05-29T08:19:37.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "d748a557-6d14-453b-8e8b-4beb6b9f1175"
+        }
+      },
+      {
+        "uuid": "f55271fb-1057-4357-b877-d8cedd3114cc",
+        "name": "敏盛綜合醫院",
+        "disabled": false,
+        "createdAt": "2019-04-30T10:08:58.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T08:19:37.000Z",
+          "updatedAt": "2019-05-29T08:19:37.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "f55271fb-1057-4357-b877-d8cedd3114cc"
+        }
+      },
+      {
+        "uuid": "f575585f-c338-4255-82cf-2bc2f8e0b165",
+        "name": "桃園聖保祿醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T08:06:24.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T08:19:37.000Z",
+          "updatedAt": "2019-05-29T08:19:37.000Z",
+          "BranchId": 20,
+          "HospitalUuid": "f575585f-c338-4255-82cf-2bc2f8e0b165"
+        }
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "name": "二重",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": 121.500562,
+    "latitude": 25.0601873,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T07:39:01.000Z",
+    "updatedAt": "2019-01-12T07:40:04.000Z",
+    "BranchGroupId": 3,
+    "ZipCodeId": 39,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 3,
+      "name": "第三大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-10T03:04:10.000Z",
+          "updatedAt": "2019-06-10T03:04:10.000Z",
+          "BranchId": 21,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f",
+        "name": "北市台大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-15T09:01:06.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-10T03:04:10.000Z",
+          "updatedAt": "2019-06-10T03:04:10.000Z",
+          "BranchId": 21,
+          "HospitalUuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f"
+        }
+      },
+      {
+        "uuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f",
+        "name": "輔大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T12:14:21.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-10T03:04:10.000Z",
+          "updatedAt": "2019-06-10T03:04:10.000Z",
+          "BranchId": 21,
+          "HospitalUuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-10T03:04:10.000Z",
+          "updatedAt": "2019-06-10T03:04:10.000Z",
+          "BranchId": 21,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      },
+      {
+        "uuid": "6f4ab75d-c4b3-43da-9204-ba5143338056",
+        "name": "衛福部台北醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:33.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-10T03:04:10.000Z",
+          "updatedAt": "2019-06-10T03:04:10.000Z",
+          "BranchId": 21,
+          "HospitalUuid": "6f4ab75d-c4b3-43da-9204-ba5143338056"
+        }
+      },
+      {
+        "uuid": "71d88ebd-973c-4749-8e8d-a4ad5f3afeff",
+        "name": "新莊新泰醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T04:41:45.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-10T03:04:10.000Z",
+          "updatedAt": "2019-06-10T03:04:10.000Z",
+          "BranchId": 21,
+          "HospitalUuid": "71d88ebd-973c-4749-8e8d-a4ad5f3afeff"
+        }
+      },
+      {
+        "uuid": "760c64bb-807e-4637-81f2-a28abfca3794",
+        "name": "北市新光醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T07:20:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-10T03:04:10.000Z",
+          "updatedAt": "2019-06-10T03:04:10.000Z",
+          "BranchId": 21,
+          "HospitalUuid": "760c64bb-807e-4637-81f2-a28abfca3794"
+        }
+      },
+      {
+        "uuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a",
+        "name": "內湖國防醫學中心(三軍)",
+        "disabled": false,
+        "createdAt": "2019-02-01T11:07:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-10T03:04:10.000Z",
+          "updatedAt": "2019-06-10T03:04:10.000Z",
+          "BranchId": 21,
+          "HospitalUuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a"
+        }
+      },
+      {
+        "uuid": "aa41b3dc-463a-41c4-8e9b-9eaa4913d225",
+        "name": "北市馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-27T13:15:36.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-10T03:04:10.000Z",
+          "updatedAt": "2019-06-10T03:04:10.000Z",
+          "BranchId": 21,
+          "HospitalUuid": "aa41b3dc-463a-41c4-8e9b-9eaa4913d225"
+        }
+      },
+      {
+        "uuid": "c28b21f7-6de6-46d7-944e-819b0b817038",
+        "name": "新北市立三重醫院",
+        "disabled": false,
+        "createdAt": "2019-01-23T12:09:37.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-10T03:04:10.000Z",
+          "updatedAt": "2019-06-10T03:04:10.000Z",
+          "BranchId": 21,
+          "HospitalUuid": "c28b21f7-6de6-46d7-944e-819b0b817038"
+        }
+      },
+      {
+        "uuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a",
+        "name": "林口長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:49:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-10T03:04:10.000Z",
+          "updatedAt": "2019-06-10T03:04:10.000Z",
+          "BranchId": 21,
+          "HospitalUuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a"
+        }
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "name": "汐止",
+    "address": "新北市汐止區大同路二段447號",
+    "phone": "02-2641-3249",
+    "fax": "02-2643-8619",
+    "longitude": 121.659542,
+    "latitude": 25.067773,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T07:47:03.000Z",
+    "updatedAt": "2019-07-22T08:45:18.000Z",
+    "BranchGroupId": 6,
+    "ZipCodeId": 23,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 6,
+      "name": "第六大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "12073564-8433-41a8-b2c8-252122e367c3",
+        "name": "北市立忠孝醫院",
+        "disabled": false,
+        "createdAt": "2019-01-15T10:05:53.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T00:01:08.000Z",
+          "updatedAt": "2019-05-30T00:01:08.000Z",
+          "BranchId": 22,
+          "HospitalUuid": "12073564-8433-41a8-b2c8-252122e367c3"
+        }
+      },
+      {
+        "uuid": "21149e42-947f-470b-a5ef-2ec779d61ee5",
+        "name": "汐止國泰醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T04:08:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T00:00:49.000Z",
+          "updatedAt": "2019-05-30T00:00:49.000Z",
+          "BranchId": 22,
+          "HospitalUuid": "21149e42-947f-470b-a5ef-2ec779d61ee5"
+        }
+      },
+      {
+        "uuid": "5f12fac0-a651-4934-91b4-ac5c700528a1",
+        "name": "臺北市立聯合醫院松德院區",
+        "disabled": false,
+        "createdAt": "2019-03-27T01:17:27.000Z",
+        "updatedAt": "2019-03-27T01:17:27.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T00:00:49.000Z",
+          "updatedAt": "2019-05-30T00:00:49.000Z",
+          "BranchId": 22,
+          "HospitalUuid": "5f12fac0-a651-4934-91b4-ac5c700528a1"
+        }
+      },
+      {
+        "uuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a",
+        "name": "內湖國防醫學中心(三軍)",
+        "disabled": false,
+        "createdAt": "2019-02-01T11:07:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T00:00:49.000Z",
+          "updatedAt": "2019-05-30T00:00:49.000Z",
+          "BranchId": 22,
+          "HospitalUuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a"
+        }
+      },
+      {
+        "uuid": "96600762-17ea-4664-8d4d-7ed2d90141f6",
+        "name": "基隆長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:18.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T00:00:49.000Z",
+          "updatedAt": "2019-05-30T00:00:49.000Z",
+          "BranchId": 22,
+          "HospitalUuid": "96600762-17ea-4664-8d4d-7ed2d90141f6"
+        }
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "name": "竹圍",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T07:52:25.000Z",
+    "updatedAt": "2019-01-12T07:52:25.000Z",
+    "BranchGroupId": 3,
+    "ZipCodeId": 46,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 3,
+      "name": "第三大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "37daafb0-f825-4218-8515-c79a0daa910c",
+        "name": "淡水馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-25T00:36:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-26T12:26:02.000Z",
+          "updatedAt": "2019-06-26T12:26:02.000Z",
+          "BranchId": 23,
+          "HospitalUuid": "37daafb0-f825-4218-8515-c79a0daa910c"
+        }
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "name": "三峽",
+    "address": "新北市三峽區中正路1段46號",
+    "phone": "02-26711119",
+    "fax": "02-26737119",
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T07:59:48.000Z",
+    "updatedAt": "2019-01-12T07:59:48.000Z",
+    "BranchGroupId": 5,
+    "ZipCodeId": 36,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 5,
+      "name": "第五大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T00:47:58.000Z",
+          "updatedAt": "2019-06-28T00:47:58.000Z",
+          "BranchId": 24,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23",
+        "name": "三峽恩主公醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T03:58:25.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T00:47:58.000Z",
+          "updatedAt": "2019-06-28T00:47:58.000Z",
+          "BranchId": 24,
+          "HospitalUuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T00:47:58.000Z",
+          "updatedAt": "2019-06-28T00:47:58.000Z",
+          "BranchId": 24,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      },
+      {
+        "uuid": "9a25e226-37a0-4179-8c66-8753e7e40f42",
+        "name": "桃園療養院",
+        "disabled": false,
+        "createdAt": "2019-04-10T04:44:36.000Z",
+        "updatedAt": "2019-04-10T04:44:36.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T00:47:58.000Z",
+          "updatedAt": "2019-06-28T00:47:58.000Z",
+          "BranchId": 24,
+          "HospitalUuid": "9a25e226-37a0-4179-8c66-8753e7e40f42"
+        }
+      },
+      {
+        "uuid": "b86882ff-32be-4878-b6ff-4c50cd27ee47",
+        "name": "署立桃園醫院",
+        "disabled": false,
+        "createdAt": "2019-06-16T11:53:52.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T00:47:58.000Z",
+          "updatedAt": "2019-06-28T00:47:58.000Z",
+          "BranchId": 24,
+          "HospitalUuid": "b86882ff-32be-4878-b6ff-4c50cd27ee47"
+        }
+      },
+      {
+        "uuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a",
+        "name": "林口長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:49:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-06-28T00:47:58.000Z",
+          "updatedAt": "2019-06-28T00:47:58.000Z",
+          "BranchId": 24,
+          "HospitalUuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a"
+        }
+      },
+      {
+        "uuid": "f575585f-c338-4255-82cf-2bc2f8e0b165",
+        "name": "桃園聖保祿醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T08:06:24.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-26T11:10:56.000Z",
+          "updatedAt": "2019-08-26T11:10:56.000Z",
+          "BranchId": 24,
+          "HospitalUuid": "f575585f-c338-4255-82cf-2bc2f8e0b165"
+        }
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "name": "柑園",
+    "address": "新北市樹林區柑園街一段60號",
+    "phone": "02-26802134",
+    "fax": "02-26802051",
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:15:02.000Z",
+    "updatedAt": "2019-01-12T08:15:02.000Z",
+    "BranchGroupId": 5,
+    "ZipCodeId": 37,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 5,
+      "name": "第五大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 26,
+    "name": "五股",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:16:59.000Z",
+    "updatedAt": "2019-01-12T08:16:59.000Z",
+    "BranchGroupId": 2,
+    "ZipCodeId": 44,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 2,
+      "name": "第二大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "37daafb0-f825-4218-8515-c79a0daa910c",
+        "name": "淡水馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-25T00:36:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-20T07:41:20.000Z",
+          "updatedAt": "2019-08-20T07:41:20.000Z",
+          "BranchId": 26,
+          "HospitalUuid": "37daafb0-f825-4218-8515-c79a0daa910c"
+        }
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "name": "安康",
+    "address": "新北市新店區安康路三段2號",
+    "phone": "02-22141860",
+    "fax": "02-22142095",
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:18:05.000Z",
+    "updatedAt": "2019-01-12T08:18:05.000Z",
+    "BranchGroupId": 4,
+    "ZipCodeId": 30,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 4,
+      "name": "第四大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 28,
+    "name": "秀峰",
+    "address": "新北市汐止區忠孝東路1-1號",
+    "phone": "02-26412052",
+    "fax": "02-26412039",
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:21:39.000Z",
+    "updatedAt": "2019-01-12T08:21:39.000Z",
+    "BranchGroupId": 8,
+    "ZipCodeId": 23,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 8,
+      "name": "特搜大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "12073564-8433-41a8-b2c8-252122e367c3",
+        "name": "北市立忠孝醫院",
+        "disabled": false,
+        "createdAt": "2019-01-15T10:05:53.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T04:25:39.000Z",
+          "updatedAt": "2019-05-29T04:25:39.000Z",
+          "BranchId": 28,
+          "HospitalUuid": "12073564-8433-41a8-b2c8-252122e367c3"
+        }
+      },
+      {
+        "uuid": "21149e42-947f-470b-a5ef-2ec779d61ee5",
+        "name": "汐止國泰醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T04:08:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T04:25:39.000Z",
+          "updatedAt": "2019-05-29T04:25:39.000Z",
+          "BranchId": 28,
+          "HospitalUuid": "21149e42-947f-470b-a5ef-2ec779d61ee5"
+        }
+      },
+      {
+        "uuid": "5f12fac0-a651-4934-91b4-ac5c700528a1",
+        "name": "臺北市立聯合醫院松德院區",
+        "disabled": false,
+        "createdAt": "2019-03-27T01:17:27.000Z",
+        "updatedAt": "2019-03-27T01:17:27.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T04:25:39.000Z",
+          "updatedAt": "2019-05-29T04:25:39.000Z",
+          "BranchId": 28,
+          "HospitalUuid": "5f12fac0-a651-4934-91b4-ac5c700528a1"
+        }
+      },
+      {
+        "uuid": "77782b8d-ca77-4e16-a190-8d5b0ec53565",
+        "name": "臺北醫學大學",
+        "disabled": false,
+        "createdAt": "2019-02-01T10:31:06.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-04-11T01:39:07.000Z",
+          "updatedAt": "2020-04-11T01:39:07.000Z",
+          "BranchId": 28,
+          "HospitalUuid": "77782b8d-ca77-4e16-a190-8d5b0ec53565"
+        }
+      },
+      {
+        "uuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a",
+        "name": "內湖國防醫學中心(三軍)",
+        "disabled": false,
+        "createdAt": "2019-02-01T11:07:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T04:25:39.000Z",
+          "updatedAt": "2019-05-29T04:25:39.000Z",
+          "BranchId": 28,
+          "HospitalUuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a"
+        }
+      },
+      {
+        "uuid": "96600762-17ea-4664-8d4d-7ed2d90141f6",
+        "name": "基隆長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:18.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-29T04:25:39.000Z",
+          "updatedAt": "2019-05-29T04:25:39.000Z",
+          "BranchId": 28,
+          "HospitalUuid": "96600762-17ea-4664-8d4d-7ed2d90141f6"
+        }
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "name": "德音",
+    "address": "明德路8號",
+    "phone": "02229123636",
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:22:55.000Z",
+    "updatedAt": "2019-09-14T05:49:34.000Z",
+    "BranchGroupId": 8,
+    "ZipCodeId": 44,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 8,
+      "name": "特搜大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f",
+        "name": "輔大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T12:14:21.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-13T10:52:25.000Z",
+          "updatedAt": "2019-08-13T10:52:25.000Z",
+          "BranchId": 29,
+          "HospitalUuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f"
+        }
+      },
+      {
+        "uuid": "37daafb0-f825-4218-8515-c79a0daa910c",
+        "name": "淡水馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-25T00:36:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-13T10:52:25.000Z",
+          "updatedAt": "2019-08-13T10:52:25.000Z",
+          "BranchId": 29,
+          "HospitalUuid": "37daafb0-f825-4218-8515-c79a0daa910c"
+        }
+      },
+      {
+        "uuid": "6f4ab75d-c4b3-43da-9204-ba5143338056",
+        "name": "衛福部台北醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:33.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-13T10:52:25.000Z",
+          "updatedAt": "2019-08-13T10:52:25.000Z",
+          "BranchId": 29,
+          "HospitalUuid": "6f4ab75d-c4b3-43da-9204-ba5143338056"
+        }
+      },
+      {
+        "uuid": "71d88ebd-973c-4749-8e8d-a4ad5f3afeff",
+        "name": "新莊新泰醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T04:41:45.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-13T10:52:25.000Z",
+          "updatedAt": "2019-08-13T10:52:25.000Z",
+          "BranchId": 29,
+          "HospitalUuid": "71d88ebd-973c-4749-8e8d-a4ad5f3afeff"
+        }
+      },
+      {
+        "uuid": "760c64bb-807e-4637-81f2-a28abfca3794",
+        "name": "北市新光醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T07:20:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-13T10:52:25.000Z",
+          "updatedAt": "2019-08-13T10:52:25.000Z",
+          "BranchId": 29,
+          "HospitalUuid": "760c64bb-807e-4637-81f2-a28abfca3794"
+        }
+      },
+      {
+        "uuid": "c28b21f7-6de6-46d7-944e-819b0b817038",
+        "name": "新北市立三重醫院",
+        "disabled": false,
+        "createdAt": "2019-01-23T12:09:37.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-13T10:52:25.000Z",
+          "updatedAt": "2019-08-13T10:52:25.000Z",
+          "BranchId": 29,
+          "HospitalUuid": "c28b21f7-6de6-46d7-944e-819b0b817038"
+        }
+      },
+      {
+        "uuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a",
+        "name": "林口長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:49:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-13T10:52:25.000Z",
+          "updatedAt": "2019-08-13T10:52:25.000Z",
+          "BranchId": 29,
+          "HospitalUuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a"
+        }
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "name": "橫科",
+    "address": "新北市汐止區橫科路119號",
+    "phone": "02-26600623",
+    "fax": "02-26600468",
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:25:00.000Z",
+    "updatedAt": "2019-01-12T08:25:00.000Z",
+    "BranchGroupId": 6,
+    "ZipCodeId": 23,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 6,
+      "name": "第六大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "12073564-8433-41a8-b2c8-252122e367c3",
+        "name": "北市立忠孝醫院",
+        "disabled": false,
+        "createdAt": "2019-01-15T10:05:53.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-21T10:02:02.000Z",
+          "updatedAt": "2019-08-21T10:02:02.000Z",
+          "BranchId": 30,
+          "HospitalUuid": "12073564-8433-41a8-b2c8-252122e367c3"
+        }
+      },
+      {
+        "uuid": "21149e42-947f-470b-a5ef-2ec779d61ee5",
+        "name": "汐止國泰醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T04:08:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-21T10:02:02.000Z",
+          "updatedAt": "2019-08-21T10:02:02.000Z",
+          "BranchId": 30,
+          "HospitalUuid": "21149e42-947f-470b-a5ef-2ec779d61ee5"
+        }
+      },
+      {
+        "uuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a",
+        "name": "內湖國防醫學中心(三軍)",
+        "disabled": false,
+        "createdAt": "2019-02-01T11:07:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-21T10:02:02.000Z",
+          "updatedAt": "2019-08-21T10:02:02.000Z",
+          "BranchId": 30,
+          "HospitalUuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a"
+        }
+      },
+      {
+        "uuid": "dfe906ed-e7ed-4fb7-bb4a-869520778ad4",
+        "name": "北市立萬芳醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:35:46.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-21T10:02:02.000Z",
+          "updatedAt": "2019-08-21T10:02:02.000Z",
+          "BranchId": 30,
+          "HospitalUuid": "dfe906ed-e7ed-4fb7-bb4a-869520778ad4"
+        }
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "name": "頭前",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:27:27.000Z",
+    "updatedAt": "2019-01-12T08:27:27.000Z",
+    "BranchGroupId": 2,
+    "ZipCodeId": 40,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 2,
+      "name": "第二大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 32,
+    "name": "瑞芳",
+    "address": "新北市瑞芳區中正路30號",
+    "phone": "02-24971600",
+    "fax": "02-24968852",
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:28:56.000Z",
+    "updatedAt": "2019-07-22T08:45:59.000Z",
+    "BranchGroupId": 6,
+    "ZipCodeId": 26,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 6,
+      "name": "第六大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "21149e42-947f-470b-a5ef-2ec779d61ee5",
+        "name": "汐止國泰醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T04:08:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-07-10T08:38:42.000Z",
+          "updatedAt": "2025-07-10T08:38:42.000Z",
+          "BranchId": 32,
+          "HospitalUuid": "21149e42-947f-470b-a5ef-2ec779d61ee5"
+        }
+      },
+      {
+        "uuid": "87e961bc-367e-416c-b2f2-25c92ad03204",
+        "name": "瑞芳醫院",
+        "disabled": false,
+        "createdAt": "2019-03-22T03:27:00.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2021-03-07T05:00:27.000Z",
+          "updatedAt": "2021-03-07T05:00:27.000Z",
+          "BranchId": 32,
+          "HospitalUuid": "87e961bc-367e-416c-b2f2-25c92ad03204"
+        }
+      },
+      {
+        "uuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a",
+        "name": "內湖國防醫學中心(三軍)",
+        "disabled": false,
+        "createdAt": "2019-02-01T11:07:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-07-10T08:38:42.000Z",
+          "updatedAt": "2025-07-10T08:38:42.000Z",
+          "BranchId": 32,
+          "HospitalUuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a"
+        }
+      },
+      {
+        "uuid": "96600762-17ea-4664-8d4d-7ed2d90141f6",
+        "name": "基隆長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:18.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2021-03-07T02:46:08.000Z",
+          "updatedAt": "2021-03-07T02:46:08.000Z",
+          "BranchId": 32,
+          "HospitalUuid": "96600762-17ea-4664-8d4d-7ed2d90141f6"
+        }
+      },
+      {
+        "uuid": "a197912d-f490-4204-aaff-ff62457e2bd8",
+        "name": "八堵礦工醫院",
+        "disabled": false,
+        "createdAt": "2019-03-20T00:05:14.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2021-03-07T05:06:00.000Z",
+          "updatedAt": "2021-03-07T05:06:00.000Z",
+          "BranchId": 32,
+          "HospitalUuid": "a197912d-f490-4204-aaff-ff62457e2bd8"
+        }
+      },
+      {
+        "uuid": "b2f86f93-f3e6-460e-9e12-674f821e466a",
+        "name": "基隆三總",
+        "disabled": false,
+        "createdAt": "2019-01-31T10:30:24.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-07-10T08:38:42.000Z",
+          "updatedAt": "2025-07-10T08:38:42.000Z",
+          "BranchId": 32,
+          "HospitalUuid": "b2f86f93-f3e6-460e-9e12-674f821e466a"
+        }
+      },
+      {
+        "uuid": "cce0c141-6af4-4d71-a5c7-319a424ec746",
+        "name": "部立基隆醫院",
+        "disabled": false,
+        "createdAt": "2019-02-19T19:43:50.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2021-03-07T02:46:08.000Z",
+          "updatedAt": "2021-03-07T02:46:08.000Z",
+          "BranchId": 32,
+          "HospitalUuid": "cce0c141-6af4-4d71-a5c7-319a424ec746"
+        }
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "name": "文化",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:31:24.000Z",
+    "updatedAt": "2019-01-12T08:31:24.000Z",
+    "BranchGroupId": 2,
+    "ZipCodeId": 42,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 2,
+      "name": "第二大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 34,
+    "name": "裕民",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:34:41.000Z",
+    "updatedAt": "2019-01-12T08:34:41.000Z",
+    "BranchGroupId": 2,
+    "ZipCodeId": 40,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 2,
+      "name": "第二大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-27T11:17:26.000Z",
+          "updatedAt": "2019-08-27T11:17:26.000Z",
+          "BranchId": 34,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f",
+        "name": "輔大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T12:14:21.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-27T11:17:26.000Z",
+          "updatedAt": "2019-08-27T11:17:26.000Z",
+          "BranchId": 34,
+          "HospitalUuid": "2de0dedf-5972-42f1-bfb6-8eaa59c1313f"
+        }
+      },
+      {
+        "uuid": "6f4ab75d-c4b3-43da-9204-ba5143338056",
+        "name": "衛福部台北醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:33.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-27T11:17:26.000Z",
+          "updatedAt": "2019-08-27T11:17:26.000Z",
+          "BranchId": 34,
+          "HospitalUuid": "6f4ab75d-c4b3-43da-9204-ba5143338056"
+        }
+      },
+      {
+        "uuid": "71d88ebd-973c-4749-8e8d-a4ad5f3afeff",
+        "name": "新莊新泰醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T04:41:45.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-27T11:17:26.000Z",
+          "updatedAt": "2019-08-27T11:17:26.000Z",
+          "BranchId": 34,
+          "HospitalUuid": "71d88ebd-973c-4749-8e8d-a4ad5f3afeff"
+        }
+      },
+      {
+        "uuid": "a638fbbc-bf02-45f2-a8ba-e68e58e870b3",
+        "name": "衛福部樂生迴龍分院",
+        "disabled": false,
+        "createdAt": "2019-01-27T11:57:22.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-27T11:17:26.000Z",
+          "updatedAt": "2019-08-27T11:17:26.000Z",
+          "BranchId": 34,
+          "HospitalUuid": "a638fbbc-bf02-45f2-a8ba-e68e58e870b3"
+        }
+      },
+      {
+        "uuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a",
+        "name": "林口長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:49:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-27T11:17:26.000Z",
+          "updatedAt": "2019-08-27T11:17:26.000Z",
+          "BranchId": 34,
+          "HospitalUuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a"
+        }
+      },
+      {
+        "uuid": "d748a557-6d14-453b-8e8b-4beb6b9f1175",
+        "name": "樹林仁愛醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T17:04:39.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-27T11:17:26.000Z",
+          "updatedAt": "2019-08-27T11:17:26.000Z",
+          "BranchId": 34,
+          "HospitalUuid": "d748a557-6d14-453b-8e8b-4beb6b9f1175"
+        }
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "name": "民生",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:37:03.000Z",
+    "updatedAt": "2019-01-12T08:37:03.000Z",
+    "BranchGroupId": 1,
+    "ZipCodeId": 22,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 1,
+      "name": "第一大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 36,
+    "name": "萬里",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:38:05.000Z",
+    "updatedAt": "2019-01-12T08:38:05.000Z",
+    "BranchGroupId": 6,
+    "ZipCodeId": 23,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 6,
+      "name": "第六大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 37,
+    "name": "永和",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:40:36.000Z",
+    "updatedAt": "2019-01-12T08:40:36.000Z",
+    "BranchGroupId": 7,
+    "ZipCodeId": 33,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 7,
+      "name": "第七大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f",
+        "name": "北市台大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-15T09:01:06.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2022-03-06T03:51:48.000Z",
+          "updatedAt": "2022-03-06T03:51:48.000Z",
+          "BranchId": 37,
+          "HospitalUuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f"
+        }
+      },
+      {
+        "uuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794",
+        "name": "慈濟醫院新店分院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:12:44.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2022-03-06T03:51:48.000Z",
+          "updatedAt": "2022-03-06T03:51:48.000Z",
+          "BranchId": 37,
+          "HospitalUuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794"
+        }
+      },
+      {
+        "uuid": "5bf98c01-1165-4629-91c3-0cb874ae5201",
+        "name": "永和耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-19T02:09:51.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2022-03-06T03:51:48.000Z",
+          "updatedAt": "2022-03-06T03:51:48.000Z",
+          "BranchId": 37,
+          "HospitalUuid": "5bf98c01-1165-4629-91c3-0cb874ae5201"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2022-03-06T03:51:48.000Z",
+          "updatedAt": "2022-03-06T03:51:48.000Z",
+          "BranchId": 37,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      },
+      {
+        "uuid": "b53660ed-df9e-44f6-a8f4-9594c5486c81",
+        "name": "安康耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:06.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2022-03-06T03:51:48.000Z",
+          "updatedAt": "2022-03-06T03:51:48.000Z",
+          "BranchId": 37,
+          "HospitalUuid": "b53660ed-df9e-44f6-a8f4-9594c5486c81"
+        }
+      },
+      {
+        "uuid": "f3a10a3d-064c-433e-acbd-1f55c456c390",
+        "name": "新店耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T11:05:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2022-03-06T03:51:48.000Z",
+          "updatedAt": "2022-03-06T03:51:48.000Z",
+          "BranchId": 37,
+          "HospitalUuid": "f3a10a3d-064c-433e-acbd-1f55c456c390"
+        }
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "name": "永平",
+    "address": "環河西路二段177-1號",
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:44:22.000Z",
+    "updatedAt": "2019-08-24T15:09:03.000Z",
+    "BranchGroupId": 7,
+    "ZipCodeId": 33,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 7,
+      "name": "第七大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 39,
+    "name": "金山",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:49:20.000Z",
+    "updatedAt": "2019-01-12T08:49:20.000Z",
+    "BranchGroupId": 6,
+    "ZipCodeId": 21,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 6,
+      "name": "第六大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "0d7d8f96-396e-427c-a99a-064ec0e59cdd",
+        "name": "台大醫院金山分院",
+        "disabled": false,
+        "createdAt": "2019-01-18T13:17:44.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-19T13:56:14.000Z",
+          "updatedAt": "2019-09-19T13:56:14.000Z",
+          "BranchId": 39,
+          "HospitalUuid": "0d7d8f96-396e-427c-a99a-064ec0e59cdd"
+        }
+      },
+      {
+        "uuid": "21149e42-947f-470b-a5ef-2ec779d61ee5",
+        "name": "汐止國泰醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T04:08:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-19T13:56:14.000Z",
+          "updatedAt": "2019-09-19T13:56:14.000Z",
+          "BranchId": 39,
+          "HospitalUuid": "21149e42-947f-470b-a5ef-2ec779d61ee5"
+        }
+      },
+      {
+        "uuid": "37daafb0-f825-4218-8515-c79a0daa910c",
+        "name": "淡水馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-25T00:36:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-19T13:56:14.000Z",
+          "updatedAt": "2019-09-19T13:56:14.000Z",
+          "BranchId": 39,
+          "HospitalUuid": "37daafb0-f825-4218-8515-c79a0daa910c"
+        }
+      },
+      {
+        "uuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a",
+        "name": "內湖國防醫學中心(三軍)",
+        "disabled": false,
+        "createdAt": "2019-02-01T11:07:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-19T13:56:14.000Z",
+          "updatedAt": "2019-09-19T13:56:14.000Z",
+          "BranchId": 39,
+          "HospitalUuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a"
+        }
+      },
+      {
+        "uuid": "96600762-17ea-4664-8d4d-7ed2d90141f6",
+        "name": "基隆長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:18.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-19T13:56:14.000Z",
+          "updatedAt": "2019-09-19T13:56:14.000Z",
+          "BranchId": 39,
+          "HospitalUuid": "96600762-17ea-4664-8d4d-7ed2d90141f6"
+        }
+      },
+      {
+        "uuid": "cce0c141-6af4-4d71-a5c7-319a424ec746",
+        "name": "部立基隆醫院",
+        "disabled": false,
+        "createdAt": "2019-02-19T19:43:50.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-19T13:56:14.000Z",
+          "updatedAt": "2019-09-19T13:56:14.000Z",
+          "BranchId": 39,
+          "HospitalUuid": "cce0c141-6af4-4d71-a5c7-319a424ec746"
+        }
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "name": "樹潭",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:49:32.000Z",
+    "updatedAt": "2019-01-12T08:49:32.000Z",
+    "BranchGroupId": 5,
+    "ZipCodeId": 37,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 5,
+      "name": "第五大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 41,
+    "name": "國光",
+    "address": "中和區莒光路170號",
+    "phone": "89513511",
+    "fax": null,
+    "longitude": 121.472632,
+    "latitude": 24.9997892,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:55:01.000Z",
+    "updatedAt": "2023-08-07T08:04:52.000Z",
+    "BranchGroupId": 7,
+    "ZipCodeId": 34,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 7,
+      "name": "第七大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2023-07-06T15:18:06.000Z",
+          "updatedAt": "2023-07-06T15:18:06.000Z",
+          "BranchId": 41,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "27fa4794-5e57-4312-a19a-0a7474cee894",
+        "name": "土城長庚醫院",
+        "disabled": false,
+        "createdAt": "2020-08-03T17:51:18.000Z",
+        "updatedAt": "2020-08-03T17:51:18.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2023-07-06T15:18:06.000Z",
+          "updatedAt": "2023-07-06T15:18:06.000Z",
+          "BranchId": 41,
+          "HospitalUuid": "27fa4794-5e57-4312-a19a-0a7474cee894"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2023-07-06T15:18:06.000Z",
+          "updatedAt": "2023-07-06T15:18:06.000Z",
+          "BranchId": 41,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "name": "員山",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": 121.4815305,
+    "latitude": 25.0092858,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:55:09.000Z",
+    "updatedAt": "2019-01-14T10:52:04.000Z",
+    "BranchGroupId": 7,
+    "ZipCodeId": 34,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 7,
+      "name": "第七大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 43,
+    "name": "頂埔",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:58:37.000Z",
+    "updatedAt": "2019-01-12T08:58:37.000Z",
+    "BranchGroupId": 5,
+    "ZipCodeId": 35,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 5,
+      "name": "第五大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-08-30T08:25:48.000Z",
+          "updatedAt": "2020-08-30T08:25:48.000Z",
+          "BranchId": 43,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23",
+        "name": "三峽恩主公醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T03:58:25.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-08-30T08:25:48.000Z",
+          "updatedAt": "2020-08-30T08:25:48.000Z",
+          "BranchId": 43,
+          "HospitalUuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23"
+        }
+      },
+      {
+        "uuid": "27fa4794-5e57-4312-a19a-0a7474cee894",
+        "name": "土城長庚醫院",
+        "disabled": false,
+        "createdAt": "2020-08-03T17:51:18.000Z",
+        "updatedAt": "2020-08-03T17:51:18.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-08-30T08:25:48.000Z",
+          "updatedAt": "2020-08-30T08:25:48.000Z",
+          "BranchId": 43,
+          "HospitalUuid": "27fa4794-5e57-4312-a19a-0a7474cee894"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-08-30T08:25:48.000Z",
+          "updatedAt": "2020-08-30T08:25:48.000Z",
+          "BranchId": 43,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "name": "土城",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:59:33.000Z",
+    "updatedAt": "2019-01-12T08:59:33.000Z",
+    "BranchGroupId": 5,
+    "ZipCodeId": 35,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 5,
+      "name": "第五大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T01:07:45.000Z",
+          "updatedAt": "2019-05-30T01:07:45.000Z",
+          "BranchId": 44,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "0a1b3057-b9bc-4efa-a9d1-79430ac8c8cb",
+        "name": "新北市立板橋醫院",
+        "disabled": false,
+        "createdAt": "2019-01-14T08:19:19.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T01:07:45.000Z",
+          "updatedAt": "2019-05-30T01:07:45.000Z",
+          "BranchId": 44,
+          "HospitalUuid": "0a1b3057-b9bc-4efa-a9d1-79430ac8c8cb"
+        }
+      },
+      {
+        "uuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23",
+        "name": "三峽恩主公醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T03:58:25.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T01:07:45.000Z",
+          "updatedAt": "2019-05-30T01:07:45.000Z",
+          "BranchId": 44,
+          "HospitalUuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T01:07:45.000Z",
+          "updatedAt": "2019-05-30T01:07:45.000Z",
+          "BranchId": 44,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      },
+      {
+        "uuid": "af1ede6f-cb56-44b6-95b7-cb2aa94af3b0",
+        "name": "板橋中興醫院",
+        "disabled": false,
+        "createdAt": "2019-01-27T01:57:08.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T01:07:45.000Z",
+          "updatedAt": "2019-05-30T01:07:45.000Z",
+          "BranchId": 44,
+          "HospitalUuid": "af1ede6f-cb56-44b6-95b7-cb2aa94af3b0"
+        }
+      },
+      {
+        "uuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a",
+        "name": "林口長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:49:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T01:07:45.000Z",
+          "updatedAt": "2019-05-30T01:07:45.000Z",
+          "BranchId": 44,
+          "HospitalUuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a"
+        }
+      },
+      {
+        "uuid": "d748a557-6d14-453b-8e8b-4beb6b9f1175",
+        "name": "樹林仁愛醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T17:04:39.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-05-30T01:07:45.000Z",
+          "updatedAt": "2019-05-30T01:07:45.000Z",
+          "BranchId": 44,
+          "HospitalUuid": "d748a557-6d14-453b-8e8b-4beb6b9f1175"
+        }
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "name": "板橋",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T08:59:53.000Z",
+    "updatedAt": "2019-01-12T08:59:53.000Z",
+    "BranchGroupId": 1,
+    "ZipCodeId": 22,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 1,
+      "name": "第一大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-05T07:42:12.000Z",
+          "updatedAt": "2019-09-05T07:42:12.000Z",
+          "BranchId": 45,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "0a1b3057-b9bc-4efa-a9d1-79430ac8c8cb",
+        "name": "新北市立板橋醫院",
+        "disabled": false,
+        "createdAt": "2019-01-14T08:19:19.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-05T07:42:12.000Z",
+          "updatedAt": "2019-09-05T07:42:12.000Z",
+          "BranchId": 45,
+          "HospitalUuid": "0a1b3057-b9bc-4efa-a9d1-79430ac8c8cb"
+        }
+      },
+      {
+        "uuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f",
+        "name": "北市台大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-15T09:01:06.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-05T07:42:12.000Z",
+          "updatedAt": "2019-09-05T07:42:12.000Z",
+          "BranchId": 45,
+          "HospitalUuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f"
+        }
+      },
+      {
+        "uuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794",
+        "name": "慈濟醫院新店分院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:12:44.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-05T07:42:12.000Z",
+          "updatedAt": "2019-09-05T07:42:12.000Z",
+          "BranchId": 45,
+          "HospitalUuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794"
+        }
+      },
+      {
+        "uuid": "6aec4b67-06d1-4170-860d-3509f562a973",
+        "name": "北市西園醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T05:33:39.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-05T07:42:12.000Z",
+          "updatedAt": "2019-09-05T07:42:12.000Z",
+          "BranchId": 45,
+          "HospitalUuid": "6aec4b67-06d1-4170-860d-3509f562a973"
+        }
+      },
+      {
+        "uuid": "6f34405e-9231-4403-b847-f7e734723f2e",
+        "name": "衛福部雙和醫院",
+        "disabled": false,
+        "createdAt": "2019-01-26T04:04:49.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-05T07:42:12.000Z",
+          "updatedAt": "2019-09-05T07:42:12.000Z",
+          "BranchId": 45,
+          "HospitalUuid": "6f34405e-9231-4403-b847-f7e734723f2e"
+        }
+      },
+      {
+        "uuid": "6f4ab75d-c4b3-43da-9204-ba5143338056",
+        "name": "衛福部台北醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:33.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-05T07:42:12.000Z",
+          "updatedAt": "2019-09-05T07:42:12.000Z",
+          "BranchId": 45,
+          "HospitalUuid": "6f4ab75d-c4b3-43da-9204-ba5143338056"
+        }
+      },
+      {
+        "uuid": "af1ede6f-cb56-44b6-95b7-cb2aa94af3b0",
+        "name": "板橋中興醫院",
+        "disabled": false,
+        "createdAt": "2019-01-27T01:57:08.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-05T07:42:12.000Z",
+          "updatedAt": "2019-09-05T07:42:12.000Z",
+          "BranchId": 45,
+          "HospitalUuid": "af1ede6f-cb56-44b6-95b7-cb2aa94af3b0"
+        }
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "name": "大觀",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T09:04:01.000Z",
+    "updatedAt": "2019-01-12T09:04:01.000Z",
+    "BranchGroupId": 1,
+    "ZipCodeId": 22,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 1,
+      "name": "第一大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 47,
+    "name": "溪崑",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T09:05:27.000Z",
+    "updatedAt": "2019-01-12T09:05:27.000Z",
+    "BranchGroupId": 1,
+    "ZipCodeId": 22,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 1,
+      "name": "第一大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "01d7d0d5-a031-4fee-906f-694726b828db",
+        "name": "板橋亞東醫院",
+        "disabled": false,
+        "createdAt": "2019-01-11T12:29:22.000Z",
+        "updatedAt": "2019-06-17T09:59:33.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-12T00:59:13.000Z",
+          "updatedAt": "2019-08-12T00:59:13.000Z",
+          "BranchId": 47,
+          "HospitalUuid": "01d7d0d5-a031-4fee-906f-694726b828db"
+        }
+      },
+      {
+        "uuid": "d748a557-6d14-453b-8e8b-4beb6b9f1175",
+        "name": "樹林仁愛醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T17:04:39.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-21T07:23:03.000Z",
+          "updatedAt": "2019-08-21T07:23:03.000Z",
+          "BranchId": 47,
+          "HospitalUuid": "d748a557-6d14-453b-8e8b-4beb6b9f1175"
+        }
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "name": "深坑",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-12T09:06:50.000Z",
+    "updatedAt": "2019-01-12T09:06:50.000Z",
+    "BranchGroupId": 4,
+    "ZipCodeId": 24,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 4,
+      "name": "第四大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "dfe906ed-e7ed-4fb7-bb4a-869520778ad4",
+        "name": "北市立萬芳醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:35:46.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-27T01:46:02.000Z",
+          "updatedAt": "2019-08-27T01:46:02.000Z",
+          "BranchId": 48,
+          "HospitalUuid": "dfe906ed-e7ed-4fb7-bb4a-869520778ad4"
+        }
+      },
+      {
+        "uuid": "f3a10a3d-064c-433e-acbd-1f55c456c390",
+        "name": "新店耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T11:05:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-27T01:46:02.000Z",
+          "updatedAt": "2019-08-27T01:46:02.000Z",
+          "BranchId": 48,
+          "HospitalUuid": "f3a10a3d-064c-433e-acbd-1f55c456c390"
+        }
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "name": "鷺江",
+    "address": null,
+    "phone": "02-22858100",
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-16T01:44:43.000Z",
+    "updatedAt": "2024-01-08T04:14:59.000Z",
+    "BranchGroupId": 3,
+    "ZipCodeId": 43,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 3,
+      "name": "第三大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f",
+        "name": "北市台大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-15T09:01:06.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-25T01:44:55.000Z",
+          "updatedAt": "2019-08-25T01:44:55.000Z",
+          "BranchId": 49,
+          "HospitalUuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f"
+        }
+      },
+      {
+        "uuid": "37daafb0-f825-4218-8515-c79a0daa910c",
+        "name": "淡水馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-25T00:36:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-25T01:44:55.000Z",
+          "updatedAt": "2019-08-25T01:44:55.000Z",
+          "BranchId": 49,
+          "HospitalUuid": "37daafb0-f825-4218-8515-c79a0daa910c"
+        }
+      },
+      {
+        "uuid": "760c64bb-807e-4637-81f2-a28abfca3794",
+        "name": "北市新光醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T07:20:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-25T01:44:55.000Z",
+          "updatedAt": "2019-08-25T01:44:55.000Z",
+          "BranchId": 49,
+          "HospitalUuid": "760c64bb-807e-4637-81f2-a28abfca3794"
+        }
+      },
+      {
+        "uuid": "aa41b3dc-463a-41c4-8e9b-9eaa4913d225",
+        "name": "北市馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-27T13:15:36.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-25T01:44:55.000Z",
+          "updatedAt": "2019-08-25T01:44:55.000Z",
+          "BranchId": 49,
+          "HospitalUuid": "aa41b3dc-463a-41c4-8e9b-9eaa4913d225"
+        }
+      },
+      {
+        "uuid": "c28b21f7-6de6-46d7-944e-819b0b817038",
+        "name": "新北市立三重醫院",
+        "disabled": false,
+        "createdAt": "2019-01-23T12:09:37.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-25T01:44:55.000Z",
+          "updatedAt": "2019-08-25T01:44:55.000Z",
+          "BranchId": 49,
+          "HospitalUuid": "c28b21f7-6de6-46d7-944e-819b0b817038"
+        }
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "name": "隆恩",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-16T12:52:23.000Z",
+    "updatedAt": "2019-01-16T12:52:23.000Z",
+    "BranchGroupId": 5,
+    "ZipCodeId": 36,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 5,
+      "name": "第五大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 51,
+    "name": "烏來",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-18T09:16:57.000Z",
+    "updatedAt": "2019-01-18T09:16:57.000Z",
+    "BranchGroupId": 4,
+    "ZipCodeId": 32,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 4,
+      "name": "第四大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794",
+        "name": "慈濟醫院新店分院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:12:44.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-03T07:34:48.000Z",
+          "updatedAt": "2019-09-03T07:34:48.000Z",
+          "BranchId": 51,
+          "HospitalUuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794"
+        }
+      },
+      {
+        "uuid": "dfe906ed-e7ed-4fb7-bb4a-869520778ad4",
+        "name": "北市立萬芳醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:35:46.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-03T07:34:48.000Z",
+          "updatedAt": "2019-09-03T07:34:48.000Z",
+          "BranchId": 51,
+          "HospitalUuid": "dfe906ed-e7ed-4fb7-bb4a-869520778ad4"
+        }
+      },
+      {
+        "uuid": "f3a10a3d-064c-433e-acbd-1f55c456c390",
+        "name": "新店耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T11:05:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-03T07:34:48.000Z",
+          "updatedAt": "2019-09-03T07:34:48.000Z",
+          "BranchId": 51,
+          "HospitalUuid": "f3a10a3d-064c-433e-acbd-1f55c456c390"
+        }
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "name": "五工",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-18T09:18:37.000Z",
+    "updatedAt": "2019-01-18T09:18:37.000Z",
+    "BranchGroupId": 2,
+    "ZipCodeId": 44,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 2,
+      "name": "第二大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 53,
+    "name": "中港",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-18T09:19:50.000Z",
+    "updatedAt": "2019-01-18T09:19:50.000Z",
+    "BranchGroupId": 2,
+    "ZipCodeId": 40,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 2,
+      "name": "第二大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 54,
+    "name": "直潭",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-18T09:29:07.000Z",
+    "updatedAt": "2019-01-18T09:29:07.000Z",
+    "BranchGroupId": 4,
+    "ZipCodeId": 30,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 4,
+      "name": "第四大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 55,
+    "name": "坪林",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-18T09:31:07.000Z",
+    "updatedAt": "2019-01-18T09:31:07.000Z",
+    "BranchGroupId": 4,
+    "ZipCodeId": 31,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 4,
+      "name": "第四大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794",
+        "name": "慈濟醫院新店分院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:12:44.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-03-22T09:50:12.000Z",
+          "updatedAt": "2020-03-22T09:50:12.000Z",
+          "BranchId": 55,
+          "HospitalUuid": "5870c9b9-0c49-4b99-b1d2-b3721f88e794"
+        }
+      },
+      {
+        "uuid": "dfe906ed-e7ed-4fb7-bb4a-869520778ad4",
+        "name": "北市立萬芳醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:35:46.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-03-22T09:49:54.000Z",
+          "updatedAt": "2020-03-22T09:49:54.000Z",
+          "BranchId": 55,
+          "HospitalUuid": "dfe906ed-e7ed-4fb7-bb4a-869520778ad4"
+        }
+      },
+      {
+        "uuid": "f3a10a3d-064c-433e-acbd-1f55c456c390",
+        "name": "新店耕莘醫院",
+        "disabled": false,
+        "createdAt": "2019-01-24T11:05:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2020-03-22T09:50:12.000Z",
+          "updatedAt": "2020-03-22T09:50:12.000Z",
+          "BranchId": 55,
+          "HospitalUuid": "f3a10a3d-064c-433e-acbd-1f55c456c390"
+        }
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "name": "石碇",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-18T09:32:43.000Z",
+    "updatedAt": "2019-01-18T09:32:43.000Z",
+    "BranchGroupId": 4,
+    "ZipCodeId": 25,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 4,
+      "name": "第四大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 57,
+    "name": "林口",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-18T09:34:17.000Z",
+    "updatedAt": "2019-01-18T09:34:17.000Z",
+    "BranchGroupId": 2,
+    "ZipCodeId": 42,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 2,
+      "name": "第二大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 58,
+    "name": "雪山",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-18T09:37:09.000Z",
+    "updatedAt": "2019-01-18T09:37:09.000Z",
+    "BranchGroupId": 4,
+    "ZipCodeId": 31,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 4,
+      "name": "第四大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 59,
+    "name": "更寮",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-01-18T09:38:44.000Z",
+    "updatedAt": "2019-01-18T09:38:44.000Z",
+    "BranchGroupId": 2,
+    "ZipCodeId": 44,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 2,
+      "name": "第二大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 61,
+    "name": "景立測試分隊",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": 121.5327589,
+    "latitude": 25.0517526,
+    "disabled": false,
+    "simulationOnly": true,
+    "createdAt": "2019-01-21T07:24:51.000Z",
+    "updatedAt": "2019-09-03T08:40:02.000Z",
+    "BranchGroupId": 9,
+    "ZipCodeId": 3,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 9,
+      "name": "測試大隊",
+      "disabled": false,
+      "createdAt": "2019-09-03T08:39:39.000Z",
+      "updatedAt": "2019-09-03T08:39:39.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 62,
+    "name": "北海",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-03-07T12:50:33.000Z",
+    "updatedAt": "2019-09-03T08:40:39.000Z",
+    "BranchGroupId": 9,
+    "ZipCodeId": 22,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 9,
+      "name": "測試大隊",
+      "disabled": false,
+      "createdAt": "2019-09-03T08:39:39.000Z",
+      "updatedAt": "2019-09-03T08:39:39.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23",
+        "name": "三峽恩主公醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T03:58:25.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2023-01-31T08:07:02.000Z",
+          "updatedAt": "2023-01-31T08:07:02.000Z",
+          "BranchId": 62,
+          "HospitalUuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23"
+        }
+      },
+      {
+        "uuid": "35981e47-7a32-4a73-a299-f223e3749852",
+        "name": "三軍總醫院(汀洲路)",
+        "disabled": false,
+        "createdAt": "2019-01-29T03:21:42.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2023-01-31T08:07:02.000Z",
+          "updatedAt": "2023-01-31T08:07:02.000Z",
+          "BranchId": 62,
+          "HospitalUuid": "35981e47-7a32-4a73-a299-f223e3749852"
+        }
+      },
+      {
+        "uuid": "37daafb0-f825-4218-8515-c79a0daa910c",
+        "name": "淡水馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-25T00:36:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2023-01-31T08:07:02.000Z",
+          "updatedAt": "2023-01-31T08:07:02.000Z",
+          "BranchId": 62,
+          "HospitalUuid": "37daafb0-f825-4218-8515-c79a0daa910c"
+        }
+      },
+      {
+        "uuid": "98c3725a-c690-4cc4-98e4-8b948918d1dd",
+        "name": "八里療養院",
+        "disabled": false,
+        "createdAt": "2019-05-30T09:52:25.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2023-01-31T08:07:02.000Z",
+          "updatedAt": "2023-01-31T08:07:02.000Z",
+          "BranchId": 62,
+          "HospitalUuid": "98c3725a-c690-4cc4-98e4-8b948918d1dd"
+        }
+      },
+      {
+        "uuid": "a197912d-f490-4204-aaff-ff62457e2bd8",
+        "name": "八堵礦工醫院",
+        "disabled": false,
+        "createdAt": "2019-03-20T00:05:14.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2023-01-31T08:07:02.000Z",
+          "updatedAt": "2023-01-31T08:07:02.000Z",
+          "BranchId": 62,
+          "HospitalUuid": "a197912d-f490-4204-aaff-ff62457e2bd8"
+        }
+      }
+    ]
+  },
+  {
+    "id": 63,
+    "name": "第六99",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": true,
+    "simulationOnly": false,
+    "createdAt": "2019-03-08T03:03:29.000Z",
+    "updatedAt": "2019-03-08T03:03:53.000Z",
+    "BranchGroupId": null,
+    "ZipCodeId": 23,
+    "BranchTypeId": 1,
+    "BranchGroup": null,
+    "Hospitals": []
+  },
+  {
+    "id": 64,
+    "name": "八里",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-03-21T02:44:26.000Z",
+    "updatedAt": "2019-03-21T02:44:26.000Z",
+    "BranchGroupId": 3,
+    "ZipCodeId": 45,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 3,
+      "name": "第三大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "37daafb0-f825-4218-8515-c79a0daa910c",
+        "name": "淡水馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-25T00:36:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-26T04:27:56.000Z",
+          "updatedAt": "2019-09-26T04:27:56.000Z",
+          "BranchId": 64,
+          "HospitalUuid": "37daafb0-f825-4218-8515-c79a0daa910c"
+        }
+      },
+      {
+        "uuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a",
+        "name": "林口長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:49:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-26T04:28:13.000Z",
+          "updatedAt": "2019-09-26T04:28:13.000Z",
+          "BranchId": 64,
+          "HospitalUuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a"
+        }
+      }
+    ]
+  },
+  {
+    "id": 65,
+    "name": "龍源",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-03-21T02:45:08.000Z",
+    "updatedAt": "2019-03-21T02:45:08.000Z",
+    "BranchGroupId": 3,
+    "ZipCodeId": 45,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 3,
+      "name": "第三大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "37daafb0-f825-4218-8515-c79a0daa910c",
+        "name": "淡水馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-25T00:36:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-24T09:11:47.000Z",
+          "updatedAt": "2019-08-24T09:11:47.000Z",
+          "BranchId": 65,
+          "HospitalUuid": "37daafb0-f825-4218-8515-c79a0daa910c"
+        }
+      },
+      {
+        "uuid": "760c64bb-807e-4637-81f2-a28abfca3794",
+        "name": "北市新光醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T07:20:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-24T09:11:47.000Z",
+          "updatedAt": "2019-08-24T09:11:47.000Z",
+          "BranchId": 65,
+          "HospitalUuid": "760c64bb-807e-4637-81f2-a28abfca3794"
+        }
+      },
+      {
+        "uuid": "92e2a457-3246-443d-9e6f-82a335086ce9",
+        "name": "振興醫院",
+        "disabled": false,
+        "createdAt": "2019-02-14T09:07:45.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-24T09:11:47.000Z",
+          "updatedAt": "2019-08-24T09:11:47.000Z",
+          "BranchId": 65,
+          "HospitalUuid": "92e2a457-3246-443d-9e6f-82a335086ce9"
+        }
+      },
+      {
+        "uuid": "9de581d6-80b7-4f9a-9318-272e42d39fb0",
+        "name": "臺北榮總",
+        "disabled": false,
+        "createdAt": "2019-02-10T09:05:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-24T09:11:47.000Z",
+          "updatedAt": "2019-08-24T09:11:47.000Z",
+          "BranchId": 65,
+          "HospitalUuid": "9de581d6-80b7-4f9a-9318-272e42d39fb0"
+        }
+      },
+      {
+        "uuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a",
+        "name": "林口長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:49:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-24T09:11:47.000Z",
+          "updatedAt": "2019-08-24T09:11:47.000Z",
+          "BranchId": 65,
+          "HospitalUuid": "cb6ed80c-2bb8-440a-b260-d4782dd7213a"
+        }
+      }
+    ]
+  },
+  {
+    "id": 66,
+    "name": "滬尾",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-03-21T02:45:44.000Z",
+    "updatedAt": "2019-03-21T02:45:44.000Z",
+    "BranchGroupId": 3,
+    "ZipCodeId": 46,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 3,
+      "name": "第三大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 67,
+    "name": "三芝",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-03-21T02:46:03.000Z",
+    "updatedAt": "2019-03-21T02:46:03.000Z",
+    "BranchGroupId": 3,
+    "ZipCodeId": 47,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 3,
+      "name": "第三大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "0d7d8f96-396e-427c-a99a-064ec0e59cdd",
+        "name": "台大醫院金山分院",
+        "disabled": false,
+        "createdAt": "2019-01-18T13:17:44.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-28T12:49:26.000Z",
+          "updatedAt": "2019-08-28T12:49:26.000Z",
+          "BranchId": 67,
+          "HospitalUuid": "0d7d8f96-396e-427c-a99a-064ec0e59cdd"
+        }
+      },
+      {
+        "uuid": "37daafb0-f825-4218-8515-c79a0daa910c",
+        "name": "淡水馬偕醫院",
+        "disabled": false,
+        "createdAt": "2019-01-25T00:36:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-28T12:49:26.000Z",
+          "updatedAt": "2019-08-28T12:49:26.000Z",
+          "BranchId": 67,
+          "HospitalUuid": "37daafb0-f825-4218-8515-c79a0daa910c"
+        }
+      },
+      {
+        "uuid": "4b92d814-5963-4b0b-a12b-2a5c3c44aaa1",
+        "name": "國軍北投818院區",
+        "disabled": false,
+        "createdAt": "2019-06-16T05:35:13.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-28T12:49:26.000Z",
+          "updatedAt": "2019-08-28T12:49:26.000Z",
+          "BranchId": 67,
+          "HospitalUuid": "4b92d814-5963-4b0b-a12b-2a5c3c44aaa1"
+        }
+      },
+      {
+        "uuid": "760c64bb-807e-4637-81f2-a28abfca3794",
+        "name": "北市新光醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T07:20:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-28T12:49:26.000Z",
+          "updatedAt": "2019-08-28T12:49:26.000Z",
+          "BranchId": 67,
+          "HospitalUuid": "760c64bb-807e-4637-81f2-a28abfca3794"
+        }
+      },
+      {
+        "uuid": "92e2a457-3246-443d-9e6f-82a335086ce9",
+        "name": "振興醫院",
+        "disabled": false,
+        "createdAt": "2019-02-14T09:07:45.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-28T12:49:26.000Z",
+          "updatedAt": "2019-08-28T12:49:26.000Z",
+          "BranchId": 67,
+          "HospitalUuid": "92e2a457-3246-443d-9e6f-82a335086ce9"
+        }
+      },
+      {
+        "uuid": "9de581d6-80b7-4f9a-9318-272e42d39fb0",
+        "name": "臺北榮總",
+        "disabled": false,
+        "createdAt": "2019-02-10T09:05:28.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-08-28T12:49:26.000Z",
+          "updatedAt": "2019-08-28T12:49:26.000Z",
+          "BranchId": 67,
+          "HospitalUuid": "9de581d6-80b7-4f9a-9318-272e42d39fb0"
+        }
+      }
+    ]
+  },
+  {
+    "id": 68,
+    "name": "長青",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-03-21T02:46:33.000Z",
+    "updatedAt": "2019-03-21T02:46:33.000Z",
+    "BranchGroupId": 6,
+    "ZipCodeId": 23,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 6,
+      "name": "第六大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 69,
+    "name": "保長",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-03-21T02:46:54.000Z",
+    "updatedAt": "2019-03-21T02:46:54.000Z",
+    "BranchGroupId": 6,
+    "ZipCodeId": 23,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 6,
+      "name": "第六大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 70,
+    "name": "九份",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-03-21T02:47:15.000Z",
+    "updatedAt": "2019-03-21T02:47:15.000Z",
+    "BranchGroupId": 6,
+    "ZipCodeId": 26,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 6,
+      "name": "第六大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23",
+        "name": "三峽恩主公醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T03:58:25.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-06-08T07:28:22.000Z",
+          "updatedAt": "2025-06-08T07:28:22.000Z",
+          "BranchId": 70,
+          "HospitalUuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23"
+        }
+      },
+      {
+        "uuid": "35981e47-7a32-4a73-a299-f223e3749852",
+        "name": "三軍總醫院(汀洲路)",
+        "disabled": false,
+        "createdAt": "2019-01-29T03:21:42.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-06-08T07:28:22.000Z",
+          "updatedAt": "2025-06-08T07:28:22.000Z",
+          "BranchId": 70,
+          "HospitalUuid": "35981e47-7a32-4a73-a299-f223e3749852"
+        }
+      },
+      {
+        "uuid": "7556697d-62c5-49fd-a166-db7bd2a6f11e",
+        "name": "國泰綜合醫院",
+        "disabled": false,
+        "createdAt": "2019-02-09T10:13:50.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-06-08T07:29:08.000Z",
+          "updatedAt": "2025-06-08T07:29:08.000Z",
+          "BranchId": 70,
+          "HospitalUuid": "7556697d-62c5-49fd-a166-db7bd2a6f11e"
+        }
+      },
+      {
+        "uuid": "d66ab901-23fe-49e3-8cb7-1daa07db8c1f",
+        "name": "國軍松山醫院",
+        "disabled": false,
+        "createdAt": "2019-06-17T09:59:34.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-06-08T07:29:08.000Z",
+          "updatedAt": "2025-06-08T07:29:08.000Z",
+          "BranchId": 70,
+          "HospitalUuid": "d66ab901-23fe-49e3-8cb7-1daa07db8c1f"
+        }
+      }
+    ]
+  },
+  {
+    "id": 71,
+    "name": "瑞亭",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-03-21T02:48:39.000Z",
+    "updatedAt": "2019-03-21T02:48:39.000Z",
+    "BranchGroupId": 6,
+    "ZipCodeId": 26,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 6,
+      "name": "第六大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f",
+        "name": "北市台大醫院",
+        "disabled": false,
+        "createdAt": "2019-01-15T09:01:06.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-07-09T07:17:56.000Z",
+          "updatedAt": "2025-07-09T07:17:56.000Z",
+          "BranchId": 71,
+          "HospitalUuid": "0e0cb04a-78ae-42ae-82fa-ef1063a8016f"
+        }
+      },
+      {
+        "uuid": "609608a9-5a1c-4b82-833a-2975f5262cb4",
+        "name": "北市榮民總醫院",
+        "disabled": false,
+        "createdAt": "2019-11-23T07:25:24.000Z",
+        "updatedAt": "2019-11-23T07:25:24.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-07-09T07:17:56.000Z",
+          "updatedAt": "2025-07-09T07:17:56.000Z",
+          "BranchId": 71,
+          "HospitalUuid": "609608a9-5a1c-4b82-833a-2975f5262cb4"
+        }
+      },
+      {
+        "uuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a",
+        "name": "內湖國防醫學中心(三軍)",
+        "disabled": false,
+        "createdAt": "2019-02-01T11:07:20.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-07-09T07:17:56.000Z",
+          "updatedAt": "2025-07-09T07:17:56.000Z",
+          "BranchId": 71,
+          "HospitalUuid": "8db1f8d8-968f-47dc-ad18-1d92f30d402a"
+        }
+      },
+      {
+        "uuid": "a197912d-f490-4204-aaff-ff62457e2bd8",
+        "name": "八堵礦工醫院",
+        "disabled": false,
+        "createdAt": "2019-03-20T00:05:14.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-07-09T07:17:56.000Z",
+          "updatedAt": "2025-07-09T07:17:56.000Z",
+          "BranchId": 71,
+          "HospitalUuid": "a197912d-f490-4204-aaff-ff62457e2bd8"
+        }
+      }
+    ]
+  },
+  {
+    "id": 73,
+    "name": "石門",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-03-21T02:49:14.000Z",
+    "updatedAt": "2019-03-21T02:49:14.000Z",
+    "BranchGroupId": 6,
+    "ZipCodeId": 48,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 6,
+      "name": "第六大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 74,
+    "name": "平溪",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-03-21T02:49:36.000Z",
+    "updatedAt": "2019-03-21T02:49:36.000Z",
+    "BranchGroupId": 6,
+    "ZipCodeId": 27,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 6,
+      "name": "第六大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 75,
+    "name": "雙溪",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-03-21T02:50:37.000Z",
+    "updatedAt": "2019-03-21T02:50:37.000Z",
+    "BranchGroupId": 6,
+    "ZipCodeId": 28,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 6,
+      "name": "第六大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23",
+        "name": "三峽恩主公醫院",
+        "disabled": false,
+        "createdAt": "2019-01-18T03:58:25.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-07-17T09:17:56.000Z",
+          "updatedAt": "2025-07-17T09:17:56.000Z",
+          "BranchId": 75,
+          "HospitalUuid": "1f83e447-05b8-42f0-8dee-0f1506d6de23"
+        }
+      },
+      {
+        "uuid": "a197912d-f490-4204-aaff-ff62457e2bd8",
+        "name": "八堵礦工醫院",
+        "disabled": false,
+        "createdAt": "2019-03-20T00:05:14.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-07-17T09:17:56.000Z",
+          "updatedAt": "2025-07-17T09:17:56.000Z",
+          "BranchId": 75,
+          "HospitalUuid": "a197912d-f490-4204-aaff-ff62457e2bd8"
+        }
+      },
+      {
+        "uuid": "cce0c141-6af4-4d71-a5c7-319a424ec746",
+        "name": "部立基隆醫院",
+        "disabled": false,
+        "createdAt": "2019-02-19T19:43:50.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2025-07-17T09:14:24.000Z",
+          "updatedAt": "2025-07-17T09:14:24.000Z",
+          "BranchId": 75,
+          "HospitalUuid": "cce0c141-6af4-4d71-a5c7-319a424ec746"
+        }
+      }
+    ]
+  },
+  {
+    "id": 76,
+    "name": "貢寮",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2019-03-21T02:50:58.000Z",
+    "updatedAt": "2019-03-21T02:50:58.000Z",
+    "BranchGroupId": 6,
+    "ZipCodeId": 29,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 6,
+      "name": "第六大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": [
+      {
+        "uuid": "21149e42-947f-470b-a5ef-2ec779d61ee5",
+        "name": "汐止國泰醫院",
+        "disabled": false,
+        "createdAt": "2019-01-16T04:08:23.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-19T14:15:15.000Z",
+          "updatedAt": "2019-09-19T14:15:15.000Z",
+          "BranchId": 76,
+          "HospitalUuid": "21149e42-947f-470b-a5ef-2ec779d61ee5"
+        }
+      },
+      {
+        "uuid": "96600762-17ea-4664-8d4d-7ed2d90141f6",
+        "name": "基隆長庚醫院",
+        "disabled": false,
+        "createdAt": "2019-01-21T03:13:18.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-19T14:14:55.000Z",
+          "updatedAt": "2019-09-19T14:14:55.000Z",
+          "BranchId": 76,
+          "HospitalUuid": "96600762-17ea-4664-8d4d-7ed2d90141f6"
+        }
+      },
+      {
+        "uuid": "a197912d-f490-4204-aaff-ff62457e2bd8",
+        "name": "八堵礦工醫院",
+        "disabled": false,
+        "createdAt": "2019-03-20T00:05:14.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-19T14:15:15.000Z",
+          "updatedAt": "2019-09-19T14:15:15.000Z",
+          "BranchId": 76,
+          "HospitalUuid": "a197912d-f490-4204-aaff-ff62457e2bd8"
+        }
+      },
+      {
+        "uuid": "cce0c141-6af4-4d71-a5c7-319a424ec746",
+        "name": "部立基隆醫院",
+        "disabled": false,
+        "createdAt": "2019-02-19T19:43:50.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-19T14:14:55.000Z",
+          "updatedAt": "2019-09-19T14:14:55.000Z",
+          "BranchId": 76,
+          "HospitalUuid": "cce0c141-6af4-4d71-a5c7-319a424ec746"
+        }
+      },
+      {
+        "uuid": "ddf079d8-4efc-4611-91f0-effb8e9d52c5",
+        "name": "貢寮保健站",
+        "disabled": false,
+        "createdAt": "2019-01-29T03:04:07.000Z",
+        "updatedAt": "2019-06-17T09:59:34.000Z",
+        "BranchHospitalMap": {
+          "createdAt": "2019-09-19T14:14:55.000Z",
+          "updatedAt": "2019-09-19T14:14:55.000Z",
+          "BranchId": 76,
+          "HospitalUuid": "ddf079d8-4efc-4611-91f0-effb8e9d52c5"
+        }
+      }
+    ]
+  },
+  {
+    "id": 77,
+    "name": "海山中隊",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2020-12-08T08:43:45.000Z",
+    "updatedAt": "2020-12-08T08:43:45.000Z",
+    "BranchGroupId": 1,
+    "ZipCodeId": 22,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 1,
+      "name": "第一大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 78,
+    "name": "三重中隊",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2020-12-08T08:44:20.000Z",
+    "updatedAt": "2020-12-08T08:44:20.000Z",
+    "BranchGroupId": 3,
+    "ZipCodeId": 39,
+    "BranchTypeId": 2,
+    "BranchGroup": {
+      "id": 3,
+      "name": "第三大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 79,
+    "name": "大埔",
+    "address": "中正路2段492號",
+    "phone": "02-26412052",
+    "fax": "02-26741936",
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2022-03-15T06:25:29.000Z",
+    "updatedAt": "2022-03-15T06:26:02.000Z",
+    "BranchGroupId": 8,
+    "ZipCodeId": 36,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 8,
+      "name": "特搜大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 80,
+    "name": "鳳鳴分隊",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": true,
+    "simulationOnly": false,
+    "createdAt": "2022-10-05T00:02:02.000Z",
+    "updatedAt": "2022-10-05T00:02:53.000Z",
+    "BranchGroupId": null,
+    "ZipCodeId": 38,
+    "BranchTypeId": 1,
+    "BranchGroup": null,
+    "Hospitals": []
+  },
+  {
+    "id": 82,
+    "name": "鳳鳴",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2022-10-05T02:03:29.000Z",
+    "updatedAt": "2022-10-05T02:03:29.000Z",
+    "BranchGroupId": 5,
+    "ZipCodeId": 38,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 5,
+      "name": "第五大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 83,
+    "name": "板橋中隊",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2023-03-01T02:34:51.000Z",
+    "updatedAt": "2023-03-01T02:34:51.000Z",
+    "BranchGroupId": 1,
+    "ZipCodeId": 22,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 1,
+      "name": "第一大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 84,
+    "name": "新莊中隊",
+    "address": "新北市新莊區中原路325-2號",
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2023-07-26T03:38:59.000Z",
+    "updatedAt": "2023-07-26T03:40:09.000Z",
+    "BranchGroupId": 2,
+    "ZipCodeId": 40,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 2,
+      "name": "第二大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 85,
+    "name": "龜山",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2024-06-13T02:07:40.000Z",
+    "updatedAt": "2024-06-13T02:07:40.000Z",
+    "BranchGroupId": 4,
+    "ZipCodeId": 30,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 4,
+      "name": "第四大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 86,
+    "name": "安檢人員",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2024-12-25T03:03:05.000Z",
+    "updatedAt": "2024-12-25T03:03:05.000Z",
+    "BranchGroupId": 1,
+    "ZipCodeId": 22,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 1,
+      "name": "第一大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 87,
+    "name": "秀山",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2025-06-10T03:18:33.000Z",
+    "updatedAt": "2025-06-10T03:18:33.000Z",
+    "BranchGroupId": 7,
+    "ZipCodeId": 34,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 7,
+      "name": "第七大隊",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2019-01-11T11:33:18.000Z"
+    },
+    "Hospitals": []
+  },
+  {
+    "id": 91,
+    "name": "亞東醫院",
+    "address": null,
+    "phone": null,
+    "fax": null,
+    "longitude": null,
+    "latitude": null,
+    "disabled": false,
+    "simulationOnly": false,
+    "createdAt": "2025-12-29T11:28:32.000Z",
+    "updatedAt": "2025-12-29T11:28:32.000Z",
+    "BranchGroupId": 9,
+    "ZipCodeId": 22,
+    "BranchTypeId": 1,
+    "BranchGroup": {
+      "id": 9,
+      "name": "測試大隊",
+      "disabled": false,
+      "createdAt": "2019-09-03T08:39:39.000Z",
+      "updatedAt": "2019-09-03T08:39:39.000Z"
+    },
+    "Hospitals": []
+  }
+]

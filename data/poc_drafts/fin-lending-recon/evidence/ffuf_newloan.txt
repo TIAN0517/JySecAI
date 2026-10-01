@@ -1,0 +1,8 @@
+robots.txt
+wp-login.php
+.git/config
+readme.html
+.git/HEAD
+xmlrpc.php
+sitemap.xml
+sitemap_index.xml

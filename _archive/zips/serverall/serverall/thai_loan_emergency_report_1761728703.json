@@ -1,0 +1,78 @@
+{
+  "scan_time": "2025-10-29T17:05:03.564248",
+  "targets_scanned": 10,
+  "total_vulnerabilities": 0,
+  "total_data_extracted": 0,
+  "results": [
+    {
+      "url": "https://www.kbank.co.th",
+      "timestamp": "2025-10-29T17:04:32.184205",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.kbank.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000001A6722F1F10>: Failed to resolve 'www.kbank.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+    },
+    {
+      "url": "https://www.scb.co.th",
+      "timestamp": "2025-10-29T17:04:34.939522",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.scb.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000001A6722F1150>: Failed to resolve 'www.scb.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+    },
+    {
+      "url": "https://www.krungsri.com",
+      "timestamp": "2025-10-29T17:04:39.427013",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.krungsri.com', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000001A6722F3D50>: Failed to resolve 'www.krungsri.com' ([Errno 11001] getaddrinfo failed)\"))"
+    },
+    {
+      "url": "https://www.ktc.co.th",
+      "timestamp": "2025-10-29T17:04:41.616997",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.ktc.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000001A672309350>: Failed to resolve 'www.ktc.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+    },
+    {
+      "url": "https://www.aeon.co.th",
+      "timestamp": "2025-10-29T17:04:43.854669",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.aeon.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000001A67230A910>: Failed to resolve 'www.aeon.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+    },
+    {
+      "url": "https://www.moneycat.co.th",
+      "timestamp": "2025-10-29T17:04:47.520935",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.moneycat.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000001A67230BD90>: Failed to resolve 'www.moneycat.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+    },
+    {
+      "url": "https://www.fastmoney.co.th",
+      "timestamp": "2025-10-29T17:04:51.378358",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.fastmoney.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000001A67230D290>: Failed to resolve 'www.fastmoney.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+    },
+    {
+      "url": "https://www.easyloan.co.th",
+      "timestamp": "2025-10-29T17:04:53.941003",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.easyloan.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000001A67230E790>: Failed to resolve 'www.easyloan.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+    },
+    {
+      "url": "https://www.cashloan.co.th",
+      "timestamp": "2025-10-29T17:04:56.465499",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.cashloan.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000001A67230BF50>: Failed to resolve 'www.cashloan.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+    },
+    {
+      "url": "https://www.quickloan.co.th",
+      "timestamp": "2025-10-29T17:04:59.366860",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.quickloan.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000001A672309F90>: Failed to resolve 'www.quickloan.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+    }
+  ]
+}

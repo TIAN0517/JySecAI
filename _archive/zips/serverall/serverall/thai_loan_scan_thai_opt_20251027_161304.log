@@ -1,0 +1,19 @@
+2025-10-27 16:13:04,751 - INFO - 已加载 29 个泰国贷款网站目标
+2025-10-27 16:13:04,752 - INFO - 开始泰国贷款网站扫描，目标数: 29
+2025-10-27 16:13:05,075 - ERROR - 扫描 MoneyThunder 失败: Cannot connect to host moneythunder.com:443 ssl:default [DNS server returned answer with no data]
+2025-10-27 16:13:06,715 - ERROR - 扫描 Finnix 失败: Cannot connect to host finnix.app:443 ssl:default [Domain name not found]
+2025-10-27 16:13:09,205 - ERROR - 扫描 Piggy 失败: Cannot connect to host www.piggy.co.th:443 ssl:default [Domain name not found]
+2025-10-27 16:13:10,215 - ERROR - 扫描 SCB Easy 失败: Cannot connect to host www.scbeasy.com:443 ssl:default [DNS server returned answer with no data]
+2025-10-27 16:13:11,567 - ERROR - 扫描 Ascend Money 失败: Cannot connect to host www.ascendmoney.com:443 ssl:True [SSLCertVerificationError: (1, "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.ascendmoney.com'. (_ssl.c:1006)")]
+2025-10-27 16:13:11,591 - ERROR - 扫描 Thanachart Capital 失败: Cannot connect to host www.thanachartcapital.co.th:443 ssl:default [Domain name not found]
+2025-10-27 16:13:12,135 - ERROR - 扫描 Money.co.th 失败: Cannot connect to host www.money.co.th:443 ssl:default [DNS server returned general failure]
+2025-10-27 16:13:13,182 - ERROR - 扫描 Jaroensab Money 失败: Cannot connect to host www.jaroensab.com:443 ssl:default [Domain name not found]
+2025-10-27 16:13:13,203 - ERROR - 扫描 Lendmey 失败: Cannot connect to host www.lendmey.com:443 ssl:default [Domain name not found]
+2025-10-27 16:13:13,206 - ERROR - 扫描 Money Table 失败: Cannot connect to host www.moneytable.co.th:443 ssl:default [Domain name not found]
+2025-10-27 16:13:13,238 - ERROR - 扫描 Mee Tae Diew 失败: Cannot connect to host www.meetaediew.com:443 ssl:default [Domain name not found]
+2025-10-27 16:13:13,240 - ERROR - 扫描 Quick Loan 失败: Cannot connect to host www.quickloan.co.th:443 ssl:default [Domain name not found]
+2025-10-27 16:13:13,265 - ERROR - 扫描 Money Line 失败: Cannot connect to host www.moneyline.co.th:443 ssl:default [Domain name not found]
+2025-10-27 16:13:13,276 - ERROR - 扫描 Cash Express 失败: Cannot connect to host www.cashexpress.co.th:443 ssl:default [Domain name not found]
+2025-10-27 16:13:13,280 - ERROR - 扫描 Siam P2P 失败: Cannot connect to host www.siamp2p.com:443 ssl:default [Domain name not found]
+2025-10-27 16:13:14,303 - INFO - 扫描完成! 报告已生成: thai_loan_scan_report_thai_opt_20251027_161304.md
+2025-10-27 16:13:14,303 - INFO - 扫描统计: {'total_targets': 29, 'scanned_targets': 29, 'successful_scans': 14, 'vulnerable_targets': 5, 'errors': 15, 'start_time': '2025-10-27 16:13:04', 'end_time': '2025-10-27 16:13:14'}

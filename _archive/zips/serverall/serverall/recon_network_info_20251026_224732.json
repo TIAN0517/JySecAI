@@ -1,0 +1,132 @@
+{
+  "system_info": [
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "whoami",
+      "response_length": 85104,
+      "response_time": 1.168287992477417,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "id",
+      "response_length": 85104,
+      "response_time": 0.2234210968017578,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "groups",
+      "response_length": 85104,
+      "response_time": 0.2191004753112793,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "cat /etc/passwd",
+      "response_length": 85104,
+      "response_time": 0.21896576881408691,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "cat /etc/group",
+      "response_length": 85104,
+      "response_time": 0.21714115142822266,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "cat /proc/version",
+      "response_length": 85104,
+      "response_time": 0.21882033348083496,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "cat /etc/os-release",
+      "response_length": 85104,
+      "response_time": 0.22028231620788574,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "uname -r",
+      "response_length": 85104,
+      "response_time": 0.22414636611938477,
+      "status_code": 200
+    }
+  ],
+  "network_info": [
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "ifconfig",
+      "response_length": 85104,
+      "response_time": 0.22313165664672852,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "ip addr",
+      "response_length": 85104,
+      "response_time": 0.22240877151489258,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "netstat -tulpn",
+      "response_length": 85104,
+      "response_time": 0.22292089462280273,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "route -n",
+      "response_length": 85104,
+      "response_time": 0.22113776206970215,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "cat /etc/resolv.conf",
+      "response_length": 85104,
+      "response_time": 0.22104358673095703,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "hostname -I",
+      "response_length": 85104,
+      "response_time": 0.21976304054260254,
+      "status_code": 200
+    }
+  ]
+}

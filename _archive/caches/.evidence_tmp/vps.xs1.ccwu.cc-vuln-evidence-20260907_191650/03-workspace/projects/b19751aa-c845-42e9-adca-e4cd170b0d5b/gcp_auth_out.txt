@@ -1,0 +1,84 @@
+===== staging AuthServer :3400 basic =====
+  [200] GET / :: text/html; charset=U '<!DOCTYPE html>\n<html ng-app="AuthServer">\n<head>\n  <meta charset="utf'
+  [401] GET /config :: text/html; charset=u '<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href='
+  [200] GET /js/publicConfig.js :: application/javascri 'angular.module(\'AuthServer\').constant(\'PUBLIC_CONFIG\',{"captcha":{"ena'
+  [401] GET /Users :: text/html; charset=u '<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href='
+  [401] GET /Roles :: text/html; charset=u '<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href='
+  [401] GET /Permissions :: text/html; charset=u '<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href='
+  [404] GET /login :: text/html; charset=u '<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href='
+  [200] GET /captcha :: application/octet-st 'GIF89a�\x00F\x00�\x00\x00\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11���,\x00\x00\x00\x00�\x00F\x00'
+  [401] GET /login2FA :: text/html; charset=u '<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href='
+  [404] GET /refreshToken :: text/html; charset=u '<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href='
+
+===== staging :3400 /config full =====
+<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href="/stylesheets/style.css"></head><body><h1>No authorization token was found</h1><h2>401</h2><pre>UnauthorizedError: No authorization token was found
+    at middleware (/opt/servers/AuthServer/node_modules/express-jwt/lib/index.js:76:21)
+    at /opt/servers/AuthServer/node_modules/express-jwt/node_modules/express-unless/index.js:47:5
+    at Layer.handle [as handle_request] (/opt/servers/AuthServer/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/opt/servers/AuthServer/node_modules/express/lib/router/index.js:312:13)
+    at /opt/servers/AuthServer/node_modules/express/lib/router/index.js:280:7
+    at Function.process_params (/opt/servers/AuthServer/node_modules/express/lib/router/index.js:330:12)
+    at n
+
+===== captcha behavior =====
+  /captcha -> 200 len=17646 cookies={'connect.sid': 's%3Apl-Y5u7YxogJ7qJz9tMmpUDnZcQmzPd-.av1QqbxmWIkOFzV3ZziiEXajeo53egGRUpmcEQ%2FJZI4'}
+  content-type='application/octet-stream'
+
+===== brute staging login with common creds (no captcha / with blank) =====
+  [429] admin/admin cap='' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼不符合","code":429}'
+  [429] admin/admin cap='12345' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/admin cap='00000' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/admin cap='11111' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/password cap='' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼不符合","code":429}'
+  [429] admin/password cap='12345' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/password cap='00000' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/password cap='11111' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/123456 cap='' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼不符合","code":429}'
+  [429] admin/123456 cap='12345' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/123456 cap='00000' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/123456 cap='11111' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/Admin123 cap='' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼不符合","code":429}'
+  [429] admin/Admin123 cap='12345' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/Admin123 cap='00000' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/Admin123 cap='11111' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/admin123 cap='' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼不符合","code":429}'
+  [429] admin/admin123 cap='12345' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/admin123 cap='00000' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/admin123 cap='11111' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] user/user cap='' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼不符合","code":429}'
+  [429] user/user cap='12345' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] user/user cap='00000' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] user/user cap='11111' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] test/test cap='' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼不符合","code":429}'
+  [429] test/test cap='12345' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] test/test cap='00000' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] test/test cap='11111' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] root/root cap='' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼不符合","code":429}'
+  [429] root/root cap='12345' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] root/root cap='00000' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] root/root cap='11111' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/Admin@123 cap='' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼不符合","code":429}'
+  [429] admin/Admin@123 cap='12345' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/Admin@123 cap='00000' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/Admin@123 cap='11111' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/1 cap='' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼不符合","code":429}'
+  [429] admin/1 cap='12345' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/1 cap='00000' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/1 cap='11111' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] epcr/epcr cap='' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼不符合","code":429}'
+  [429] epcr/epcr cap='12345' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] epcr/epcr cap='00000' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] epcr/epcr cap='11111' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] test@test.tw/test123 cap='' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼不符合","code":429}'
+  [429] test@test.tw/test123 cap='12345' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] test@test.tw/test123 cap='00000' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] test@test.tw/test123 cap='11111' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/password123 cap='' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼不符合","code":429}'
+  [429] admin/password123 cap='12345' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/password123 cap='00000' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/password123 cap='11111' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/Admin@1234 cap='' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼不符合","code":429}'
+  [429] admin/Admin@1234 cap='12345' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/Admin@1234 cap='00000' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+  [429] admin/Admin@1234 cap='11111' :: '{"name":"ErrorWithStatusCode","message":"圖形驗證碼已失效","code":429}'
+done

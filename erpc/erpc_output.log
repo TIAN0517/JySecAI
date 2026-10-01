@@ -1,0 +1,27 @@
+nohup: ignoring input
+# polling capture 30.0s via socks5h://202.160.76.157:11082
+13:38:04 INFO pkt via=poll-hs kind=open name=None raw=0{"sid":"ZN4FV78JmDmkls5gAFwG","upgrades":["websocket"],"pingInterval":25000,"pingTimeout":5000}
+13:38:04 INFO pkt via=poll-hs kind=ns_connect name=None raw=40
+13:38:04 INFO sid=ZN4FV78JmDmkls5gAFwG pingInterval=25.0 pingTimeout=5.0
+13:38:34 INFO poll GET 30.0s http=200 bytes=3 body='1:1' err=
+13:38:34 INFO pkt via=poll kind=close name=None raw=1
+13:38:34 INFO server closed polling
+{"kind": "open", "via": "poll-hs", "data": {"sid": "ZN4FV78JmDmkls5gAFwG", "upgrades": ["websocket"], "pingInterval": 25000, "pingTimeout": 5000}, "raw": "0{\"sid\":\"ZN4FV78JmDmkls5gAFwG\",\"upgrades\":[\"websocket\"],\"pingInterval\":25000,\"pingTimeout\":5000}"}
+{"kind": "ns_connect", "via": "poll-hs", "ns": "/", "data": "", "raw": "40"}
+{"kind": "close", "via": "poll", "raw": "1"}
+{"packets": 3, "events": 0, "event_names": {}, "kinds": {"open": 1, "ns_connect": 1, "close": 1}, "sid": "ZN4FV78JmDmkls5gAFwG"}
+13:38:34 INFO wrote /mnt/c/Users/Administrator/Desktop/JySecAI/erpc/data/capture.jsonl (3 packets)
+{
+  "packets": 3,
+  "events": 0,
+  "event_names": {},
+  "kinds": {
+    "open": 1,
+    "ns_connect": 1,
+    "close": 1
+  },
+  "sid": "ZN4FV78JmDmkls5gAFwG",
+  "extracted_cases": [],
+  "capture_file": "/mnt/c/Users/Administrator/Desktop/JySecAI/erpc/data/capture.jsonl"
+}
+# 沒有 42 事件：polling 在 30s 被 CLOSE；請用 --upgrade 或 python3 -m epcr run 改走 websocket 長掛。

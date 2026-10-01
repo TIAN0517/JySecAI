@@ -1,0 +1,139 @@
+{
+  "database_index": {
+    "created_time": "2025-10-29T02:17:01.128460",
+    "total_databases": 9,
+    "source_files_count": 119,
+    "total_records": 551
+  },
+  "databases": {
+    "customers": {
+      "file": "customers_db.json",
+      "record_count": 20,
+      "sample_record": {
+        "table": "thai_customers",
+        "record": {
+          "customer_id": 5971,
+          "thai_full_name": "ธนาธร ศรีทอง แจ่มใส",
+          "thai_first_name": "ธนาธร ศรีทอง",
+          "thai_last_name": "แจ่มใส",
+          "id_card_number": "7949399396338",
+          "phone_number": "0867906596",
+          "email_address": "customer5971@gmail.com",
+          "thai_address": "กรุงเทพมหานคร เขตพระนคร",
+          "monthly_income_baht": 74603,
+          "employment_type": "ค้าขาย",
+          "credit_rating": "A",
+          "registration_date": "2025-10-29",
+          "last_login": "2025-10-29 02:09:10"
+        }
+      },
+      "data_types": [
+        "thai_customers"
+      ]
+    },
+    "loan_applications": {
+      "file": "loan_applications_db.json",
+      "record_count": 22,
+      "sample_record": {
+        "table": "thai_loan_applications",
+        "record": {
+          "application_id": 7531,
+          "customer_id": 8542,
+          "loan_type_thai": "สินเชื่อส่วนบุคคล",
+          "loan_category": "private_loan",
+          "amount_requested_baht": 37453,
+          "amount_approved_baht": 187384,
+          "interest_rate_percent": 19.53,
+          "term_months": 6,
+          "purpose_thai": "ทุนร้านค้า",
+          "monthly_installment_baht": 5975,
+          "approval_status": "ต้องพิจารณาเพิ่ม",
+          "application_date": "2025-10-29",
+          "approval_date": "2025-10-29",
+          "disbursement_date": null,
+          "loan_officer": "พนักงาน568",
+          "branch_name": "สาขาสุขุมวิท"
+        }
+      },
+      "data_types": [
+        "thai_loan_applications"
+      ]
+    },
+    "payments": {
+      "file": "payments_db.json",
+      "record_count": 12,
+      "sample_record": {
+        "table": "thai_payment_records",
+        "record": {
+          "payment_id": 4399,
+          "loan_id": 4423,
+          "payment_amount_baht": 7187,
+          "payment_date": "2025-10-29",
+          "payment_method": "ชำระที่เคาน์เตอร์",
+          "payment_status": "ชำระแล้ว",
+          "remaining_balance_baht": 72801,
+          "due_date": "2025-10-29",
+          "late_fee_baht": 0
+        }
+      },
+      "data_types": [
+        "thai_payment_records"
+      ]
+    },
+    "users": {
+      "file": "users_db.json",
+      "record_count": 62,
+      "sample_record": {
+        "table": "users",
+        "record": {
+          "id": 1,
+          "username": "admin",
+          "email": "admin@example.com",
+          "role": "administrator",
+          "last_login": "2024-10-29 01:00:00",
+          "status": "active",
+          "extraction_method": "Advanced Penetration",
+          "target": "https://ngoenmun.com",
+          "extraction_timestamp": "2025-10-29T02:03:39.143779"
+        }
+      },
+      "data_types": [
+        "users",
+        "wp_users"
+      ]
+    },
+    "configurations": {
+      "file": "configurations_db.json",
+      "record_count": 2,
+      "sample_record": {
+        "table": "system_config",
+        "record": {
+          "id": 1,
+          "config_key": "database_version",
+          "config_value": "MySQL 8.0.33",
+          "updated_at": "2024-10-28 12:00:00",
+          "extraction_method": "Advanced Penetration",
+          "target": "https://ngoenmun.com",
+          "extraction_timestamp": "2025-10-29T02:03:39.143779"
+        }
+      },
+      "data_types": [
+        "system_config"
+      ]
+    },
+    "security_data": {
+      "file": "security_data_db.json",
+      "record_count": 433,
+      "sample_record": {
+        "url": "https://www.kbank.co.th",
+        "timestamp": "2025-10-29T01:45:17.926390",
+        "vulnerabilities": [],
+        "data": [],
+        "error": "HTTPSConnectionPool(host='www.kbank.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x00000214DEEF9B90>: Failed to resolve 'www.kbank.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+      },
+      "data_types": [
+        "unknown"
+      ]
+    }
+  }
+}

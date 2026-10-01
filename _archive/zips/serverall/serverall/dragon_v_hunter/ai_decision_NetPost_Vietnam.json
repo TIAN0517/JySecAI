@@ -1,0 +1,26 @@
+{
+  "target_name": "NetPost Vietnam",
+  "recommended_action": "skip",
+  "priority_score": 37.8,
+  "confidence_level": 0.375,
+  "reasoning": [
+    "目标属于Logistics行业，该行业通常具有较高价值",
+    "位于Vietnam，属于优先级目标地区",
+    "预期成功率较高（75.0%）",
+    "发现SQL Injection漏洞类型，具有较高利用价值"
+  ],
+  "expected_success_rate": 0.75,
+  "estimated_impact": "物流数据泄露（高概率实现）",
+  "recommended_methods": [
+    "UNION查询注入",
+    "时间盲注",
+    "错误信息注入"
+  ],
+  "estimated_risk": "中等（成功概率高，风险加剧）",
+  "next_steps": [
+    "记录目标信息以备后续参考",
+    "继续收集相关情报",
+    "寻找其他高优先级目标",
+    "更新威胁情报数据库"
+  ]
+}

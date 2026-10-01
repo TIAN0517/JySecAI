@@ -1,0 +1,12 @@
+phpinfo.php
+.git/config
+.env
+.git/HEAD
+wp-config.php
+robots.txt
+admin/
+web.config
+.htaccess
+backup/
+sitemap.xml
+old/

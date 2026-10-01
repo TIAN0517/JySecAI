@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>臺北市政府消防局行政罰查網</title>
+    <link rel="stylesheet" href="https://210.69.42.55/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://210.69.42.55/3rdPart/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://210.69.42.55/css/main.css">
+    <!--[if lt IE 9]>
+    <script src="https://210.69.42.55/js/html5shiv.min.js"></script>
+    <script src="https://210.69.42.55/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row menu">
+        <div class="con-sm-12">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                            <span class="sr-only">切換導覽</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a href="https://210.69.42.55">
+                            <img src="https://210.69.42.55/images/titleLogo.png" width="280" alt="臺北市政府消防局行政罰查網">
+                        </a>
+                    </div>
+                    <div class="collapse navbar-collapse navbar-ex1-collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a href="https://210.69.42.55">查詢</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+        <div class="container adminLogin">
+        <div class="row">
+            <div class="col-sm-5 col-sm-offset-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3 class="panel-title">後台登入</h3></div>
+                    <div class="panel-body">
+                        <form method="POST" action="https://210.69.42.55/admin/login">
+                            <input type="hidden" name="_token" value="05xiQGIxBX0WWEPxk72znUINlYF7dGBooSnU22Ez" autocomplete="off">                            <div class="form-group">
+                                <label for="username">管理員帳號</label>
+                                <input id="username" name="username" class="form-control" value="" required autofocus>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">密碼</label>
+                                <input id="password" type="password" name="password" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="captcha">驗證碼</label>
+                                <div class="captchaRow">
+                                    <input id="captcha" name="captcha" class="form-control captchaInput" placeholder="請輸入右側圖形中的英數字" required autocomplete="off">
+                                    <img src="https://210.69.42.55/admin/captcha" alt="驗證碼" class="captchaImage" id="captchaImage" title="點擊更換驗證碼">
+                                </div>
+                                <p class="help-block">點擊圖片可更換一組驗證碼。</p>
+                            </div>
+                                                        <button class="btn btn-primary btn-block"><i class="fa fa-sign-in"></i> 登入</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://210.69.42.55/js/jquery.js"></script>
+<script src="https://210.69.42.55/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('captchaImage').addEventListener('click', function () {
+            fetch('https://210.69.42.55/admin/captcha/refresh', {
+                method: 'POST',
+                headers: {'X-CSRF-TOKEN': '05xiQGIxBX0WWEPxk72znUINlYF7dGBooSnU22Ez'},
+            }).then(function () {
+                this.src = 'https://210.69.42.55/admin/captcha?t=' + Date.now();
+            }.bind(this));
+        });
+    </script>
+</body>
+</html>

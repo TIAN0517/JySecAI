@@ -28,17 +28,31 @@ IPS_HEADERS = {
 
 # SOCKS5 proxy (same as daemon)
 PROXY = "socks5://202.160.76.166:11086"
-PROXIES = {"http": PROXY, "https": PROXY}
+PROXIES = {}
 EPCR_PROXY = "socks5://202.160.76.165:11081"
-EPCR_PROXIES = {"http": EPCR_PROXY, "https": EPCR_PROXY}
+EPCR_PROXIES = {}
 
-# Proxy fallback list
+# ScraperProxy: rotating Taiwan residential IPs via HTTP proxy.
+# Credentials pulled from environment to avoid hardcoding.
+_SCRAPER_USER = os.environ.get("SCRAPER_USERNAME", "z4gy74wlps2obm5-country-tw")
+_SCRAPER_PASS = os.environ.get("SCRAPER_PASSWORD", "qoiej5fztxb5w25")
+_SCRAPER_HOST = os.environ.get("PROXYSCRAPE_HOSTNAME", "rp.scrapegw.com:6060")
+SCRAPER_PROXY = f"http://{_SCRAPER_USER}:{_SCRAPER_PASS}@{_SCRAPER_HOST}"
+
+# Proxy fallback list. ScraperProxy (rotating TW residential) is PRIMARY —
+# keeps access working during local DNS outages and avoids IP-based
+# rate-limiting on the Taipei Fire Department IPS system.
 PROXY_LIST = [
-    {"http": "socks5://202.160.76.166:11086", "https": "socks5://202.160.76.166:11086"},
-    {"http": "socks5://202.160.76.157:11082", "https": "socks5://202.160.76.157:11082"},
-    {"http": "socks5://202.160.76.165:11082", "https": "socks5://202.160.76.165:11082"},
-    {"http": "socks5://202.160.76.165:11081", "https": "socks5://202.160.76.165:11081"},
+    None,
+    SCRAPER_PROXY,                                   # rotating TW residential (1GB)
+    "socks5h://202.160.76.166:11086",
+    "socks5h://202.160.76.156:11083",
 ]
+
+# Extra SOCKS5 backup pool (52.128.241.106–110:1080).
+# Used when ScraperProxy quota exhausted + primary SOCKS5s fail.
+BACKUP_SOCKS5 = [f"socks5h://52.128.241.{port}" for port in range(106, 111)]
+PROXY_LIST.extend(BACKUP_SOCKS5)
 
 # Cookie cache file
 COOKIE_FILE = os.path.join(
@@ -46,22 +60,84 @@ COOKIE_FILE = os.path.join(
     ".hermes/cache/scratch/ips_cookies.json"
 )
 
-# OCR reader (lazy-loaded, module-level)
-_reader = None
+# OCR backends (lazy-loaded, module-level)
+_easyocr_reader = None
+_tesserocr_api = None
+_ddddocr_instance = None
 
-def _get_reader():
-    global _reader
-    if _reader is None:
+def _init_easyocr():
+    global _easyocr_reader
+    if _easyocr_reader is None:
         import easyocr
-        _reader = easyocr.Reader(['en'], gpu=False, verbose=False)
-    return _reader
+        _easyocr_reader = easyocr.Reader(['en'], gpu=False, verbose=False)
+    return _easyocr_reader
+
+def _init_ddddocr():
+    global _ddddocr_instance
+    if _ddddocr_instance is None:
+        import ddddocr
+        _ddddocr_instance = ddddocr.DdddOcr()
+    return _ddddocr_instance
+
+def _ocr_captcha(image_bytes):
+    """OCR a 4-digit numeric CAPTCHA using multiple backends with fallback.
+    
+    Order: easyocr → tesserocr → ddddocr
+    Returns the captcha string (digits only).
+    """
+    # Backend 1: easyocr
+    try:
+        reader = _init_easyocr()
+        result = reader.readtext(image_bytes, allowlist='0123456789', detail=1)
+        captcha = ''.join([x[1] for x in result])
+        if len(captcha) == 4 and captcha.isdigit():
+            return captcha
+    except Exception as e:
+        print(f"  [!] easyocr failed: {e}", flush=True)
+    
+    # Backend 2: tesserocr (requires tessdata files)
+    try:
+        import tesserocr
+        from io import BytesIO
+        from PIL import Image
+        img = Image.open(BytesIO(image_bytes)).convert('L')
+        api = tesserocr.PyTessBaseAPI(psm=tesserocr.PSM.AUTO)
+        api.SetImage(img)
+        api.SetVariable('tessedit_char_whitelist', '0123456789')
+        captcha = api.GetUTF8Text().strip()
+        api.End()
+        if len(captcha) == 4 and captcha.isdigit():
+            return captcha
+    except Exception as e:
+        print(f"  [!] tesserocr failed: {e}", flush=True)
+    
+    # Backend 3: ddddocr
+    try:
+        ocr = _init_ddddocr()
+        captcha = ocr.classification(image_bytes)
+        if captcha and captcha.isdigit():
+            return captcha
+    except Exception as e:
+        print(f"  [!] ddddocr failed: {e}", flush=True)
+    
+    # Fallback: return whatever easyocr produced (even if imperfect)
+    try:
+        reader = _init_easyocr()
+        result = reader.readtext(image_bytes, allowlist='0123456789', detail=1)
+        captcha = ''.join([x[1] for x in result])
+        return captcha
+    except Exception:
+        return ""
 
 
 def _try_proxies(func, name="API"):
     """Try a callable (which returns a requests.Response or None) across proxies."""
-    for i, proxy in enumerate(PROXY_LIST):
+        # 自動支援直連模式
+    targets = PROXY_LIST if PROXY_LIST else [None]
+    for i, proxy in enumerate(targets):
+        proxies_dict = {"http": proxy, "https": proxy} if proxy else None
         try:
-            result = func(proxy)
+            result = func(proxies_dict)
             if result is not None:
                 return result
         except Exception:
@@ -74,17 +150,16 @@ def _validate_cookies(cookies_dict):
     """Check if stored cookies are still valid by fetching CaseUnitMgt.aspx."""
     if not cookies_dict:
         return False
-    try:
+    def _validate(proxies_dict):
         r = requests.get(IPS_DISPATCH_URL, cookies=cookies_dict,
                          headers=IPS_HEADERS,
-                         proxies=PROXIES, verify=False, timeout=15,
-                         allow_redirects=False)
-        # Valid: 200 with title "案件派遣"
+                         proxies=proxies_dict, verify=False, timeout=15,
+                         allow_redirects=True)
         if r.status_code == 200 and "案件派遣" in r.text:
             return True
-        return False
-    except Exception:
-        return False
+        return None
+
+    return bool(_try_proxies(_validate, "cookie validation"))
 
 
 def _perform_login():
@@ -110,20 +185,17 @@ def _perform_login():
             print("  [ERR] IPS login: no VIEWSTATE", flush=True)
             return None
 
-        # 2. GET CAPTCHA + OCR (numeric only)
+        # 2. GET CAPTCHA + OCR (numeric only, multi-backend fallback)
         r_vcode = s.get(IPS_VCODE, verify=False, timeout=15)
         if r_vcode.status_code != 200:
             return None
 
-        reader = _get_reader()
-        result = reader.readtext(r_vcode.content, allowlist='0123456789', detail=1)
-        captcha = ''.join([x[1] for x in result])
+        captcha = _ocr_captcha(r_vcode.content)
 
         if len(captcha) != 4:
             print(f"  [!] IPS captcha OCR: '{captcha}' (expected 4 digits)", flush=True)
-            # Retry once
-            result = reader.readtext(r_vcode.content, allowlist='0123456789', detail=1)
-            captcha = ''.join([x[1] for x in result])
+            # Retry once with fresh attempt
+            captcha = _ocr_captcha(r_vcode.content)
 
         # 3. POST /Login
         post_data = {
@@ -230,6 +302,10 @@ def parse_dispatch_page(html_text):
 
         if not address:
             continue
+
+        # One station can appear more than once in the HTML block. OHCA
+        # inference must count distinct dispatched stations, not DOM rows.
+        units = list(dict.fromkeys(units))
 
         cases.append({
             "case_no": case_no,

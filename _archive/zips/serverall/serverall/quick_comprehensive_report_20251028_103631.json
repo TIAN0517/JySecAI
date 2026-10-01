@@ -1,0 +1,96 @@
+{
+  "scan_type": "Quick Comprehensive Vulnerability Scan",
+  "timestamp": "2025-10-28 10:36:31",
+  "results": [
+    {
+      "target": "http://www.siamloan.com",
+      "vulnerabilities": [],
+      "vulnerable": false,
+      "scan_time": "2025-10-28 10:35:09"
+    },
+    {
+      "target": "http://www.finnomena.com",
+      "vulnerabilities": [
+        {
+          "target": "http://www.finnomena.com",
+          "parameter": "id",
+          "payload": "; whoami",
+          "type": "Command Injection",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.finnomena.com",
+          "parameter": "search",
+          "payload": "; whoami",
+          "type": "Command Injection",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.finnomena.com",
+          "parameter": "file",
+          "payload": "; whoami",
+          "type": "Command Injection",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.finnomena.com",
+          "parameter": "path",
+          "payload": "; whoami",
+          "type": "Command Injection",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.finnomena.com",
+          "parameter": "id",
+          "payload": "http://localhost:22",
+          "type": "SSRF",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.finnomena.com",
+          "parameter": "search",
+          "payload": "http://localhost:22",
+          "type": "SSRF",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.finnomena.com",
+          "parameter": "file",
+          "payload": "http://localhost:22",
+          "type": "SSRF",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.finnomena.com",
+          "parameter": "path",
+          "payload": "http://localhost:22",
+          "type": "SSRF",
+          "status_code": 200
+        }
+      ],
+      "vulnerable": true,
+      "scan_time": "2025-10-28 10:35:46"
+    },
+    {
+      "target": "https://www.quickcash.co.th",
+      "vulnerabilities": [],
+      "vulnerable": false,
+      "scan_time": "2025-10-28 10:35:56"
+    },
+    {
+      "target": "http://www.bcnlp.ac.th",
+      "vulnerabilities": [],
+      "vulnerable": false,
+      "scan_time": "2025-10-28 10:36:31"
+    }
+  ],
+  "summary": {
+    "total_targets": 4,
+    "vulnerable_targets": 1,
+    "total_vulnerabilities": 8,
+    "sql_injection": 0,
+    "command_injection": 4,
+    "file_inclusion": 0,
+    "ssrf": 4
+  }
+}

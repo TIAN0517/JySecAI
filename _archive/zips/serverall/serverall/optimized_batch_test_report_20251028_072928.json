@@ -1,0 +1,40 @@
+{
+  "timestamp": "2025-10-28 07:29:28",
+  "total_targets": 4,
+  "vulnerable_targets": 0,
+  "safe_targets": 4,
+  "failed_targets": 0,
+  "performance_stats": {
+    "requests_made": 4,
+    "cache_hits": 272,
+    "vulnerabilities_found": 0
+  },
+  "results": [
+    {
+      "target": "https://demo.thai-sme-loan.com",
+      "waf": "unknown",
+      "vulnerabilities": [],
+      "status": "安全"
+    },
+    {
+      "target": "http://test.thai-loan.com",
+      "waf": "unknown",
+      "vulnerabilities": [],
+      "status": "安全"
+    },
+    {
+      "target": "http://example.com",
+      "waf": "unknown",
+      "vulnerabilities": [],
+      "status": "安全"
+    },
+    {
+      "target": "https://example.com",
+      "waf": "unknown",
+      "vulnerabilities": [],
+      "status": "安全"
+    }
+  ],
+  "vulnerability_stats": {},
+  "confidence_stats": {}
+}

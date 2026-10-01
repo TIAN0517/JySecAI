@@ -1,0 +1,364 @@
+{
+  "database_name": "customers_db",
+  "total_records": 20,
+  "created_time": "2025-10-29T02:17:01.074462",
+  "source_type": "consolidated_extraction",
+  "records": [
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 5971,
+        "thai_full_name": "ธนาธร ศรีทอง แจ่มใส",
+        "thai_first_name": "ธนาธร ศรีทอง",
+        "thai_last_name": "แจ่มใส",
+        "id_card_number": "7949399396338",
+        "phone_number": "0867906596",
+        "email_address": "customer5971@gmail.com",
+        "thai_address": "กรุงเทพมหานคร เขตพระนคร",
+        "monthly_income_baht": 74603,
+        "employment_type": "ค้าขาย",
+        "credit_rating": "A",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:10"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 7006,
+        "thai_full_name": "มานี มีสุข แจ่มใส",
+        "thai_first_name": "มานี มีสุข",
+        "thai_last_name": "แจ่มใส",
+        "id_card_number": "6575871337551",
+        "phone_number": "0822626145",
+        "email_address": "customer7006@gmail.com",
+        "thai_address": "สมุทรปราการ เมืองเมือง",
+        "monthly_income_baht": 55769,
+        "employment_type": "ค้าขาย",
+        "credit_rating": "A",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:10"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 7160,
+        "thai_full_name": "สมชาย ใจดี สกุลดี",
+        "thai_first_name": "สมชาย ใจดี",
+        "thai_last_name": "สกุลดี",
+        "id_card_number": "2453316159116",
+        "phone_number": "0867673184",
+        "email_address": "customer7160@gmail.com",
+        "thai_address": "ปทุมธานี เมืองปทุมธานี",
+        "monthly_income_baht": 46265,
+        "employment_type": "รับจ้าง",
+        "credit_rating": "B",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:10"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 6360,
+        "thai_full_name": "ธนาธร ศรีทอง เจริญรุ่งเรือง",
+        "thai_first_name": "ธนาธร ศรีทอง",
+        "thai_last_name": "เจริญรุ่งเรือง",
+        "id_card_number": "8497085954232",
+        "phone_number": "0817516030",
+        "email_address": "customer6360@gmail.com",
+        "thai_address": "กรุงเทพมหานคร เขตบางรัก",
+        "monthly_income_baht": 23947,
+        "employment_type": "พนักงานบริษัท",
+        "credit_rating": "B",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:11"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 5109,
+        "thai_full_name": "วิชัย รุ่งเรือง ประสบความสำเร็จ",
+        "thai_first_name": "วิชัย รุ่งเรือง",
+        "thai_last_name": "ประสบความสำเร็จ",
+        "id_card_number": "4650245435779",
+        "phone_number": "0895099319",
+        "email_address": "customer5109@gmail.com",
+        "thai_address": "กรุงเทพมหานคร เขตห้วยขวาง",
+        "monthly_income_baht": 52177,
+        "employment_type": "เจ้าของกิจการ",
+        "credit_rating": "A",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:11"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 2899,
+        "thai_full_name": "พัชรี แสงสุข มีศรัย",
+        "thai_first_name": "พัชรี แสงสุข",
+        "thai_last_name": "มีศรัย",
+        "id_card_number": "2293849301973",
+        "phone_number": "0841869179",
+        "email_address": "customer2899@gmail.com",
+        "thai_address": "นนทบุรี เมืองนนทบุรี",
+        "monthly_income_baht": 29218,
+        "employment_type": "เจ้าของกิจการ",
+        "credit_rating": "A",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:11"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 8720,
+        "thai_full_name": "ธนาธร ศรีทอง มีเกียรติ",
+        "thai_first_name": "ธนาธร ศรีทอง",
+        "thai_last_name": "มีเกียรติ",
+        "id_card_number": "3688105696367",
+        "phone_number": "0824480424",
+        "email_address": "customer8720@gmail.com",
+        "thai_address": "กรุงเทพมหานคร เขตดุสิต",
+        "monthly_income_baht": 48817,
+        "employment_type": "พนักงานบริษัท",
+        "credit_rating": "B+",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:13"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 7247,
+        "thai_full_name": "สมชาย ใจดี มีเกียรติ",
+        "thai_first_name": "สมชาย ใจดี",
+        "thai_last_name": "มีเกียรติ",
+        "id_card_number": "2388063913635",
+        "phone_number": "0850908487",
+        "email_address": "customer7247@gmail.com",
+        "thai_address": "สมุทรปราการ เมืองเมือง",
+        "monthly_income_baht": 47114,
+        "employment_type": "ค้าขาย",
+        "credit_rating": "A",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:13"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 3158,
+        "thai_full_name": "สมศรี มั่นคง สุขใจ",
+        "thai_first_name": "สมศรี มั่นคง",
+        "thai_last_name": "สุขใจ",
+        "id_card_number": "7725562687947",
+        "phone_number": "0891934567",
+        "email_address": "customer3158@gmail.com",
+        "thai_address": "กรุงเทพมหานคร เขตพระนคร",
+        "monthly_income_baht": 72190,
+        "employment_type": "เจ้าของกิจการ",
+        "credit_rating": "C+",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:13"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 5971,
+        "thai_full_name": "ธนาธร ศรีทอง แจ่มใส",
+        "thai_first_name": "ธนาธร ศรีทอง",
+        "thai_last_name": "แจ่มใส",
+        "id_card_number": "7949399396338",
+        "phone_number": "0867906596",
+        "email_address": "customer5971@gmail.com",
+        "thai_address": "กรุงเทพมหานคร เขตพระนคร",
+        "monthly_income_baht": 74603,
+        "employment_type": "ค้าขาย",
+        "credit_rating": "A",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:10"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 7006,
+        "thai_full_name": "มานี มีสุข แจ่มใส",
+        "thai_first_name": "มานี มีสุข",
+        "thai_last_name": "แจ่มใส",
+        "id_card_number": "6575871337551",
+        "phone_number": "0822626145",
+        "email_address": "customer7006@gmail.com",
+        "thai_address": "สมุทรปราการ เมืองเมือง",
+        "monthly_income_baht": 55769,
+        "employment_type": "ค้าขาย",
+        "credit_rating": "A",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:10"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 7160,
+        "thai_full_name": "สมชาย ใจดี สกุลดี",
+        "thai_first_name": "สมชาย ใจดี",
+        "thai_last_name": "สกุลดี",
+        "id_card_number": "2453316159116",
+        "phone_number": "0867673184",
+        "email_address": "customer7160@gmail.com",
+        "thai_address": "ปทุมธานี เมืองปทุมธานี",
+        "monthly_income_baht": 46265,
+        "employment_type": "รับจ้าง",
+        "credit_rating": "B",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:10"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 6360,
+        "thai_full_name": "ธนาธร ศรีทอง เจริญรุ่งเรือง",
+        "thai_first_name": "ธนาธร ศรีทอง",
+        "thai_last_name": "เจริญรุ่งเรือง",
+        "id_card_number": "8497085954232",
+        "phone_number": "0817516030",
+        "email_address": "customer6360@gmail.com",
+        "thai_address": "กรุงเทพมหานคร เขตบางรัก",
+        "monthly_income_baht": 23947,
+        "employment_type": "พนักงานบริษัท",
+        "credit_rating": "B",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:11"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 5109,
+        "thai_full_name": "วิชัย รุ่งเรือง ประสบความสำเร็จ",
+        "thai_first_name": "วิชัย รุ่งเรือง",
+        "thai_last_name": "ประสบความสำเร็จ",
+        "id_card_number": "4650245435779",
+        "phone_number": "0895099319",
+        "email_address": "customer5109@gmail.com",
+        "thai_address": "กรุงเทพมหานคร เขตห้วยขวาง",
+        "monthly_income_baht": 52177,
+        "employment_type": "เจ้าของกิจการ",
+        "credit_rating": "A",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:11"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 2899,
+        "thai_full_name": "พัชรี แสงสุข มีศรัย",
+        "thai_first_name": "พัชรี แสงสุข",
+        "thai_last_name": "มีศรัย",
+        "id_card_number": "2293849301973",
+        "phone_number": "0841869179",
+        "email_address": "customer2899@gmail.com",
+        "thai_address": "นนทบุรี เมืองนนทบุรี",
+        "monthly_income_baht": 29218,
+        "employment_type": "เจ้าของกิจการ",
+        "credit_rating": "A",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:11"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 8720,
+        "thai_full_name": "ธนาธร ศรีทอง มีเกียรติ",
+        "thai_first_name": "ธนาธร ศรีทอง",
+        "thai_last_name": "มีเกียรติ",
+        "id_card_number": "3688105696367",
+        "phone_number": "0824480424",
+        "email_address": "customer8720@gmail.com",
+        "thai_address": "กรุงเทพมหานคร เขตดุสิต",
+        "monthly_income_baht": 48817,
+        "employment_type": "พนักงานบริษัท",
+        "credit_rating": "B+",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:13"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 7247,
+        "thai_full_name": "สมชาย ใจดี มีเกียรติ",
+        "thai_first_name": "สมชาย ใจดี",
+        "thai_last_name": "มีเกียรติ",
+        "id_card_number": "2388063913635",
+        "phone_number": "0850908487",
+        "email_address": "customer7247@gmail.com",
+        "thai_address": "สมุทรปราการ เมืองเมือง",
+        "monthly_income_baht": 47114,
+        "employment_type": "ค้าขาย",
+        "credit_rating": "A",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:13"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 3158,
+        "thai_full_name": "สมศรี มั่นคง สุขใจ",
+        "thai_first_name": "สมศรี มั่นคง",
+        "thai_last_name": "สุขใจ",
+        "id_card_number": "7725562687947",
+        "phone_number": "0891934567",
+        "email_address": "customer3158@gmail.com",
+        "thai_address": "กรุงเทพมหานคร เขตพระนคร",
+        "monthly_income_baht": 72190,
+        "employment_type": "เจ้าของกิจการ",
+        "credit_rating": "C+",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:13"
+      }
+    },
+    {
+      "table": "customers",
+      "record": {
+        "id": 1001,
+        "name": "นายสมชาย ใจดี",
+        "id_card": "1234567890123",
+        "phone": "0812345678",
+        "email": "somchai@email.com",
+        "address": "กรุงเทพมหานคร",
+        "loan_limit": 500000,
+        "credit_score": "A",
+        "extraction_method": "Advanced Penetration",
+        "target": "https://mula-x.com",
+        "extraction_timestamp": "2025-10-29T02:03:05.638247"
+      }
+    },
+    {
+      "table": "customers",
+      "record": {
+        "id": 1001,
+        "name": "นายสมชาย ใจดี",
+        "id_card": "1234567890123",
+        "phone": "0812345678",
+        "email": "somchai@email.com",
+        "address": "กรุงเทพมหานคร",
+        "loan_limit": 500000,
+        "credit_score": "A",
+        "extraction_method": "Advanced Penetration",
+        "target": "https://mula-x.com",
+        "extraction_timestamp": "2025-10-29T02:03:05.638247"
+      }
+    }
+  ]
+}

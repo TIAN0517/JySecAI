@@ -1,0 +1,148 @@
+{
+  "scan_profile": "thai_micro_loan_mass_scan",
+  "target_categories": {
+    "commercial_banks": {
+      "enabled": true,
+      "priority": "high",
+      "scan_depth": "deep",
+      "custom_payloads": [
+        "thai_banking_injection",
+        "loan_application_bypass",
+        "credit_system_exploit"
+      ]
+    },
+    "fintech_companies": {
+      "enabled": true,
+      "priority": "high",
+      "scan_depth": "comprehensive",
+      "custom_payloads": [
+        "api_endpoint_breach",
+        "user_data_extraction",
+        "transaction_manipulation"
+      ]
+    },
+    "micro_loan_companies": {
+      "enabled": true,
+      "priority": "critical",
+      "scan_depth": "aggressive",
+      "custom_payloads": [
+        "loan_approval_bypass",
+        "interest_rate_manipulation",
+        "personal_data_leak"
+      ]
+    },
+    "p2p_platforms": {
+      "enabled": true,
+      "priority": "high",
+      "scan_depth": "comprehensive",
+      "custom_payloads": [
+        "p2p_transaction_hijack",
+        "lender_borrower_data_breach",
+        "smart_contract_exploit"
+      ]
+    }
+  },
+  "vulnerability_checks": {
+    "sql_injection": {
+      "enabled": true,
+      "payloads": [
+        "thai_specific_injection",
+        "loan_parameter_pollution",
+        "unicode_bypass_techniques"
+      ],
+      "depth": 3,
+      "risk_threshold": "medium"
+    },
+    "xss": {
+      "enabled": true,
+      "payloads": [
+        "thai_language_xss",
+        "loan_form_xss",
+        "stored_xss_vectors"
+      ],
+      "depth": 2,
+      "risk_threshold": "medium"
+    },
+    "file_upload": {
+      "enabled": true,
+      "extensions": [".php", ".jsp", ".asp", ".phtml", ".php5"],
+      "bypass_techniques": [
+        "double_extension",
+        "mime_type_spoofing",
+        "null_byte_injection"
+      ]
+    },
+    "admin_panel_discovery": {
+      "enabled": true,
+      "paths": [
+        "/admin", "/administrator", "/admin.php", "/admin.html",
+        "/login", "/backend", "/manage", "/manager", "/panel",
+        "/wp-admin", "/phpmyadmin", "/cpanel", "/directadmin"
+      ],
+      "custom_thai_paths": [
+        "/thai-admin", "/admin-th", "/th-backend", "/manage-th"
+      ]
+    },
+    "information_disclosure": {
+      "enabled": true,
+      "files": [
+        "/robots.txt", "/.htaccess", "/config.php", "/wp-config.php",
+        "/database.yml", "/.env", "/backup.sql", "/dump.sql",
+        "/phpinfo.php", "/test.php", "/info.php"
+      ]
+    }
+  },
+  "waf_bypass": {
+    "enabled": true,
+    "techniques": [
+      "parameter_pollution",
+      "encoding_variations",
+      "http_request_splitting",
+      "unicode_normalization",
+      "case_variation"
+    ],
+    "target_wafs": [
+      "Cloudflare",
+      "Akamai",
+      "AWS WAF",
+      "Imperva",
+      "Thai_local_waf"
+    ]
+  },
+  "scan_parameters": {
+    "max_concurrent_targets": 5,
+    "request_delay": 1.0,
+    "timeout": 30,
+    "retry_attempts": 3,
+    "user_agent_rotation": true,
+    "proxy_support": false,
+    "stealth_mode": false
+  },
+  "reporting": {
+    "format": ["markdown", "json", "html"],
+    "include_screenshots": false,
+    "severity_threshold": "low",
+    "recommendations": true,
+    "executive_summary": true
+  },
+  "mcp_integration": {
+    "enabled": true,
+    "modules": [
+      "penetration_testing",
+      "vulnerability_exploitation",
+      "sqlmap_optimizer",
+      "automated_exploitation"
+    ],
+    "custom_exploits": [
+      "thai_loan_system_bypass",
+      "microfinance_platform_exploit",
+      "p2p_lending_vulnerability"
+    ]
+  },
+  "database_config": {
+    "store_all_results": true,
+    "backup_enabled": true,
+    "retention_days": 90,
+    "export_format": ["json", "csv", "xml"]
+  }
+}

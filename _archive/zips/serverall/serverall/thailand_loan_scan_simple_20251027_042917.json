@@ -1,0 +1,76 @@
+[
+  {
+    "url": "https://www.kasikornbank.com",
+    "status_code": 200,
+    "content_length": 2229,
+    "server": "AkamaiGHost",
+    "content_type": "text/html",
+    "thai_keywords_detected": false,
+    "response_time": 0.53374,
+    "error_handling": [
+      "error"
+    ],
+    "name": "Kasikornbank",
+    "category": "commercial_bank",
+    "timestamp": "2025-10-27T04:29:15.480157",
+    "risk_level": "LOW",
+    "risk_score": 2,
+    "vulnerabilities": [
+      "error"
+    ]
+  },
+  {
+    "url": "https://www.bangkokbank.com",
+    "status_code": 200,
+    "content_length": 200641,
+    "server": "",
+    "content_type": "text/html; charset=utf-8",
+    "thai_keywords_detected": true,
+    "response_time": 1.084,
+    "information_disclosure": [
+      "jsp/"
+    ],
+    "error_handling": [
+      "error"
+    ],
+    "name": "Bangkok Bank",
+    "category": "commercial_bank",
+    "timestamp": "2025-10-27T04:29:16.648110",
+    "risk_level": "MEDIUM",
+    "risk_score": 7,
+    "vulnerabilities": [
+      "检测到贷款相关关键词",
+      "jsp/",
+      "error"
+    ]
+  },
+  {
+    "url": "https://www.scb.co.th",
+    "status_code": 200,
+    "content_length": 521245,
+    "server": "",
+    "content_type": "text/html; charset=utf-8",
+    "thai_keywords_detected": true,
+    "response_time": 0.048901,
+    "information_disclosure": [
+      "jsp/"
+    ],
+    "error_handling": [
+      "error",
+      "exception",
+      "warning"
+    ],
+    "name": "SCB",
+    "category": "commercial_bank",
+    "timestamp": "2025-10-27T04:29:17.591706",
+    "risk_level": "MEDIUM",
+    "risk_score": 7,
+    "vulnerabilities": [
+      "检测到贷款相关关键词",
+      "jsp/",
+      "error",
+      "exception",
+      "warning"
+    ]
+  }
+]

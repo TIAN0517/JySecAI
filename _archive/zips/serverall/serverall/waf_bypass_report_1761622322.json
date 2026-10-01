@@ -1,0 +1,34 @@
+{
+  "https://peacoop.or.th": {
+    "target": "https://peacoop.or.th",
+    "waf_type": "Wordfence",
+    "sql_injection_bypasses": [],
+    "xss_bypasses": [],
+    "command_injection_bypasses": [],
+    "test_timestamp": 1761622288.317136
+  },
+  "https://mula-x.com/": {
+    "target": "https://mula-x.com/",
+    "waf_type": "None",
+    "sql_injection_bypasses": [],
+    "xss_bypasses": [],
+    "command_injection_bypasses": [],
+    "test_timestamp": 1761622305.994978
+  },
+  "https://www.hanshin.com.tw/": {
+    "target": "https://www.hanshin.com.tw/",
+    "waf_type": "None",
+    "sql_injection_bypasses": [],
+    "xss_bypasses": [],
+    "command_injection_bypasses": [],
+    "test_timestamp": 1761622309.219613
+  },
+  "https://ngoenmun.com/": {
+    "target": "https://ngoenmun.com/",
+    "waf_type": "None",
+    "sql_injection_bypasses": [],
+    "xss_bypasses": [],
+    "command_injection_bypasses": [],
+    "test_timestamp": 1761622319.481457
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "scan_type": "Quick XSS Validation",
+  "timestamp": "2025-10-28 08:34:56",
+  "results": [
+    {
+      "target": "http://www.siamloan.com",
+      "vulnerabilities": [],
+      "vulnerable": false,
+      "scan_time": "2025-10-28 08:34:11"
+    },
+    {
+      "target": "http://www.finnomena.com",
+      "vulnerabilities": [],
+      "vulnerable": false,
+      "scan_time": "2025-10-28 08:34:39"
+    },
+    {
+      "target": "https://www.quickcash.co.th",
+      "vulnerabilities": [],
+      "vulnerable": false,
+      "scan_time": "2025-10-28 08:34:56"
+    }
+  ],
+  "summary": {
+    "total_targets": 3,
+    "vulnerable_targets": 0,
+    "total_vulnerabilities": 0
+  }
+}

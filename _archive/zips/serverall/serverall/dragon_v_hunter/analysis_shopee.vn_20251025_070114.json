@@ -1,0 +1,179 @@
+{
+  "target_url": "https://shopee.vn",
+  "analysis_time": "2025-10-25T07:00:58.682554",
+  "connectivity": {
+    "status_code": 200,
+    "response_time": 1.511441,
+    "content_length": 75123,
+    "server": "SGW",
+    "content_type": "text/html; charset=utf-8"
+  },
+  "technology": {
+    "technologies": [],
+    "script_count": 16,
+    "css_count": 1,
+    "title": "No title"
+  },
+  "security_headers": {
+    "X-Frame-Options": "Missing",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "Missing",
+    "Content-Security-Policy": "frame-ancestors 'self' *.wallet.airpay.vn *.shopee.kr *.airpay.vn *.shopeemobile.com *.shopee.vn *.shopee.cn *.shopee.io *.facebook.com *.dailyshopee.vn https://bela-portal.festiware.com https://belapengadaan.lkpp.go.id https://lkpp-portal.festiware.com; ",
+    "Strict-Transport-Security": "max-age=31536000",
+    "Server": "SGW",
+    "X-Powered-By": "Missing"
+  },
+  "sql_injection": [
+    {
+      "parameter": "search",
+      "payload": "' OR '1'='1",
+      "response_time": 0.3035590648651123,
+      "status_code": 200,
+      "response_size": 75123,
+      "detected_issues": [],
+      "potential_vulnerability": false
+    },
+    {
+      "parameter": "q",
+      "payload": "' UNION SELECT NULL--",
+      "response_time": 0.5982377529144287,
+      "status_code": 200,
+      "response_size": 75123,
+      "detected_issues": [],
+      "potential_vulnerability": false
+    },
+    {
+      "parameter": "id",
+      "payload": "' AND 1=1--",
+      "response_time": 0.5948071479797363,
+      "status_code": 200,
+      "response_size": 75123,
+      "detected_issues": [],
+      "potential_vulnerability": false
+    },
+    {
+      "parameter": "keyword",
+      "payload": "' WAITFOR DELAY '0:0:5'--",
+      "response_time": 0.5983779430389404,
+      "status_code": 200,
+      "response_size": 75123,
+      "detected_issues": [],
+      "potential_vulnerability": false
+    },
+    {
+      "parameter": "category",
+      "payload": "' AND 1=CONVERT(INT,(SELECT@@VERSION))--",
+      "response_time": 0.6012043952941895,
+      "status_code": 200,
+      "response_size": 75123,
+      "detected_issues": [],
+      "potential_vulnerability": false
+    }
+  ],
+  "xss": [
+    {
+      "payload": "<script>alert('XSS')</script>",
+      "detected": false,
+      "response_size": 75123
+    },
+    {
+      "payload": "javascript:alert('XSS')",
+      "detected": false,
+      "response_size": 75123
+    },
+    {
+      "payload": "<img src=x onerror=alert('XSS')>",
+      "detected": false,
+      "response_size": 75123
+    }
+  ],
+  "directories": [
+    {
+      "directory": "admin",
+      "status_code": 200,
+      "size": 75123
+    },
+    {
+      "directory": "admin/login",
+      "status_code": 200,
+      "size": 75123
+    },
+    {
+      "directory": "administrator",
+      "status_code": 200,
+      "size": 75123
+    },
+    {
+      "directory": "login",
+      "status_code": 200,
+      "size": 75123
+    },
+    {
+      "directory": "wp-admin",
+      "status_code": 200,
+      "size": 75123
+    },
+    {
+      "directory": "cpanel",
+      "status_code": 200,
+      "size": 75123
+    },
+    {
+      "directory": "phpmyadmin",
+      "status_code": 200,
+      "size": 75123
+    },
+    {
+      "directory": "backup",
+      "status_code": 200,
+      "size": 75123
+    },
+    {
+      "directory": "config",
+      "status_code": 200,
+      "size": 75123
+    },
+    {
+      "directory": "install",
+      "status_code": 200,
+      "size": 75123
+    }
+  ],
+  "files": [
+    {
+      "file": "robots.txt",
+      "status_code": 200,
+      "size": 1808
+    },
+    {
+      "file": ".git/config",
+      "status_code": 200,
+      "size": 75123
+    },
+    {
+      "file": "backup.sql",
+      "status_code": 200,
+      "size": 75123
+    },
+    {
+      "file": "config.php",
+      "status_code": 200,
+      "size": 75123
+    },
+    {
+      "file": "wp-config.php",
+      "status_code": 200,
+      "size": 75123
+    }
+  ],
+  "forms": [],
+  "risk_assessment": {
+    "risk_score": 55,
+    "risk_level": "HIGH",
+    "risk_factors": [
+      "缂哄皯瀹夊叏澶撮儴: X-Frame-Options, X-XSS-Protection, X-Powered-By",
+      "发现开放目录: 10个"
+    ],
+    "total_tests_performed": false
+  }
+}

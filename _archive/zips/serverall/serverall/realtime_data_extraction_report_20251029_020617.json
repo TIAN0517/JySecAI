@@ -1,0 +1,1122 @@
+{
+  "extraction_info": {
+    "timestamp": "20251029_020617",
+    "tool": "Realtime Data Extractor v1.0",
+    "operation_time": "2025-10-29T02:06:17.194663"
+  },
+  "extraction_results": {
+    "total_records_extracted": 11,
+    "unique_sources": 2,
+    "targets_success": 3,
+    "data_sources": [
+      "WordPress API",
+      "Sensitive HTML"
+    ],
+    "successful_targets": [
+      "https://ngoenmun.com",
+      "https://mula-x.com",
+      "https://peacoop.or.th"
+    ]
+  },
+  "extracted_data": [
+    {
+      "source": "WordPress API",
+      "endpoint": "/wp-json/wp/v2/posts?per_page=5",
+      "data": {
+        "id": 12021,
+        "date": "2025-10-28T23:49:46",
+        "date_gmt": "2025-10-28T16:49:46",
+        "guid": {
+          "rendered": "https://peacoop.or.th/?p=12021"
+        },
+        "modified": "2025-10-28T23:49:46",
+        "modified_gmt": "2025-10-28T16:49:46",
+        "slug": "%e0%b9%80%e0%b8%a3%e0%b8%b7%e0%b9%88%e0%b8%ad%e0%b8%87-%e0%b8%aa%e0%b8%ad%e0%b8%9a%e0%b8%a3%e0%b8%b2%e0%b8%84%e0%b8%b2%e0%b8%88%e0%b9%89%e0%b8%b2%e0%b8%87%e0%b8%9e%e0%b8%b4%e0%b8%a1%e0%b8%9e%e0%b9%8c",
+        "status": "publish",
+        "type": "post",
+        "link": "https://peacoop.or.th/%e0%b9%80%e0%b8%a3%e0%b8%b7%e0%b9%88%e0%b8%ad%e0%b8%87-%e0%b8%aa%e0%b8%ad%e0%b8%9a%e0%b8%a3%e0%b8%b2%e0%b8%84%e0%b8%b2%e0%b8%88%e0%b9%89%e0%b8%b2%e0%b8%87%e0%b8%9e%e0%b8%b4%e0%b8%a1%e0%b8%9e%e0%b9%8c/",
+        "title": {
+          "rendered": "เรื่อง สอบราคาจ้างพิมพ์หนังสือ"
+        },
+        "content": {
+          "rendered": "<style>.kb-image12021_06cdd3-77.kb-image-is-ratio-size, .kb-image12021_06cdd3-77 .kb-image-is-ratio-size{max-width:1169px;width:100%;}.wp-block-kadence-column > .kt-inside-inner-col > .kb-image12021_06cdd3-77.kb-image-is-ratio-size, .wp-block-kadence-column > .kt-inside-inner-col > .kb-image12021_06cdd3-77 .kb-image-is-ratio-size{align-self:unset;}.kb-image12021_06cdd3-77 figure{max-width:1169px;}.kb-image12021_06cdd3-77 .image-is-svg, .kb-image12021_06cdd3-77 .image-is-svg img{width:100%;}.kb-image12021_06cdd3-77 .kb-image-has-overlay:after{opacity:0.3;}</style>\n<div class=\"wp-block-kadence-image kb-image12021_06cdd3-77\"><figure class=\"aligncenter size-full\"><img loading=\"lazy\" decoding=\"async\" width=\"1059\" height=\"1498\" src=\"https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-1-pdf.jpg\" alt=\"\" class=\"kb-img wp-image-12023\"/></figure></div>\n\n\n\n<div class=\"wp-block-file\"><a id=\"wp-block-file--media-6051906a-f521-446f-b0f2-e7a356317207\" href=\"https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569.pdf\">ประกาศพิมพ์หนังสือรายงานกิจการปี 2569</a><a href=\"https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569.pdf\" class=\"wp-block-file__button wp-element-button\" download aria-describedby=\"wp-block-file--media-6051906a-f521-446f-b0f2-e7a356317207\">Download</a></div>\n",
+          "protected": false
+        },
+        "excerpt": {
+          "rendered": "",
+          "protected": false
+        },
+        "author": 7,
+        "featured_media": 0,
+        "comment_status": "closed",
+        "ping_status": "closed",
+        "sticky": false,
+        "template": "",
+        "format": "standard",
+        "meta": {
+          "_acf_changed": false,
+          "footnotes": ""
+        },
+        "categories": [
+          12
+        ],
+        "tags": [],
+        "class_list": [
+          "post-12021",
+          "post",
+          "type-post",
+          "status-publish",
+          "format-standard",
+          "hentry",
+          "category-announcements"
+        ],
+        "acf": [],
+        "_links": {
+          "self": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/posts/12021",
+              "targetHints": {
+                "allow": [
+                  "GET"
+                ]
+              }
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/posts"
+            }
+          ],
+          "about": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/types/post"
+            }
+          ],
+          "author": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/users/7"
+            }
+          ],
+          "replies": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/comments?post=12021"
+            }
+          ],
+          "version-history": [
+            {
+              "count": 1,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/posts/12021/revisions"
+            }
+          ],
+          "predecessor-version": [
+            {
+              "id": 12024,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/posts/12021/revisions/12024"
+            }
+          ],
+          "wp:attachment": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/media?parent=12021"
+            }
+          ],
+          "wp:term": [
+            {
+              "taxonomy": "category",
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/categories?post=12021"
+            },
+            {
+              "taxonomy": "post_tag",
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/tags?post=12021"
+            }
+          ],
+          "curies": [
+            {
+              "name": "wp",
+              "href": "https://api.w.org/{rel}",
+              "templated": true
+            }
+          ]
+        }
+      },
+      "extraction_time": "2025-10-29T02:06:12.355359",
+      "target": "https://peacoop.or.th"
+    },
+    {
+      "source": "WordPress API",
+      "endpoint": "/wp-json/wp/v2/posts?per_page=5",
+      "data": {
+        "id": 12015,
+        "date": "2025-10-27T16:57:29",
+        "date_gmt": "2025-10-27T09:57:29",
+        "guid": {
+          "rendered": "https://peacoop.or.th/?p=12015"
+        },
+        "modified": "2025-10-27T16:59:02",
+        "modified_gmt": "2025-10-27T09:59:02",
+        "slug": "loan-officer",
+        "status": "publish",
+        "type": "post",
+        "link": "https://peacoop.or.th/loan-officer/",
+        "title": {
+          "rendered": "รายชื่อผู้มีสิทธิสอบแข่งขันเจ้าหน้าที่สินเชื่อ"
+        },
+        "content": {
+          "rendered": "<style>.kb-image12015_e502ef-50.kb-image-is-ratio-size, .kb-image12015_e502ef-50 .kb-image-is-ratio-size{max-width:1169px;width:100%;}.wp-block-kadence-column > .kt-inside-inner-col > .kb-image12015_e502ef-50.kb-image-is-ratio-size, .wp-block-kadence-column > .kt-inside-inner-col > .kb-image12015_e502ef-50 .kb-image-is-ratio-size{align-self:unset;}.kb-image12015_e502ef-50{max-width:1169px;}.image-is-svg.kb-image12015_e502ef-50{-webkit-flex:0 1 100%;flex:0 1 100%;}.image-is-svg.kb-image12015_e502ef-50 img{width:100%;}.kb-image12015_e502ef-50 .kb-image-has-overlay:after{opacity:0.3;}</style>\n<figure class=\"wp-block-kadence-image kb-image12015_e502ef-50 size-full\"><img loading=\"lazy\" decoding=\"async\" width=\"1058\" height=\"1497\" src=\"https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศ-รายชื่อผู้มีสิทธิสอบแข่งขันเจ้าหน-pdf.jpg\" alt=\"\" class=\"kb-img wp-image-12016\"/></figure>\n\n\n\n<div class=\"wp-block-file\"><a id=\"wp-block-file--media-3d988650-6750-4b6f-b353-2b61a00997e5\" href=\"https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศ-รายชื่อผู้มีสิทธิสอบแข่งขันเจ้าหน.pdf\">ประกาศ รายชื่อผู้มีสิทธิสอบแข่งขันเจ้าหน้าที่สินเชื่อ</a><a href=\"https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศ-รายชื่อผู้มีสิทธิสอบแข่งขันเจ้าหน.pdf\" class=\"wp-block-file__button wp-element-button\" download aria-describedby=\"wp-block-file--media-3d988650-6750-4b6f-b353-2b61a00997e5\">Download</a></div>\n",
+          "protected": false
+        },
+        "excerpt": {
+          "rendered": "",
+          "protected": false
+        },
+        "author": 7,
+        "featured_media": 0,
+        "comment_status": "closed",
+        "ping_status": "closed",
+        "sticky": false,
+        "template": "",
+        "format": "standard",
+        "meta": {
+          "_acf_changed": false,
+          "footnotes": ""
+        },
+        "categories": [
+          12
+        ],
+        "tags": [],
+        "class_list": [
+          "post-12015",
+          "post",
+          "type-post",
+          "status-publish",
+          "format-standard",
+          "hentry",
+          "category-announcements"
+        ],
+        "acf": [],
+        "_links": {
+          "self": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/posts/12015",
+              "targetHints": {
+                "allow": [
+                  "GET"
+                ]
+              }
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/posts"
+            }
+          ],
+          "about": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/types/post"
+            }
+          ],
+          "author": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/users/7"
+            }
+          ],
+          "replies": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/comments?post=12015"
+            }
+          ],
+          "version-history": [
+            {
+              "count": 1,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/posts/12015/revisions"
+            }
+          ],
+          "predecessor-version": [
+            {
+              "id": 12017,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/posts/12015/revisions/12017"
+            }
+          ],
+          "wp:attachment": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/media?parent=12015"
+            }
+          ],
+          "wp:term": [
+            {
+              "taxonomy": "category",
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/categories?post=12015"
+            },
+            {
+              "taxonomy": "post_tag",
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/tags?post=12015"
+            }
+          ],
+          "curies": [
+            {
+              "name": "wp",
+              "href": "https://api.w.org/{rel}",
+              "templated": true
+            }
+          ]
+        }
+      },
+      "extraction_time": "2025-10-29T02:06:12.355359",
+      "target": "https://peacoop.or.th"
+    },
+    {
+      "source": "WordPress API",
+      "endpoint": "/wp-json/wp/v2/posts?per_page=5",
+      "data": {
+        "id": 12003,
+        "date": "2025-10-27T15:24:20",
+        "date_gmt": "2025-10-27T08:24:20",
+        "guid": {
+          "rendered": "https://peacoop.or.th/?p=12003"
+        },
+        "modified": "2025-10-27T15:28:37",
+        "modified_gmt": "2025-10-27T08:28:37",
+        "slug": "postfootball",
+        "status": "publish",
+        "type": "post",
+        "link": "https://peacoop.or.th/postfootball/",
+        "title": {
+          "rendered": "ประกาศ รายชื่อบุตรหลานสมาชิก โครงการ “ส่งเสริมสุขภาพพลานามัยให้กับบุตรหลานสมาชิกสหกรณ์” กฟน.1 และ กฟฉ.1"
+        },
+        "content": {
+          "rendered": "\n<div class=\"wp-block-columns is-layout-flex wp-container-core-columns-is-layout-9d6595d7 wp-block-columns-is-layout-flex\">\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\"><style>.kb-image12003_c908a8-e2 .kb-image-has-overlay:after{opacity:0.3;}</style>\n<figure class=\"wp-block-kadence-image kb-image12003_c908a8-e2 size-full\"><img loading=\"lazy\" decoding=\"async\" width=\"1058\" height=\"1497\" src=\"https://peacoop.or.th/wp-content/uploads/2025/10/ฟุตบอล-เชียงใหม่-3-pdf.jpg\" alt=\"\" class=\"kb-img wp-image-12012\"/></figure>\n</div>\n\n\n\n<div class=\"wp-block-column is-layout-flow wp-block-column-is-layout-flow\"><style>.kb-image12003_3426f8-fc .kb-image-has-overlay:after{opacity:0.3;}</style>\n<figure class=\"wp-block-kadence-image kb-image12003_3426f8-fc size-full\"><img loading=\"lazy\" decoding=\"async\" width=\"1058\" height=\"1497\" src=\"https://peacoop.or.th/wp-content/uploads/2025/10/ฟุตบอล-อุดรธานี-1-pdf.jpg\" alt=\"\" class=\"kb-img wp-image-12013\"/></figure>\n</div>\n</div>\n\n\n\n<div class=\"wp-block-file\"><a id=\"wp-block-file--media-e2732351-7e15-431c-a12b-f5352154bed7\" href=\"https://peacoop.or.th/wp-content/uploads/2025/10/ฟุตบอล-เชียงใหม่.pdf\">กฟน.1 (จ.เชียงใหม่) วันเสาร์ที่ 8 พฤศจิกายน 2568</a><a href=\"https://peacoop.or.th/wp-content/uploads/2025/10/ฟุตบอล-เชียงใหม่.pdf\" class=\"wp-block-file__button wp-element-button\" download aria-describedby=\"wp-block-file--media-e2732351-7e15-431c-a12b-f5352154bed7\">Download</a></div>\n\n\n\n<div class=\"wp-block-file\"><a id=\"wp-block-file--media-715f1890-d6ed-4e43-8396-f70e51d3c41c\" href=\"https://peacoop.or.th/wp-content/uploads/2025/10/ฟุตบอล-อุดรธานี.pdf\">กฟฉ.1 (จ.อุดรธานี) วันศุกร์ที่ 14 พฤศจิกายน 2568</a><a href=\"https://peacoop.or.th/wp-content/uploads/2025/10/ฟุตบอล-อุดรธานี.pdf\" class=\"wp-block-file__button wp-element-button\" download aria-describedby=\"wp-block-file--media-715f1890-d6ed-4e43-8396-f70e51d3c41c\">Download</a></div>\n\n\n\n<p></p>\n",
+          "protected": false
+        },
+        "excerpt": {
+          "rendered": "",
+          "protected": false
+        },
+        "author": 7,
+        "featured_media": 0,
+        "comment_status": "closed",
+        "ping_status": "closed",
+        "sticky": false,
+        "template": "",
+        "format": "standard",
+        "meta": {
+          "_acf_changed": false,
+          "footnotes": ""
+        },
+        "categories": [
+          12
+        ],
+        "tags": [],
+        "class_list": [
+          "post-12003",
+          "post",
+          "type-post",
+          "status-publish",
+          "format-standard",
+          "hentry",
+          "category-announcements"
+        ],
+        "acf": [],
+        "_links": {
+          "self": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/posts/12003",
+              "targetHints": {
+                "allow": [
+                  "GET"
+                ]
+              }
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/posts"
+            }
+          ],
+          "about": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/types/post"
+            }
+          ],
+          "author": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/users/7"
+            }
+          ],
+          "replies": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/comments?post=12003"
+            }
+          ],
+          "version-history": [
+            {
+              "count": 4,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/posts/12003/revisions"
+            }
+          ],
+          "predecessor-version": [
+            {
+              "id": 12014,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/posts/12003/revisions/12014"
+            }
+          ],
+          "wp:attachment": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/media?parent=12003"
+            }
+          ],
+          "wp:term": [
+            {
+              "taxonomy": "category",
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/categories?post=12003"
+            },
+            {
+              "taxonomy": "post_tag",
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/tags?post=12003"
+            }
+          ],
+          "curies": [
+            {
+              "name": "wp",
+              "href": "https://api.w.org/{rel}",
+              "templated": true
+            }
+          ]
+        }
+      },
+      "extraction_time": "2025-10-29T02:06:12.355359",
+      "target": "https://peacoop.or.th"
+    },
+    {
+      "source": "WordPress API",
+      "endpoint": "/wp-json/wp/v2/pages?per_page=5",
+      "data": {
+        "id": 56,
+        "date": "2025-03-19T17:03:00",
+        "date_gmt": "2025-03-19T10:03:00",
+        "guid": {
+          "rendered": "http://localhost/wordpress/?page_id=56"
+        },
+        "modified": "2025-03-27T12:03:20",
+        "modified_gmt": "2025-03-27T05:03:20",
+        "slug": "home",
+        "status": "publish",
+        "type": "page",
+        "link": "https://peacoop.or.th/",
+        "title": {
+          "rendered": "Home"
+        },
+        "content": {
+          "rendered": "\n<iframe src=\"https://www.youtube-nocookie.com/embed/m1IWOpGcD5Q\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen=\"\"></iframe>\n",
+          "protected": false
+        },
+        "excerpt": {
+          "rendered": "",
+          "protected": false
+        },
+        "author": 3,
+        "featured_media": 0,
+        "parent": 0,
+        "menu_order": 0,
+        "comment_status": "closed",
+        "ping_status": "closed",
+        "template": "",
+        "meta": {
+          "_acf_changed": false,
+          "footnotes": ""
+        },
+        "class_list": [
+          "post-56",
+          "page",
+          "type-page",
+          "status-publish",
+          "hentry"
+        ],
+        "acf": [],
+        "_links": {
+          "self": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/pages/56",
+              "targetHints": {
+                "allow": [
+                  "GET"
+                ]
+              }
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/pages"
+            }
+          ],
+          "about": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/types/page"
+            }
+          ],
+          "author": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/users/3"
+            }
+          ],
+          "replies": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/comments?post=56"
+            }
+          ],
+          "version-history": [
+            {
+              "count": 30,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/pages/56/revisions"
+            }
+          ],
+          "predecessor-version": [
+            {
+              "id": 11647,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/pages/56/revisions/11647"
+            }
+          ],
+          "wp:attachment": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/media?parent=56"
+            }
+          ],
+          "curies": [
+            {
+              "name": "wp",
+              "href": "https://api.w.org/{rel}",
+              "templated": true
+            }
+          ]
+        }
+      },
+      "extraction_time": "2025-10-29T02:06:13.553749",
+      "target": "https://peacoop.or.th"
+    },
+    {
+      "source": "WordPress API",
+      "endpoint": "/wp-json/wp/v2/pages?per_page=5",
+      "data": {
+        "id": 9169,
+        "date": "2024-05-03T10:08:49",
+        "date_gmt": "2024-05-03T03:08:49",
+        "guid": {
+          "rendered": "https://peacoop.or.th/?page_id=9169"
+        },
+        "modified": "2025-07-29T09:17:19",
+        "modified_gmt": "2025-07-29T02:17:19",
+        "slug": "mobileapplication",
+        "status": "publish",
+        "type": "page",
+        "link": "https://peacoop.or.th/mobileapplication/",
+        "title": {
+          "rendered": "คู่มือการใช้งาน Mobile Application &#8220;PEAcoop connect&#8221;"
+        },
+        "content": {
+          "rendered": "<style>.kb-image9169_fec1af-73.kb-image-is-ratio-size, .kb-image9169_fec1af-73 .kb-image-is-ratio-size{max-width:546px;width:100%;}.wp-block-kadence-column > .kt-inside-inner-col > .kb-image9169_fec1af-73.kb-image-is-ratio-size, .wp-block-kadence-column > .kt-inside-inner-col > .kb-image9169_fec1af-73 .kb-image-is-ratio-size{align-self:unset;}.kb-image9169_fec1af-73 figure{max-width:546px;}.kb-image9169_fec1af-73 .image-is-svg, .kb-image9169_fec1af-73 .image-is-svg img{width:100%;}.kb-image9169_fec1af-73 .kb-image-has-overlay:after{opacity:0.3;}</style>\n<div class=\"wp-block-kadence-image kb-image9169_fec1af-73\"><figure class=\"aligncenter size-full\"><img loading=\"lazy\" decoding=\"async\" width=\"794\" height=\"825\" src=\"https://peacoop.or.th/wp-content/uploads/2024/05/Capture-1.png\" alt=\"\" class=\"kb-img wp-image-9332\" srcset=\"https://peacoop.or.th/wp-content/uploads/2024/05/Capture-1.png 794w, https://peacoop.or.th/wp-content/uploads/2024/05/Capture-1-289x300.png 289w, https://peacoop.or.th/wp-content/uploads/2024/05/Capture-1-768x798.png 768w\" sizes=\"auto, (max-width: 794px) 100vw, 794px\" /></figure></div>\n\n\n\n<div class=\"wp-block-file\"><a id=\"wp-block-file--media-5a24eb3b-79f8-48d3-aa90-f42336588731\" href=\"https://peacoop.or.th/wp-content/uploads/2025/07/คู่มือPEAcoop.pdf\">คู่มือการใช้งาน &#8220;Mobile Application &#8220;PEAcoop connect&#8221;</a><a href=\"https://peacoop.or.th/wp-content/uploads/2025/07/คู่มือPEAcoop.pdf\" class=\"wp-block-file__button wp-element-button\" download aria-describedby=\"wp-block-file--media-5a24eb3b-79f8-48d3-aa90-f42336588731\">Download</a></div>\n",
+          "protected": false
+        },
+        "excerpt": {
+          "rendered": "",
+          "protected": false
+        },
+        "author": 3,
+        "featured_media": 0,
+        "parent": 0,
+        "menu_order": 0,
+        "comment_status": "closed",
+        "ping_status": "closed",
+        "template": "",
+        "meta": {
+          "_acf_changed": false,
+          "footnotes": ""
+        },
+        "class_list": [
+          "post-9169",
+          "page",
+          "type-page",
+          "status-publish",
+          "hentry"
+        ],
+        "acf": [],
+        "_links": {
+          "self": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/pages/9169",
+              "targetHints": {
+                "allow": [
+                  "GET"
+                ]
+              }
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/pages"
+            }
+          ],
+          "about": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/types/page"
+            }
+          ],
+          "author": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/users/3"
+            }
+          ],
+          "replies": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/comments?post=9169"
+            }
+          ],
+          "version-history": [
+            {
+              "count": 13,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/pages/9169/revisions"
+            }
+          ],
+          "predecessor-version": [
+            {
+              "id": 11586,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/pages/9169/revisions/11586"
+            }
+          ],
+          "wp:attachment": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/media?parent=9169"
+            }
+          ],
+          "curies": [
+            {
+              "name": "wp",
+              "href": "https://api.w.org/{rel}",
+              "templated": true
+            }
+          ]
+        }
+      },
+      "extraction_time": "2025-10-29T02:06:13.553749",
+      "target": "https://peacoop.or.th"
+    },
+    {
+      "source": "WordPress API",
+      "endpoint": "/wp-json/wp/v2/pages?per_page=5",
+      "data": {
+        "id": 361,
+        "date": "2023-06-20T13:29:00",
+        "date_gmt": "2023-06-20T06:29:00",
+        "guid": {
+          "rendered": "http://newcoop.io/?page_id=361"
+        },
+        "modified": "2023-10-05T12:51:22",
+        "modified_gmt": "2023-10-05T05:51:22",
+        "slug": "deposit-retire",
+        "status": "publish",
+        "type": "page",
+        "link": "https://peacoop.or.th/deposit-retire/",
+        "title": {
+          "rendered": "เงินฝากออมทรัพย์พิเศษสุขเกษียณ"
+        },
+        "content": {
+          "rendered": "<style>.kb-row-layout-id361_5b6331-77 > .kt-row-column-wrap{align-content:center;}:where(.kb-row-layout-id361_5b6331-77 > .kt-row-column-wrap) > .wp-block-kadence-column{justify-content:center;}.kb-row-layout-id361_5b6331-77 > .kt-row-column-wrap{column-gap:var(--global-kb-gap-md, 2rem);row-gap:var(--global-kb-gap-md, 2rem);max-width:1140px;margin-left:auto;margin-right:auto;padding-top:50px;padding-bottom:22px;grid-template-columns:minmax(0, calc(65% - ((var(--global-kb-gap-md, 2rem) * 1 )/2)))minmax(0, calc(35% - ((var(--global-kb-gap-md, 2rem) * 1 )/2)));}.kb-row-layout-id361_5b6331-77{background-color:#ea5959;}.kb-row-layout-id361_5b6331-77 > .kt-row-layout-overlay{opacity:1;background:linear-gradient(13deg, #fff5ca 55%, #ffeba8 55%);}@media all and (max-width: 1024px){.kb-row-layout-id361_5b6331-77 > .kt-row-column-wrap{grid-template-columns:repeat(2, minmax(0, 1fr));}}@media all and (max-width: 767px){.kb-row-layout-id361_5b6331-77 > .kt-row-column-wrap{grid-template-columns:minmax(0, 1fr);}.kb-row-layout-id361_5b6331-77 > .kt-row-column-wrap > .wp-block-kadence-column:nth-of-type(1){order:2;}.kb-row-layout-id361_5b6331-77 > .kt-row-column-wrap > .wp-block-kadence-column:nth-of-type(2){order:1;}.kb-row-layout-id361_5b6331-77 > .kt-row-column-wrap > .wp-block-kadence-column:nth-of-type(3){order:12;}.kb-row-layout-id361_5b6331-77 > .kt-row-column-wrap > .wp-block-kadence-column:nth-of-type(4){order:11;}.kb-row-layout-id361_5b6331-77 > .kt-row-column-wrap > .wp-block-kadence-column:nth-of-type(5){order:22;}.kb-row-layout-id361_5b6331-77 > .kt-row-column-wrap > .wp-block-kadence-column:nth-of-type(6){order:21;}.kb-row-layout-id361_5b6331-77 > .kt-row-column-wrap > .wp-block-kadence-column:nth-of-type(7){order:32;}.kb-row-layout-id361_5b6331-77 > .kt-row-column-wrap > .wp-block-kadence-column:nth-of-type(8){order:31;}}</style><div class=\"kb-row-layout-wrap kb-row-layout-id361_5b6331-77 alignfull kt-row-has-bg wp-block-kadence-rowlayout\"><div class=\"kt-row-layout-overlay kt-row-overlay-gradient\"></div><div class=\"kt-row-column-wrap kt-has-2-columns kt-row-layout-equal kt-tab-layout-equal kt-mobile-layout-row kt-row-valign-middle\">\n<style>.kadence-column361_8ee4b4-2f > .kt-inside-inner-col,.kadence-column361_8ee4b4-2f > .kt-inside-inner-col:before{border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;}.kadence-column361_8ee4b4-2f > .kt-inside-inner-col{column-gap:var(--global-kb-gap-sm, 1rem);}.kadence-column361_8ee4b4-2f > .kt-inside-inner-col{flex-direction:column;}.kadence-column361_8ee4b4-2f > .kt-inside-inner-col > .aligncenter{width:100%;}.kadence-column361_8ee4b4-2f > .kt-inside-inner-col:before{opacity:0.3;}.kadence-column361_8ee4b4-2f{text-align:left;}.kadence-column361_8ee4b4-2f{position:relative;}@media all and (max-width: 1024px){.kadence-column361_8ee4b4-2f > .kt-inside-inner-col{flex-direction:column;justify-content:center;}}@media all and (max-width: 767px){.kadence-column361_8ee4b4-2f{text-align:center;}.kadence-column361_8ee4b4-2f > .kt-inside-inner-col{flex-direction:column;justify-content:center;}}</style>\n<div class=\"wp-block-kadence-column kadence-column361_8ee4b4-2f inner-column-1\"><div class=\"kt-inside-inner-col\"><style>.wp-block-kadence-advancedheading.kt-adv-heading361_019e92-d6, .wp-block-kadence-advancedheading.kt-adv-heading361_019e92-d6[data-kb-block=\"kb-adv-heading361_019e92-d6\"]{margin-top:0px;margin-bottom:10px;font-size:35px;line-height:70px;font-weight:400;font-style:normal;font-family:Prompt;color:#243b53;}.wp-block-kadence-advancedheading.kt-adv-heading361_019e92-d6 mark.kt-highlight, .wp-block-kadence-advancedheading.kt-adv-heading361_019e92-d6[data-kb-block=\"kb-adv-heading361_019e92-d6\"] mark.kt-highlight{font-style:normal;color:#f76a0c;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;}@media all and (max-width: 767px){.wp-block-kadence-advancedheading.kt-adv-heading361_019e92-d6, .wp-block-kadence-advancedheading.kt-adv-heading361_019e92-d6[data-kb-block=\"kb-adv-heading361_019e92-d6\"]{font-size:50px;line-height:60px;}}</style>\n<h4 class=\"kt-adv-heading361_019e92-d6 wp-block-kadence-advancedheading\" data-kb-block=\"kb-adv-heading361_019e92-d6\">เงินฝากออมทรัพย์พิเศษสุขเกษียณ</h4>\n\n\n<style>.wp-block-kadence-advancedheading.kt-adv-heading361_903b7c-30, .wp-block-kadence-advancedheading.kt-adv-heading361_903b7c-30[data-kb-block=\"kb-adv-heading361_903b7c-30\"]{margin-top:15px;margin-bottom:20px;font-weight:400;font-style:normal;font-family:Prompt;letter-spacing:-0.2px;color:#243b53;}.wp-block-kadence-advancedheading.kt-adv-heading361_903b7c-30 mark.kt-highlight, .wp-block-kadence-advancedheading.kt-adv-heading361_903b7c-30[data-kb-block=\"kb-adv-heading361_903b7c-30\"] mark.kt-highlight{font-style:normal;color:#f76a0c;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;}</style>\n<h5 class=\"kt-adv-heading361_903b7c-30 wp-block-kadence-advancedheading\" data-kb-block=\"kb-adv-heading361_903b7c-30\">สำหรับสมาชิกที่เกษียณอายุ สมาชิกที่เข้าร่วมโครงการร่วมใจจากองค์กร และสมาชิกที่ลาออกจากองค์กร (กฟภ., สอ.กฟภ.) ตั้งแต่ปี 2553 เป็นต้นไป อัตราดอกเบี้ย 3.75% ต่อปี</h5>\n\n\n<style>.wp-block-kadence-advancedbtn.kb-btns361_c12d44-0f{gap:15px;justify-content:flex-start;align-items:center;}.kt-btns361_c12d44-0f .kt-button{font-weight:normal;font-style:normal;}@media all and (max-width: 767px){.wp-block-kadence-advancedbtn.kb-btns361_c12d44-0f{justify-content:center;}}</style>\n<div class=\"wp-block-kadence-advancedbtn kb-buttons-wrap kb-btns361_c12d44-0f\"><style>ul.menu .wp-block-kadence-advancedbtn .kb-btn361_23a08a-47.kb-button{width:initial;}.wp-block-kadence-advancedbtn .kb-btn361_23a08a-47.kb-button{color:#ffffff;background:#243b53;font-size:16px;font-family:Montserrat;font-weight:600;border-top-color:#243b53;border-top-style:solid;border-right-color:#243b53;border-right-style:solid;border-bottom-color:#243b53;border-bottom-style:solid;border-left-color:#243b53;border-left-style:solid;}.wp-block-kadence-advancedbtn .kb-btn361_23a08a-47.kb-button:hover, .wp-block-kadence-advancedbtn .kb-btn361_23a08a-47.kb-button:focus{color:#ffffff;background:#334e68;border-top-color:#334e68;border-top-style:solid;border-right-color:#334e68;border-right-style:solid;border-bottom-color:#334e68;border-bottom-style:solid;border-left-color:#334e68;border-left-style:solid;}@media all and (max-width: 1024px){.wp-block-kadence-advancedbtn .kb-btn361_23a08a-47.kb-button{border-top-color:#243b53;border-top-style:solid;border-right-color:#243b53;border-right-style:solid;border-bottom-color:#243b53;border-bottom-style:solid;border-left-color:#243b53;border-left-style:solid;}}@media all and (max-width: 1024px){.wp-block-kadence-advancedbtn .kb-btn361_23a08a-47.kb-button:hover, .wp-block-kadence-advancedbtn .kb-btn361_23a08a-47.kb-button:focus{border-top-color:#334e68;border-top-style:solid;border-right-color:#334e68;border-right-style:solid;border-bottom-color:#334e68;border-bottom-style:solid;border-left-color:#334e68;border-left-style:solid;}}@media all and (max-width: 767px){.wp-block-kadence-advancedbtn .kb-btn361_23a08a-47.kb-button{border-top-color:#243b53;border-top-style:solid;border-right-color:#243b53;border-right-style:solid;border-bottom-color:#243b53;border-bottom-style:solid;border-left-color:#243b53;border-left-style:solid;}.wp-block-kadence-advancedbtn .kb-btn361_23a08a-47.kb-button:hover, .wp-block-kadence-advancedbtn .kb-btn361_23a08a-47.kb-button:focus{border-top-color:#334e68;border-top-style:solid;border-right-color:#334e68;border-right-style:solid;border-bottom-color:#334e68;border-bottom-style:solid;border-left-color:#334e68;border-left-style:solid;}}</style><a class=\"kb-button kt-button button kb-btn361_23a08a-47 kt-btn-size-standard kt-btn-width-type-auto kb-btn-global-outline kt-btn-has-text-true kt-btn-has-svg-true wp-block-kadence-singlebtn\" href=\"https://peacoop.or.th/wp-content/uploads/2022/08/form_openacc210666.pdf\" target=\"_blank\" rel=\"noreferrer noopener\"><span class=\"kt-btn-inner-text\">เปิดบัญชี</span><span class=\"kb-svg-icon-wrap kb-svg-icon-fas_external-link-square-alt kt-btn-icon-side-right\"><svg viewBox=\"0 0 448 512\"  fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"  aria-hidden=\"true\"><path d=\"M448 80v352c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h352c26.51 0 48 21.49 48 48zm-88 16H248.029c-21.313 0-32.08 25.861-16.971 40.971l31.984 31.987L67.515 364.485c-4.686 4.686-4.686 12.284 0 16.971l31.029 31.029c4.687 4.686 12.285 4.686 16.971 0l195.526-195.526 31.988 31.991C358.058 263.977 384 253.425 384 231.979V120c0-13.255-10.745-24-24-24z\"/></svg></span></a></div>\n</div></div>\n\n\n<style>.kadence-column361_7e1b78-8f > .kt-inside-inner-col,.kadence-column361_7e1b78-8f > .kt-inside-inner-col:before{border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;}.kadence-column361_7e1b78-8f > .kt-inside-inner-col{column-gap:var(--global-kb-gap-sm, 1rem);}.kadence-column361_7e1b78-8f > .kt-inside-inner-col{flex-direction:column;}.kadence-column361_7e1b78-8f > .kt-inside-inner-col > .aligncenter{width:100%;}.kadence-column361_7e1b78-8f > .kt-inside-inner-col:before{opacity:0.3;}.kadence-column361_7e1b78-8f{position:relative;}@media all and (max-width: 1024px){.kadence-column361_7e1b78-8f > .kt-inside-inner-col{flex-direction:column;justify-content:center;}}@media all and (max-width: 767px){.kadence-column361_7e1b78-8f > .kt-inside-inner-col{flex-direction:column;justify-content:center;}}</style>\n<div class=\"wp-block-kadence-column kadence-column361_7e1b78-8f inner-column-2\"><div class=\"kt-inside-inner-col\">\n<figure class=\"wp-block-image size-large\"><img loading=\"lazy\" decoding=\"async\" width=\"800\" height=\"625\" src=\"https://peacoop.or.th/wp-content/uploads/2021/01/retirement-saving.png\" alt=\"\" class=\"wp-image-1783\" srcset=\"https://peacoop.or.th/wp-content/uploads/2021/01/retirement-saving.png 800w, https://peacoop.or.th/wp-content/uploads/2021/01/retirement-saving-300x234.png 300w, https://peacoop.or.th/wp-content/uploads/2021/01/retirement-saving-768x600.png 768w\" sizes=\"auto, (max-width: 800px) 100vw, 800px\" /></figure>\n</div></div>\n\n</div></div>\n\n<p><strong>หลักเกณฑ์และวิธีการฝาก-ถอนเงินฝากออมทรัพย์พิเศษสุขเกษียณ</strong></p>\n<ol>\n<li><strong>คุณสมบัติสำหรับผู้ขอเปิดบัญชี<br /></strong>   1.1 สมาชิกที่เกษียณ ตั้งแต่ปี 2553 เป็นต้นไป<strong><br /></strong>   1.2 สมาชิกที่เข้าร่วมโครงการร่วมใจจากองค์กร ตั้งแต่ปี 2553 เป็นต้นไป<br />   1.3 สมาชิกที่ลาออกจากองค์กร (กฟภ. , สอ.กฟภ.) ตั้งแต่ปี 2553 เป็นต้นไป</li>\n<li><strong>การเปิดบัญชี<br /></strong>   2.1 เปิดบัญชีได้คนละ 1 บัญชี</li>\n<li><strong>การฝากเงิน<br /></strong>   3.1 วงเงินฝากสูงสุดรวมตลอดระยะเวลาของบัญชีคือยอดเงินรวมข้อ 3.1.1 และข้อ 3.1.2 มีดังนี้<br />         3.1.1 เงินที่ได้รับจาก กสช. สุทธิ หักด้วยเงินที่นำมาซื้อหุ้น<br />         3.1.2 เงินพึงได้ (สุทธิ) ที่ได้รับจาก กฟภ. หักด้วยเงินที่นำมาซื้อหุ้น<br />   3.2 ต้องนำเงินมาฝากภายใน 30 วัน นับแต่วันที่ได้รับเงิน และต้องฝากครั้งเดียวของยอดเงินที่มีสิทธิฝากเงิน<br />         ในแต่ละครั้ง</li>\n<li><strong>การถอนเงิน<br /></strong>   4.1 ถอนเงินฝากได้เดือนละ 1 ครั้ง ถ้าเดือนใดถอนเงินฝากเกิน 1 ครั้ง จะต้องเสียค่าธรรมเนียมในการถอนเงินฝาก<br />         ในอัตราร้อยละ 1 ของจำนวนเงินที่ถอน แต่ไม่น้อยกว่า 250 บาท<br />   4.2 กรณีสมาชิกถอนเงินฝากไปแล้วสามารถนำเงินมาฝากได้แต่ต้องไม่เกินจำนวนเงินที่มีในข้อ 3.1<strong><br /></strong></li>\n<li><strong>อัตราดอกเบี้ย และการจ่ายดอกเบี้ย<br /></strong>   5.1 อัตราดอกเบี้ยร้อยละ 3.75 ต่อปี<br />   5.2 คำนวณดอกเบี้ยให้เป็นรายวันตามยอดเงินฝากคงเหลือในแต่ละวัน<br />   5.3 จ่ายดอกเบี้ยเดือนละ 1 ครั้ง (ในวันที่ 27 ของทุกเดือน)<br />   5.4 ดอกเบี้ยจะโอนเข้าบัญชีเงินฝากออมทรัพย์ หรือออมทรัพย์พิเศษ หรือบัญชีธนาคารตามที่สมาชิก<br />         แจ้งความประสงค์</li>\n</ol>\n\n\n<div class=\"wp-block-file\"><a id=\"wp-block-file--media-b7ab0331-920b-4594-bc45-8ee57a53089d\" href=\"https://peacoop.or.th/wp-content/uploads/2022/08/form_openacc210666.pdf\">แบบฟอร์มเปิดบัญชีเงินฝาก</a><a href=\"https://peacoop.or.th/wp-content/uploads/2022/08/form_openacc210666.pdf\" class=\"wp-block-file__button wp-element-button\" download aria-describedby=\"wp-block-file--media-b7ab0331-920b-4594-bc45-8ee57a53089d\">Download</a></div>\n",
+          "protected": false
+        },
+        "excerpt": {
+          "rendered": "<p>เงินฝากออมทรัพย์พิเศษสุขเกษียณ สำหรับสมาชิกที่เกษียณอายุ สมาชิกที่เข้าร่วมโครงการร่วมใจจากองค์กร และสมาชิกที่ลาออกจากองค์กร (กฟภ., สอ.กฟภ.) ตั้งแต่ปี 2553 เป็นต้นไป อัตราดอกเบี้ย 3.75% ต่อปี หลักเกณฑ์และวิธีการฝาก-ถอนเงินฝากออมทรัพย์พิเศษสุขเกษียณ คุณสมบัติสำหรับผู้ขอเปิดบัญชี   1.1 สมาชิกที่เกษียณ ตั้งแต่ปี 2553 เป็นต้นไป   1.2 สมาชิกที่เข้าร่วมโครงการร่วมใจจากองค์กร ตั้งแต่ปี 2553 เป็นต้นไป   1.3 สมาชิกที่ลาออกจากองค์กร (กฟภ. , สอ.กฟภ.) ตั้งแต่ปี 2553 เป็นต้นไป การเปิดบัญชี   2.1 เปิดบัญชีได้คนละ 1 บัญชี การฝากเงิน   3.1 วงเงินฝากสูงสุดรวมตลอดระยะเวลาของบัญชีคือยอดเงินรวมข้อ 3.1.1 และข้อ 3.1.2 มีดังนี้         3.1.1 เงินที่ได้รับจาก กสช. สุทธิ หักด้วยเงินที่นำมาซื้อหุ้น         3.1.2 เงินพึงได้ (สุทธิ) ที่ได้รับจาก กฟภ. [&hellip;]</p>\n",
+          "protected": false
+        },
+        "author": 3,
+        "featured_media": 0,
+        "parent": 0,
+        "menu_order": 0,
+        "comment_status": "closed",
+        "ping_status": "closed",
+        "template": "common-page.php",
+        "meta": {
+          "_acf_changed": false,
+          "footnotes": ""
+        },
+        "class_list": [
+          "post-361",
+          "page",
+          "type-page",
+          "status-publish",
+          "hentry"
+        ],
+        "acf": [],
+        "_links": {
+          "self": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/pages/361",
+              "targetHints": {
+                "allow": [
+                  "GET"
+                ]
+              }
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/pages"
+            }
+          ],
+          "about": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/types/page"
+            }
+          ],
+          "author": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/users/3"
+            }
+          ],
+          "replies": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/comments?post=361"
+            }
+          ],
+          "version-history": [
+            {
+              "count": 14,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/pages/361/revisions"
+            }
+          ],
+          "predecessor-version": [
+            {
+              "id": 7611,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/pages/361/revisions/7611"
+            }
+          ],
+          "wp:attachment": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/media?parent=361"
+            }
+          ],
+          "curies": [
+            {
+              "name": "wp",
+              "href": "https://api.w.org/{rel}",
+              "templated": true
+            }
+          ]
+        }
+      },
+      "extraction_time": "2025-10-29T02:06:13.553749",
+      "target": "https://peacoop.or.th"
+    },
+    {
+      "source": "WordPress API",
+      "endpoint": "/wp-json/wp/v2/media?per_page=5",
+      "data": {
+        "id": 12023,
+        "date": "2025-10-28T23:49:03",
+        "date_gmt": "2025-10-28T16:49:03",
+        "guid": {
+          "rendered": "https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-1.pdf"
+        },
+        "modified": "2025-10-28T23:49:03",
+        "modified_gmt": "2025-10-28T16:49:03",
+        "slug": "%e0%b8%9b%e0%b8%a3%e0%b8%b0%e0%b8%81%e0%b8%b2%e0%b8%a8%e0%b8%9e%e0%b8%b4%e0%b8%a1%e0%b8%9e%e0%b9%8c%e0%b8%ab%e0%b8%99%e0%b8%b1%e0%b8%87%e0%b8%aa%e0%b8%b7%e0%b8%ad%e0%b8%a3%e0%b8%b2%e0%b8%a2%e0%b8%87-2",
+        "status": "inherit",
+        "type": "attachment",
+        "link": "https://peacoop.or.th/%e0%b9%80%e0%b8%a3%e0%b8%b7%e0%b9%88%e0%b8%ad%e0%b8%87-%e0%b8%aa%e0%b8%ad%e0%b8%9a%e0%b8%a3%e0%b8%b2%e0%b8%84%e0%b8%b2%e0%b8%88%e0%b9%89%e0%b8%b2%e0%b8%87%e0%b8%9e%e0%b8%b4%e0%b8%a1%e0%b8%9e%e0%b9%8c/%e0%b8%9b%e0%b8%a3%e0%b8%b0%e0%b8%81%e0%b8%b2%e0%b8%a8%e0%b8%9e%e0%b8%b4%e0%b8%a1%e0%b8%9e%e0%b9%8c%e0%b8%ab%e0%b8%99%e0%b8%b1%e0%b8%87%e0%b8%aa%e0%b8%b7%e0%b8%ad%e0%b8%a3%e0%b8%b2%e0%b8%a2%e0%b8%87-2/",
+        "title": {
+          "rendered": "ประกาศพิมพ์หนังสือรายงานกิจการปี 2569"
+        },
+        "author": 7,
+        "featured_media": 0,
+        "comment_status": "",
+        "ping_status": "closed",
+        "template": "",
+        "meta": {
+          "_acf_changed": false
+        },
+        "class_list": [
+          "post-12023",
+          "attachment",
+          "type-attachment",
+          "status-inherit",
+          "hentry"
+        ],
+        "acf": [],
+        "description": {
+          "rendered": "<p class=\"attachment\"><a href='https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-1.pdf'><img loading=\"lazy\" decoding=\"async\" width=\"212\" height=\"300\" src=\"https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-1-pdf-212x300.jpg\" class=\"attachment-medium size-medium\" alt=\"\" /></a></p>\n"
+        },
+        "caption": {
+          "rendered": ""
+        },
+        "alt_text": "",
+        "media_type": "file",
+        "mime_type": "application/pdf",
+        "media_details": {
+          "sizes": {
+            "full": {
+              "file": "ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-1-pdf.jpg",
+              "width": 1059,
+              "height": 1498,
+              "mime_type": "application/pdf",
+              "source_url": "https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-1-pdf.jpg"
+            },
+            "medium": {
+              "file": "ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-1-pdf-212x300.jpg",
+              "width": 212,
+              "height": 300,
+              "filesize": 11016,
+              "mime_type": "image/jpeg",
+              "source_url": "https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-1-pdf-212x300.jpg"
+            },
+            "large": {
+              "file": "ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-1-pdf-724x1024.jpg",
+              "width": 724,
+              "height": 1024,
+              "filesize": 104395,
+              "mime_type": "image/jpeg",
+              "source_url": "https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-1-pdf-724x1024.jpg"
+            },
+            "thumbnail": {
+              "file": "ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-1-pdf-106x150.jpg",
+              "width": 106,
+              "height": 150,
+              "filesize": 3453,
+              "mime_type": "image/jpeg",
+              "source_url": "https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-1-pdf-106x150.jpg"
+            }
+          },
+          "filesize": 698413
+        },
+        "post": 12021,
+        "source_url": "https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-1.pdf",
+        "_links": {
+          "self": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/media/12023",
+              "targetHints": {
+                "allow": [
+                  "GET"
+                ]
+              }
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/media"
+            }
+          ],
+          "about": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/types/attachment"
+            }
+          ],
+          "author": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/users/7"
+            }
+          ],
+          "replies": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/comments?post=12023"
+            }
+          ]
+        }
+      },
+      "extraction_time": "2025-10-29T02:06:14.110255",
+      "target": "https://peacoop.or.th"
+    },
+    {
+      "source": "WordPress API",
+      "endpoint": "/wp-json/wp/v2/media?per_page=5",
+      "data": {
+        "id": 12022,
+        "date": "2025-10-28T23:47:50",
+        "date_gmt": "2025-10-28T16:47:50",
+        "guid": {
+          "rendered": "https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569.pdf"
+        },
+        "modified": "2025-10-28T23:47:50",
+        "modified_gmt": "2025-10-28T16:47:50",
+        "slug": "%e0%b8%9b%e0%b8%a3%e0%b8%b0%e0%b8%81%e0%b8%b2%e0%b8%a8%e0%b8%9e%e0%b8%b4%e0%b8%a1%e0%b8%9e%e0%b9%8c%e0%b8%ab%e0%b8%99%e0%b8%b1%e0%b8%87%e0%b8%aa%e0%b8%b7%e0%b8%ad%e0%b8%a3%e0%b8%b2%e0%b8%a2%e0%b8%87",
+        "status": "inherit",
+        "type": "attachment",
+        "link": "https://peacoop.or.th/%e0%b9%80%e0%b8%a3%e0%b8%b7%e0%b9%88%e0%b8%ad%e0%b8%87-%e0%b8%aa%e0%b8%ad%e0%b8%9a%e0%b8%a3%e0%b8%b2%e0%b8%84%e0%b8%b2%e0%b8%88%e0%b9%89%e0%b8%b2%e0%b8%87%e0%b8%9e%e0%b8%b4%e0%b8%a1%e0%b8%9e%e0%b9%8c/%e0%b8%9b%e0%b8%a3%e0%b8%b0%e0%b8%81%e0%b8%b2%e0%b8%a8%e0%b8%9e%e0%b8%b4%e0%b8%a1%e0%b8%9e%e0%b9%8c%e0%b8%ab%e0%b8%99%e0%b8%b1%e0%b8%87%e0%b8%aa%e0%b8%b7%e0%b8%ad%e0%b8%a3%e0%b8%b2%e0%b8%a2%e0%b8%87/",
+        "title": {
+          "rendered": "ประกาศพิมพ์หนังสือรายงานกิจการปี 2569"
+        },
+        "author": 7,
+        "featured_media": 0,
+        "comment_status": "",
+        "ping_status": "closed",
+        "template": "",
+        "meta": {
+          "_acf_changed": false
+        },
+        "class_list": [
+          "post-12022",
+          "attachment",
+          "type-attachment",
+          "status-inherit",
+          "hentry"
+        ],
+        "acf": [],
+        "description": {
+          "rendered": "<p class=\"attachment\"><a href='https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569.pdf'><img loading=\"lazy\" decoding=\"async\" width=\"212\" height=\"300\" src=\"https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-pdf-212x300.jpg\" class=\"attachment-medium size-medium\" alt=\"\" /></a></p>\n"
+        },
+        "caption": {
+          "rendered": ""
+        },
+        "alt_text": "",
+        "media_type": "file",
+        "mime_type": "application/pdf",
+        "media_details": {
+          "sizes": {
+            "full": {
+              "file": "ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-pdf.jpg",
+              "width": 1059,
+              "height": 1498,
+              "mime_type": "application/pdf",
+              "source_url": "https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-pdf.jpg"
+            },
+            "medium": {
+              "file": "ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-pdf-212x300.jpg",
+              "width": 212,
+              "height": 300,
+              "filesize": 11016,
+              "mime_type": "image/jpeg",
+              "source_url": "https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-pdf-212x300.jpg"
+            },
+            "large": {
+              "file": "ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-pdf-724x1024.jpg",
+              "width": 724,
+              "height": 1024,
+              "filesize": 104395,
+              "mime_type": "image/jpeg",
+              "source_url": "https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-pdf-724x1024.jpg"
+            },
+            "thumbnail": {
+              "file": "ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-pdf-106x150.jpg",
+              "width": 106,
+              "height": 150,
+              "filesize": 3453,
+              "mime_type": "image/jpeg",
+              "source_url": "https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569-pdf-106x150.jpg"
+            }
+          },
+          "filesize": 698413
+        },
+        "post": 12021,
+        "source_url": "https://peacoop.or.th/wp-content/uploads/2025/10/ประกาศพิมพ์หนังสือรายงานกิจการปี-2569.pdf",
+        "_links": {
+          "self": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/media/12022",
+              "targetHints": {
+                "allow": [
+                  "GET"
+                ]
+              }
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/media"
+            }
+          ],
+          "about": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/types/attachment"
+            }
+          ],
+          "author": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/users/7"
+            }
+          ],
+          "replies": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/comments?post=12022"
+            }
+          ]
+        }
+      },
+      "extraction_time": "2025-10-29T02:06:14.110255",
+      "target": "https://peacoop.or.th"
+    },
+    {
+      "source": "WordPress API",
+      "endpoint": "/wp-json/wp/v2/media?per_page=5",
+      "data": {
+        "id": 12019,
+        "date": "2025-10-28T13:30:34",
+        "date_gmt": "2025-10-28T06:30:34",
+        "guid": {
+          "rendered": "https://peacoop.or.th/wp-content/uploads/2023/06/form_fundec281068.pdf"
+        },
+        "modified": "2025-10-28T13:30:34",
+        "modified_gmt": "2025-10-28T06:30:34",
+        "slug": "form_fundec281068",
+        "status": "inherit",
+        "type": "attachment",
+        "link": "https://peacoop.or.th/pt-form/form_fundec/form_fundec281068/",
+        "title": {
+          "rendered": "form_fundec281068"
+        },
+        "author": 5,
+        "featured_media": 0,
+        "comment_status": "",
+        "ping_status": "closed",
+        "template": "",
+        "meta": {
+          "_acf_changed": false
+        },
+        "class_list": [
+          "post-12019",
+          "attachment",
+          "type-attachment",
+          "status-inherit",
+          "hentry"
+        ],
+        "acf": [],
+        "description": {
+          "rendered": "<p class=\"attachment\"><a href='https://peacoop.or.th/wp-content/uploads/2023/06/form_fundec281068.pdf'><img loading=\"lazy\" decoding=\"async\" width=\"212\" height=\"300\" src=\"https://peacoop.or.th/wp-content/uploads/2023/06/form_fundec281068-pdf-212x300.jpg\" class=\"attachment-medium size-medium\" alt=\"\" /></a></p>\n"
+        },
+        "caption": {
+          "rendered": ""
+        },
+        "alt_text": "",
+        "media_type": "file",
+        "mime_type": "application/pdf",
+        "media_details": {
+          "sizes": {
+            "full": {
+              "file": "form_fundec281068-pdf.jpg",
+              "width": 1058,
+              "height": 1497,
+              "mime_type": "application/pdf",
+              "source_url": "https://peacoop.or.th/wp-content/uploads/2023/06/form_fundec281068-pdf.jpg"
+            },
+            "medium": {
+              "file": "form_fundec281068-pdf-212x300.jpg",
+              "width": 212,
+              "height": 300,
+              "filesize": 14238,
+              "mime_type": "image/jpeg",
+              "source_url": "https://peacoop.or.th/wp-content/uploads/2023/06/form_fundec281068-pdf-212x300.jpg"
+            },
+            "large": {
+              "file": "form_fundec281068-pdf-724x1024.jpg",
+              "width": 724,
+              "height": 1024,
+              "filesize": 96529,
+              "mime_type": "image/jpeg",
+              "source_url": "https://peacoop.or.th/wp-content/uploads/2023/06/form_fundec281068-pdf-724x1024.jpg"
+            },
+            "thumbnail": {
+              "file": "form_fundec281068-pdf-106x150.jpg",
+              "width": 106,
+              "height": 150,
+              "filesize": 6435,
+              "mime_type": "image/jpeg",
+              "source_url": "https://peacoop.or.th/wp-content/uploads/2023/06/form_fundec281068-pdf-106x150.jpg"
+            }
+          },
+          "filesize": 2120560
+        },
+        "post": 1667,
+        "source_url": "https://peacoop.or.th/wp-content/uploads/2023/06/form_fundec281068.pdf",
+        "_links": {
+          "self": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/media/12019",
+              "targetHints": {
+                "allow": [
+                  "GET"
+                ]
+              }
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/media"
+            }
+          ],
+          "about": [
+            {
+              "href": "https://peacoop.or.th/wp-json/wp/v2/types/attachment"
+            }
+          ],
+          "author": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/users/5"
+            }
+          ],
+          "replies": [
+            {
+              "embeddable": true,
+              "href": "https://peacoop.or.th/wp-json/wp/v2/comments?post=12019"
+            }
+          ]
+        }
+      },
+      "extraction_time": "2025-10-29T02:06:14.110255",
+      "target": "https://peacoop.or.th"
+    },
+    {
+      "source": "Sensitive HTML",
+      "endpoint": "/api/users",
+      "data": "<!DOCTYPE html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"UTF-8\" />\n\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover\" />\n\t\t<meta name=\"google-site-verification\" content=\"yllAguShaps8Oy6rDc7fPg9pJgiLmF_G5ZRXjs3NbR0\" />\n\t\t<link rel=\"icon\" type=\"image/jpeg\" href=\"/logo.jpg\" />\n\t\t<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n\t\t<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />\n\t\t<link\n\t\t\thref=\"https://fon",
+      "extraction_time": "2025-10-29T02:06:15.841268",
+      "target": "https://mula-x.com"
+    },
+    {
+      "source": "Sensitive HTML",
+      "endpoint": "/api/users",
+      "data": "<!DOCTYPE html>\n<html>\n\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n  <link rel=\"icon\" href=\"./src/image/logo.png\">\n  <title>PT Gratama Finance Indonesia </title>\n  <link rel=\"stylesheet\" href=\"./publicCss.css\">\n</head>\n\n<body>\n  <header>\n    <nav>\n      <div class=\"logo\" onclick=\"backhome()\">\n        <img src=\"./src/image/logo.png\" alt=\"\" />\n        <div>\n          <p>บริษัท เงินหมุน จำกัด</p>\n          <span>NGOEN MUN CO., LTD.</span>\n        </d",
+      "extraction_time": "2025-10-29T02:06:17.193662",
+      "target": "https://ngoenmun.com"
+    }
+  ],
+  "data_analysis": {
+    "real_data_indicators": [
+      "WordPress API",
+      "WordPress API",
+      "WordPress API",
+      "WordPress API",
+      "WordPress API",
+      "WordPress API",
+      "WordPress API",
+      "WordPress API",
+      "WordPress API",
+      "Sensitive HTML"
+    ],
+    "sensitive_patterns": [],
+    "live_systems": [],
+    "configuration_data": []
+  },
+  "verification_status": {
+    "real_data_found": true,
+    "live_systems_detected": false,
+    "config_access": false,
+    "api_access": true
+  }
+}

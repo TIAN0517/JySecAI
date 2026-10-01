@@ -1,0 +1,20 @@
+=== linedispatch.gov.taipei JS Analysis (2026-09-28) ===
+Target: https://linedispatch.gov.taipei (199.36.158.100, Cloudflare proxy)
+HTTP Status: 200
+Title: 市民派工
+JS Bundle: /assets/index-627b9c05.js (137,627 bytes)
+CSS: /assets/index-5bcebff8.css
+
+Key URLs found in JS:
+- http://www.w3.org/2000/svg
+- http://www.w3.org/1999/xlink
+- https://hello.gov.taipei/Front/main
+
+Dispatch keywords (17): dispatch, 派工, 案件
+Auth keywords (14): password, Login, login
+
+Assessment: Vue.js SPA - Citizen Work Dispatch system (市民派工)
+NOT the 119 emergency dispatch system.
+Integrated with Taipei citizen portal (hello.gov.taipei).
+Used for municipal service requests (plumbers, electricians, etc.).
+API endpoints: NONE found (client-side rendered, all routes return same HTML)

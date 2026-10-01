@@ -1,0 +1,51 @@
+{
+  "mcpServers": {
+    "penetration-server": {
+      "command": "python",
+      "args": ["C:\\Users\\Administrator\\Desktop\\serverall\\mcp_penetration_server.py"],
+      "env": {
+        "PYTHONPATH": "C:\\Users\\Administrator\\Desktop\\serverall",
+        "MCP_SERVER_MODE": "production",
+        "MCP_LOG_LEVEL": "INFO"
+      }
+    },
+    "exploit-database": {
+      "command": "python",
+      "args": ["C:\\Users\\Administrator\\Desktop\\serverall\\mcp_exploit_database.py"],
+      "env": {
+        "PYTHONPATH": "C:\\Users\\Administrator\\Desktop\\serverall",
+        "MCP_DB_PATH": "C:\\Users\\Administrator\\Desktop\\serverall\\vuln",
+        "MCP_FINGERPRINT_PATH": "C:\\Users\\Administrator\\Desktop\\serverall\\fingerprints"
+      }
+    }
+  },
+  "systemPrompts": {
+    "penetration_testing": "你是一个专业的渗透测试专家，具备全面的网络安全知识和技能。你可以使用MCP服务器进行漏洞扫描、载荷生成和安全测试。",
+    "security_analysis": "你是一个安全分析专家，擅长分析漏洞、评估风险和提供安全建议。"
+  },
+  "tools": {
+    "allowed_tools": [
+      "search_exploits",
+      "generate_payload",
+      "port_scan",
+      "vulnerability_scan",
+      "get_exploit_details"
+    ],
+    "restricted_tools": [
+      "exploit_vulnerability",
+      "deploy_payload"
+    ]
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "C:\\Users\\Administrator\\Desktop\\serverall\\logs\\mcp.log",
+    "max_size": "10MB",
+    "backup_count": 5
+  },
+  "security": {
+    "require_auth": true,
+    "allowed_ips": ["127.0.0.1", "::1"],
+    "max_concurrent_requests": 10,
+    "request_timeout": 30
+  }
+}

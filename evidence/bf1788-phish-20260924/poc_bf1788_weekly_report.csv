@@ -1,0 +1,31 @@
+category,field,value
+activeBouns,endTime,2026-09-24
+activeBouns,rows,[]
+activeBouns,startTime,2026-08-01
+agentBouns,endTime,2026-09-24
+agentBouns,rows,[]
+agentBouns,startTime,2026-08-01
+agentCommission,endTime,2026-09-24
+agentCommission,rows,[]
+agentCommission,startTime,2026-08-01
+artificialrecord,endTime,2026-09-24
+artificialrecord,rows,[]
+artificialrecord,startTime,2026-08-01
+depositsummoney,value,0
+fetch,list_length,1
+fetch,first_item_keys,"['startTime', 'endTime', 'total', 'rows', 'count', 'summoney', 'sumauditmoney', 'sumcost', 'sumwithdrawalfee', 'sumactualmoney', 'countmoney', 'countauditmoney', 'countcost', 'countwithdrawalfee', 'countactualmoney']"
+handwork,list_length,1
+handwork,first_item_keys,"['startTime', 'endTime', 'page', 'num', 'total', 'rows', 'count', 'summoney', 'countmoney']"
+line,list_length,1
+line,first_item_keys,"['startTime', 'endTime', 'total', 'rows', 'count', 'summoney', 'countmoney']"
+num,value,1
+page,value,10
+point,endTime,2026-09-24
+point,rows,[]
+point,startTime,2026-08-01
+qrcode_transfer,list_length,1
+qrcode_transfer,first_item_keys,"['startTime', 'endTime', 'page', 'num', 'total', 'rows', 'count', 'summoney', 'countmoney']"
+returnMoney,endTime,2026-09-24
+returnMoney,rows,[]
+returnMoney,startTime,2026-08-01
+total,value,0

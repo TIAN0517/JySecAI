@@ -1,0 +1,27 @@
+{
+  "api_key": "dicl79nhrtolm07vqxk03fcqjyt4nvxu",
+  "queries": [
+    "service119.tfd.gov.tw",
+    "appservice119.tfd.gov.tw",
+    "119.gov.taipei",
+    "epcr.tpf.gov.tw",
+    "tpertc.tfd.gov.tw",
+    "tpf.gov.tw",
+    "tfd.gov.tw",
+    "service119.tfd.gov.tw /citizen/auth/genToken",
+    "service119.tfd.gov.tw /citizenCase",
+    "service119.tfd.gov.tw /auth/fetchServerData",
+    "service119.tfd.gov.tw /api/getUserToken",
+    "epcr.tpf.gov.tw",
+    "vitalsignvideoserver",
+    "台北 119 dispatch",
+    "service119 login",
+    "service119 epcr",
+    "119 caseList",
+    "119 citizenCase",
+    "119 ohca",
+    "119 emergency dispatch site:tw"
+  ],
+  "all_results": {},
+  "unique_hosts": {}
+}

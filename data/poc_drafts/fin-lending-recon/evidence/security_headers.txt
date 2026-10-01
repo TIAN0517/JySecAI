@@ -1,0 +1,27 @@
+--- www.imoney.com.tw ---
+server: cloudflare
+x-powered-by: PHP/5.6.40
+x-frame-options: SAMEORIGIN
+content-security-policy: frame-ancestors 'self'
+x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+--- www.okbank.com ---
+server: Kestrel
+strict-transport-security: max-age=2592000
+x-powered-by: ASP.NET
+--- henmoney.com.tw ---
+server: Apache
+--- www.hotaimotor.com.tw ---
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+--- www.hotaimember.com.tw ---
+strict-transport-security: max-age=2592000
+x-powered-by: ASP.NET
+--- www.newloan.com.tw ---
+server: cloudflare
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+--- www.muchenloan.com ---
+server: nginx
+--- home.hopass.tw ---
+server: cloudflare

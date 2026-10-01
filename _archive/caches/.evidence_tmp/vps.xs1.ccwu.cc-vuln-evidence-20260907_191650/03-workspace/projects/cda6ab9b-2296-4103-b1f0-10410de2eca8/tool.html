@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>tool.tzuchi-org.tw — 慈濟內部服務</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="慈濟基金會數位中心：drust 多租戶資料庫、youtube 播放清單 API、tracking 分析追蹤 MCP。">
+<style>
+  :root {
+    --accent-h: 150; --accent-c: 0.14; --accent-l: 0.78;
+    --bg:        oklch(0.21 0.012 255);
+    --bg-2:      oklch(0.245 0.013 255);
+    --surface:   oklch(0.225 0.012 255);
+    --surface-2: oklch(0.26 0.013 255);
+    --line:      oklch(0.34 0.013 255);
+    --line-2:    oklch(0.30 0.012 255);
+    --muted:     oklch(0.58 0.012 255);
+    --muted-2:   oklch(0.48 0.012 255);
+    --text:      oklch(0.93 0.008 250);
+    --text-soft: oklch(0.80 0.010 250);
+    --accent:    oklch(var(--accent-l) var(--accent-c) var(--accent-h));
+    --accent-soft: oklch(0.30 0.06 150);
+    --tl-yellow: oklch(0.82 0.16 85);
+    --tl-red:    oklch(0.70 0.18 20);
+
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans TC", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background:
+      radial-gradient(1200px 600px at 30% -10%, oklch(0.32 0.03 250), transparent 60%),
+      radial-gradient(900px 500px at 100% 100%, oklch(0.28 0.04 200), transparent 60%),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  code, pre, kbd, samp { font-family: var(--mono); }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 56px 28px 80px;
+  }
+
+  /* ---- header ---- */
+  header.site {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    border-bottom: 1px solid var(--line-2);
+    padding-bottom: 14px;
+    margin-bottom: 36px;
+  }
+  header.site .brand {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  header.site .brand strong { color: var(--text-soft); font-weight: 600; }
+  header.site .right {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--muted-2);
+    font-family: var(--mono);
+  }
+  header.site .right a { color: var(--muted); }
+
+  /* ---- hero ---- */
+  .hero h1 {
+    font-size: 38px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+  .hero h1 .dim { color: var(--muted); font-weight: 400; }
+  .hero p.lead {
+    margin: 0 0 8px;
+    font-size: 17px;
+    color: var(--text-soft);
+    max-width: 720px;
+  }
+  .hero p.fine {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 720px;
+  }
+
+  /* ---- 3-card grid ---- */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 44px;
+  }
+  @media (max-width: 880px) {
+    .cards { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 12px;
+    padding: 22px 22px 18px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 0 oklch(0.16 0.012 255 / 0.4);
+  }
+  .card .pill {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid oklch(0.44 0.09 150);
+    border-radius: 4px;
+    padding: 2px 7px;
+    margin-bottom: 12px;
+    align-self: flex-start;
+  }
+  .card .pill.public {
+    color: var(--tl-yellow);
+    background: oklch(0.30 0.06 80);
+    border-color: oklch(0.46 0.10 80);
+  }
+  .card h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    font-weight: 600;
+    font-family: var(--mono);
+    letter-spacing: -0.01em;
+  }
+  .card .role {
+    color: var(--text-soft);
+    font-size: 14px;
+    margin: 0 0 14px;
+  }
+  .card dl {
+    margin: 0 0 14px;
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 6px 12px;
+    font-size: 13px;
+  }
+  .card dt {
+    color: var(--muted-2);
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    align-self: center;
+  }
+  .card dd {
+    margin: 0;
+    color: var(--text-soft);
+    font-family: var(--mono);
+    font-size: 12.5px;
+    word-break: break-all;
+  }
+  .card dd .ok { color: var(--accent); }
+  .card dd .warn { color: var(--tl-yellow); }
+  .card dd .danger { color: var(--tl-red); }
+  .card .actions {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line-2);
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .card .btn {
+    display: inline-block;
+    border: 1px solid var(--line);
+    color: var(--text-soft);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    text-decoration: none;
+  }
+  .card .btn:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+  .card .btn.primary { border-color: oklch(0.44 0.09 150); color: var(--accent); }
+  .card .btn.primary:hover { background: var(--accent-soft); }
+
+  /* ---- how-to-connect block (per service) ---- */
+  .howto {
+    margin-top: 64px;
+  }
+  .howto h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .howto p.fine {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0 0 22px;
+    max-width: 720px;
+  }
+  .howto-block {
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .howto-block h3 {
+    font-family: var(--mono);
+    font-size: 14px;
+    margin: 0 0 10px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .howto-block p {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: var(--text-soft);
+  }
+  pre.code {
+    background: oklch(0.18 0.012 255);
+    border: 1px solid var(--line-2);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin: 0;
+    overflow-x: auto;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  pre.code .c { color: var(--muted); }       /* comment */
+  pre.code .s { color: var(--accent); }      /* string */
+  pre.code .k { color: var(--tl-yellow); }   /* keyword */
+
+  /* ---- footer ---- */
+  footer.site {
+    margin-top: 72px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line-2);
+    color: var(--muted-2);
+    font-size: 12px;
+    font-family: var(--mono);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+  }
+  footer.site .archi {
+    color: var(--muted);
+    flex: 1;
+    min-width: 280px;
+  }
+  footer.site .meta a { color: var(--muted); }
+  footer.site .meta a:hover { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="site">
+    <div class="brand"><strong>tool</strong>.tzuchi-org.tw</div>
+    <div class="right"><a href="mailto:digital@tzuchi.org.tw">digital@tzuchi.org.tw</a></div>
+  </header>
+
+  <section class="hero">
+    <h1>慈濟基金會數位中心 <span class="dim">— 內部服務</span></h1>
+    <p class="lead">本網域提供 3 個獨立服務：<b>drust</b>（多租戶資料庫）、<b>youtube</b>（播放清單 API）、<b>tracking</b>（GA4/GTM 分析追蹤 MCP）。每個服務獨立部署、獨立認證，沒有共用 session。</p>
+    <p class="fine">公網 → <code>211.22.12.221</code> nginx（TLS）→ <code>192.168.2.218:8793</code> Caddy → 各服務 <code>127.0.0.1:&lt;port&gt;</code>。所有服務使用 Gandi 簽的 <code>*.tzuchi-org.tw</code> wildcard 憑證。</p>
+  </section>
+
+  <section class="cards">
+
+    <!-- drust -->
+    <div class="card">
+      <span class="pill">資料庫</span>
+      <h2>drust</h2>
+      <p class="role">多租戶 SQLite BaaS。Admin UI 管理租戶、API 走 REST 或 MCP，每個租戶獨立 SQLite 檔案 + 獨立 bearer token。整合 Garage S3 做檔案儲存（含每租戶私有 bucket）。</p>
+      <dl>
+        <dt>Admin UI</dt>      <dd>/drust/</dd>
+        <dt>REST</dt>          <dd>/drust/t/&lt;id&gt;</dd>
+        <dt>MCP</dt>           <dd>/drust/t/&lt;id&gt;/mcp</dd>
+        <dt>認證</dt>          <dd>per-tenant bearer<br>（service / anon 雙 key）</dd>
+      </dl>
+      <div class="actions">
+        <a class="btn primary" href="/drust/">開啟 Admin UI</a>
+      </div>
+    </div>
+
+    <!-- youtube -->
+    <div class="card">
+      <span class="pill public">公開</span>
+      <h2>youtube</h2>
+      <p class="role">YouTube 播放清單 scraper。輸入 playlist ID，回傳正規化 JSON（playlist meta + 影片清單，含 Shorts 與 lengthSeconds 推算）。Stateless，per-IP rate limit 60 req/min + 1 小時 in-process cache。</p>
+      <dl>
+        <dt>Endpoint</dt>      <dd>/youtube/playlist?list=&lt;id&gt;</dd>
+        <dt>Health</dt>        <dd>/youtube/health</dd>
+        <dt>認證</dt>          <dd><span class="ok">無</span>（資料公開）</dd>
+        <dt>限制</dt>          <dd>60 req/min/IP</dd>
+      </dl>
+      <div class="actions">
+        <a class="btn" href="/youtube/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab">範例請求</a>
+      </div>
+    </div>
+
+    <!-- tracking -->
+    <div class="card">
+      <span class="pill">分析</span>
+      <h2>tracking</h2>
+      <p class="role">唯讀的 GA4 / GTM 分析 MCP。skill 知識庫（規範層）+ Tag Manager API v2 鏡射（實況層）+ 漂移對帳。Service Account 限定 <code>tagmanager.readonly</code>，無寫入路徑。</p>
+      <dl>
+        <dt>MCP</dt>           <dd>/tracking/mcp</dd>
+        <dt>Health</dt>        <dd>/tracking/health</dd>
+        <dt>認證</dt>          <dd>bearer token</dd>
+        <dt>工具</dt>          <dd>list_events,<br>live_list_variables,<br>check_feasibility,<br>audit_drift</dd>
+      </dl>
+      <div class="actions">
+        <a class="btn primary" href="/tracking/">開啟 Admin</a>
+        <a class="btn" href="#how-tracking">如何接</a>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================== HOW-TO ============================== -->
+  <section class="howto">
+    <h2>如何接入</h2>
+    <p class="fine">下列指令以一台已安裝 Claude Code 的開發者機器為準。Bearer token 請向 <a href="mailto:digital@tzuchi.org.tw">digital@tzuchi.org.tw</a> 申請；token 視為機密，請勿提交到 repo。</p>
+
+    <!-- drust how-to -->
+    <div class="howto-block" id="how-drust">
+      <h3># drust — 開 Admin UI 拿 token，再貼進 Claude Code</h3>
+      <p>每個租戶在 Admin UI 都有「Copy MCP config」按鈕，內含正確的 URL 和 service key，直接貼進 Claude Code 即可：</p>
+<pre class="code"><span class="c"># 1. 在瀏覽器開：</span>
+https://tool.tzuchi-org.tw/drust/admin/tenants/&lt;tenant&gt;/_api_keys
+
+<span class="c"># 2. 點「Copy MCP config」，貼到 terminal：</span>
+claude mcp add-json drust-&lt;tenant&gt; <span class="s">'&lt;貼上的 JSON&gt;'</span></pre>
+    </div>
+
+    <!-- youtube how-to -->
+    <div class="howto-block" id="how-youtube">
+      <h3># youtube — 直接打 HTTP，無認證</h3>
+<pre class="code">curl <span class="s">'https://tool.tzuchi-org.tw/youtube/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab'</span></pre>
+      <p style="margin-top:12px;">回傳 JSON 結構：<code>{ playlist: {...}, videos: [...] }</code>。詳細欄位語意見服務原始碼 <code>youtube/CLAUDE.md</code>（內網）。</p>
+    </div>
+
+    <!-- tracking how-to -->
+    <div class="howto-block" id="how-tracking">
+      <h3># tracking — Streamable HTTP MCP，bearer 認證</h3>
+<pre class="code">claude mcp add-json tracking <span class="s">'{
+  "type": "streamable-http",
+  "url": "https://tool.tzuchi-org.tw/tracking/mcp",
+  "headers": { "Authorization": "Bearer <span class="k">&lt;TOKEN&gt;</span>" }
+}'</span></pre>
+      <p style="margin-top:12px;">接好之後，在 Claude Code 內用 <code>/mcp</code> 應該看到 <code>tracking</code> 出現，4 個工具都可用。</p>
+    </div>
+  </section>
+
+  <footer class="site">
+    <div class="archi">
+      架構簡圖：<code>browser → .221 nginx (TLS) → :8793 Caddy → 127.0.0.1:&lt;port&gt;</code>
+      <br>每個服務都用 <code>handle_path /&lt;name&gt;/*</code> 路由；MCP 服務需 <code>header_up Host</code> 覆寫（rmcp DNS rebinding 防護）。
+    </div>
+    <div class="meta">
+      <span>updated 2026-04-27</span>
+      &nbsp;·&nbsp;
+      <a href="mailto:digital@tzuchi.org.tw">digital@tzuchi.org.tw</a>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

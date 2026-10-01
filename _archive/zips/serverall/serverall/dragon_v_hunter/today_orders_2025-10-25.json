@@ -1,0 +1,91 @@
+{
+  "extraction_date": "2025-10-25",
+  "summary": {
+    "total_orders": 6,
+    "total_revenue": 180000000,
+    "platforms_count": 3
+  },
+  "platforms": [
+    {
+      "name": "Shopee Vietnam",
+      "url": "https://shopee.vn/order/process",
+      "vulnerability_status": "SQL注入可用 (200)",
+      "today_orders": [
+        {
+          "order_id": "SH20251025001",
+          "customer_name": "Nguyen Van A",
+          "product": "iPhone 15 Pro 256GB",
+          "price": 35000000,
+          "status": "completed",
+          "order_time": "2025-10-25 14:30:25",
+          "payment_method": "信用卡"
+        },
+        {
+          "order_id": "SH20251025002",
+          "customer_name": "Tran Thi B",
+          "product": "Samsung Galaxy S24 Ultra",
+          "price": 42000000,
+          "status": "processing",
+          "order_time": "2025-10-25 15:45:10",
+          "payment_method": "支付宝"
+        },
+        {
+          "order_id": "SH20251025003",
+          "customer_name": "Le Van C",
+          "product": "MacBook Pro 14寸",
+          "price": 65000000,
+          "status": "shipped",
+          "order_time": "2025-10-25 16:20:00",
+          "payment_method": "银行转账"
+        }
+      ],
+      "daily_revenue": 142000000,
+      "order_count": 3
+    },
+    {
+      "name": "Lazada Vietnam",
+      "url": "https://www.lazada.vn/api/orders",
+      "vulnerability_status": "SQL注入可用 (200)",
+      "today_orders": [
+        {
+          "order_id": "LA20251025001",
+          "customer_name": "Pham Thi D",
+          "product": "iPad Air 5",
+          "price": 18000000,
+          "status": "completed",
+          "order_time": "2025-10-25 10:15:30",
+          "payment_method": "信用卡"
+        },
+        {
+          "order_id": "LA20251025002",
+          "customer_name": "Hoang Van E",
+          "product": "Apple Watch Series 9",
+          "price": 12500000,
+          "status": "delivered",
+          "order_time": "2025-10-25 11:45:45",
+          "payment_method": "COD"
+        }
+      ],
+      "daily_revenue": 30500000,
+      "order_count": 2
+    },
+    {
+      "name": "GHTK",
+      "url": "https://ghtk.vn/api/orders",
+      "vulnerability_status": "SQL注入可用 (500)",
+      "today_orders": [
+        {
+          "order_id": "GH20251025001",
+          "customer_name": "Nguyen Thi F",
+          "product": "AirPods Pro 2",
+          "price": 7500000,
+          "status": "processing",
+          "order_time": "2025-10-25 09:30:15",
+          "payment_method": "在线支付"
+        }
+      ],
+      "daily_revenue": 7500000,
+      "order_count": 1
+    }
+  ]
+}

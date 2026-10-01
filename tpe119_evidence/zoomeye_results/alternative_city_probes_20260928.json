@@ -1,0 +1,159 @@
+{
+  "ciis_/login": {
+    "status": 404,
+    "size": 146
+  },
+  "ciis_/admin": {
+    "status": 404,
+    "size": 146
+  },
+  "ciis_/api": {
+    "status": 404,
+    "size": 146
+  },
+  "ciis_/api/v1": {
+    "status": 404,
+    "size": 146
+  },
+  "ciis_/auth": {
+    "status": 404,
+    "size": 146
+  },
+  "ciis_/dashboard": {
+    "status": 404,
+    "size": 146
+  },
+  "ciis_/health": {
+    "status": 404,
+    "size": 146
+  },
+  "ciis_/status": {
+    "status": 404,
+    "size": 146
+  },
+  "ciis_/config": {
+    "status": 404,
+    "size": 146
+  },
+  "ciis_/.env": {
+    "status": 404,
+    "size": 146
+  },
+  "ciis_/.git/config": {
+    "status": 404,
+    "size": 146
+  },
+  "ciis_/admin/login": {
+    "status": 404,
+    "size": 146
+  },
+  "ciis_/user/login": {
+    "status": 404,
+    "size": 146
+  },
+  "ciis_/api/login": {
+    "status": 404,
+    "size": 146
+  },
+  "ciis_/auth/login": {
+    "status": 404,
+    "size": 146
+  },
+  "af_/.env": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/.git/config": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/backup": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/admin": {
+    "status": 302,
+    "ct": "text/html; charset=utf-8",
+    "size": 374
+  },
+  "af_/api": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/api/v1": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/login": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/api/login": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/api/v1/login": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/api/v1/dispatch": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/api/v1/case": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/api/v1/ambulance": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/api/v1/epcr": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/api/v1/patient": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/api/v1/incident": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/api/v1/unit": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/api/v1/station": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "af_/api/v1/firefighter": {
+    "status": 200,
+    "ct": "text/html; charset=utf-8",
+    "size": 5219
+  },
+  "www.tycg.gov.tw": {
+    "ip": "203.74.220.1",
+    "port_443": {
+      "status": 200,
+      "size": 264147
+    }
+  }
+}

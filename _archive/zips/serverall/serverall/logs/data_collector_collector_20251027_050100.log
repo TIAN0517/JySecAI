@@ -1,0 +1,11 @@
+2025-10-27 05:01:01,749 - enhanced_data_collector - INFO - ✅ test數據已發送到Webhook
+2025-10-27 05:01:01,763 - enterprise_scanner_integration - INFO - 配置文件加载成功: enterprise_platform_config_updated.json
+2025-10-27 05:01:01,764 - enterprise_scanner_integration - INFO - 正在認證NESSUS...
+2025-10-27 05:01:02,798 - enterprise_scanner_integration - ERROR - NESSUS認證失敗: 401 - {"error":"Invalid Credentials"}
+2025-10-27 05:01:02,801 - enterprise_scanner_integration - INFO - 正在認證AWVS...
+2025-10-27 05:01:04,846 - enterprise_scanner_integration - INFO - AWVS認證成功
+2025-10-27 05:01:04,853 - mcp_penetration_server - INFO - 初始化渗透测试MCP服务器...
+2025-10-27 05:01:04,854 - mcp_penetration_server - INFO - 漏洞数据库已加载: 3 个分类
+2025-10-27 05:01:04,854 - mcp_penetration_server - INFO - 载荷数据库已加载: 17 个载荷
+2025-10-27 05:01:04,854 - mcp_penetration_server - INFO - 搜索漏洞: test
+2025-10-27 05:01:04,854 - mcp_penetration_server - INFO - 端口扫描: 127.0.0.1, 端口: 1-100

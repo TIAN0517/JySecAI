@@ -1,0 +1,797 @@
+{
+  "report_metadata": {
+    "title": "高阶扫描验证综合安全报告",
+    "generated_at": "2025-10-28 11:37:46",
+    "version": "1.0",
+    "targets": [
+      "https://peacoop.or.th",
+      "https://mula-x.com/",
+      "https://www.hanshin.com.tw/",
+      "https://ngoenmun.com/"
+    ]
+  },
+  "executive_summary": {
+    "scan_date": "2025-10-28 11:37:46",
+    "total_targets": 4,
+    "risk_distribution": {
+      "high": 2,
+      "medium": 1,
+      "low": 1
+    },
+    "total_security_issues": 30,
+    "total_recommendations": 17,
+    "average_compliance_score": 61.5,
+    "critical_findings": [
+      {
+        "type": "Information Disclosure",
+        "count": 9,
+        "description": "发现 9 个高风险Information Disclosure"
+      }
+    ],
+    "immediate_actions": [
+      {
+        "category": "安全头配置",
+        "actions": [
+          "添加 Strict-Transport-Security 安全头"
+        ]
+      },
+      {
+        "category": "安全头配置",
+        "actions": [
+          "添加 Content-Security-Policy 安全头",
+          "添加 X-Content-Type-Options 安全头",
+          "添加 X-Frame-Options 安全头",
+          "添加 Strict-Transport-Security 安全头"
+        ]
+      },
+      {
+        "category": "Web应用防火墙",
+        "actions": [
+          "部署Web应用防火墙",
+          "配置安全规则",
+          "启用实时监控"
+        ]
+      },
+      {
+        "category": "安全头配置",
+        "actions": [
+          "添加 Content-Security-Policy 安全头",
+          "添加 X-Content-Type-Options 安全头",
+          "添加 X-Frame-Options 安全头",
+          "添加 Strict-Transport-Security 安全头"
+        ]
+      },
+      {
+        "category": "Web应用防火墙",
+        "actions": [
+          "部署Web应用防火墙",
+          "配置安全规则",
+          "启用实时监控"
+        ]
+      },
+      {
+        "category": "安全头配置",
+        "actions": [
+          "添加 Content-Security-Policy 安全头",
+          "添加 X-Content-Type-Options 安全头",
+          "添加 X-Frame-Options 安全头"
+        ]
+      },
+      {
+        "category": "Web应用防火墙",
+        "actions": [
+          "部署Web应用防火墙",
+          "配置安全规则",
+          "启用实时监控"
+        ]
+      }
+    ]
+  },
+  "detailed_analyses": {
+    "https://peacoop.or.th": {
+      "target": "https://peacoop.or.th",
+      "risk_level": "Low",
+      "vulnerabilities": [],
+      "security_issues": [
+        {
+          "type": "Missing Security Header",
+          "description": "缺失关键安全头: Strict-Transport-Security",
+          "severity": "Medium"
+        },
+        {
+          "type": "Information Disclosure",
+          "description": "可能包含敏感信息的配置文件可访问",
+          "severity": "High"
+        },
+        {
+          "type": "Technology Risk",
+          "description": "Nginx 1.25.2 - 检查已知漏洞",
+          "severity": "Medium"
+        },
+        {
+          "type": "Technology Risk",
+          "description": "WordPress - 检查插件和主题漏洞",
+          "severity": "Medium"
+        }
+      ],
+      "recommendations": [
+        {
+          "category": "安全头配置",
+          "priority": "High",
+          "items": [
+            "添加 Strict-Transport-Security 安全头"
+          ]
+        },
+        {
+          "category": "信息泄露防护",
+          "priority": "Medium",
+          "items": [
+            "限制敏感文件访问",
+            "配置robots.txt和sitemap.xml",
+            "移除不必要的配置文件"
+          ]
+        },
+        {
+          "category": "技术栈安全",
+          "priority": "Medium",
+          "items": [
+            "更新服务器和框架版本",
+            "应用安全补丁",
+            "进行定期安全审计"
+          ]
+        },
+        {
+          "category": "通用安全措施",
+          "priority": "Medium",
+          "items": [
+            "实施定期安全扫描",
+            "建立安全事件响应流程",
+            "进行安全意识培训",
+            "实施最小权限原则"
+          ]
+        }
+      ],
+      "compliance_score": 84
+    },
+    "https://mula-x.com/": {
+      "target": "https://mula-x.com/",
+      "risk_level": "High",
+      "vulnerabilities": [],
+      "security_issues": [
+        {
+          "type": "Missing Security Header",
+          "description": "缺失关键安全头: Content-Security-Policy",
+          "severity": "Medium"
+        },
+        {
+          "type": "Missing Security Header",
+          "description": "缺失关键安全头: X-Content-Type-Options",
+          "severity": "Low"
+        },
+        {
+          "type": "Missing Security Header",
+          "description": "缺失关键安全头: X-Frame-Options",
+          "severity": "Low"
+        },
+        {
+          "type": "Missing Security Header",
+          "description": "缺失关键安全头: Strict-Transport-Security",
+          "severity": "Medium"
+        },
+        {
+          "type": "Information Disclosure",
+          "description": "sitemap.xml文件可访问，可能泄露网站结构",
+          "severity": "Low"
+        },
+        {
+          "type": "Technology Risk",
+          "description": "Apache 2.4.41 - 检查已知漏洞",
+          "severity": "Medium"
+        },
+        {
+          "type": "Missing WAF",
+          "description": "未检测到Web应用防火墙保护",
+          "severity": "Medium"
+        }
+      ],
+      "recommendations": [
+        {
+          "category": "安全头配置",
+          "priority": "High",
+          "items": [
+            "添加 Content-Security-Policy 安全头",
+            "添加 X-Content-Type-Options 安全头",
+            "添加 X-Frame-Options 安全头",
+            "添加 Strict-Transport-Security 安全头"
+          ]
+        },
+        {
+          "category": "信息泄露防护",
+          "priority": "Medium",
+          "items": [
+            "限制敏感文件访问",
+            "配置robots.txt和sitemap.xml",
+            "移除不必要的配置文件"
+          ]
+        },
+        {
+          "category": "技术栈安全",
+          "priority": "Medium",
+          "items": [
+            "更新服务器和框架版本",
+            "应用安全补丁",
+            "进行定期安全审计"
+          ]
+        },
+        {
+          "category": "Web应用防火墙",
+          "priority": "High",
+          "items": [
+            "部署Web应用防火墙",
+            "配置安全规则",
+            "启用实时监控"
+          ]
+        },
+        {
+          "category": "通用安全措施",
+          "priority": "Medium",
+          "items": [
+            "实施定期安全扫描",
+            "建立安全事件响应流程",
+            "进行安全意识培训",
+            "实施最小权限原则"
+          ]
+        }
+      ],
+      "compliance_score": 58
+    },
+    "https://www.hanshin.com.tw/": {
+      "target": "https://www.hanshin.com.tw/",
+      "risk_level": "High",
+      "vulnerabilities": [],
+      "security_issues": [
+        {
+          "type": "Missing Security Header",
+          "description": "缺失关键安全头: Content-Security-Policy",
+          "severity": "Medium"
+        },
+        {
+          "type": "Missing Security Header",
+          "description": "缺失关键安全头: X-Content-Type-Options",
+          "severity": "Low"
+        },
+        {
+          "type": "Missing Security Header",
+          "description": "缺失关键安全头: X-Frame-Options",
+          "severity": "Low"
+        },
+        {
+          "type": "Missing Security Header",
+          "description": "缺失关键安全头: Strict-Transport-Security",
+          "severity": "Medium"
+        },
+        {
+          "type": "Information Disclosure",
+          "description": "sitemap.xml文件可访问，可能泄露网站结构",
+          "severity": "Low"
+        },
+        {
+          "type": "Information Disclosure",
+          "description": "可能包含敏感信息的配置文件可访问",
+          "severity": "High"
+        },
+        {
+          "type": "Information Disclosure",
+          "description": "可能包含敏感信息的配置文件可访问",
+          "severity": "High"
+        },
+        {
+          "type": "Information Disclosure",
+          "description": "可能包含敏感信息的配置文件可访问",
+          "severity": "High"
+        },
+        {
+          "type": "Information Disclosure",
+          "description": "可能包含敏感信息的配置文件可访问",
+          "severity": "High"
+        },
+        {
+          "type": "Information Disclosure",
+          "description": "可能包含敏感信息的配置文件可访问",
+          "severity": "High"
+        },
+        {
+          "type": "Information Disclosure",
+          "description": "可能包含敏感信息的配置文件可访问",
+          "severity": "High"
+        },
+        {
+          "type": "Information Disclosure",
+          "description": "可能包含敏感信息的配置文件可访问",
+          "severity": "High"
+        },
+        {
+          "type": "Information Disclosure",
+          "description": "可能包含敏感信息的配置文件可访问",
+          "severity": "High"
+        },
+        {
+          "type": "Missing WAF",
+          "description": "未检测到Web应用防火墙保护",
+          "severity": "Medium"
+        }
+      ],
+      "recommendations": [
+        {
+          "category": "安全头配置",
+          "priority": "High",
+          "items": [
+            "添加 Content-Security-Policy 安全头",
+            "添加 X-Content-Type-Options 安全头",
+            "添加 X-Frame-Options 安全头",
+            "添加 Strict-Transport-Security 安全头"
+          ]
+        },
+        {
+          "category": "信息泄露防护",
+          "priority": "Medium",
+          "items": [
+            "限制敏感文件访问",
+            "配置robots.txt和sitemap.xml",
+            "移除不必要的配置文件"
+          ]
+        },
+        {
+          "category": "Web应用防火墙",
+          "priority": "High",
+          "items": [
+            "部署Web应用防火墙",
+            "配置安全规则",
+            "启用实时监控"
+          ]
+        },
+        {
+          "category": "通用安全措施",
+          "priority": "Medium",
+          "items": [
+            "实施定期安全扫描",
+            "建立安全事件响应流程",
+            "进行安全意识培训",
+            "实施最小权限原则"
+          ]
+        }
+      ],
+      "compliance_score": 38
+    },
+    "https://ngoenmun.com/": {
+      "target": "https://ngoenmun.com/",
+      "risk_level": "Medium",
+      "vulnerabilities": [],
+      "security_issues": [
+        {
+          "type": "Missing Security Header",
+          "description": "缺失关键安全头: Content-Security-Policy",
+          "severity": "Medium"
+        },
+        {
+          "type": "Missing Security Header",
+          "description": "缺失关键安全头: X-Content-Type-Options",
+          "severity": "Low"
+        },
+        {
+          "type": "Missing Security Header",
+          "description": "缺失关键安全头: X-Frame-Options",
+          "severity": "Low"
+        },
+        {
+          "type": "Technology Risk",
+          "description": "Nginx 1.14.1 - 检查已知漏洞",
+          "severity": "Medium"
+        },
+        {
+          "type": "Missing WAF",
+          "description": "未检测到Web应用防火墙保护",
+          "severity": "Medium"
+        }
+      ],
+      "recommendations": [
+        {
+          "category": "安全头配置",
+          "priority": "High",
+          "items": [
+            "添加 Content-Security-Policy 安全头",
+            "添加 X-Content-Type-Options 安全头",
+            "添加 X-Frame-Options 安全头"
+          ]
+        },
+        {
+          "category": "技术栈安全",
+          "priority": "Medium",
+          "items": [
+            "更新服务器和框架版本",
+            "应用安全补丁",
+            "进行定期安全审计"
+          ]
+        },
+        {
+          "category": "Web应用防火墙",
+          "priority": "High",
+          "items": [
+            "部署Web应用防火墙",
+            "配置安全规则",
+            "启用实时监控"
+          ]
+        },
+        {
+          "category": "通用安全措施",
+          "priority": "Medium",
+          "items": [
+            "实施定期安全扫描",
+            "建立安全事件响应流程",
+            "进行安全意识培训",
+            "实施最小权限原则"
+          ]
+        }
+      ],
+      "compliance_score": 66
+    }
+  },
+  "methodology": {
+    "scanning_tools": [
+      "Custom Target Scanner",
+      "WAF Detection",
+      "Vulnerability Validator"
+    ],
+    "scan_types": [
+      "SQL Injection",
+      "XSS",
+      "Command Injection",
+      "SSRF",
+      "Directory Traversal"
+    ],
+    "validation_methods": [
+      "Security Headers Analysis",
+      "Information Disclosure",
+      "Technology Stack Analysis",
+      "SSL/TLS Configuration"
+    ]
+  },
+  "risk_matrix": {
+    "critical_risks": [
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "issue_type": "Information Disclosure",
+        "description": "可能包含敏感信息的配置文件可访问",
+        "severity": "High"
+      },
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "issue_type": "Information Disclosure",
+        "description": "可能包含敏感信息的配置文件可访问",
+        "severity": "High"
+      },
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "issue_type": "Information Disclosure",
+        "description": "可能包含敏感信息的配置文件可访问",
+        "severity": "High"
+      },
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "issue_type": "Information Disclosure",
+        "description": "可能包含敏感信息的配置文件可访问",
+        "severity": "High"
+      },
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "issue_type": "Information Disclosure",
+        "description": "可能包含敏感信息的配置文件可访问",
+        "severity": "High"
+      },
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "issue_type": "Information Disclosure",
+        "description": "可能包含敏感信息的配置文件可访问",
+        "severity": "High"
+      },
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "issue_type": "Information Disclosure",
+        "description": "可能包含敏感信息的配置文件可访问",
+        "severity": "High"
+      },
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "issue_type": "Information Disclosure",
+        "description": "可能包含敏感信息的配置文件可访问",
+        "severity": "High"
+      }
+    ],
+    "high_risks": [
+      {
+        "target": "https://peacoop.or.th",
+        "issue_type": "Information Disclosure",
+        "description": "可能包含敏感信息的配置文件可访问",
+        "severity": "High"
+      },
+      {
+        "target": "https://mula-x.com/",
+        "issue_type": "Missing Security Header",
+        "description": "缺失关键安全头: Content-Security-Policy",
+        "severity": "Medium"
+      },
+      {
+        "target": "https://mula-x.com/",
+        "issue_type": "Missing Security Header",
+        "description": "缺失关键安全头: X-Content-Type-Options",
+        "severity": "Low"
+      },
+      {
+        "target": "https://mula-x.com/",
+        "issue_type": "Missing Security Header",
+        "description": "缺失关键安全头: X-Frame-Options",
+        "severity": "Low"
+      },
+      {
+        "target": "https://mula-x.com/",
+        "issue_type": "Missing Security Header",
+        "description": "缺失关键安全头: Strict-Transport-Security",
+        "severity": "Medium"
+      },
+      {
+        "target": "https://mula-x.com/",
+        "issue_type": "Information Disclosure",
+        "description": "sitemap.xml文件可访问，可能泄露网站结构",
+        "severity": "Low"
+      },
+      {
+        "target": "https://mula-x.com/",
+        "issue_type": "Technology Risk",
+        "description": "Apache 2.4.41 - 检查已知漏洞",
+        "severity": "Medium"
+      },
+      {
+        "target": "https://mula-x.com/",
+        "issue_type": "Missing WAF",
+        "description": "未检测到Web应用防火墙保护",
+        "severity": "Medium"
+      },
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "issue_type": "Missing Security Header",
+        "description": "缺失关键安全头: Content-Security-Policy",
+        "severity": "Medium"
+      },
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "issue_type": "Missing Security Header",
+        "description": "缺失关键安全头: X-Content-Type-Options",
+        "severity": "Low"
+      },
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "issue_type": "Missing Security Header",
+        "description": "缺失关键安全头: X-Frame-Options",
+        "severity": "Low"
+      },
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "issue_type": "Missing Security Header",
+        "description": "缺失关键安全头: Strict-Transport-Security",
+        "severity": "Medium"
+      },
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "issue_type": "Information Disclosure",
+        "description": "sitemap.xml文件可访问，可能泄露网站结构",
+        "severity": "Low"
+      },
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "issue_type": "Missing WAF",
+        "description": "未检测到Web应用防火墙保护",
+        "severity": "Medium"
+      }
+    ],
+    "medium_risks": [
+      {
+        "target": "https://peacoop.or.th",
+        "issue_type": "Missing Security Header",
+        "description": "缺失关键安全头: Strict-Transport-Security",
+        "severity": "Medium"
+      },
+      {
+        "target": "https://peacoop.or.th",
+        "issue_type": "Technology Risk",
+        "description": "Nginx 1.25.2 - 检查已知漏洞",
+        "severity": "Medium"
+      },
+      {
+        "target": "https://peacoop.or.th",
+        "issue_type": "Technology Risk",
+        "description": "WordPress - 检查插件和主题漏洞",
+        "severity": "Medium"
+      },
+      {
+        "target": "https://ngoenmun.com/",
+        "issue_type": "Missing Security Header",
+        "description": "缺失关键安全头: Content-Security-Policy",
+        "severity": "Medium"
+      },
+      {
+        "target": "https://ngoenmun.com/",
+        "issue_type": "Missing Security Header",
+        "description": "缺失关键安全头: X-Content-Type-Options",
+        "severity": "Low"
+      },
+      {
+        "target": "https://ngoenmun.com/",
+        "issue_type": "Missing Security Header",
+        "description": "缺失关键安全头: X-Frame-Options",
+        "severity": "Low"
+      },
+      {
+        "target": "https://ngoenmun.com/",
+        "issue_type": "Technology Risk",
+        "description": "Nginx 1.14.1 - 检查已知漏洞",
+        "severity": "Medium"
+      },
+      {
+        "target": "https://ngoenmun.com/",
+        "issue_type": "Missing WAF",
+        "description": "未检测到Web应用防火墙保护",
+        "severity": "Medium"
+      }
+    ],
+    "low_risks": []
+  },
+  "remediation_roadmap": {
+    "immediate_actions": [
+      {
+        "category": "安全头配置",
+        "actions": [
+          "添加 Strict-Transport-Security 安全头"
+        ]
+      },
+      {
+        "category": "安全头配置",
+        "actions": [
+          "添加 Content-Security-Policy 安全头",
+          "添加 X-Content-Type-Options 安全头",
+          "添加 X-Frame-Options 安全头",
+          "添加 Strict-Transport-Security 安全头"
+        ]
+      },
+      {
+        "category": "Web应用防火墙",
+        "actions": [
+          "部署Web应用防火墙",
+          "配置安全规则",
+          "启用实时监控"
+        ]
+      },
+      {
+        "category": "安全头配置",
+        "actions": [
+          "添加 Content-Security-Policy 安全头",
+          "添加 X-Content-Type-Options 安全头",
+          "添加 X-Frame-Options 安全头",
+          "添加 Strict-Transport-Security 安全头"
+        ]
+      },
+      {
+        "category": "Web应用防火墙",
+        "actions": [
+          "部署Web应用防火墙",
+          "配置安全规则",
+          "启用实时监控"
+        ]
+      },
+      {
+        "category": "安全头配置",
+        "actions": [
+          "添加 Content-Security-Policy 安全头",
+          "添加 X-Content-Type-Options 安全头",
+          "添加 X-Frame-Options 安全头"
+        ]
+      },
+      {
+        "category": "Web应用防火墙",
+        "actions": [
+          "部署Web应用防火墙",
+          "配置安全规则",
+          "启用实时监控"
+        ]
+      }
+    ],
+    "short_term_actions": [],
+    "medium_term_actions": [
+      {
+        "category": "信息泄露防护",
+        "actions": [
+          "限制敏感文件访问",
+          "配置robots.txt和sitemap.xml",
+          "移除不必要的配置文件"
+        ]
+      },
+      {
+        "category": "信息泄露防护",
+        "actions": [
+          "限制敏感文件访问",
+          "配置robots.txt和sitemap.xml",
+          "移除不必要的配置文件"
+        ]
+      },
+      {
+        "category": "信息泄露防护",
+        "actions": [
+          "限制敏感文件访问",
+          "配置robots.txt和sitemap.xml",
+          "移除不必要的配置文件"
+        ]
+      }
+    ],
+    "long_term_actions": [
+      {
+        "category": "技术栈安全",
+        "actions": [
+          "更新服务器和框架版本",
+          "应用安全补丁",
+          "进行定期安全审计"
+        ]
+      },
+      {
+        "category": "通用安全措施",
+        "actions": [
+          "实施定期安全扫描",
+          "建立安全事件响应流程",
+          "进行安全意识培训",
+          "实施最小权限原则"
+        ]
+      },
+      {
+        "category": "技术栈安全",
+        "actions": [
+          "更新服务器和框架版本",
+          "应用安全补丁",
+          "进行定期安全审计"
+        ]
+      },
+      {
+        "category": "通用安全措施",
+        "actions": [
+          "实施定期安全扫描",
+          "建立安全事件响应流程",
+          "进行安全意识培训",
+          "实施最小权限原则"
+        ]
+      },
+      {
+        "category": "通用安全措施",
+        "actions": [
+          "实施定期安全扫描",
+          "建立安全事件响应流程",
+          "进行安全意识培训",
+          "实施最小权限原则"
+        ]
+      },
+      {
+        "category": "技术栈安全",
+        "actions": [
+          "更新服务器和框架版本",
+          "应用安全补丁",
+          "进行定期安全审计"
+        ]
+      },
+      {
+        "category": "通用安全措施",
+        "actions": [
+          "实施定期安全扫描",
+          "建立安全事件响应流程",
+          "进行安全意识培训",
+          "实施最小权限原则"
+        ]
+      }
+    ]
+  }
+}

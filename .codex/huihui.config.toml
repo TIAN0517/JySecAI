@@ -1,0 +1,2 @@
+model_provider = "my_custom_hf" 
+model = "meta-llama/Llama-3.1-8B-Instruct" 

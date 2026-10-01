@@ -1,0 +1,375 @@
+{
+  "www.momoshop.com.tw": [
+    [
+      "CDN",
+      "Akamai (geo)"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS20940 Akamai International B.V."
+    ],
+    [
+      "Geo",
+      "Taiwan/Taipei"
+    ]
+  ],
+  "24h.pchome.com.tw": [
+    [
+      "Hosting",
+      "Google Cloud"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS396982 Google LLC"
+    ],
+    [
+      "Geo",
+      "United States/Kansas City"
+    ]
+  ],
+  "www.etmall.com.tw": [
+    [
+      "ISP",
+      "Chunghwa/HINET (TW)"
+    ],
+    [
+      "ASN",
+      "AS3462 Data Communication Business Group"
+    ],
+    [
+      "Geo",
+      "Taiwan/Kaohsiung"
+    ]
+  ],
+  "www.ego-finance.com.tw": [],
+  "www.welend.hk": [
+    [
+      "CDN",
+      "Google Trust Services"
+    ],
+    [
+      "CDN",
+      "Cloudflare (geo)"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS13335 Cloudflare, Inc."
+    ],
+    [
+      "Geo",
+      "Canada/Montreal"
+    ]
+  ],
+  "www.newloan.com.tw": [
+    [
+      "CDN",
+      "Google Trust Services"
+    ],
+    [
+      "CDN",
+      "Cloudflare (geo)"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS13335 Cloudflare, Inc."
+    ],
+    [
+      "Geo",
+      "Canada/Toronto"
+    ]
+  ],
+  "www.shincredit.com.tw": [
+    [
+      "ISP",
+      "NCICNET (TW)"
+    ],
+    [
+      "ASN",
+      "AS9919 New Century InfoComm Tech Co., Ltd."
+    ],
+    [
+      "Geo",
+      "Taiwan/Taipei"
+    ]
+  ],
+  "www.superbank.com.tw": [
+    [
+      "Hosting",
+      "Azure"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS8075 Microsoft Corporation"
+    ],
+    [
+      "Geo",
+      "Singapore/Singapore"
+    ]
+  ],
+  "www.tac.finance": [
+    [
+      "ISP",
+      "NCICNET (TW)"
+    ],
+    [
+      "ASN",
+      "AS9919 New Century InfoComm Tech Co., Ltd."
+    ],
+    [
+      "Geo",
+      "Taiwan/Taipei"
+    ]
+  ],
+  "www.tac.com.tw": [
+    [
+      "ISP",
+      "NCICNET (TW)"
+    ],
+    [
+      "ASN",
+      "AS9919 New Century InfoComm Tech Co., Ltd."
+    ],
+    [
+      "Geo",
+      "Taiwan/Taipei"
+    ]
+  ],
+  "www.he-jing.com.tw": [
+    [
+      "CA",
+      "Sectigo"
+    ],
+    [
+      "Hosting",
+      "Azure"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS8075 Microsoft Corporation"
+    ],
+    [
+      "Geo",
+      "Singapore/Singapore"
+    ]
+  ],
+  "www.hfcfinance.com.tw": [
+    [
+      "CA",
+      "Sectigo"
+    ],
+    [
+      "Hosting",
+      "Azure"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS8075 Microsoft Corporation"
+    ],
+    [
+      "Geo",
+      "Singapore/Singapore"
+    ]
+  ],
+  "www.megaholdings.com.tw": [
+    [
+      "CDN",
+      "Akamai (geo)"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS20940 Akamai International B.V."
+    ],
+    [
+      "Geo",
+      "Taiwan/Taipei"
+    ]
+  ],
+  "www.easyauction.com.tw": [
+    [
+      "CDN",
+      "Akamai (geo)"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS20940 Akamai International B.V."
+    ],
+    [
+      "Geo",
+      "Taiwan/Taipei"
+    ]
+  ],
+  "www.hotains.com.tw": [
+    [
+      "CDN",
+      "Akamai (geo)"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS16625 Akamai Technologies, Inc."
+    ],
+    [
+      "Geo",
+      "Taiwan/Taipei"
+    ]
+  ],
+  "www.hotaimotor.com.tw": [
+    [
+      "Hosting",
+      "Azure"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS8075 Microsoft Corporation"
+    ],
+    [
+      "Geo",
+      "Canada/Toronto"
+    ]
+  ],
+  "www.hotaimember.com.tw": [
+    [
+      "Hosting",
+      "Azure"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS8075 Microsoft Corporation"
+    ],
+    [
+      "Geo",
+      "Canada/Toronto"
+    ]
+  ],
+  "ec2.hotains.com.tw": [
+    [
+      "CDN",
+      "Akamai (geo)"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS16625 Akamai Technologies, Inc."
+    ],
+    [
+      "Geo",
+      "Taiwan/Taipei"
+    ]
+  ],
+  "www.kuanzho.com.tw": [
+    [
+      "Risk",
+      "Downgrade-capable: TLSv1.2"
+    ],
+    [
+      "ISP",
+      "Chunghwa/HINET (TW)"
+    ],
+    [
+      "ASN",
+      "AS3462 Data Communication Business Group"
+    ],
+    [
+      "Geo",
+      "Taiwan/Taipei"
+    ]
+  ],
+  "www.tzuchi.org.tw": [
+    [
+      "CDN",
+      "Google Trust Services"
+    ],
+    [
+      "CDN",
+      "Cloudflare (geo)"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS13335 Cloudflare, Inc."
+    ],
+    [
+      "Geo",
+      "Canada/Toronto"
+    ]
+  ],
+  "www.tzuchi.org.hk": [
+    [
+      "CA",
+      "GoDaddy"
+    ],
+    [
+      "Risk",
+      "Downgrade-capable: TLSv1.2"
+    ],
+    [
+      "Hosting",
+      "Google Cloud"
+    ],
+    [
+      "Hosting",
+      "flagged-hosting"
+    ],
+    [
+      "ASN",
+      "AS396982 Google LLC"
+    ],
+    [
+      "Geo",
+      "Hong Kong/Hong Kong"
+    ]
+  ]
+}

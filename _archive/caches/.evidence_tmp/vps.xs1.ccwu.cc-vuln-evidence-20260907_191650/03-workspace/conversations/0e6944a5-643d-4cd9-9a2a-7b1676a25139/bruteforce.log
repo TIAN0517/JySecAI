@@ -1,0 +1,8 @@
+total candidates: 16421
+starting concurrent brute force, workers=40 ...
+  tested 3000 / 16421
+  tested 6000 / 16421
+  tested 9000 / 16421
+  tested 12000 / 16421
+  tested 15000 / 16421
+DONE. total tested: 16421 hits: 0

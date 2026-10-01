@@ -1,0 +1,233 @@
+{
+  "socket_io_/socket.io/": {
+    "status": 400,
+    "size": 40,
+    "ct": "application/json"
+  },
+  "socket_io_/socket.io/?EIO=4&transport=websocket": {
+    "status": 400,
+    "size": 34,
+    "ct": "application/json"
+  },
+  "socket_io_/socket.io/?transport=polling": {
+    "status": 200,
+    "size": 104,
+    "ct": "text/plain; charset=UTF-8"
+  },
+  "dispatch_/DispatchRecords": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/DispatchRecords/push": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/DispatchRecords/broadcast": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/DispatchRecords/send": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/DispatchRecords/create": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/DispatchRecords/update": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/DispatchRecords/status": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/dispatch/push": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/dispatch/broadcast": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/api/dispatch/push": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/api/dispatch/broadcast": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/api/push": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/api/push/send": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/api/notify": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/api/alert": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/api/broadcast": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/api/message": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/api/ambulance/dispatch": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/api/hospital/dispatch": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/api/case/push": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/api/case/notify": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/socket.io/": {
+    "status": 400,
+    "size": 40,
+    "ct": "application/json"
+  },
+  "dispatch_/socket.io/?EIO=4&transport=polling": {
+    "status": 200,
+    "size": 104,
+    "ct": "text/plain; charset=UTF-8"
+  },
+  "dispatch_/ws": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/websocket": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "dispatch_/events": {
+    "status": 401,
+    "size": 183,
+    "ct": "text/html; charset=utf-8"
+  },
+  "epcr_/socket.io/": {
+    "status": 400,
+    "size": 40
+  },
+  "epcr_/socket.io/?EIO=4&transport=polling": {
+    "status": 200,
+    "size": 103
+  },
+  "epcr_/api/dispatch/push": {
+    "status": 401,
+    "size": 183
+  },
+  "epcr_/api/dispatch/broadcast": {
+    "status": 401,
+    "size": 183
+  },
+  "epcr_/api/push": {
+    "status": 401,
+    "size": 183
+  },
+  "epcr_/api/notify": {
+    "status": 401,
+    "size": 183
+  },
+  "epcr_/api/CaseList": {
+    "status": 401,
+    "size": 183
+  },
+  "epcr_/api/OhcaCaseList": {
+    "status": 401,
+    "size": 183
+  },
+  "epcr_/api/MciList": {
+    "status": 401,
+    "size": 183
+  },
+  "captcha": {
+    "status": 200,
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "application/octet-stream",
+      "Content-Length": "17646",
+      "ETag": "W/\"44ee-eSa1t0iHVt+6/CObHlY/Vg\"",
+      "Set-Cookie": "connect.sid=s%3A7Kv-9E4wwPgahHCDVGvsPG9gplF8kH-h.fJSw5Xxmn%2FlMvf09ARI3lGkri54rhs7XHUKMK9o23cw; Path=/; HttpOnly",
+      "Date": "Sun, 27 Sep 2026 19:59:02 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    },
+    "size": 17646
+  },
+  "login_empty": {
+    "status": 429,
+    "body": "{\"name\":\"ErrorWithStatusCode\",\"message\":\"圖形驗證碼已失效\",\"code\":429}",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "78",
+      "ETag": "W/\"4e-c0BZ3/XPB07sMTWKZ8yqxA\"",
+      "Set-Cookie": "connect.sid=s%3AT025TKTCAePC1PAMWZhChuZeVU_UPJQU.mf48lsiZ94BFcBupSYOIKSmWdJke2WDs28Ui79jp3Uk; Path=/; HttpOnly",
+      "Date": "Sun, 27 Sep 2026 19:59:02 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  }
+}

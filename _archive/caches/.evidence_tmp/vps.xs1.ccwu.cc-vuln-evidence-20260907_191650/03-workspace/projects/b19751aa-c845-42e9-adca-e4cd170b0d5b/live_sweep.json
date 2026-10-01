@@ -1,0 +1,996 @@
+[
+ {
+  "domain": "momoshop.com.tw",
+  "probes": {
+   "https://momoshop.com.tw": {
+    "status": 200,
+    "final_url": "https://www.momoshop.com.tw/index.html",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [
+     "JSESSIONID=6A2EE669AD87DF66CE299AFF38D3CA17-m1.c1-shop40; Path=/; Secure; HttpOnly",
+     "wshop=wshop_web_c_40; Secure; HttpOnly; path=/;"
+    ],
+    "len": 1967,
+    "tech": [],
+    "title": "momo購物網"
+   },
+   "http://momoshop.com.tw": {
+    "status": 200,
+    "final_url": "https://www.momoshop.com.tw/index.html",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [
+     "JSESSIONID=67798F033584ADBE14A8B6657DA91990-m1.c1-shop15; Path=/; Secure; HttpOnly",
+     "wshop=wshop_web_c_15; Secure; HttpOnly; path=/;"
+    ],
+    "len": 1967,
+    "tech": [],
+    "title": "momo購物網"
+   },
+   "https://www.momoshop.com.tw": {
+    "status": 200,
+    "final_url": "https://www.momoshop.com.tw/main/Main.jsp",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [],
+    "len": 48848,
+    "tech": [],
+    "title": "momo購物網 - 好評推薦 - 2026年9月"
+   },
+   "http://www.momoshop.com.tw": {
+    "status": 200,
+    "final_url": "http://www.momoshop.com.tw/main/Main.jsp",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [
+     "ak_bmsc=23C8057613CD93F475D39FAEC51F8B61~000000000000000000000000000000~YAAQJfN0aA1+VUWgAQAAxtlFZgH6XdJ3a66OOl5/wuGyDATgqLxJxDAZBV3ZtjKtqjmzAwUgPvZJN2AuxhlElIpqtzeXBhEB/X6LJl/C0vtkUu+6LCQADl2h6lu3f9GS1CVyifpnn0YcOlTQ+fBFh7O1/qnbc7Rm2u/qwU99lL5yaWPos8+OajREz+HQmUwpFFlOKe0QLd49Hu1NtGfKrNNZaFN5DearrasayLwtPHuaMrr+AZhJN2Dms2G4Uns4TMBY782xMXSZ70VN28LIVSA+LtfTi94n79NxaQycOLJrMl2usWsdtss5uzWii9t/sJ5AScLwOvy8AJs2; Domain=.momoshop.com.tw; Path=/; Expires=Thu, 03 Sep 2026 09:57:28 GMT; Max-Age=7200; HttpOnly"
+    ],
+    "len": 48848,
+    "tech": [],
+    "title": "momo購物網 - 好評推薦 - 2026年9月"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "*.momoshop.com.tw",
+   "issuer": "DigiCert Inc",
+   "not_after": "Jan 10 23:59:59 2027 GMT"
+  },
+  "tls_apex": {
+   "tls": "TLSv1.2",
+   "subject_cn": "*.momoshop.com.tw",
+   "issuer": "TAIWAN-CA",
+   "not_after": "Feb  3 15:59:59 2027 GMT"
+  }
+ },
+ {
+  "domain": "24h.pchome.com.tw",
+  "probes": {
+   "https://24h.pchome.com.tw": {
+    "status": 429,
+    "final_url": "https://24h.pchome.com.tw",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [],
+    "len": 142,
+    "tech": [],
+    "title": "429"
+   },
+   "http://24h.pchome.com.tw": {
+    "status": 429,
+    "final_url": "https://24h.pchome.com.tw/",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [],
+    "len": 142,
+    "tech": [],
+    "title": "429"
+   },
+   "https://www.24h.pchome.com.tw": {
+    "err": "[Errno -2] Name or service not known"
+   },
+   "http://www.24h.pchome.com.tw": {
+    "err": "[Errno -2] Name or service not known"
+   }
+  },
+  "tls_w": {
+   "tls_err": "[Errno -2] Name or service not known"
+  },
+  "tls_apex": {
+   "tls": "TLSv1.3",
+   "subject_cn": "*.pchome.com.tw",
+   "issuer": "DigiCert Inc",
+   "not_after": "Jan 15 23:59:59 2027 GMT"
+  }
+ },
+ {
+  "domain": "etmall.com.tw",
+  "probes": {
+   "https://etmall.com.tw": {
+    "status": 200,
+    "final_url": "https://www.etmall.com.tw/",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [
+     "WSERVERID=eWeb138; Path=/; Secure; HttpOnly"
+    ],
+    "len": 556358,
+    "tech": [],
+    "title": "ETMall東森購物網|生活煥新季回饋加碼99狂歡，全站加碼最高回饋8%東森幣，滿額送800樂透金"
+   },
+   "http://etmall.com.tw": {
+    "status": 200,
+    "final_url": "https://www.etmall.com.tw/",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [
+     "WSERVERID=eWeb138; Path=/; Secure; HttpOnly"
+    ],
+    "len": 556358,
+    "tech": [],
+    "title": "ETMall東森購物網|生活煥新季回饋加碼99狂歡，全站加碼最高回饋8%東森幣，滿額送800樂透金"
+   },
+   "https://www.etmall.com.tw": {
+    "status": 200,
+    "final_url": "https://www.etmall.com.tw",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [
+     "WSERVERID=eWeb118; Path=/; Secure; HttpOnly"
+    ],
+    "len": 556254,
+    "tech": [],
+    "title": "ETMall東森購物網|生活煥新季回饋加碼99狂歡，全站加碼最高回饋8%東森幣，滿額送800樂透金"
+   },
+   "http://www.etmall.com.tw": {
+    "status": 200,
+    "final_url": "https://www.etmall.com.tw/",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [
+     "WSERVERID=eWeb143; Path=/; Secure; HttpOnly"
+    ],
+    "len": 556127,
+    "tech": [],
+    "title": "ETMall東森購物網|生活煥新季回饋加碼99狂歡，全站加碼最高回饋8%東森幣，滿額送800樂透金"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "*.etmall.com.tw",
+   "issuer": "TAIWAN-CA",
+   "not_after": "Feb 26 15:59:59 2027 GMT"
+  },
+  "tls_apex": {
+   "tls": "TLSv1.3",
+   "subject_cn": "*.etmall.com.tw",
+   "issuer": "TAIWAN-CA",
+   "not_after": "Feb 26 15:59:59 2027 GMT"
+  }
+ },
+ {
+  "domain": "ego-finance.com.tw",
+  "probes": {
+   "https://ego-finance.com.tw": {
+    "err": "[Errno -2] Name or service not known"
+   },
+   "http://ego-finance.com.tw": {
+    "err": "[Errno -2] Name or service not known"
+   },
+   "https://www.ego-finance.com.tw": {
+    "err": "[Errno -2] Name or service not known"
+   },
+   "http://www.ego-finance.com.tw": {
+    "err": "[Errno -2] Name or service not known"
+   }
+  },
+  "tls_w": {
+   "tls_err": "[Errno -2] Name or service not known"
+  },
+  "tls_apex": {
+   "tls_err": "[Errno -2] Name or service not known"
+  }
+ },
+ {
+  "domain": "welend.hk",
+  "probes": {
+   "https://welend.hk": {
+    "status": 200,
+    "final_url": "https://www.welend.hk/",
+    "server": "cloudflare",
+    "xpowered": "",
+    "setcookie": [
+     "nonce=NDY1MjYzOWEtYTEzNi00YTM2LWE5YjktYTUwZmRkNTlkZDEw; Path=/; Secure; SameSite=Strict",
+     "isClose=true; Max-Age=259200; Path=/; Secure; SameSite=Strict",
+     "cookiesession1=678A3E0F2653870B10BB1B04C87E8AA4;Expires=Fri, 03 Sep 2027 07:57:29 GMT;Path=/;HttpOnly",
+     "__cf_bm=foXkNxLwS5250cAlQ8KLsDeeJaK4ZmS2vS_dshUex7k-1788422248.6547713-1.0.1.1-KfLEuiZ6574fpXfa6ltu7YI3ARjSrvC51CQkQb_DOC56q.vnErOXrquVzRHyY2D_ye6BPWNC14SdNFzOiVVcY_vTCrl4VgwFJx8d6gEoFnliZR2kwho1i0xwVXmTNVac; HttpOnly; SameSite=None; Secure; Path=/; Domain=welend.hk; Expires=Thu, 03 Sep 2026 08:27:29 GMT"
+    ],
+    "len": 282389,
+    "tech": [],
+    "title": "全自動網上貸款，借錢超簡易 | 網上AI 級貸款 | WeLend"
+   },
+   "http://welend.hk": {
+    "status": 200,
+    "final_url": "https://www.welend.hk/",
+    "server": "cloudflare",
+    "xpowered": "",
+    "setcookie": [
+     "nonce=ZmIwMjdiYjEtMDUzNC00NGFhLTk0MmMtY2Y4OWI3ZGU5ODZm; Path=/; Secure; SameSite=Strict",
+     "isClose=true; Max-Age=259200; Path=/; Secure; SameSite=Strict"
+    ],
+    "len": 282389,
+    "tech": [],
+    "title": "全自動網上貸款，借錢超簡易 | 網上AI 級貸款 | WeLend"
+   },
+   "https://www.welend.hk": {
+    "status": 200,
+    "final_url": "https://www.welend.hk",
+    "server": "cloudflare",
+    "xpowered": "",
+    "setcookie": [
+     "nonce=NTI3M2JkZWYtMjUzMi00NmQ1LTgwODQtZjhjNjEyNjNiMmIw; Path=/; Secure; SameSite=Strict",
+     "isClose=true; Max-Age=259200; Path=/; Secure; SameSite=Strict",
+     "__cf_bm=KMpcgR9Yb8HaQZpj3Y7MOasvV9QjDawGJcl3aCcf7ag-1788422250.45222-1.0.1.1-wPPf9A8mKhovCos33X0vP8zYvCHXswaLt2lE21OEcn6i18TWsEenLS00jlLgXxDNiJQ9l__lslVubvJZUizzjxx8DWFxs_XcfwgOkp5UUvF_yccG5FmcTZxc.C_den7h; HttpOnly; SameSite=None; Secure; Path=/; Domain=welend.hk; Expires=Thu, 03 Sep 2026 08:27:31 GMT",
+     "_cfuvid=IRYFCXrhxplTwn3JvAxBOyAcpwcrg7HrxTSML0qZy90-1788422250.45222-1.0.1.1-qvOVtDl.vRdWVTFmvH88UkbhEMx75Kaj11waaut8mu0; HttpOnly; SameSite=None; Secure; Path=/; Domain=welend.hk"
+    ],
+    "len": 282389,
+    "tech": [],
+    "title": "全自動網上貸款，借錢超簡易 | 網上AI 級貸款 | WeLend"
+   },
+   "http://www.welend.hk": {
+    "status": 200,
+    "final_url": "https://www.welend.hk/",
+    "server": "cloudflare",
+    "xpowered": "",
+    "setcookie": [
+     "nonce=YTM4YzJlYmEtNTYzMC00NDRkLWJkZDUtNjY2MzEyNGU3YTU3; Path=/; Secure; SameSite=Strict",
+     "isClose=true; Max-Age=259200; Path=/; Secure; SameSite=Strict"
+    ],
+    "len": 282389,
+    "tech": [],
+    "title": "全自動網上貸款，借錢超簡易 | 網上AI 級貸款 | WeLend"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "www.welend.hk",
+   "issuer": "Google Trust Services",
+   "not_after": "Oct 22 17:16:33 2026 GMT"
+  },
+  "tls_apex": {
+   "tls": "TLSv1.3",
+   "subject_cn": "welend.hk",
+   "issuer": "Google Trust Services",
+   "not_after": "Nov  5 17:02:30 2026 GMT"
+  }
+ },
+ {
+  "domain": "newloan.com.tw",
+  "probes": {
+   "https://newloan.com.tw": {
+    "status": 200,
+    "final_url": "https://www.newloan.com.tw/",
+    "server": "cloudflare",
+    "xpowered": "",
+    "setcookie": [],
+    "len": 293774,
+    "tech": [
+     "WordPress"
+    ],
+    "title": ""
+   },
+   "http://newloan.com.tw": {
+    "status": 200,
+    "final_url": "https://www.newloan.com.tw/",
+    "server": "cloudflare",
+    "xpowered": "",
+    "setcookie": [],
+    "len": 293774,
+    "tech": [
+     "WordPress"
+    ],
+    "title": ""
+   },
+   "https://www.newloan.com.tw": {
+    "status": 200,
+    "final_url": "https://www.newloan.com.tw",
+    "server": "cloudflare",
+    "xpowered": "",
+    "setcookie": [],
+    "len": 293774,
+    "tech": [
+     "WordPress"
+    ],
+    "title": ""
+   },
+   "http://www.newloan.com.tw": {
+    "status": 200,
+    "final_url": "https://www.newloan.com.tw/",
+    "server": "cloudflare",
+    "xpowered": "",
+    "setcookie": [],
+    "len": 293774,
+    "tech": [
+     "WordPress"
+    ],
+    "title": ""
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "newloan.com.tw",
+   "issuer": "Google Trust Services",
+   "not_after": "Oct 29 07:14:33 2026 GMT"
+  },
+  "tls_apex": {
+   "tls": "TLSv1.3",
+   "subject_cn": "newloan.com.tw",
+   "issuer": "Google Trust Services",
+   "not_after": "Oct 29 07:14:33 2026 GMT"
+  }
+ },
+ {
+  "domain": "shincredit.com.tw",
+  "probes": {
+   "https://shincredit.com.tw": {
+    "err": "[Errno 111] Connection refused"
+   },
+   "http://shincredit.com.tw": {
+    "err": "[Errno 111] Connection refused"
+   },
+   "https://www.shincredit.com.tw": {
+    "status": 200,
+    "final_url": "https://www.shincredit.com.tw",
+    "server": "openresty",
+    "xpowered": "ASP.NET",
+    "setcookie": [
+     "__RequestVerificationToken=lau91-s-uNcUMxjGO1JeGGTWQSs8WHON1oUNqDtKsljSn8UFWKMomEBh9j3B5YHdUBDi-pEatvx2Okl7EPZ6KZMHkseFMAp2JTFLYsMRbUg1; path=/; secure; HttpOnly"
+    ],
+    "len": 25925,
+    "tech": [],
+    "title": "新鑫股份有限公司 Shinshin Credit Corporation"
+   },
+   "http://www.shincredit.com.tw": {
+    "err": "timed out"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "*.shincredit.com.tw",
+   "issuer": "TAIWAN-CA",
+   "not_after": "Sep 18 15:59:59 2026 GMT"
+  },
+  "tls_apex": {
+   "tls_err": "[Errno 111] Connection refused"
+  }
+ },
+ {
+  "domain": "superbank.com.tw",
+  "probes": {
+   "https://superbank.com.tw": {
+    "status": 200,
+    "final_url": "https://superbank.com.tw",
+    "server": "Microsoft-IIS/10.0",
+    "xpowered": "ASP.NET",
+    "setcookie": [
+     "ARRAffinity=3890279289ffad1fcca1cdaa578f6428cd468a42c90d29f8ff4e9e208b5cb877;Path=/;HttpOnly;Secure;Domain=superbank.com.tw",
+     "ARRAffinitySameSite=3890279289ffad1fcca1cdaa578f6428cd468a42c90d29f8ff4e9e208b5cb877;Path=/;HttpOnly;SameSite=None;Secure;Domain=superbank.com.tw"
+    ],
+    "len": 41890,
+    "tech": [],
+    "title": "SuperBank｜金融管家"
+   },
+   "http://superbank.com.tw": {
+    "status": 200,
+    "final_url": "https://superbank.com.tw/",
+    "server": "Microsoft-IIS/10.0",
+    "xpowered": "ASP.NET",
+    "setcookie": [
+     "ARRAffinity=3890279289ffad1fcca1cdaa578f6428cd468a42c90d29f8ff4e9e208b5cb877;Path=/;HttpOnly;Secure;Domain=superbank.com.tw",
+     "ARRAffinitySameSite=3890279289ffad1fcca1cdaa578f6428cd468a42c90d29f8ff4e9e208b5cb877;Path=/;HttpOnly;SameSite=None;Secure;Domain=superbank.com.tw"
+    ],
+    "len": 41890,
+    "tech": [],
+    "title": "SuperBank｜金融管家"
+   },
+   "https://www.superbank.com.tw": {
+    "status": 200,
+    "final_url": "https://www.superbank.com.tw",
+    "server": "Microsoft-IIS/10.0",
+    "xpowered": "ASP.NET",
+    "setcookie": [
+     "ARRAffinity=3890279289ffad1fcca1cdaa578f6428cd468a42c90d29f8ff4e9e208b5cb877;Path=/;HttpOnly;Secure;Domain=www.superbank.com.tw",
+     "ARRAffinitySameSite=3890279289ffad1fcca1cdaa578f6428cd468a42c90d29f8ff4e9e208b5cb877;Path=/;HttpOnly;SameSite=None;Secure;Domain=www.superbank.com.tw"
+    ],
+    "len": 41890,
+    "tech": [],
+    "title": "SuperBank｜金融管家"
+   },
+   "http://www.superbank.com.tw": {
+    "status": 200,
+    "final_url": "https://www.superbank.com.tw/",
+    "server": "Microsoft-IIS/10.0",
+    "xpowered": "ASP.NET",
+    "setcookie": [
+     "ARRAffinity=3890279289ffad1fcca1cdaa578f6428cd468a42c90d29f8ff4e9e208b5cb877;Path=/;HttpOnly;Secure;Domain=www.superbank.com.tw",
+     "ARRAffinitySameSite=3890279289ffad1fcca1cdaa578f6428cd468a42c90d29f8ff4e9e208b5cb877;Path=/;HttpOnly;SameSite=None;Secure;Domain=www.superbank.com.tw"
+    ],
+    "len": 41890,
+    "tech": [],
+    "title": "SuperBank｜金融管家"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "www.superbank.com.tw",
+   "issuer": "DigiCert Inc",
+   "not_after": "Dec 10 23:59:59 2026 GMT"
+  },
+  "tls_apex": {
+   "tls": "TLSv1.3",
+   "subject_cn": "superbank.com.tw",
+   "issuer": "DigiCert Inc",
+   "not_after": "Dec 10 23:59:59 2026 GMT"
+  }
+ },
+ {
+  "domain": "tac.finance",
+  "probes": {
+   "https://tac.finance": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "http://tac.finance": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "https://www.tac.finance": {
+    "status": 200,
+    "final_url": "https://www.tac.finance",
+    "server": "nginx/1.22.1",
+    "xpowered": "ASP.NET",
+    "setcookie": [],
+    "len": 43860,
+    "tech": [],
+    "title": "裕融企業融資事業群入口網站"
+   },
+   "http://www.tac.finance": {
+    "status": 200,
+    "final_url": "https://www.tac.finance/",
+    "server": "nginx/1.22.1",
+    "xpowered": "ASP.NET",
+    "setcookie": [],
+    "len": 43860,
+    "tech": [],
+    "title": "裕融企業融資事業群入口網站"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "www.tac.finance",
+   "issuer": "Let's Encrypt",
+   "not_after": "Nov 23 16:40:50 2026 GMT"
+  },
+  "tls_apex": {
+   "tls_err": "[Errno -5] No address associated with hostname"
+  }
+ },
+ {
+  "domain": "tac.com.tw",
+  "probes": {
+   "https://tac.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "http://tac.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "https://www.tac.com.tw": {
+    "status": 200,
+    "final_url": "https://www.tac.com.tw",
+    "server": "nginx/1.24.0",
+    "xpowered": "ASP.NET",
+    "setcookie": [],
+    "len": 2053,
+    "tech": [],
+    "title": ""
+   },
+   "http://www.tac.com.tw": {
+    "status": 200,
+    "final_url": "https://www.tac.com.tw/",
+    "server": "nginx/1.24.0",
+    "xpowered": "ASP.NET",
+    "setcookie": [],
+    "len": 2053,
+    "tech": [],
+    "title": ""
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "*.tac.com.tw",
+   "issuer": "TAIWAN-CA",
+   "not_after": "Jan  6 15:59:59 2027 GMT"
+  },
+  "tls_apex": {
+   "tls_err": "[Errno -5] No address associated with hostname"
+  }
+ },
+ {
+  "domain": "he-jing.com.tw",
+  "probes": {
+   "https://he-jing.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "http://he-jing.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "https://www.he-jing.com.tw": {
+    "status": 200,
+    "final_url": "https://www.he-jing.com.tw",
+    "server": "Microsoft-IIS/10.0",
+    "xpowered": "ASP.NET",
+    "setcookie": [],
+    "len": 313233,
+    "tech": [],
+    "title": "和勁企業股份有限公司"
+   },
+   "http://www.he-jing.com.tw": {
+    "err": "timed out"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "*.he-jing.com.tw",
+   "issuer": "Sectigo Limited",
+   "not_after": "Jan 24 23:59:59 2027 GMT"
+  },
+  "tls_apex": {
+   "tls_err": "[Errno -5] No address associated with hostname"
+  }
+ },
+ {
+  "domain": "hfcfinance.com.tw",
+  "probes": {
+   "https://hfcfinance.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "http://hfcfinance.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "https://www.hfcfinance.com.tw": {
+    "status": 200,
+    "final_url": "https://www.hfcfinance.com.tw",
+    "server": "Microsoft-IIS/10.0",
+    "xpowered": "ASP.NET",
+    "setcookie": [
+     ".AspNetCore.Antiforgery.a0FJbb5pHVU=CfDJ8E1fy5VszgxLhdqhf_qHTIvYCZhR3imMTsyIwl1dBWBtVpWLIzS0BctK8IbDerPTZ8UhlFQrhdJXJZyO2AvmnrCnb-hpxXVaCCkMwubf32YFJi7-HkesCYoNV4BWeNJczObYAxzjKyWypF0U3hesClE; path=/; secure; samesite=strict; httponly"
+    ],
+    "len": 260272,
+    "tech": [],
+    "title": "&#x548C;&#x6F64;&#x4F01;&#x696D; - &#x4EE5;&#x4EBA;&#x70BA;&#x672C;&#xFF0C;&#x6253;&#x9020;&#x5E78;&#x798F;&#x6709;&#x61"
+   },
+   "http://www.hfcfinance.com.tw": {
+    "err": "timed out"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "*.hfcfinance.com.tw",
+   "issuer": "Sectigo Limited",
+   "not_after": "Dec 15 23:59:59 2026 GMT"
+  },
+  "tls_apex": {
+   "tls_err": "[Errno -5] No address associated with hostname"
+  }
+ },
+ {
+  "domain": "megaholdings.com.tw",
+  "probes": {
+   "https://megaholdings.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "http://megaholdings.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "https://www.megaholdings.com.tw": {
+    "status": 200,
+    "final_url": "https://www.megaholdings.com.tw",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [],
+    "len": 734,
+    "tech": [
+     ".NET/IIS"
+    ],
+    "title": ""
+   },
+   "http://www.megaholdings.com.tw": {
+    "status": 200,
+    "final_url": "https://www.megaholdings.com.tw",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [],
+    "len": 734,
+    "tech": [
+     ".NET/IIS"
+    ],
+    "title": ""
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "*.megaholdings.com.tw",
+   "issuer": "DigiCert Inc",
+   "not_after": "Sep 13 23:59:59 2026 GMT"
+  },
+  "tls_apex": {
+   "tls_err": "[Errno -5] No address associated with hostname"
+  }
+ },
+ {
+  "domain": "easyauction.com.tw",
+  "probes": {
+   "https://easyauction.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "http://easyauction.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "https://www.easyauction.com.tw": {
+    "status": 200,
+    "final_url": "https://www.easyauction.com.tw",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [],
+    "len": 23821,
+    "tech": [],
+    "title": "HAA和運勁拍中心"
+   },
+   "http://www.easyauction.com.tw": {
+    "status": 200,
+    "final_url": "https://www.easyauction.com.tw/",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [],
+    "len": 23821,
+    "tech": [],
+    "title": "HAA和運勁拍中心"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "*.easyauction.com.tw",
+   "issuer": "DigiCert Inc",
+   "not_after": "Dec 10 23:59:59 2026 GMT"
+  },
+  "tls_apex": {
+   "tls_err": "[Errno -5] No address associated with hostname"
+  }
+ },
+ {
+  "domain": "hotains.com.tw",
+  "probes": {
+   "https://hotains.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "http://hotains.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "https://www.hotains.com.tw": {
+    "status": 200,
+    "final_url": "https://www.hotains.com.tw",
+    "server": "",
+    "xpowered": "ARR/3.0",
+    "setcookie": [],
+    "len": 1030922,
+    "tech": [],
+    "title": "和泰產物保險股份有限公司"
+   },
+   "http://www.hotains.com.tw": {
+    "status": 200,
+    "final_url": "https://www.hotains.com.tw/",
+    "server": "",
+    "xpowered": "ARR/3.0",
+    "setcookie": [],
+    "len": 1030922,
+    "tech": [],
+    "title": "和泰產物保險股份有限公司"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "WildcardSAN.hotains.com.tw",
+   "issuer": "DigiCert Inc",
+   "not_after": "Sep 10 23:59:59 2026 GMT"
+  },
+  "tls_apex": {
+   "tls_err": "[Errno -5] No address associated with hostname"
+  }
+ },
+ {
+  "domain": "hotaimotor.com.tw",
+  "probes": {
+   "https://hotaimotor.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "http://hotaimotor.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "https://www.hotaimotor.com.tw": {
+    "status": 200,
+    "final_url": "https://www.hotaimotor.com.tw",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [
+     "ARRAffinity=aff90167300dcf4cccd1c93070f18f8e1c2669f1b9547c91bc69b7829613a508;Path=/;HttpOnly;Secure;Domain=hotaiweblxprod-bsecexc4f5gkckcf.japanwest-01.azurewebsites.net",
+     "ARRAffinitySameSite=aff90167300dcf4cccd1c93070f18f8e1c2669f1b9547c91bc69b7829613a508;Path=/;HttpOnly;SameSite=None;Secure;Domain=hotaiweblxprod-bsecexc4f5gkckcf.japanwest-01.azurewebsites.net"
+    ],
+    "len": 78839,
+    "tech": [],
+    "title": "和泰汽車官網"
+   },
+   "http://www.hotaimotor.com.tw": {
+    "status": 200,
+    "final_url": "https://www.hotaimotor.com.tw/",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [
+     "ARRAffinity=aff90167300dcf4cccd1c93070f18f8e1c2669f1b9547c91bc69b7829613a508;Path=/;HttpOnly;Secure;Domain=hotaiweblxprod-bsecexc4f5gkckcf.japanwest-01.azurewebsites.net",
+     "ARRAffinitySameSite=aff90167300dcf4cccd1c93070f18f8e1c2669f1b9547c91bc69b7829613a508;Path=/;HttpOnly;SameSite=None;Secure;Domain=hotaiweblxprod-bsecexc4f5gkckcf.japanwest-01.azurewebsites.net"
+    ],
+    "len": 78839,
+    "tech": [],
+    "title": "和泰汽車官網"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "www.hotaimotor.com.tw",
+   "issuer": "DigiCert Inc",
+   "not_after": "Nov 13 23:59:59 2026 GMT"
+  },
+  "tls_apex": {
+   "tls_err": "[Errno -5] No address associated with hostname"
+  }
+ },
+ {
+  "domain": "hotaimember.com.tw",
+  "probes": {
+   "https://hotaimember.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "http://hotaimember.com.tw": {
+    "err": "[Errno -5] No address associated with hostname"
+   },
+   "https://www.hotaimember.com.tw": {
+    "status": 200,
+    "final_url": "https://www.hotaimember.com.tw",
+    "server": "",
+    "xpowered": "ASP.NET",
+    "setcookie": [
+     "HotaiMemberPopUps=true; path=/; secure; samesite=none; httponly",
+     "ARRAffinity=830a19859d46b45c2acd5250eeed051766db150cc39b1f8ec4f7ff401f40633f;Path=/;HttpOnly;Secure;Domain=htos-app-frontend-prod-01.azurewebsites.net",
+     "ARRAffinitySameSite=830a19859d46b45c2acd5250eeed051766db150cc39b1f8ec4f7ff401f40633f;Path=/;HttpOnly;SameSite=None;Secure;Domain=htos-app-frontend-prod-01.azurewebsites.net"
+    ],
+    "len": 22755,
+    "tech": [],
+    "title": "&#x548C;&#x6CF0;&#x96C6;&#x5718;&#x6703;&#x54E1;&#x670D;&#x52D9;"
+   },
+   "http://www.hotaimember.com.tw": {
+    "status": 200,
+    "final_url": "https://www.hotaimember.com.tw/",
+    "server": "",
+    "xpowered": "ASP.NET",
+    "setcookie": [
+     "HotaiMemberPopUps=true; path=/; secure; samesite=none; httponly",
+     "ARRAffinity=830a19859d46b45c2acd5250eeed051766db150cc39b1f8ec4f7ff401f40633f;Path=/;HttpOnly;Secure;Domain=htos-app-frontend-prod-01.azurewebsites.net",
+     "ARRAffinitySameSite=830a19859d46b45c2acd5250eeed051766db150cc39b1f8ec4f7ff401f40633f;Path=/;HttpOnly;SameSite=None;Secure;Domain=htos-app-frontend-prod-01.azurewebsites.net"
+    ],
+    "len": 22755,
+    "tech": [],
+    "title": "&#x548C;&#x6CF0;&#x96C6;&#x5718;&#x6703;&#x54E1;&#x670D;&#x52D9;"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "www.hotaimember.com.tw",
+   "issuer": "DigiCert Inc",
+   "not_after": "Dec 10 23:59:59 2026 GMT"
+  },
+  "tls_apex": {
+   "tls_err": "[Errno -5] No address associated with hostname"
+  }
+ },
+ {
+  "domain": "ec2.hotains.com.tw",
+  "probes": {
+   "https://ec2.hotains.com.tw": {
+    "status": 200,
+    "final_url": "https://ec2.hotains.com.tw",
+    "server": "",
+    "xpowered": "ARR/3.0",
+    "setcookie": [],
+    "len": 28744,
+    "tech": [],
+    "title": "和泰線上投保"
+   },
+   "http://ec2.hotains.com.tw": {
+    "status": 200,
+    "final_url": "https://ec2.hotains.com.tw/",
+    "server": "",
+    "xpowered": "ARR/3.0",
+    "setcookie": [],
+    "len": 28744,
+    "tech": [],
+    "title": "和泰線上投保"
+   },
+   "https://www.ec2.hotains.com.tw": {
+    "err": "[Errno -2] Name or service not known"
+   },
+   "http://www.ec2.hotains.com.tw": {
+    "err": "[Errno -2] Name or service not known"
+   }
+  },
+  "tls_w": {
+   "tls_err": "[Errno -2] Name or service not known"
+  },
+  "tls_apex": {
+   "tls": "TLSv1.3",
+   "subject_cn": "WildcardSAN.hotains.com.tw",
+   "issuer": "DigiCert Inc",
+   "not_after": "Sep 10 23:59:59 2026 GMT"
+  }
+ },
+ {
+  "domain": "kuanzho.com.tw",
+  "probes": {
+   "https://kuanzho.com.tw": {
+    "err": "timed out"
+   },
+   "http://kuanzho.com.tw": {
+    "err": "timed out"
+   },
+   "https://www.kuanzho.com.tw": {
+    "status": 200,
+    "final_url": "https://www.kuanzho.com.tw/index_tw.php",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [
+     "TS1c91390c027=083c283d62ab200002ebdc38cd73bb2e8f43e11f7ac73f73fc849a94ff38cba7137c61177c2208f908134819f811300090063a8f08606e7637e100afe6d618e8d12954ed515e8709532e075c8ced3f68d36d7cec9ca01c3571894b84f2771723; Path=/"
+    ],
+    "len": 64789,
+    "tech": [],
+    "title": "光和證券股份有限公司"
+   },
+   "http://www.kuanzho.com.tw": {
+    "status": 200,
+    "final_url": "https://www.kuanzho.com.tw/index_tw.php",
+    "server": "",
+    "xpowered": "",
+    "setcookie": [
+     "TS1c91390c027=083c283d62ab200098efeb4fb4e6fc6cefb985514f7b6d4db6dc10f172ff1c8bd3eaffd43dea11540832a84e2b1130002d720190e5d6c499c76fd716ffdf6b1974272a8f9d7532ee8a52bdee85a80ae4caa7a5314de5bd25370ccae3bd7d28ef; Path=/"
+    ],
+    "len": 64789,
+    "tech": [],
+    "title": "光和證券股份有限公司"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.2",
+   "subject_cn": "www.kuanzho.com.tw",
+   "issuer": "TAIWAN-CA",
+   "not_after": "Nov 29 15:59:59 2026 GMT"
+  },
+  "tls_apex": {
+   "tls_err": "timed out"
+  }
+ },
+ {
+  "domain": "tzuchi.org.tw",
+  "probes": {
+   "https://tzuchi.org.tw": {
+    "err": "_ssl.c:990: The handshake operation timed out"
+   },
+   "http://tzuchi.org.tw": {
+    "err": "timed out"
+   },
+   "https://www.tzuchi.org.tw": {
+    "status": 200,
+    "final_url": "https://www.tzuchi.org.tw",
+    "server": "cloudflare",
+    "xpowered": "",
+    "setcookie": [],
+    "len": 166568,
+    "tech": [],
+    "title": "首頁 - 慈濟基金會"
+   },
+   "http://www.tzuchi.org.tw": {
+    "status": 200,
+    "final_url": "https://www.tzuchi.org.tw/",
+    "server": "cloudflare",
+    "xpowered": "",
+    "setcookie": [],
+    "len": 166568,
+    "tech": [],
+    "title": "首頁 - 慈濟基金會"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.3",
+   "subject_cn": "www.tzuchi.org.tw",
+   "issuer": "Google Trust Services",
+   "not_after": "Nov 29 08:38:38 2026 GMT"
+  },
+  "tls_apex": {
+   "tls_err": "_ssl.c:990: The handshake operation timed out"
+  }
+ },
+ {
+  "domain": "tzuchi.org.hk",
+  "probes": {
+   "https://tzuchi.org.hk": {
+    "status": 200,
+    "final_url": "https://tzuchi.org.hk",
+    "server": "PWP",
+    "xpowered": "",
+    "setcookie": [
+     "XSRF-TOKEN=eyJpdiI6IjQwSnlcL0VRYVRubU9QR015SWNiaGpRPT0iLCJ2YWx1ZSI6IkJsUDZhR3pHY1djZWpxVldxMVBJbENFemsrbUlRRVwvRngxMm5nTnpkbk9tRWRCMFF3dzZ5QXFXNzF5T2RxVmlyIiwibWFjIjoiMDgzOGQ4ZWQyNWEwZTljYjYxODI2ZmMxOWNlYzY4ZTRmMjQ0NDM2YjlhN2JlMTEyM2JjMDQxMjY4YTNhNDZlNCJ9; expires=Thu, 03-Sep-2026 09:57:30 GMT; Max-Age=7200; path=/",
+     "_session=eyJpdiI6InJJWkU2SSsxenY3bEYxZHI1NldibFE9PSIsInZhbHVlIjoiMkcyK0dFaXg3UzJUYXVFMlM4Kzc5aU91VjhibnhNRDFJY1lzRXJ5WDBqRDhLcDBaXC81NnRvUkE3UVRsNHd5OHMiLCJtYWMiOiJiZmI2YTAxMmY3NDFhZjVlNDAzMWQ4ZmRjNmVkMWQxYmViNGE1NTczYzgwYTcxODlkYjlkZTVkYWM2MzkzM2RjIn0%3D; expires=Thu, 03-Sep-2026 09:57:30 GMT; Max-Age=7200; path=/; httponly"
+    ],
+    "len": 35552,
+    "tech": [],
+    "title": "慈濟香港分會"
+   },
+   "http://tzuchi.org.hk": {
+    "status": 200,
+    "final_url": "https://tzuchi.org.hk/",
+    "server": "PWP",
+    "xpowered": "",
+    "setcookie": [
+     "XSRF-TOKEN=eyJpdiI6Ik1CUGY2NzRNR0tyZVNNXC9zdTIwXC80UT09IiwidmFsdWUiOiJyTE11WENsMGpRem4yN1ZZeklNb1lYT3JQTVkxcENcL21jQW1WdWg4UHBoQXhtVGZLUFR1UDM4RzN4SkJwZHhEeCIsIm1hYyI6ImRlNTJmYTQ1NmNkYTc4ZjM0ODU0Mjc5NjdkZDVmZjQzODY4N2FiYTlmNjg2YTc4Y2E5N2JjOGEwMzA4OTEzZjgifQ%3D%3D; expires=Thu, 03-Sep-2026 09:57:31 GMT; Max-Age=7200; path=/",
+     "_session=eyJpdiI6Ik5KZUgxY0x2bkxGTVhOWloyQ0lBYWc9PSIsInZhbHVlIjoiK3VPTFVUaDRnQVwveXFScFFqdXNQbUFjcit6MzZHT2JLV1pJUFwvQkloN2wrN3Nja1ZjTU9JcjlJaXM5Nlg3VGdVIiwibWFjIjoiOTUzOTU3ZDcwODY4YzYzZjc0YTU2MzIyOTRjMjdhYjNjOTk1OTQyZTdkNDhhZDA0MGRmZGFlY2FjZTU4NzM0MSJ9; expires=Thu, 03-Sep-2026 09:57:31 GMT; Max-Age=7200; path=/; httponly"
+    ],
+    "len": 35552,
+    "tech": [],
+    "title": "慈濟香港分會"
+   },
+   "https://www.tzuchi.org.hk": {
+    "status": 200,
+    "final_url": "https://www.tzuchi.org.hk",
+    "server": "PWP",
+    "xpowered": "",
+    "setcookie": [
+     "XSRF-TOKEN=eyJpdiI6Ik5UOWpzZ3FoUUpzQWNacVVwMFhFYWc9PSIsInZhbHVlIjoiR1hodlNvZ3pjaUlnSEMrcmdKRXMyRmJneE5sNmNoZWx1RFZhYTJGNW82VlZ1eE1tWUFlYlZLeDhxY1h1b3VTdCIsIm1hYyI6IjNiOTE0MTI1YTdjZjg3YTNlMTc2M2U0ZTkwZjE4MTVhMzkwMTcxNzE5ZjFiNzg5NmQ0NTgyNzBkOGZhODVkMjgifQ%3D%3D; expires=Thu, 03-Sep-2026 09:57:31 GMT; Max-Age=7200; path=/",
+     "_session=eyJpdiI6Ing1S0Vad2Fwd0RjS0xBQ244YTZOOHc9PSIsInZhbHVlIjoiSVlmUDZZYVdkTWxhXC8yUHFkRWJyY203KzE4Ylpna1JiOHVadlgxemhGRTVzYk5NSEo4SnF2Y2poWkRvOXZDY2kiLCJtYWMiOiI4NTk1NjVhMzc4MGI0ZmFjMzYxZGU4OGMxNDI0ODFjYTI0ZjAyMmMwODY5YTU4MDFjMDRkOTVhMTMyM2I0NjM4In0%3D; expires=Thu, 03-Sep-2026 09:57:31 GMT; Max-Age=7200; path=/; httponly"
+    ],
+    "len": 36028,
+    "tech": [],
+    "title": "慈濟香港分會"
+   },
+   "http://www.tzuchi.org.hk": {
+    "status": 200,
+    "final_url": "https://www.tzuchi.org.hk/",
+    "server": "PWP",
+    "xpowered": "",
+    "setcookie": [
+     "XSRF-TOKEN=eyJpdiI6IjY3N0RUVVNZSFZibVVxcHN3TW9yblE9PSIsInZhbHVlIjoiUVVVeE1QWUhRQTdcLzkzS1BkczUzaHFCWm9DaWdGOUxYZHcxSEFOUU14QllFQURENE9LQ0NMbmNLNVwvTUNjUVZ4IiwibWFjIjoiMGI4MGJjOTZiMTgxMTU1MzY0NjYwMzhlOTBiYjZlODVlOTYxMmZhOTFmNjU5Y2E3OTY0MGM2MmRiMDM0MWU3MSJ9; expires=Thu, 03-Sep-2026 09:57:31 GMT; Max-Age=7200; path=/",
+     "_session=eyJpdiI6InNuV1ExWlZhUDhhMVJxNU01NnRXYXc9PSIsInZhbHVlIjoiTEdjOFNcL0pBa2U0YUhyWFlva09jVHA5dk16Z1h0K0VaM0RrcTl5WnQzeDZxakN0T1E3RjlpcmdcL1JGY1FiZXg1IiwibWFjIjoiNzVhNDhhMmNjYjk5ZGU0NGU0Nzk0ODA3NzQ0MzZmNDI5NzMyMTE2NjZmMzRmMGRiYTA0ZTFmNWY5ZWNlZWMzYSJ9; expires=Thu, 03-Sep-2026 09:57:31 GMT; Max-Age=7200; path=/; httponly"
+    ],
+    "len": 36028,
+    "tech": [],
+    "title": "慈濟香港分會"
+   }
+  },
+  "tls_w": {
+   "tls": "TLSv1.2",
+   "subject_cn": "tzuchi.org.hk",
+   "issuer": "GoDaddy.com, Inc.",
+   "not_after": "Oct 27 22:43:38 2026 GMT"
+  },
+  "tls_apex": {
+   "tls": "TLSv1.2",
+   "subject_cn": "tzuchi.org.hk",
+   "issuer": "GoDaddy.com, Inc.",
+   "not_after": "Oct 27 22:43:38 2026 GMT"
+  }
+ }
+]

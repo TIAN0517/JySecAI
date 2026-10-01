@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-10-28 03:00:00",
+  "summary": {
+    "total_targets": 5,
+    "vulnerable_targets": 2,
+    "safe_targets": 3,
+    "failed_targets": 0,
+    "deep_tested_targets": 2
+  },
+  "scan_results": [],
+  "detailed_results": [],
+  "ai_analysis": null,
+  "recommendations": []
+}

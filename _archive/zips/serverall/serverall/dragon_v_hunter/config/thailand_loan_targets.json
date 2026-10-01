@@ -1,0 +1,128 @@
+{
+  "thailand_loan_types": [
+    {
+      "category": "commercial_banks",
+      "companies": [
+        {
+          "name": "Kasikornbank",
+          "url": "https://www.kasikornbank.com",
+          "keywords": ["KBank", "กสิกรไทย", "personal_loan", "home_loan"],
+          "vulnerabilities": [
+            "personal_loan_application",
+            "credit_card_application",
+            "mortgage_calculator"
+          ]
+        },
+        {
+          "name": "Bangkok Bank",
+          "url": "https://www.bangkokbank.com",
+          "keywords": ["Bangkok Bank", "ธนาคารกรุงเทพ", "personal_finance"],
+          "vulnerabilities": [
+            "loan_application_form",
+            "credit_decision_system",
+            "interest_rate_calculator"
+          ]
+        },
+        {
+          "name": "Siam Commercial Bank",
+          "url": "https://www.scb.co.th",
+          "keywords": ["SCB", "ธนาคารไทยพาณิชย์", "personal_banking"],
+          "vulnerabilities": [
+            "personal_loan_system",
+            "business_loan_portal",
+            "online_application"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "finance_companies",
+      "companies": [
+        {
+          "name": "Krungthai Card",
+          "url": "https://www.krungthaicard.com",
+          "keywords": ["Krungthai Card", "บัตรกรุงไทย", "credit_card"],
+          "vulnerabilities": [
+            "credit_application",
+            "card_activation",
+            "points_system"
+          ]
+        },
+        {
+          "name": "Aeon Credit",
+          "url": "https://www.aeoncredit.co.th",
+          "keywords": ["Aeon", "AEON", "credit_service"],
+          "vulnerabilities": [
+            "installment_plan",
+            "credit_limit_increase",
+            "payment_system"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "microfinance",
+      "companies": [
+        {
+          "name": "Gulf Finance",
+          "url": "https://www.gulffinance.co.th",
+          "keywords": ["Gulf Finance", "microfinance", "small_loan"],
+          "vulnerabilities": [
+            "quick_loan_application",
+            "instant_approval",
+            "sms_verification"
+          ]
+        },
+        {
+          "name": "Thai Credit",
+          "url": "https://wwwthaicredit.com",
+          "keywords": ["Thai Credit", "short_term_loan"],
+          "vulnerabilities": [
+            "online_application",
+            "instant_loan",
+            "credit_scoring"
+          ]
+        }
+      ]
+    }
+  ],
+  "common_thai_loan_patterns": {
+    "keywords": [
+      "สินเชื่อ", "personal loan", "home loan", "car loan",
+      "credit card", "mortgage", "installment", "finance",
+      "apply loan", "loan application", "credit approval"
+    ],
+    "endpoints": [
+      "/apply", "/loan", "/credit", "/mortgage",
+      "/application", "/approval", "/calculator",
+      "/form", "/apply-online", "/quick-loan"
+    ],
+    "form_fields": [
+      "id_card", "citizen_id", "income", "occupation",
+      "phone", "email", "address", "loan_amount",
+      "loan_purpose", "credit_score", "employment"
+    ]
+  },
+  "thailand_specific_vulnerabilities": [
+    {
+      "name": "citizen_id_leak",
+      "severity": "high",
+      "description": "公民ID信息泄露风险"
+    },
+    {
+      "name": "income_validation_bypass",
+      "severity": "medium",
+      "description": "收入验证可被绕过"
+    },
+    {
+      "name": "sms_manipulation",
+      "severity": "medium",
+      "description": "短信验证码操纵"
+    },
+    {
+      "name": "loan_approval_bypass",
+      "severity": "high",
+      "description": "贷款审批绕过"
+    }
+  ]
+}

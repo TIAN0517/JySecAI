@@ -1,0 +1,16 @@
+﻿extAuth,{}
+JWT_PASSWORD,"""ru/3xu4dkru4888"""
+JWT_TOKEN_EXPIRE,172800
+useHttps,true
+httpsConfig,"{""certDir"": ""/opt/servers/epcr_cert"", ""key"": ""epcr.key"", ""cert"": ""epcr.pem"", ""passphrase"": ""ru/3xu4dkru4888"", ""ca"": [""eCA1_GTLSCA.crt""]}"
+MAX_PASSWORD_HISTORY,3
+captcha,"{""enable"": true, ""sessionSecret"": ""DNQh[f%zw6'j7,*S"", ""captchaFieldName"": ""captcha"", ""captchaSessionFieldName"": ""captcha"", ""captchaUrl"": ""/captcha""}"
+MAX_IDLE_DURATION,900000
+NO_IDLE_DETECTION_STATES,"[""login""]"
+PASSWORD_MIN_AGE,86400000
+PASSWORD_MAX_AGE,7776000000
+LOGIN_EXPIRE,8640000000
+fail2ban_enable,true
+fail2ban_minute,15
+fail2ban_count,3
+fail2sentMail_count,10

@@ -1,0 +1,7 @@
+
+======================================================================
+/opt/CyberStrikeAI/tmp/workspace/projects/cda6ab9b-2296-4103-b1f0-10410de2eca8/captcha_4004_sess1.gif
+======================================================================
+LZW min: 4
+LZW compressed: 17501 bytes
+End at offset 0x44ed, byte: 0x3b (expected 0x3b trailer)

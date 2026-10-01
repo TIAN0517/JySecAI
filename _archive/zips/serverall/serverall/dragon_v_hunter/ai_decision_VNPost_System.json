@@ -1,0 +1,27 @@
+{
+  "target_name": "VNPost System",
+  "recommended_action": "monitoring",
+  "priority_score": 42.63,
+  "confidence_level": 0.36250000000000004,
+  "reasoning": [
+    "目标属于Logistics行业，该行业通常具有较高价值",
+    "位于Vietnam，属于优先级目标地区",
+    "预期成功率较高（72.5%）",
+    "发现Business Logic漏洞类型，具有较高利用价值"
+  ],
+  "expected_success_rate": 0.7250000000000001,
+  "estimated_impact": "中等影响（高概率实现）",
+  "recommended_methods": [
+    "业务规则绕过",
+    "支付流程篡改",
+    "订单状态修改"
+  ],
+  "estimated_risk": "中等（成功概率高，风险加剧）",
+  "next_steps": [
+    "持续监控目标活动",
+    "收集更多情报信息",
+    "等待更好的测试时机",
+    "准备详细测试计划",
+    "评估授权可能性"
+  ]
+}

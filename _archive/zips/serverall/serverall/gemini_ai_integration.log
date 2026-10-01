@@ -1,0 +1,23 @@
+2025-10-29 12:27:37,922 - __main__ - INFO - Gemini 2.0 Flash-Exp 模型初始化成功
+2025-10-29 12:27:51,402 - __main__ - INFO - Gemini调用成功，返回3607字符
+2025-10-29 12:28:05,837 - GEMINI_AI_INTEGRATION - INFO - Gemini 2.0 Flash-Exp 模型初始化成功
+2025-10-29 12:47:24,980 - GEMINI_AI_INTEGRATION - INFO - Gemini 2.0 Flash-Exp 模型初始化成功
+2025-10-29 12:48:24,506 - GEMINI_AI_INTEGRATION - INFO - Gemini 2.0 Flash-Exp 模型初始化成功
+2025-10-29 12:49:00,805 - GEMINI_AI_INTEGRATION - INFO - Gemini 2.0 Flash-Exp 模型初始化成功
+2025-10-29 12:49:00,805 - __main__ - INFO - 开始分析所有越南关键漏洞目标
+2025-10-29 12:49:00,806 - __main__ - INFO - 开始分析目标: Shopee Vietnam
+2025-10-29 12:49:13,757 - GEMINI_AI_INTEGRATION - INFO - Gemini调用成功，返回3590字符
+2025-10-29 12:49:13,758 - __main__ - INFO - 开始分析目标: MoMo Wallet
+2025-10-29 12:49:25,434 - GEMINI_AI_INTEGRATION - INFO - Gemini调用成功，返回3063字符
+2025-10-29 12:49:25,435 - __main__ - INFO - 开始分析目标: Tiki
+2025-10-29 12:49:38,205 - GEMINI_AI_INTEGRATION - INFO - Gemini调用成功，返回3509字符
+2025-10-29 12:49:38,205 - __main__ - INFO - 开始分析目标: Lazada Vietnam
+2025-10-29 12:49:48,580 - GEMINI_AI_INTEGRATION - INFO - Gemini调用成功，返回2736字符
+2025-10-29 12:49:48,581 - __main__ - INFO - 开始分析目标: Viettel Post
+2025-10-29 12:49:59,609 - GEMINI_AI_INTEGRATION - INFO - Gemini调用成功，返回2840字符
+2025-10-29 12:49:59,610 - __main__ - INFO - 开始分析目标: VNPost
+2025-10-29 12:50:10,280 - GEMINI_AI_INTEGRATION - INFO - Gemini调用成功，返回2807字符
+2025-10-29 12:50:10,281 - __main__ - INFO - 开始分析目标: Giao Hang Nhanh
+2025-10-29 12:50:19,403 - GEMINI_AI_INTEGRATION - INFO - Gemini调用成功，返回2363字符
+2025-10-29 12:50:19,404 - __main__ - INFO - 开始分析目标: VNPay
+2025-10-29 12:50:28,769 - GEMINI_AI_INTEGRATION - INFO - Gemini调用成功，返回2378字符

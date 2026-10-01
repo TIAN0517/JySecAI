@@ -1,0 +1,157 @@
+2026-09-23 17:37:05,872 [INFO] Supervisor started, monitoring /mnt/c/Users/Administrator/desktop/JySecAI/data/poc_scripts/phish_server.py
+2026-09-23 17:37:05,873 [INFO] Health check port: 9090
+2026-09-23 17:37:05,873 [INFO] Starting phish_server.py (attempt 1/11)...
+2026-09-23 17:37:05,874 [INFO] Server started with PID 3384950
+2026-09-23 17:37:06,923 [INFO] Server is healthy (responded to health check)
+2026-09-23 17:38:01,622 [INFO] Server exited with code -15
+2026-09-23 17:38:01,623 [WARNING] Server crashed, restarting in 3s... (restart 1/10)
+2026-09-23 17:38:04,623 [INFO] Starting phish_server.py (attempt 2/11)...
+2026-09-23 17:38:04,625 [INFO] Server started with PID 3389931
+2026-09-23 17:38:05,627 [INFO] Server is healthy (responded to health check)
+2026-09-23 19:38:03,706 [INFO] Supervisor started, monitoring /mnt/c/Users/Administrator/desktop/JySecAI/data/poc_scripts/phish_server.py
+2026-09-23 19:38:03,707 [INFO] Health check port: 9090
+2026-09-23 19:38:03,708 [INFO] Starting phish_server.py (attempt 1/11)...
+2026-09-23 19:38:03,709 [INFO] Server started with PID 15128
+2026-09-23 19:38:04,761 [INFO] Server is healthy (responded to health check)
+2026-09-23 23:49:00,723 [INFO] Server exited with code -15
+2026-09-23 23:49:00,723 [WARNING] Server crashed, restarting in 3s... (restart 1/10)
+2026-09-23 23:49:03,724 [INFO] Starting phish_server.py (attempt 2/11)...
+2026-09-23 23:49:03,725 [INFO] Server started with PID 89009
+2026-09-23 23:49:04,728 [INFO] Server is healthy (responded to health check)
+2026-09-24 05:18:49,049 [INFO] Received shutdown signal, stopping server...
+2026-09-24 06:29:07,021 [INFO] Supervisor started, monitoring /mnt/c/Users/Administrator/desktop/JySecAI/data/poc_scripts/phish_server.py
+2026-09-24 06:29:07,022 [INFO] Health check port: 9090
+2026-09-24 06:29:07,024 [INFO] Starting phish_server.py (attempt 1/11)...
+2026-09-24 06:29:07,026 [INFO] Server started with PID 167952
+2026-09-24 06:29:08,108 [INFO] Server is healthy (responded to health check)
+2026-09-24 07:48:39,808 [INFO] Received shutdown signal, stopping server...
+2026-09-24 08:32:13,705 [INFO] Supervisor started, monitoring /mnt/c/Users/Administrator/desktop/JySecAI/data/poc_scripts/phish_server.py
+2026-09-24 08:32:13,706 [INFO] Health check port: 9090
+2026-09-24 08:32:13,707 [INFO] Starting phish_server.py (attempt 1/11)...
+2026-09-24 08:32:13,707 [INFO] Server started with PID 196755
+2026-09-24 08:32:14,749 [INFO] Server is healthy (responded to health check)
+2026-09-24 13:35:58,539 [INFO] Server exited with code -15
+2026-09-24 13:35:58,540 [WARNING] Server crashed, restarting in 3s... (restart 1/10)
+2026-09-24 13:36:01,541 [INFO] Starting phish_server.py (attempt 2/11)...
+2026-09-24 13:36:01,543 [INFO] Server started with PID 266256
+2026-09-24 13:36:02,547 [INFO] Server is healthy (responded to health check)
+2026-09-24 14:08:05,404 [INFO] Server exited with code -15
+2026-09-24 14:08:05,405 [WARNING] Server crashed, restarting in 3s... (restart 2/10)
+2026-09-24 14:08:08,406 [INFO] Starting phish_server.py (attempt 3/11)...
+2026-09-24 14:08:08,408 [INFO] Server started with PID 273975
+2026-09-24 14:08:09,410 [INFO] Server is healthy (responded to health check)
+2026-09-26 06:08:50,801 [INFO] Received shutdown signal, stopping server...
+2026-09-26 13:15:29,851 [INFO] Supervisor started, monitoring /mnt/c/Users/Administrator/desktop/JySecAI/data/poc_scripts/phish_server.py
+2026-09-26 13:15:29,852 [INFO] Health check port: 9090
+2026-09-26 13:15:29,853 [INFO] Starting phish_server.py (attempt 1/11)...
+2026-09-26 13:15:29,854 [INFO] Server started with PID 1501707
+2026-09-26 13:15:30,905 [INFO] Server is healthy (responded to health check)
+2026-09-26 13:15:30,906 [INFO] Server exited with code 1
+2026-09-26 13:15:30,906 [WARNING] Server crashed, restarting in 3s... (restart 1/10)
+2026-09-26 13:15:33,907 [INFO] Starting phish_server.py (attempt 2/11)...
+2026-09-26 13:15:33,908 [INFO] Server started with PID 1501711
+2026-09-26 13:15:34,910 [INFO] Server is healthy (responded to health check)
+2026-09-26 13:15:34,911 [INFO] Server exited with code 1
+2026-09-26 13:15:34,911 [WARNING] Server crashed, restarting in 3s... (restart 2/10)
+2026-09-26 13:15:37,912 [INFO] Starting phish_server.py (attempt 3/11)...
+2026-09-26 13:15:37,913 [INFO] Server started with PID 1501788
+2026-09-26 13:15:38,916 [INFO] Server is healthy (responded to health check)
+2026-09-26 13:15:38,917 [INFO] Server exited with code 1
+2026-09-26 13:15:38,917 [WARNING] Server crashed, restarting in 3s... (restart 3/10)
+2026-09-26 13:15:41,918 [INFO] Starting phish_server.py (attempt 4/11)...
+2026-09-26 13:15:41,919 [INFO] Server started with PID 1501798
+2026-09-26 13:15:42,930 [INFO] Server is healthy (responded to health check)
+2026-09-26 13:15:42,931 [INFO] Server exited with code 1
+2026-09-26 13:15:42,940 [WARNING] Server crashed, restarting in 3s... (restart 4/10)
+2026-09-26 13:15:45,941 [INFO] Starting phish_server.py (attempt 5/11)...
+2026-09-26 13:15:45,943 [INFO] Server started with PID 1501812
+2026-09-26 13:15:46,945 [INFO] Server is healthy (responded to health check)
+2026-09-26 13:15:46,946 [INFO] Server exited with code 1
+2026-09-26 13:15:46,947 [WARNING] Server crashed, restarting in 3s... (restart 5/10)
+2026-09-26 13:15:49,947 [INFO] Starting phish_server.py (attempt 6/11)...
+2026-09-26 13:15:49,949 [INFO] Server started with PID 1501906
+2026-09-26 13:15:50,951 [INFO] Server is healthy (responded to health check)
+2026-09-26 13:15:50,951 [INFO] Server exited with code 1
+2026-09-26 13:15:50,952 [WARNING] Server crashed, restarting in 3s... (restart 6/10)
+2026-09-26 13:15:53,952 [INFO] Starting phish_server.py (attempt 7/11)...
+2026-09-26 13:15:53,954 [INFO] Server started with PID 1501920
+2026-09-26 13:15:54,955 [INFO] Server is healthy (responded to health check)
+2026-09-26 13:15:54,956 [INFO] Server exited with code 1
+2026-09-26 13:15:54,957 [WARNING] Server crashed, restarting in 3s... (restart 7/10)
+2026-09-26 13:15:57,957 [INFO] Starting phish_server.py (attempt 8/11)...
+2026-09-26 13:15:57,959 [INFO] Server started with PID 1501939
+2026-09-26 13:15:58,962 [INFO] Server is healthy (responded to health check)
+2026-09-26 13:15:58,963 [INFO] Server exited with code 1
+2026-09-26 13:15:58,964 [WARNING] Server crashed, restarting in 3s... (restart 8/10)
+2026-09-26 13:16:01,964 [INFO] Starting phish_server.py (attempt 9/11)...
+2026-09-26 13:16:01,965 [INFO] Server started with PID 1501964
+2026-09-26 13:16:02,967 [INFO] Server is healthy (responded to health check)
+2026-09-26 13:16:02,968 [INFO] Server exited with code 1
+2026-09-26 13:16:02,969 [WARNING] Server crashed, restarting in 3s... (restart 9/10)
+2026-09-26 13:16:05,969 [INFO] Starting phish_server.py (attempt 10/11)...
+2026-09-26 13:16:05,970 [INFO] Server started with PID 1502036
+2026-09-26 13:16:06,972 [INFO] Server is healthy (responded to health check)
+2026-09-26 13:16:06,973 [INFO] Server exited with code 1
+2026-09-26 13:16:06,974 [WARNING] Server crashed, restarting in 3s... (restart 10/10)
+2026-09-26 13:16:09,974 [INFO] Starting phish_server.py (attempt 11/11)...
+2026-09-26 13:16:09,975 [INFO] Server started with PID 1502047
+2026-09-26 13:16:10,977 [INFO] Server is healthy (responded to health check)
+2026-09-26 13:16:10,978 [INFO] Server exited with code 1
+2026-09-26 13:16:10,979 [ERROR] Max restarts (10) exceeded, giving up
+2026-09-26 19:30:42,787 [INFO] Supervisor started, monitoring /mnt/c/Users/Administrator/desktop/JySecAI/data/poc_scripts/phish_server.py
+2026-09-26 19:30:42,788 [INFO] Health check port: 9090
+2026-09-26 19:30:42,788 [INFO] Starting phish_server.py (attempt 1/11)...
+2026-09-26 19:30:42,789 [INFO] Server started with PID 1648296
+2026-09-26 19:30:43,844 [INFO] Server is healthy (responded to health check)
+2026-09-26 19:30:43,845 [INFO] Server exited with code 1
+2026-09-26 19:30:43,845 [WARNING] Server crashed, restarting in 3s... (restart 1/10)
+2026-09-26 19:30:46,846 [INFO] Starting phish_server.py (attempt 2/11)...
+2026-09-26 19:30:46,848 [INFO] Server started with PID 1648455
+2026-09-26 19:30:47,850 [INFO] Server is healthy (responded to health check)
+2026-09-26 19:30:47,851 [INFO] Server exited with code 1
+2026-09-26 19:30:47,851 [WARNING] Server crashed, restarting in 3s... (restart 2/10)
+2026-09-26 19:30:50,852 [INFO] Starting phish_server.py (attempt 3/11)...
+2026-09-26 19:30:50,853 [INFO] Server started with PID 1648477
+2026-09-26 19:30:51,868 [INFO] Server is healthy (responded to health check)
+2026-09-26 19:30:51,869 [INFO] Server exited with code 1
+2026-09-26 19:30:51,871 [WARNING] Server crashed, restarting in 3s... (restart 3/10)
+2026-09-26 19:30:54,872 [INFO] Starting phish_server.py (attempt 4/11)...
+2026-09-26 19:30:54,873 [INFO] Server started with PID 1648491
+2026-09-26 19:30:55,875 [INFO] Server is healthy (responded to health check)
+2026-09-26 19:30:55,875 [INFO] Server exited with code 1
+2026-09-26 19:30:55,876 [WARNING] Server crashed, restarting in 3s... (restart 4/10)
+2026-09-26 19:30:58,877 [INFO] Starting phish_server.py (attempt 5/11)...
+2026-09-26 19:30:58,878 [INFO] Server started with PID 1648502
+2026-09-26 19:30:59,880 [INFO] Server is healthy (responded to health check)
+2026-09-26 19:30:59,881 [INFO] Server exited with code 1
+2026-09-26 19:30:59,882 [WARNING] Server crashed, restarting in 3s... (restart 5/10)
+2026-09-26 19:31:02,882 [INFO] Starting phish_server.py (attempt 6/11)...
+2026-09-26 19:31:02,884 [INFO] Server started with PID 1648570
+2026-09-26 19:31:03,886 [INFO] Server is healthy (responded to health check)
+2026-09-26 19:31:03,886 [INFO] Server exited with code 1
+2026-09-26 19:31:03,887 [WARNING] Server crashed, restarting in 3s... (restart 6/10)
+2026-09-26 19:31:06,887 [INFO] Starting phish_server.py (attempt 7/11)...
+2026-09-26 19:31:06,889 [INFO] Server started with PID 1648576
+2026-09-26 19:31:07,891 [INFO] Server is healthy (responded to health check)
+2026-09-26 19:31:07,891 [INFO] Server exited with code 1
+2026-09-26 19:31:07,892 [WARNING] Server crashed, restarting in 3s... (restart 7/10)
+2026-09-26 19:31:10,892 [INFO] Starting phish_server.py (attempt 8/11)...
+2026-09-26 19:31:10,894 [INFO] Server started with PID 1648589
+2026-09-26 19:31:11,896 [INFO] Server is healthy (responded to health check)
+2026-09-26 19:31:11,897 [INFO] Server exited with code 1
+2026-09-26 19:31:11,897 [WARNING] Server crashed, restarting in 3s... (restart 8/10)
+2026-09-26 19:31:14,898 [INFO] Starting phish_server.py (attempt 9/11)...
+2026-09-26 19:31:14,899 [INFO] Server started with PID 1648646
+2026-09-26 19:31:15,901 [INFO] Server is healthy (responded to health check)
+2026-09-26 19:31:15,901 [INFO] Server exited with code 1
+2026-09-26 19:31:15,902 [WARNING] Server crashed, restarting in 3s... (restart 9/10)
+2026-09-26 19:31:18,903 [INFO] Starting phish_server.py (attempt 10/11)...
+2026-09-26 19:31:18,904 [INFO] Server started with PID 1648663
+2026-09-26 19:31:19,906 [INFO] Server is healthy (responded to health check)
+2026-09-26 19:31:19,906 [INFO] Server exited with code 1
+2026-09-26 19:31:19,907 [WARNING] Server crashed, restarting in 3s... (restart 10/10)
+2026-09-26 19:31:22,918 [INFO] Starting phish_server.py (attempt 11/11)...
+2026-09-26 19:31:22,919 [INFO] Server started with PID 1648713
+2026-09-26 19:31:23,921 [INFO] Server is healthy (responded to health check)
+2026-09-26 19:31:23,922 [INFO] Server exited with code 1
+2026-09-26 19:31:23,923 [ERROR] Max restarts (10) exceeded, giving up

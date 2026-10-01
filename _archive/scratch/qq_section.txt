@@ -1,0 +1,10 @@
+qq: section:
+qq: # QQ ?�器�?    enabled: false
+    auth:
+      mode: user_binding
+    app_id: ""
+    client_secret: ""
+    sandbox: true
+# ============================================
+# Skills ?�置?��?
+# ===========

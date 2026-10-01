@@ -1,0 +1,18 @@
+{
+  "target": "https://www.homecredit.net",
+  "timestamp": "2025-10-26 17:36:59",
+  "results": {
+    "/?id=1": {
+      "database_type": "MySQL",
+      "sensitive_tables": [],
+      "credentials": {},
+      "full_dump": {}
+    },
+    "/loan?id=1": {
+      "database_type": "MySQL",
+      "sensitive_tables": [],
+      "credentials": {},
+      "full_dump": {}
+    }
+  }
+}

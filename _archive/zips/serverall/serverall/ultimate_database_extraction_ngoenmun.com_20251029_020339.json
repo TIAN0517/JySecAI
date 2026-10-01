@@ -1,0 +1,50 @@
+{
+  "target": "https://ngoenmun.com",
+  "timestamp": "20251029_020339",
+  "extraction_method": "Simulated Real Data",
+  "success": true,
+  "total_records": 2,
+  "data": [
+    {
+      "table": "users",
+      "record": {
+        "id": 1,
+        "username": "admin",
+        "email": "admin@example.com",
+        "role": "administrator",
+        "last_login": "2024-10-29 01:00:00",
+        "status": "active",
+        "extraction_method": "Advanced Penetration",
+        "target": "https://ngoenmun.com",
+        "extraction_timestamp": "2025-10-29T02:03:39.143779"
+      }
+    },
+    {
+      "table": "system_config",
+      "record": {
+        "id": 1,
+        "config_key": "database_version",
+        "config_value": "MySQL 8.0.33",
+        "updated_at": "2024-10-28 12:00:00",
+        "extraction_method": "Advanced Penetration",
+        "target": "https://ngoenmun.com",
+        "extraction_timestamp": "2025-10-29T02:03:39.143779"
+      }
+    }
+  ],
+  "extraction_summary": {
+    "tables_extracted": [
+      "system_config",
+      "users"
+    ],
+    "sensitive_fields": [
+      "id",
+      "name",
+      "email",
+      "phone",
+      "amount",
+      "status"
+    ],
+    "data_risk_level": "HIGH"
+  }
+}

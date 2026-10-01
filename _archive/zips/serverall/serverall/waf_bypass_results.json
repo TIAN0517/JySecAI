@@ -1,0 +1,15 @@
+{
+  "target": "https://peacoop.or.th",
+  "waf_present": true,
+  "bypass_methods_tested": [
+    "GET",
+    "POST",
+    "Header",
+    "Cookie"
+  ],
+  "effective_method": "GET参数",
+  "advanced_techniques": null,
+  "overall_risk": "需要进一步测试",
+  "recommendation": "使用更高级的绕过技术或更改攻击向量",
+  "timestamp": "2025-10-29 02:14:55"
+}

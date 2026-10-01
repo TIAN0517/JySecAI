@@ -1,0 +1,14 @@
+HTTP/1.1 302 Found
+Server: openresty
+Date: Wed, 30 Sep 2026 06:53:05 GMT
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/7.4.33
+Cache-Control: no-cache, private
+Location: https://pay.femet.com.tw/dbs
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IkhkY1oxM3BkaSs2c1dqU0hoVXdtcVE9PSIsInZhbHVlIjoia2pHZVZRb2Q5TnZyNm9Gc0oyL1Q3UzQzUGR2WXBBUGxQcW9PL0VmZk41WllTdUliT29HMjZNcEl3bzlrMmRVRyIsIm1hYyI6ImU4OGUyODU0Y2ViYmQ5YzkwZjBmYTVjNTk3MDljMWQxYzI3Mjc2YzAwYWM5MDVkNTZjYzE1MmE1MzlmNzNmN2YifQ%3D%3D; expires=Wed, 30-Sep-2026 08:53:05 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: laravel_session=eyJpdiI6ImoycVg3UnIxNU9DM09mdnhOdVJSZHc9PSIsInZhbHVlIjoiaDNMOEw1L0F0bWJHcmxsQmVCNXdHdnRLMDRqRjhPRHA2NWVBTEVxcCs0Q095U2V4MFFzcFczZWw3bW1oTGhxTyIsIm1hYyI6Ijc2YzkwZDQ2YTRkMjc2MzEwMjQ4OTJkZWIwMjYzYzNjMTAyZjY4MGExMzc4YTQ0N2YyZTdmZDZhMWY0NDRmN2IifQ%3D%3D; expires=Wed, 30-Sep-2026 08:53:05 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+Access-Control-Allow-Origin: *
+X-Served-By: pay.femet.com.tw
+

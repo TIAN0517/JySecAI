@@ -1,0 +1,129 @@
+[
+  {
+    "url": "https://github.com",
+    "status_code": 200,
+    "content_length": 563450,
+    "server": "github.com",
+    "content_type": "text/html; charset=utf-8",
+    "response_time": 0.201897,
+    "title": "GitHub · Build and ship software on a single, collaborative platform · GitHub",
+    "technologies": [
+      "asp",
+      "python",
+      "ruby",
+      "iis"
+    ],
+    "potential_issues": [
+      {
+        "type": "error_disclosure",
+        "indicators": [
+          "error"
+        ]
+      },
+      {
+        "type": "exposed_services",
+        "indicators": [
+          "config"
+        ]
+      }
+    ],
+    "name": "GitHub",
+    "category": "development",
+    "timestamp": "2025-10-25T23:35:45.747913"
+  },
+  {
+    "url": "https://stackoverflow.com",
+    "status_code": 200,
+    "content_length": 214940,
+    "server": "cloudflare",
+    "content_type": "text/html; charset=utf-8",
+    "response_time": 0.114687,
+    "title": "Newest Questions - Stack Overflow",
+    "technologies": [
+      "php",
+      "asp",
+      "jsp",
+      "node.js",
+      "python",
+      "ruby",
+      "drupal",
+      "joomla",
+      "apache",
+      "nginx",
+      "iis"
+    ],
+    "potential_issues": [
+      {
+        "type": "error_disclosure",
+        "indicators": [
+          "error",
+          "exception"
+        ]
+      },
+      {
+        "type": "exposed_services",
+        "indicators": [
+          "config"
+        ]
+      }
+    ],
+    "name": "Stack Overflow",
+    "category": "qa",
+    "timestamp": "2025-10-25T23:35:46.237418"
+  },
+  {
+    "url": "https://wikipedia.org",
+    "status_code": 200,
+    "content_length": 113516,
+    "server": "ATS/9.2.11",
+    "content_type": "text/html",
+    "response_time": 0.142538,
+    "title": "Wikipedia",
+    "technologies": [
+      "php",
+      "iis"
+    ],
+    "potential_issues": [
+      {
+        "type": "error_disclosure",
+        "indicators": [
+          "error"
+        ]
+      }
+    ],
+    "name": "Wikipedia",
+    "category": "information",
+    "timestamp": "2025-10-25T23:35:46.664967"
+  },
+  {
+    "url": "https://google.com",
+    "status_code": 200,
+    "content_length": 165435,
+    "server": "gws",
+    "content_type": "text/html; charset=UTF-8",
+    "response_time": 0.129426,
+    "title": "Google",
+    "technologies": [
+      "asp",
+      "iis"
+    ],
+    "potential_issues": [
+      {
+        "type": "error_disclosure",
+        "indicators": [
+          "error",
+          "exception"
+        ]
+      },
+      {
+        "type": "exposed_services",
+        "indicators": [
+          "config"
+        ]
+      }
+    ],
+    "name": "Google",
+    "category": "search",
+    "timestamp": "2025-10-25T23:35:47.017063"
+  }
+]

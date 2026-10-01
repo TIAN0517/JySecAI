@@ -1,0 +1,1932 @@
+
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>drust — sign in</title>
+<meta name="description" content="Sign in to drust — multi-tenant SQLite BaaS admin console for the Tzu Chi Foundation.">
+<!-- _favicon.html — 16×16 pixel LiveChonk (happy pose) as inline SVG data URI.
+     Hand-authored to match CHONK_BASE / happy pose in _mascot.html. The rects
+     below are identical pixel coordinates; rendering is pixelated because the
+     SVG has shape-rendering='crispEdges'. Swap the href if you re-pose the cat. -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'><g fill='%230a0a0a'><rect x='1' y='3' width='1' height='1'/><rect x='14' y='3' width='1' height='1'/><rect x='1' y='4' width='2' height='1'/><rect x='13' y='4' width='2' height='1'/><rect x='1' y='5' width='3' height='1'/><rect x='12' y='5' width='3' height='1'/><rect x='1' y='6' width='14' height='1'/><rect x='0' y='7' width='16' height='6'/><rect x='1' y='13' width='14' height='1'/><rect x='2' y='14' width='12' height='1'/></g><g fill='%237FE87F'><rect x='4' y='9' width='1' height='1'/><rect x='5' y='8' width='1' height='1'/><rect x='10' y='8' width='1' height='1'/><rect x='11' y='9' width='1' height='1'/></g><rect x='7' y='11' width='2' height='1' fill='%23FFA3C7'/></svg>">
+<meta name="theme-color" content="#1a2327">
+<style>
+  /* ============================================================
+     drust admin · shared stylesheet
+     Source-of-truth: 2026-05-17 open-design mockup `shared.css`.
+     Web fonts loaded from Google Fonts. The trailing
+     "drust compat" block maps legacy class names that templates
+     still emit (.data, .field, .alert, …) onto mockup equivalents
+     so we don't have to sweep every template. The BEM button
+     aliases are gone -- gate 4 enforces the modifier form.
+     ============================================================ */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap');
+
+  
+  
+  :root{
+    --bg:#faf4e8;
+    --bg-deep:#f3ebda;
+    --surface:#ffffff;
+    --surface-2:#fdf8ee;
+    --surface-3:#f7eede;
+    --border:#e5dcc7;
+    --border-mid:#d4c8ad;
+    --border-strong:#b4a489;
+    --fg:#1c1816;
+    --fg-2:#4a4138;
+    --muted:#7d6f5e;
+    --muted-2:#a89b86;
+
+    --accent:#d97757;
+    --accent-2:#c66544;
+    --accent-soft:rgba(217,119,87,0.10);
+    --accent-border:rgba(217,119,87,0.36);
+    --on-accent:#3a1e10;
+    --rust:#d97757;
+
+    --warn:#c4922e;      --warn-soft:rgba(241,194,122,0.13);   --warn-border:rgba(241,194,122,0.34);
+    --danger:#b9433a;  --danger-soft:rgba(232,138,138,0.14); --danger-border:rgba(232,138,138,0.34);
+    --info:#4f6cb8;      --info-soft:rgba(165,184,240,0.13);   --info-border:rgba(165,184,240,0.34);
+    --mint:#4d9870;      --mint-soft:rgba(158,211,184,0.13);   --mint-border:rgba(158,211,184,0.34);
+    --lilac:#8c5fc1;    --lilac-soft:rgba(201,168,227,0.14);  --lilac-border:rgba(201,168,227,0.34);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root{
+      --bg:#1c1816;
+      --bg-deep:#15110f;
+      --surface:#26211d;
+      --surface-2:#2c2723;
+      --surface-3:#332d28;
+      --border:#2a2521;
+      --border-mid:#37312c;
+      --border-strong:#453d37;
+      --fg:#f5ede2;
+      --fg-2:#c9bdae;
+      --muted:#988b7d;
+      --muted-2:#5a514a;
+
+      --accent:#e8a17c;
+      --accent-2:#f3b48f;
+      --accent-soft:rgba(232,161,124,0.13);
+      --accent-border:rgba(232,161,124,0.34);
+      --on-accent:#3a1e10;
+      --rust:#d97757;
+
+      --warn:#f1c27a;       --warn-soft:rgba(241,194,122,0.13);   --warn-border:rgba(241,194,122,0.34);
+      --danger:#e88a8a;   --danger-soft:rgba(232,138,138,0.14); --danger-border:rgba(232,138,138,0.34);
+      --info:#a5b8f0;       --info-soft:rgba(165,184,240,0.13);   --info-border:rgba(165,184,240,0.34);
+      --mint:#9ed3b8;       --mint-soft:rgba(158,211,184,0.13);   --mint-border:rgba(158,211,184,0.34);
+      --lilac:#c9a8e3;     --lilac-soft:rgba(201,168,227,0.14);  --lilac-border:rgba(201,168,227,0.34);
+    }
+  }
+  
+
+  :root{
+    --font-sans:'Inter',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,Arial,sans-serif;
+    --font-display:'Newsreader','Iowan Old Style','Charter',Georgia,serif;
+    --font-mono:'JetBrains Mono','Source Code Pro','SF Mono',Menlo,monospace;
+
+    --r-sm:8px; --r-md:12px; --r-lg:14px; --r-xl:18px; --r-pill:9999px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:var(--font-sans);font-size:13.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  /* body scrolls naturally; sidebar/topbar use position:sticky to stay in
+     view. Earlier overflow:hidden + .main { overflow-y:auto } trapped long
+     pages because the grid row's intrinsic min-height grew with content. */
+  body{min-height:100vh}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+  ::selection{background:var(--accent-soft);color:var(--fg)}
+  *::-webkit-scrollbar{width:10px;height:10px}
+  *::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:10px;border:2px solid var(--bg)}
+  *::-webkit-scrollbar-thumb:hover{background:var(--muted-2)}
+
+  .mono{font-family:var(--font-mono);font-size:11px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted)}
+  .kbd{font-family:var(--font-mono);font-size:10.5px;border:1px solid var(--border-strong);padding:1px 6px;border-radius:6px;color:var(--fg-2);background:var(--bg-deep)}
+
+  /* ---------------- app shell ---------------- */
+  /* min-height so it can grow with content; let body do the scrolling. */
+  .app-shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
+
+  /* legacy macwin wrappers — neutralised so any stale include is a no-op */
+  .macwin,.macwin-body{display:contents}
+  .macwin-title{display:none}
+
+  /* ---------------- LiveChonk pixel mascot ---------------- */
+  .chonk{display:inline-block;line-height:0;flex-shrink:0}
+  .chonk svg{display:block;shape-rendering:crispEdges;image-rendering:pixelated}
+  .chonk-blink{animation:chonk-blink 5.2s ease-in-out infinite}
+  @keyframes chonk-blink{0%,92%,100%{transform:scaleY(1)}94%,98%{transform:scaleY(0.1)}}
+  /* drust templates apply `.bounce` directly; mockup uses `.chonk-bounce`. Both
+     alias to the same keyframes so either class works. */
+  .chonk-bounce,.bounce{animation:chonk-bounce 2.4s ease-in-out infinite}
+  @keyframes chonk-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+  /* ---------------- sidebar (shared) ---------------- */
+  /* Three class shapes used across templates:
+       .sidebar              (mockup base)
+       .sidebar.sidebar-admin (host admin pages, _admin_sidebar.html)
+       .tenant-sidebar       (per-tenant pages, _collection_sidebar.html)
+     All three get the same shell: flex-column, 100vh, sticky to body scroll,
+     align-self:start so the grid item doesn't stretch and kill sticky. */
+  .sidebar,.sidebar-admin,.tenant-sidebar{
+    background:var(--bg-deep);
+    border-right:1px solid var(--border);
+    display:flex;flex-direction:column;
+    position:sticky;top:0;height:100vh;min-height:0;
+    align-self:start;
+  }
+  /* Direct children stay at intrinsic height; only .nav grows + scrolls. */
+  .sidebar > *,.sidebar-admin > *,.tenant-sidebar > *{flex-shrink:0}
+  .sidebar > .nav,.sidebar-admin > .nav,.tenant-sidebar > .nav{flex:1 1 0;min-height:0;overflow-y:auto}
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    padding:14px 16px 12px;
+    border-bottom:1px solid var(--border);
+  }
+  .brand-mark{
+    width:32px;height:32px;border-radius:11px;
+    background:linear-gradient(135deg,var(--accent) 0%,var(--accent-2) 100%);
+    display:grid;place-items:center;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12),0 0 0 1px rgba(232,161,124,0.18);
+    flex-shrink:0;
+  }
+  .brand-name{font-family:var(--font-display);font-size:19px;font-weight:500;letter-spacing:-0.3px;line-height:1}
+  .brand-meta{font-family:var(--font-mono);font-size:10px;letter-spacing:1.1px;color:var(--muted);text-transform:uppercase;margin-top:3px}
+  .brand-ver{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--muted-2);letter-spacing:0.8px;align-self:flex-start;margin-top:4px}
+
+  .plane-pill{
+    margin:12px 14px 4px;
+    display:flex;align-items:center;gap:10px;
+    padding:9px 12px;
+    border:1px solid var(--border-mid);
+    border-radius:var(--r-lg);
+    background:var(--surface);
+    transition:border-color .15s;
+    text-align:left;
+    width:calc(100% - 28px);
+  }
+  .plane-pill.clickable{cursor:pointer}
+  .plane-pill.clickable:hover{border-color:var(--border-strong)}
+  .plane-pill .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .plane-pill .body{flex:1;min-width:0}
+  .plane-pill .label{font-family:var(--font-mono);font-size:9.5px;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase}
+  .plane-pill .name{font-size:13px;font-weight:500;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+  .plane-pill .id{font-family:var(--font-mono);font-size:10px;color:var(--muted-2);letter-spacing:0.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .plane-pill .chev{color:var(--muted-2);flex-shrink:0;display:grid;place-items:center}
+  .plane-pill .chev svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7}
+
+  .back-strip{
+    padding:10px 16px;
+    border-bottom:1px solid var(--border);
+    display:flex;align-items:center;gap:7px;
+    color:var(--muted);font-size:12px;cursor:pointer;
+    transition:color .12s,background .12s;
+  }
+  .back-strip:hover{color:var(--fg-2);background:var(--surface)}
+  .back-strip svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+
+  .nav{padding:6px 10px;flex:1;overflow-y:auto}
+  .nav-section{margin:14px 0 4px;padding:0 8px;display:flex;align-items:center;gap:6px;justify-content:space-between}
+  .nav-section .mono{font-size:9.5px;letter-spacing:1.5px}
+
+  .nav-item{
+    display:flex;align-items:center;gap:11px;
+    padding:7px 10px;border-radius:10px;
+    color:var(--fg-2);font-size:13px;font-weight:400;
+    cursor:pointer;
+    transition:background .12s,color .12s;
+    user-select:none;
+    position:relative;
+  }
+  .nav-item:hover{background:var(--surface);color:var(--fg)}
+  .nav-item.active,.nav-item.on{background:var(--surface-2);color:var(--fg);box-shadow:inset 0 0 0 1px var(--border-mid)}
+  .nav-item.active .nav-icon,.nav-item.on .nav-icon{color:var(--accent)}
+  .nav-icon{width:16px;height:16px;flex-shrink:0;color:var(--muted);display:grid;place-items:center}
+  .nav-icon svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7}
+  .nav-item:hover .nav-icon{color:var(--fg-2)}
+  .nav-badge{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--muted);background:var(--surface-2);padding:1px 6px;border-radius:9999px;border:1px solid var(--border-mid)}
+  .nav-badge.alert{background:var(--danger-soft);color:var(--danger);border-color:var(--danger-border)}
+  .nav-collection{
+    display:flex;align-items:center;gap:10px;
+    padding:5px 10px 5px 14px;border-radius:8px;
+    color:var(--fg-2);font-family:var(--font-mono);font-size:12px;letter-spacing:0.2px;
+    cursor:pointer;
+  }
+  .nav-collection:hover{background:var(--surface);color:var(--fg)}
+  .nav-collection.active,.nav-collection.on{background:var(--surface-2);color:var(--fg)}
+  .nav-collection .dot{width:4px;height:4px;border-radius:50%;background:var(--muted-2);flex-shrink:0}
+  .nav-collection .count{margin-left:auto;color:var(--muted-2);font-size:10.5px}
+
+  .sidebar-foot{
+    padding:11px 14px;
+    border-top:1px solid var(--border);
+    display:flex;align-items:center;gap:10px;
+    font-size:11.5px;color:var(--muted);
+  }
+  .sidebar-foot .who{flex:1;min-width:0}
+  .sidebar-foot .who-name{color:var(--fg-2);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sidebar-foot .who-mail{font-size:10.5px;color:var(--muted-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sidebar-foot .who-av{width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,#6b4a36,var(--accent));display:grid;place-items:center;color:#fff;font-size:10px;font-weight:600;font-family:var(--font-mono);flex-shrink:0}
+  .sidebar-foot .who-av-img{width:24px;height:24px;border-radius:8px;object-fit:cover;flex-shrink:0;}
+  .status-pulse{width:7px;height:7px;border-radius:50%;background:var(--mint);position:relative;flex-shrink:0}
+  .status-pulse::after{content:"";position:absolute;inset:-3px;border-radius:50%;background:var(--mint);opacity:.35;animation:pulse 2s ease-out infinite}
+  @keyframes pulse{0%{transform:scale(.6);opacity:.5}100%{transform:scale(2.2);opacity:0}}
+
+  /* ---------------- main ---------------- */
+  /* no overflow; body scrolls. min-width:0 so grid can shrink below content. */
+  .main{display:flex;flex-direction:column;min-width:0;background:var(--bg)}
+  /* .topbar / .topbar-right / .crumbs / .role-badge / .top-search / .top-mascot
+     / .top-icon were removed 2026-05-22 — the entire <header class="topbar">
+     was retired from every admin template. See memory/feedback-no-topbar. */
+
+  /* ---------------- view container ---------------- */
+  /* .page fills the viewport width. Pages that need a narrower reading
+     measure (forms-heavy single-column) opt in via .page-narrow.
+     .page-wide is retained as a no-op alias for callers that explicitly
+     declared "this is a wide page" — it no longer changes width. */
+  .view,.page{padding:28px 32px 80px}
+  .page-narrow{max-width:1080px}
+  /* Deliberately empty: a REAL rule, not a mention in the comment above, so
+     the ghost-class gate sees a definition. A no-op alias only survives as an
+     explicit register entry. */
+  .page-wide{}
+  .view-head{margin-bottom:24px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .view-head > .grow{flex:1;min-width:0}
+  .eyebrow{font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase}
+  .view-title{font-family:var(--font-display);font-size:34px;font-weight:500;letter-spacing:-0.6px;line-height:1.08;margin:6px 0 0}
+  .view-sub{color:var(--fg-2);font-size:14px;margin-top:6px}
+  .view-sub code{font-family:var(--font-mono);font-size:12px;color:var(--fg-2);background:var(--bg-deep);padding:1px 6px;border-radius:6px;border:1px solid var(--border)}
+
+  .row{display:flex;align-items:center;gap:10px}
+  .grow{flex:1;min-width:0}
+  .right{margin-left:auto}
+
+  /* ---------------- buttons ---------------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;
+    height:34px;padding:0 14px;border-radius:10px;
+    font-size:13px;font-weight:500;
+    border:1px solid var(--border-mid);
+    background:var(--surface);color:var(--fg);
+    cursor:pointer;transition:background .12s,border-color .12s,transform .05s;
+    white-space:nowrap;
+  }
+  .btn:hover{background:var(--surface-2);border-color:var(--border-strong)}
+  .btn:active{transform:translateY(1px)}
+  .btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7}
+  .btn.primary{background:var(--accent);color:var(--on-accent);border-color:transparent;font-weight:600}
+  .btn.primary:hover{background:var(--accent-2)}
+  .btn.ghost{background:transparent;border-color:transparent;color:var(--fg-2)}
+  .btn.ghost:hover{background:var(--surface);color:var(--fg)}
+  .btn.danger{color:var(--danger);border-color:var(--danger-border);background:transparent}
+  .btn.danger:hover{background:var(--danger-soft)}
+  .btn.sm{height:28px;padding:0 10px;font-size:12px;border-radius:8px}
+  .btn.sm svg{width:12px;height:12px}
+  .btn.icon{width:32px;padding:0}
+  .icon-only{width:28px;height:28px;display:inline-grid;place-items:center;border-radius:7px;color:var(--muted);cursor:pointer}
+  .icon-only:hover{background:var(--surface);color:var(--fg)}
+
+  /* ---------------- pills (mockup) + chip (legacy alias) ---------------- */
+  .pill,.chip{
+    display:inline-flex;align-items:center;gap:5px;
+    font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.6px;
+    padding:2px 8px;border-radius:9999px;
+    border:1px solid var(--border-mid);
+    background:var(--surface);color:var(--fg-2);
+    white-space:nowrap;
+  }
+  .pill.mint,.chip.mint{color:var(--mint);background:var(--mint-soft);border-color:var(--mint-border)}
+  .pill.warn,.chip.warn{color:var(--warn);background:var(--warn-soft);border-color:var(--warn-border)}
+  .pill.danger,.chip.danger{color:var(--danger);background:var(--danger-soft);border-color:var(--danger-border)}
+  .pill.info,.chip.info{color:var(--info);background:var(--info-soft);border-color:var(--info-border)}
+  .pill.accent,.chip.accent{color:var(--accent);background:var(--accent-soft);border-color:var(--accent-border)}
+  .pill.lilac,.chip.lilac{color:var(--lilac);background:var(--lilac-soft);border-color:var(--lilac-border)}
+  .pill.muted,.pill.mute,.chip.mute,.chip.muted{color:var(--muted)}
+  .pill .dot,.chip .dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.9}
+
+  /* ---------------- card ---------------- */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border-mid);
+    border-radius:var(--r-lg);
+  }
+  .desc-tile{border:1px solid var(--border-mid);border-radius:var(--r-lg);padding:14px 16px;margin:18px 0;background:var(--surface);}
+  .desc-tile-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:12px;}
+  .desc-tile-body{line-height:1.5;font-size:14px;}
+  .desc-tile-body em.muted{opacity:0.6;}
+  .card-head{padding:14px 18px;border-bottom:1px solid var(--border-mid);display:flex;align-items:center;gap:10px}
+  .card-title{font-family:var(--font-display);font-size:18px;font-weight:500;letter-spacing:-0.2px}
+  .card-sub{font-size:12px;color:var(--muted);margin-top:2px}
+  .card-body{padding:18px}
+  .card-body-tight{padding:12px 16px}
+  .card-foot{padding:10px 18px;border-top:1px solid var(--border-mid);display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}
+  .ten-pager{display:flex;align-items:center;justify-content:center;gap:14px;padding:12px 18px;border-top:1px solid var(--border-mid);color:var(--muted);font-size:12px}
+  .ten-pager[hidden]{display:none}
+  .btn:disabled,.btn[disabled]{opacity:0.45;cursor:not-allowed}
+  .card-head-actions{margin-left:auto;display:inline-flex;gap:10px;align-items:center;font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+  .count{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.3px}
+
+  /* v1.23 — settings page Preferences card: iconified rows + batched Save/Cancel.
+     Each row is a 3-column grid (label | control | dirty status); the action bar
+     sits in its own footer-style band at the bottom of the same card. */
+  .settings-rows{display:flex;flex-direction:column}
+  .settings-row{
+    display:grid;
+    grid-template-columns:minmax(140px,auto) 1fr auto;
+    gap:14px;
+    align-items:center;
+    padding:14px 18px;
+    border-top:1px solid var(--border);
+  }
+  .settings-row:first-child{border-top:0}
+  .settings-row-label{
+    display:inline-flex;align-items:center;gap:10px;
+    font-weight:500;color:var(--fg);font-size:13.5px;
+  }
+  .settings-row-label svg{width:16px;height:16px;color:var(--muted);flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8}
+  .settings-row .input{max-width:320px;width:100%}
+  .settings-row-status{
+    font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.4px;
+    color:var(--accent);text-transform:uppercase;
+    visibility:hidden;
+  }
+  .settings-row-status.is-dirty{visibility:visible}
+  .settings-actions{
+    display:flex;justify-content:flex-end;gap:10px;
+    padding:12px 18px;
+    border-top:1px solid var(--border-mid);
+    background:var(--bg-deep);
+  }
+  .settings-actions .btn:disabled{opacity:0.5;cursor:not-allowed;pointer-events:none}
+
+  /* ---------------- stat ---------------- */
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .stat,.stat-tile{
+    background:var(--surface);border:1px solid var(--border-mid);
+    border-radius:var(--r-lg);padding:16px 18px;
+    display:flex;flex-direction:column;gap:7px;
+    position:relative;overflow:hidden;
+  }
+  .stat .label{font-family:var(--font-mono);font-size:10px;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:7px}
+  .stat .val,.stat-num{font-family:var(--font-display);font-size:32px;font-weight:500;letter-spacing:-0.6px;line-height:1;font-variant-numeric:tabular-nums;color:var(--fg)}
+  .stat .val .unit,.stat-suffix{font-size:14px;color:var(--muted);font-family:var(--font-sans);font-weight:400;margin-left:4px;letter-spacing:0}
+  .stat .meta{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .stat .meta .up{color:var(--mint)}
+  .stat .meta .down{color:var(--danger)}
+  .stat.accent-edge{border-color:var(--accent-border)}
+  .stat.accent-edge::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent 80%)}
+  .audit-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:20px}
+
+  /* ---------------- table (mockup .data-table + drust .data alias) ---------------- */
+  table.data-table,table.data{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;font-variant-numeric:tabular-nums}
+  /* sticky thead pinned to its scroll container's top. Most .data tables live
+     inside a .card (overflow:hidden) or .records-scroll (overflow:auto), both
+     of which become the sticky ancestor — so top:0 is correct. (Historical
+     note: top:50px was here to clear the legacy .topbar; topbar removed
+     2026-05-22, so top:0 is unconditionally right.) */
+  table.data-table thead th,table.data thead th{
+    text-align:left;font-family:var(--font-mono);font-size:10px;letter-spacing:1.3px;text-transform:uppercase;
+    color:var(--muted);font-weight:500;
+    padding:10px 14px;border-bottom:1px solid var(--border-mid);background:var(--surface);
+    position:sticky;top:0;z-index:2;
+  }
+  table.data-table thead th.num,table.data thead th.num{text-align:right}
+  table.data-table tbody td,table.data tbody td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+  table.data-table tbody tr:hover,table.data tbody tr:hover{background:var(--surface)}
+  table.data-table tbody tr.clickable,table.data tbody tr.clickable{cursor:pointer}
+  table.data-table tbody tr:last-child td,table.data tbody tr:last-child td{border-bottom:0}
+  table.data-table .num,table.data .num{text-align:right;font-variant-numeric:tabular-nums}
+  table.data-table .mono-cell,table.data .mono-cell{font-family:var(--font-mono);font-size:12px;color:var(--fg-2);letter-spacing:0.3px}
+  /* Actions cell in data tables: keep buttons + inline <form>s on one row,
+     right-aligned. flex is too eager (eats the inline form's `style="display:inline"`)
+     and text-align doesn't survive into flex items — so use inline-flex + nowrap. */
+  table.data-table td.actions,table.data td.actions{
+    text-align:right;white-space:nowrap;
+  }
+  table.data-table td.actions > *,table.data td.actions > *{
+    display:inline-flex;vertical-align:middle;margin:0;
+  }
+  table.data-table td.actions > * + *,table.data td.actions > * + *{margin-left:6px}
+
+  .ten-cell{display:flex;align-items:center;gap:11px;min-width:0}
+  .ten-avatar{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:#fff;font-family:var(--font-mono);font-size:12px;font-weight:600;flex-shrink:0;letter-spacing:-0.3px}
+  .ten-meta{min-width:0;display:flex;flex-direction:column;gap:1px}
+  .ten-name{font-size:13px;color:var(--fg);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+  .ten-id{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);letter-spacing:0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+
+  /* avatar tones */
+  .av-1{background:linear-gradient(135deg,#a06c4a,#e8a17c)}
+  .av-2{background:linear-gradient(135deg,#5e7a8a,#a5b8f0)}
+  .av-3{background:linear-gradient(135deg,#7d6a8e,#c9a8e3)}
+  .av-4{background:linear-gradient(135deg,#5e7e6a,#9ed3b8)}
+  .av-5{background:linear-gradient(135deg,#9a7a3a,#f1c27a)}
+  .av-6{background:linear-gradient(135deg,#955d5d,#e88a8a)}
+
+  /* ---------------- key row (api keys page) ---------------- */
+  .key-row{
+    display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:14px;
+    padding:13px 16px;
+    border:1px solid var(--border-mid);
+    border-radius:var(--r-md);
+    background:var(--surface);
+  }
+  .key-row + .key-row{margin-top:10px}
+  .key-row .key-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--surface-2);border:1px solid var(--border-mid);color:var(--accent)}
+  .key-row .key-icon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
+  .key-row .key-info{min-width:0}
+  .key-row .key-name{font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:8px}
+  .key-row .key-desc{font-size:11.5px;color:var(--muted);margin-top:3px}
+  .key-row .key-val{font-family:var(--font-mono);font-size:11.5px;color:var(--fg-2);background:var(--bg-deep);border:1px solid var(--border);padding:5px 10px;border-radius:8px;letter-spacing:0.3px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .key-row .key-val.muted{color:var(--muted)}
+
+  /* ---------------- empty / banner / toast ---------------- */
+  .empty{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:48px 24px;gap:14px;text-align:center;
+  }
+  .empty h3{font-family:var(--font-display);font-size:20px;font-weight:500;letter-spacing:-0.3px;margin:0}
+  .empty p{color:var(--muted);font-size:13px;max-width:48ch;margin:0}
+  .empty-pad{padding:56px 24px 40px}
+  .empty-figure{margin-bottom:18px;display:grid;place-items:center}
+
+  .banner,.alert{
+    display:flex;align-items:flex-start;gap:12px;
+    padding:12px 14px;border-radius:var(--r-md);
+    border:1px solid;
+    font-size:13px;line-height:1.5;
+  }
+  .banner.info,.alert.info{color:var(--info);background:var(--info-soft);border-color:var(--info-border)}
+  .banner.warn,.alert.warn{color:var(--warn);background:var(--warn-soft);border-color:var(--warn-border)}
+  .banner.danger,.alert.danger,.alert.error{color:var(--danger);background:var(--danger-soft);border-color:var(--danger-border)}
+  .banner.success,.alert.success{color:var(--mint);background:var(--mint-soft);border-color:var(--mint-border)}
+  .banner .b-icon,.alert .b-icon{flex-shrink:0;margin-top:1px}
+  .banner .b-icon svg,.alert .b-icon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
+  .banner .b-body,.alert .b-body{flex:1;min-width:0;color:var(--fg)}
+  .banner .b-title,.alert .b-title{font-weight:500;font-family:var(--font-display);font-size:14.5px;letter-spacing:-0.1px;color:inherit}
+  .banner .b-body p,.alert .b-body p{margin:2px 0 0;color:var(--fg-2)}
+  .banner .b-body code,.alert .b-body code{font-family:var(--font-mono);font-size:11.5px;color:var(--fg);background:var(--bg-deep);padding:1px 5px;border-radius:5px;border:1px solid var(--border)}
+  .banner .b-actions,.alert .b-actions{display:flex;gap:6px;margin-top:8px}
+
+  .toast-stack{position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column-reverse;gap:8px;z-index:50;pointer-events:none}
+  .toast{
+    pointer-events:auto;
+    display:flex;align-items:center;gap:11px;
+    background:var(--surface-2);
+    border:1px solid var(--border-strong);
+    box-shadow:0 12px 40px -12px rgba(0,0,0,0.5),0 1px 0 rgba(255,255,255,0.04) inset;
+    border-radius:var(--r-md);padding:11px 14px;
+    min-width:280px;max-width:420px;font-size:13px;
+    animation:toast-in .18s ease-out;
+  }
+  @keyframes toast-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* ---------------- login ---------------- */
+  body.login-page{background:var(--bg-deep);height:100vh;overflow:hidden}
+  .login-shell{
+    min-height:100vh;display:grid;place-items:center;
+    background:radial-gradient(120% 80% at 50% 0%,#23191491 0%,transparent 60%),var(--bg-deep);
+    padding:20px;
+  }
+  .login-card{
+    width:min(420px,100%);
+    background:var(--surface);
+    border:1px solid var(--border-mid);
+    border-radius:var(--r-xl);
+    padding:32px 32px 24px;
+    box-shadow:0 30px 100px -40px rgba(0,0,0,0.5),0 1px 0 rgba(255,255,255,0.04) inset;
+  }
+  .login-brand{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+  .login-brand .brand-mark{width:38px;height:38px;border-radius:12px}
+  .login-brand .brand-name{font-size:22px}
+  .login-brand .brand-meta{font-size:10.5px}
+  .login-title{font-family:var(--font-display);font-size:28px;letter-spacing:-0.6px;font-weight:500;line-height:1.1;margin:0}
+  .login-sub{color:var(--muted);font-size:13px;margin-top:6px;margin-bottom:22px}
+  .login-field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+  .login-field label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.3px;color:var(--muted);text-transform:uppercase}
+  .login-input{
+    height:38px;padding:0 12px;border-radius:10px;
+    background:var(--bg-deep);border:1px solid var(--border-mid);
+    color:var(--fg);font:inherit;font-size:13.5px;outline:0;
+    transition:border-color .12s,box-shadow .12s;
+  }
+  .login-input:focus{border-color:var(--accent-border);box-shadow:0 0 0 3px var(--accent-soft)}
+  .login-cta{
+    width:100%;height:40px;border-radius:10px;
+    background:var(--accent);color:#3a1e10;
+    font-weight:600;letter-spacing:0.1px;
+    border:0;cursor:pointer;margin-top:6px;
+  }
+  .login-cta:hover{background:var(--accent-2)}
+  .login-divider{display:flex;align-items:center;gap:10px;margin:18px 0 14px;color:var(--muted-2);font-family:var(--font-mono);font-size:10px;letter-spacing:1.3px;text-transform:uppercase}
+  .login-divider::before,.login-divider::after{content:"";flex:1;height:1px;background:var(--border-mid)}
+  .oauth-btn{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    width:100%;height:40px;border-radius:10px;
+    border:1px solid var(--border-mid);background:var(--bg-deep);
+    color:var(--fg);font-size:13.5px;font-weight:500;cursor:pointer;
+    transition:border-color .12s,background .12s;
+  }
+  .oauth-btn + .oauth-btn{margin-top:8px}
+  .oauth-btn:hover{border-color:var(--border-strong);background:var(--surface)}
+  .oauth-btn svg{width:16px;height:16px}
+  .login-foot{margin-top:22px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--muted-2);font-size:11.5px;display:flex;align-items:center;justify-content:center;gap:8px}
+
+  /* ---------------- toolbar / segmented control ---------------- */
+  .toolbar{
+    display:flex;align-items:center;gap:10px;margin-bottom:14px;
+    padding:10px 12px;
+    background:var(--surface);border:1px solid var(--border-mid);
+    border-radius:var(--r-md);
+    flex-wrap:wrap;
+  }
+  .seg{display:inline-flex;border:1px solid var(--border-mid);border-radius:9px;overflow:hidden;align-self:center}
+  .seg > button,
+  .seg > a{padding:6px 11px;font-size:12px;line-height:1.2;color:var(--muted);background:transparent;border:0;border-right:1px solid var(--border-mid);cursor:pointer;font-family:var(--font-mono);letter-spacing:0.3px;text-decoration:none;display:inline-flex;align-items:center}
+  .seg > button:last-child,
+  .seg > a:last-child{border-right:0}
+  .seg > button.active,
+  .seg > a.active{background:var(--surface-2);color:var(--accent)}
+  .seg > button:hover:not(.active),
+  .seg > a:hover:not(.active){color:var(--fg-2);background:var(--surface-2)}
+
+  /* ---------------- forms ---------------- */
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:0}
+  .field label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.3px;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:8px}
+  .field label code{font-family:var(--font-mono);font-size:10.5px;color:var(--fg-2);background:var(--bg-deep);padding:1px 5px;border-radius:5px;border:1px solid var(--border);text-transform:none;letter-spacing:0}
+  .field label .hint,.field .hint{font-family:var(--font-sans);font-size:11px;color:var(--muted-2);text-transform:none;letter-spacing:0;font-weight:400;margin-left:8px}
+  .input{
+    height:34px;background:var(--bg-deep);border:1px solid var(--border-mid);color:var(--fg);
+    font:inherit;font-size:13px;border-radius:10px;padding:0 11px;outline:0;
+    transition:border-color .12s,box-shadow .12s;min-width:200px;
+  }
+  .input:focus{border-color:var(--accent-border);box-shadow:0 0 0 3px var(--accent-soft)}
+  .textarea{
+    background:var(--bg-deep);border:1px solid var(--border-mid);color:var(--fg);
+    font:inherit;font-family:var(--font-mono);font-size:12.5px;border-radius:10px;padding:10px 12px;outline:0;
+    transition:border-color .12s,box-shadow .12s;width:100%;resize:vertical;line-height:1.55;
+  }
+  .textarea:focus{border-color:var(--accent-border);box-shadow:0 0 0 3px var(--accent-soft)}
+  .select{
+    height:34px;padding:0 10px;background:var(--bg-deep);border:1px solid var(--border-mid);
+    color:var(--fg);font:inherit;font-size:13px;border-radius:10px;outline:0;
+  }
+  .select:focus{border-color:var(--accent-border)}
+  .check{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13px;color:var(--fg-2)}
+  /* v1.28.10 — global checkbox skin. Replaces the single `accent-color`
+     rule that left the unchecked state to the browser default (white).
+     Unchecked: bg-deep + 1px border-strong (clearly visible in both
+     themes — v1.28.9 originally referenced --bg-soft / --line which
+     have no theme definition since v1.23, so the border fell back to
+     `currentColor` and was effectively invisible). Checked: accent
+     fill + CSS-only white check mark via ::after (rotated rectangle).
+     Applies to every <input type=checkbox> across admin. */
+  input[type="checkbox"]{
+    appearance:none; -webkit-appearance:none;
+    width:16px; height:16px;
+    background:var(--bg-deep); border:1px solid var(--border-strong); border-radius:4px;
+    cursor:pointer; flex-shrink:0;
+    position:relative;
+    transition:background 120ms, border-color 120ms;
+  }
+  input[type="checkbox"]:hover{border-color:var(--accent-border);}
+  input[type="checkbox"]:checked{background:var(--accent); border-color:var(--accent);}
+  input[type="checkbox"]:checked::after{
+    content:""; display:block; position:absolute;
+    left:4px; top:1px;
+    width:5px; height:9px;
+    border:solid #fff;
+    border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+  }
+  input[type="checkbox"]:focus-visible{outline:2px solid var(--accent-border); outline-offset:2px;}
+  input[type="checkbox"]:disabled{opacity:0.5; cursor:not-allowed;}
+  .form-inline{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+
+  /* ---------------- code / sql / explain ---------------- */
+  pre.code,.sql-block{
+    font-family:var(--font-mono);font-size:12px;line-height:1.65;
+    background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;
+    padding:12px 14px;color:var(--fg-2);
+    white-space:pre;overflow-x:auto;margin:0;
+  }
+  .code-sm{font-size:11.5px;line-height:1.55}
+  .sql-block .k{color:var(--accent)}
+  .sql-block .s{color:var(--mint)}
+  .sql-block .n{color:var(--warn)}
+  .sql-block .c{color:var(--muted-2);font-style:italic}
+
+  /* ---------------- timeline (audit) ---------------- */
+  .tl{display:flex;flex-direction:column;gap:0}
+  .tl-row{display:grid;grid-template-columns:104px 22px 1fr auto;align-items:baseline;gap:12px;padding:10px 0;position:relative}
+  .tl-row + .tl-row{border-top:1px dashed var(--border)}
+  .tl-row .tl-time{font-family:var(--font-mono);font-size:11px;color:var(--muted);text-align:left;letter-spacing:0.2px;white-space:nowrap}
+  .tl-row .tl-glyph{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;background:var(--bg-deep);border:1px solid var(--border-mid);color:var(--muted);font-family:var(--font-mono);font-size:10px}
+  .tl-row .tl-glyph.ok{color:var(--mint);border-color:var(--mint-border);background:var(--mint-soft)}
+  .tl-row .tl-glyph.warn{color:var(--warn);border-color:var(--warn-border);background:var(--warn-soft)}
+  .tl-row .tl-glyph.fail{color:var(--danger);border-color:var(--danger-border);background:var(--danger-soft)}
+  .tl-row .tl-body{font-size:13px;color:var(--fg-2);min-width:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;line-height:1.6}
+  .tl-row .tl-meta{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);text-align:right}
+
+  /* method/path/actor chips inside .tl-body. The method is the most
+     scan-able anchor; tinted per verb so eyes catch reads vs writes at a
+     glance. Path is the natural-language part. Actor is muted (it's
+     metadata, not the story). */
+  .op-method{
+    display:inline-flex;align-items:center;
+    font-family:var(--font-mono);font-size:10px;font-weight:600;
+    letter-spacing:1.2px;padding:2px 7px;border-radius:6px;
+    border:1px solid var(--border-mid);background:var(--bg-deep);color:var(--muted);
+  }
+  .op-method.op-get   {color:var(--info);  border-color:var(--info-border);  background:var(--info-soft)}
+  .op-method.op-post  {color:var(--mint);  border-color:var(--mint-border);  background:var(--mint-soft)}
+  .op-method.op-patch,
+  .op-method.op-put   {color:var(--warn);  border-color:var(--warn-border);  background:var(--warn-soft)}
+  .op-method.op-delete{color:var(--danger);border-color:var(--danger-border);background:var(--danger-soft)}
+  .op-path{
+    font-family:var(--font-mono);font-size:12px;color:var(--fg);
+    min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .op-actor{
+    font-family:var(--font-mono);font-size:10px;letter-spacing:1.1px;text-transform:uppercase;
+    color:var(--muted-2);padding:1px 6px;border-radius:5px;border:1px solid var(--border);
+  }
+  .op-err{
+    font-family:var(--font-mono);font-size:10px;letter-spacing:0.8px;
+    color:var(--danger);background:var(--danger-soft);border:1px solid var(--danger-border);
+    padding:1px 6px;border-radius:5px;
+  }
+
+  /* ---------------- backup / webhook / file rows (mockup) ---------------- */
+  .bk-row{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:14px;padding:13px 16px;border:1px solid var(--border-mid);border-radius:var(--r-md);background:var(--surface)}
+  .bk-row + .bk-row{margin-top:8px}
+  .bk-row .bk-glyph{width:32px;height:32px;border-radius:9px;background:var(--bg-deep);border:1px solid var(--border-mid);display:grid;place-items:center;color:var(--accent)}
+  .bk-row .bk-name{font-family:var(--font-mono);font-size:12.5px;color:var(--fg);letter-spacing:0.2px}
+  .bk-row .bk-meta{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .bk-row .bk-size{font-family:var(--font-mono);font-size:12px;color:var(--fg-2);text-align:right}
+  .bk-row .bk-actions{display:flex;gap:6px}
+
+  /* ---------------- tenants list extras ---------------- */
+  .ten-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:24px}
+  .ten-pulse{
+    background:var(--surface);border:1px solid var(--border-mid);
+    border-radius:var(--r-lg);padding:14px 16px;
+  }
+  .ten-pulse .head{display:flex;align-items:center;gap:10px}
+  .ten-pulse .body{font-family:var(--font-display);font-size:24px;font-weight:500;line-height:1;margin-top:8px;font-variant-numeric:tabular-nums;letter-spacing:-0.4px}
+  .ten-pulse .body .unit{font-size:13px;color:var(--muted);font-family:var(--font-sans);font-weight:400;margin-left:4px;letter-spacing:0}
+  .ten-pulse .meta{font-size:11.5px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:7px}
+
+  /* ---------------- col-tabs (collection editor) + legacy .tabs ---------------- */
+  .col-tabs,.tabs{
+    display:flex;gap:2px;margin-bottom:18px;
+    padding:4px;border:1px solid var(--border-mid);background:var(--surface);
+    border-radius:var(--r-md);width:fit-content;
+  }
+  .col-tab,.tab{
+    padding:6px 14px;border-radius:8px;font-size:12.5px;color:var(--muted);
+    cursor:pointer;display:flex;align-items:center;gap:7px;letter-spacing:0.2px;
+    transition:background .12s,color .12s;text-decoration:none;
+  }
+  .col-tab:hover,.tab:hover{color:var(--fg-2)}
+  .col-tab.active,.col-tab.on,
+  .tab.active,.tab.on{background:var(--surface-2);color:var(--fg);box-shadow:inset 0 0 0 1px var(--border-mid)}
+  .col-tab .mono,.tab .mono{font-size:10px;color:var(--muted-2)}
+
+  /* ---------------- pager ---------------- */
+  .pager{display:flex;align-items:center;justify-content:center;gap:8px;padding:18px 0 0;font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+  .pager-group{display:inline-flex;gap:8px;align-items:center}
+  .pager a,.pager span{padding:5px 11px;border-radius:8px;border:1px solid var(--border-mid);background:var(--surface);color:var(--fg-2)}
+  .pager a:hover{border-color:var(--border-strong);color:var(--fg)}
+  .pager .current{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-border)}
+
+  /* ---------------- records-scroll (collection rows wide tables) ---------------- */
+  /* v1.28 — collection page no longer constrains the rows table to its own
+     scroll surface. Single viewport scroll only. Rule kept (no max-height)
+     so any remaining .records-scroll wrapper renders as a passive border. */
+  .records-scroll{border-radius:var(--r-md);border:1px solid var(--border-mid)}
+
+  /* ---------------- collection_rows toolbar layout ---------------- */
+  /* .toolbar wraps a <form> with .field cards + .actions. Each .field is
+     label-on-top, control below; align them flush at the bottom so the
+     buttons in .actions sit on the same baseline as the inputs. */
+  .toolbar > .field{align-self:flex-end;min-width:180px}
+  .toolbar > .field:first-child{flex:1 1 240px}
+  .toolbar > .actions{display:inline-flex;align-items:center;gap:6px;align-self:flex-end;margin-left:auto}
+
+  /* WHERE prefix box: a small chip glued to the left of the input. */
+  .input-prefix{display:inline-flex;align-items:stretch;border:1px solid var(--border-mid);border-radius:10px;overflow:hidden;background:var(--bg-deep);min-width:240px}
+  .input-prefix:focus-within{border-color:var(--accent-border);box-shadow:0 0 0 3px var(--accent-soft)}
+  .input-prefix > .prefix{
+    display:inline-flex;align-items:center;padding:0 10px;
+    font-family:var(--font-mono);font-size:11px;letter-spacing:1px;
+    color:var(--accent);background:var(--surface-2);
+    border-right:1px solid var(--border-mid);text-transform:uppercase;
+  }
+  .input-prefix > .input{border:0;background:transparent;border-radius:0;min-width:0;flex:1}
+  .input-prefix > .input:focus{border:0;box-shadow:none}
+
+  /* Counts row above the records table. */
+  .meta-row{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    font-family:var(--font-mono);font-size:11.5px;color:var(--muted);letter-spacing:0.2px;
+    padding:10px 14px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+    background:var(--surface);
+  }
+  .meta-row b{color:var(--fg);font-weight:600}
+  .meta-row .spacer,.spacer{flex:1;min-width:0}
+
+  /* Cell truncation: applied per-<td> with class="trunc". Without max-width:0
+     the cell stretches with content; together with overflow:hidden and
+     text-overflow:ellipsis the row stays bounded. Hover/title shows full value. */
+  table.data td.trunc,table.data-table td.trunc{
+    max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  table.data td.null,table.data-table td.null{color:var(--muted-2);font-style:italic}
+
+  /* Empty-state CTA below "0 records". */
+  .suggest{margin-top:18px}
+
+  /* ---------------- schema-row (collection schema tab) ---------------- */
+  /* 8-column grid matching the head row: drag · field · type · null · default · constraints · description · trailing */
+  .schema-row{
+    display:grid;
+    grid-template-columns:28px minmax(160px,1.4fr) minmax(120px,0.8fr) 60px minmax(80px,0.8fr) minmax(120px,1.2fr) minmax(160px,1.4fr) 28px;
+    gap:14px;align-items:center;
+    padding:10px 18px;border-bottom:1px solid var(--border);
+    font-size:13px;
+  }
+  .schema-row:last-child{border-bottom:0}
+  .schema-row.head{
+    background:var(--surface);
+    font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.3px;color:var(--muted);
+    text-transform:uppercase;
+  }
+  .schema-row .drag{color:var(--muted-2);cursor:grab;font-family:var(--font-mono);font-size:12px;text-align:center;user-select:none}
+  .schema-row .fld-name{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:12.5px;color:var(--fg);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .schema-row .fld-type{font-family:var(--font-mono);font-size:12px;color:var(--accent);letter-spacing:0.3px}
+  .schema-row .fld-null{font-family:var(--font-mono);font-size:13px;text-align:center}
+  .schema-row .fld-null.yes{color:var(--mint)}
+  .schema-row .fld-null.no{color:var(--muted-2)}
+  .schema-row .fld-default{font-family:var(--font-mono);font-size:12px;color:var(--fg-2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .schema-row .fld-desc{font-size:12px;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* ---------------- output / error block ---------------- */
+  .output{
+    background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;
+    padding:10px 12px;font-family:var(--font-mono);font-size:12px;color:var(--fg-2);
+    white-space:pre-wrap;word-break:break-word;margin-top:10px;
+  }
+  .output.error,.output.is-error{color:var(--danger);background:var(--danger-soft);border-color:var(--danger-border)}
+
+  /* ---------------- muted helpers ---------------- */
+  .muted{color:var(--muted)}
+  .muted-cell{color:var(--muted);font-size:12.5px}
+  .mono-cell{font-family:var(--font-mono);font-size:12px;color:var(--fg-2);letter-spacing:0.3px}
+
+  /* ---------------- oauth provider card / hk row / cap tile / schema row ---------------- */
+  .prov-card{
+    background:var(--surface);border:1px solid var(--border-mid);
+    border-radius:var(--r-lg);padding:18px;
+    display:grid;grid-template-columns:48px 1fr auto;gap:14px;align-items:start;
+  }
+  .prov-card + .prov-card{margin-top:10px}
+  .prov-card.on{border-color:var(--mint-border)}
+  .prov-card.off{border-color:var(--border)}
+  .prov-icon{
+    width:48px;height:48px;border-radius:12px;
+    background:var(--bg-deep);border:1px solid var(--border-mid);
+    display:grid;place-items:center;
+  }
+  .prov-icon svg{width:24px;height:24px}
+  .prov-body{min-width:0;display:flex;flex-direction:column;gap:10px}
+  .prov-title{font-family:var(--font-display);font-size:17px;font-weight:500;letter-spacing:-0.2px;display:flex;align-items:center;gap:9px}
+  .prov-meta{font-size:12.5px;color:var(--muted)}
+  .prov-fields{display:grid;grid-template-columns:120px 1fr;gap:6px 14px;font-size:12px;margin-top:6px}
+  .prov-fields .lbl{font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.3px;color:var(--muted);text-transform:uppercase;align-self:center}
+  .prov-fields .val{font-family:var(--font-mono);font-size:11.5px;color:var(--fg-2);background:var(--bg-deep);border:1px solid var(--border);padding:5px 10px;border-radius:8px;letter-spacing:0.3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  .hk-row{
+    background:var(--surface);border:1px solid var(--border-mid);
+    border-radius:var(--r-md);padding:14px 16px;
+    display:grid;grid-template-columns:36px 1fr auto auto;gap:14px;align-items:center;
+  }
+  .hk-row + .hk-row{margin-top:10px}
+  .hk-row .hk-glyph{width:36px;height:36px;border-radius:10px;background:var(--bg-deep);border:1px solid var(--border-mid);display:grid;place-items:center;color:var(--accent)}
+  .hk-row .hk-name{font-family:var(--font-mono);font-size:13px;color:var(--fg);letter-spacing:0.2px;display:flex;align-items:center;gap:8px}
+  .hk-row .hk-url{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:520px}
+  .hk-row .hk-tags{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+
+  /* ---------------- cap-tile (anon caps) ---------------- */
+  .cap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:18px}
+  .cap-tile{
+    background:var(--surface);border:1px solid var(--border-mid);
+    border-radius:var(--r-md);padding:14px;
+    display:flex;align-items:center;gap:12px;cursor:pointer;
+    transition:border-color .12s,background .12s;position:relative;
+  }
+  .cap-tile:hover{border-color:var(--border-strong)}
+  .cap-tile.on{border-color:var(--accent-border);background:linear-gradient(145deg,var(--accent-soft) 0%,var(--surface) 60%)}
+  .cap-tile .cap-glyph{
+    width:36px;height:36px;border-radius:10px;
+    background:var(--bg-deep);border:1px solid var(--border-mid);
+    display:grid;place-items:center;color:var(--muted);flex-shrink:0;
+    font-family:var(--font-mono);font-size:10px;letter-spacing:0.8px;font-weight:600;
+  }
+  .cap-tile.on .cap-glyph{color:var(--accent);border-color:var(--accent-border);background:var(--accent-soft)}
+  .cap-tile .cap-name{font-size:13px;font-weight:500;color:var(--fg)}
+  .cap-tile .cap-desc{font-size:11.5px;color:var(--muted);margin-top:2px}
+  /* iOS-style toggle track + knob, sits at the right edge of every .cap-tile.
+     Visible state is driven entirely by `.cap-tile.on` — no JS required for the
+     visual. (Anon-caps + realtime tabs both render this.) */
+  .cap-tile .cap-switch{
+    margin-left:auto;flex-shrink:0;
+    width:32px;height:18px;border-radius:9999px;
+    background:var(--bg-deep);border:1px solid var(--border-strong);
+    position:relative;transition:background .14s,border-color .14s;
+  }
+  .cap-tile .cap-switch::after{
+    content:'';position:absolute;left:1px;top:1px;
+    width:14px;height:14px;border-radius:50%;
+    background:var(--muted);transform:translateX(0);
+    transition:transform .14s,background .14s;
+  }
+  .cap-tile.on .cap-switch{background:var(--accent-soft);border-color:var(--accent-border)}
+  .cap-tile.on .cap-switch::after{background:var(--accent);transform:translateX(14px)}
+
+  /* ---------------- modal (drustUI alert/confirm/prompt) ---------------- */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(15,11,9,0.66);
+    display:flex;align-items:flex-start;justify-content:center;
+    padding-top:14vh;z-index:60;backdrop-filter:blur(4px);
+  }
+  .modal-overlay[hidden]{display:none}
+  .modal{
+    width:min(460px,92vw);background:var(--surface);
+    border:1px solid var(--border-strong);border-radius:var(--r-xl);
+    box-shadow:0 30px 100px -30px rgba(0,0,0,0.6);
+    padding:22px 24px 18px;animation:toast-in .14s ease-out;
+  }
+  .modal-title{font-family:var(--font-display);font-size:20px;font-weight:500;letter-spacing:-0.3px;margin:0 0 10px}
+  .modal-body{color:var(--fg-2);font-size:13.5px;margin-bottom:14px;line-height:1.55}
+  .modal-input{
+    width:100%;height:36px;padding:0 12px;border-radius:10px;
+    background:var(--bg-deep);border:1px solid var(--border-mid);
+    color:var(--fg);font:inherit;font-size:13.5px;outline:0;
+    margin-bottom:14px;transition:border-color .12s,box-shadow .12s;
+  }
+  .modal-input:focus{border-color:var(--accent-border);box-shadow:0 0 0 3px var(--accent-soft)}
+  .modal-actions{display:flex;justify-content:flex-end;gap:8px}
+  .modal-form-hint{color:var(--fg-2);font-size:13px;line-height:1.5;margin:0 0 12px}
+  .modal-form-row{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+  .modal-form-label{font:500 11px/1.4 var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:0.08em}
+  .modal-form-textarea{width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:12.5px;line-height:1.5;color:var(--fg);background:var(--bg-deep);border:1px solid var(--border);border-radius:8px;padding:9px 11px;resize:vertical;min-height:96px}
+  .modal-form-input,.modal-form-select{width:100%;box-sizing:border-box;font-family:var(--font-sans);font-size:13.5px;color:var(--fg);background:var(--bg-deep);border:1px solid var(--border);border-radius:8px;padding:9px 11px}
+  .modal-form-textarea:focus,.modal-form-input:focus,.modal-form-select:focus{border-color:var(--accent-border);box-shadow:0 0 0 3px var(--accent-soft);outline:none}
+  .modal-variant-danger .modal-title{color:var(--danger)}
+  .modal-code-wrap{position:relative;background:var(--bg-deep);border:1px solid var(--border);border-radius:8px;padding:10px 36px 10px 12px;margin-top:8px;overflow-x:auto}
+  .modal-code-wrap code{font-family:var(--font-mono);font-size:11.5px;color:var(--fg-2);white-space:pre-wrap;word-break:break-all}
+  .modal-code-copy{position:absolute;top:6px;right:6px;width:24px;height:24px;display:grid;place-items:center;color:var(--muted);background:transparent;border:0;cursor:pointer;border-radius:6px}
+  .modal-code-copy:hover{background:var(--surface-2);color:var(--fg)}
+  .modal-code-copy.is-ok{color:var(--mint)}
+  .modal-code-copy svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7}
+
+  /* ---------------- cmd-K palette (drust _cmdk.html) ---------------- */
+  .cmdk-overlay{
+    position:fixed;inset:0;background:rgba(15,11,9,0.66);
+    display:flex;align-items:flex-start;justify-content:center;
+    padding-top:14vh;z-index:55;backdrop-filter:blur(4px);
+  }
+  .cmdk-overlay[hidden]{display:none}
+  .cmdk{
+    width:min(560px,92vw);background:var(--surface);
+    border:1px solid var(--border-strong);border-radius:var(--r-xl);
+    box-shadow:0 30px 100px -30px rgba(0,0,0,0.6);
+    overflow:hidden;animation:toast-in .14s ease-out;
+  }
+  .cmdk-input{
+    width:100%;background:transparent;border:0;outline:0;
+    color:var(--fg);font:inherit;font-size:14px;
+    padding:14px 16px;border-bottom:1px solid var(--border-mid);
+  }
+  .cmdk-list{max-height:50vh;overflow-y:auto;padding:6px}
+  .cmdk-item{
+    display:flex;align-items:center;gap:11px;
+    padding:8px 10px;border-radius:9px;cursor:pointer;
+    text-decoration:none;color:inherit;
+  }
+  .cmdk-item:hover,.cmdk-item.on{background:var(--surface-2)}
+  .cmdk-item .cmdk-label{flex:1;min-width:0}
+  .cmdk-item .cmdk-hint{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);letter-spacing:0.3px}
+
+  /* ---------------- docs page (changelog viewer) ---------------- */
+  .docs-shell{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px;padding:28px 32px 80px;max-width:1380px}
+  .docs-toc{position:sticky;top:78px;align-self:flex-start;max-height:calc(100vh - 100px);overflow-y:auto}
+  .docs-toc-head{font-family:var(--font-mono);font-size:10px;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .docs-toc-list{display:flex;flex-direction:column;gap:3px}
+  .docs-toc-list a{font-size:12.5px;color:var(--muted);padding:5px 10px;border-radius:7px;border-left:2px solid transparent}
+  .docs-toc-list a:hover{color:var(--fg-2);background:var(--surface)}
+  .docs-toc-list a.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-soft)}
+  .docs-content{min-width:0}
+  .markdown-body{color:var(--fg-2);font-size:14px;line-height:1.7}
+  .markdown-body h1,.markdown-body h2,.markdown-body h3{font-family:var(--font-display);font-weight:500;color:var(--fg);letter-spacing:-0.3px;margin:1.8em 0 0.5em}
+  .markdown-body h1{font-size:28px}
+  .markdown-body h2{font-size:22px;border-bottom:1px solid var(--border-mid);padding-bottom:6px}
+  .markdown-body h3{font-size:17px}
+  .markdown-body code{font-family:var(--font-mono);font-size:12.5px;color:var(--fg);background:var(--bg-deep);padding:1px 6px;border-radius:5px;border:1px solid var(--border)}
+  .markdown-body pre{background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:12px 14px;overflow-x:auto}
+  .markdown-body pre code{background:transparent;border:0;padding:0;font-size:12px}
+  .markdown-body a{color:var(--accent);text-decoration:underline;text-decoration-color:var(--accent-border)}
+  .markdown-body a:hover{text-decoration-color:var(--accent)}
+  .markdown-body ul,.markdown-body ol{padding-left:1.5em}
+  .markdown-body li{margin:0.3em 0}
+  .markdown-body blockquote{border-left:3px solid var(--border-mid);margin:1em 0;padding:6px 14px;color:var(--muted)}
+
+  /* ---------------- utility ---------------- */
+  .hide{display:none !important}
+  .vsep{width:1px;height:18px;background:var(--border-mid);align-self:center}
+  .anim-fade{animation:fade .25s ease-out}
+  @keyframes fade{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+
+  /* icon util used by SVG <use> sprite */
+  .icon{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7}
+
+  /* ---------------- files page (host + per-tenant + reconcile) ---------------- */
+  /* drag-and-drop upload region */
+  .dropzone{
+    position:relative;border:1.5px dashed var(--border-mid);border-radius:var(--r-lg);
+    background:var(--bg-deep);padding:24px 18px;text-align:center;
+    transition:border-color .15s,background .15s;
+  }
+  .dropzone:hover,.dropzone.is-over{border-color:var(--accent-border);background:var(--accent-soft)}
+  .dropzone-inner{display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none}
+  .dropzone-prompt{display:inline-flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;pointer-events:auto}
+  .dz-arrow{display:inline-grid;place-items:center;width:24px;height:24px;border:1px solid var(--border-mid);border-radius:8px;background:var(--surface);color:var(--accent);font-family:var(--font-mono);font-size:13px}
+  .dz-text{font-size:13px}
+  .dz-or{font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted-2)}
+  .filepick-btn{
+    display:inline-flex;align-items:center;justify-content:center;height:28px;padding:0 12px;
+    border:1px solid var(--border-mid);background:var(--surface);color:var(--fg);
+    border-radius:8px;font-size:12.5px;font-weight:500;cursor:pointer;
+    transition:background .12s,border-color .12s;pointer-events:auto;
+  }
+  .filepick-btn:hover{background:var(--surface-2);border-color:var(--border-strong)}
+  .filepick-input{
+    /* visually hidden but accessible */
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  }
+  .dropzone-name{font-family:var(--font-mono);font-size:11.5px;color:var(--fg-2);margin-top:6px;letter-spacing:0.3px;word-break:break-all}
+  .dropzone-name[data-empty="1"]{color:var(--muted-2)}
+
+  /* upload form layout below the dropzone — fields side-by-side */
+  .upload-fields{display:flex;flex-direction:row;flex-wrap:wrap;gap:20px 28px;margin-top:14px}
+  .upload-fields .field{flex:0 1 auto;min-width:0}
+  .upload-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px}
+  .upload-row .upload-hint{flex:1}
+  .upload-hint{font-size:11.5px;color:var(--muted)}
+  .field-label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.3px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:6px}
+
+  /* pill-toggle: radio group rendered as a segmented control. The native
+     radios are visually hidden; clicking the label toggles them. */
+  .pill-toggle{
+    display:inline-flex;gap:2px;padding:4px;
+    border:1px solid var(--border-mid);background:var(--bg-deep);
+    border-radius:var(--r-md);
+  }
+  .pill-toggle input[type="radio"]{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  }
+  .pill-toggle label{
+    padding:6px 14px;border-radius:8px;font-size:12.5px;
+    color:var(--muted);cursor:pointer;letter-spacing:0.2px;
+    transition:background .12s,color .12s,box-shadow .12s;
+    user-select:none;
+  }
+  .pill-toggle label:hover{color:var(--fg-2)}
+  .pill-toggle input[type="radio"]:checked + label{
+    background:var(--accent-soft);color:var(--accent);
+    box-shadow:inset 0 0 0 1px var(--accent-border);
+  }
+  .pill-toggle input[type="radio"]:focus-visible + label{
+    outline:2px solid var(--accent-border);outline-offset:1px;
+  }
+
+  /* files data table column widths + cell flavors */
+  table.data .col-name,table.data-table .col-name{width:auto}
+  table.data .col-vis,table.data-table .col-vis{width:90px}
+  table.data .col-type,table.data-table .col-type{width:140px}
+  table.data .col-size,table.data-table .col-size{width:90px;text-align:right}
+  table.data .col-time,table.data-table .col-time{width:160px}
+  table.data .col-actions,table.data-table .col-actions{width:180px;text-align:right}
+  table.data .col-path,table.data-table .col-path{width:220px}
+  table.data .cell-name,table.data-table .cell-name{max-width:0;overflow:hidden}
+  table.data .cell-path,table.data-table .cell-path{max-width:0;overflow:hidden;font-family:var(--font-mono);font-size:11.5px;color:var(--fg-2)}
+  /* fake folder tree: one group header row per `path` prefix (v1.63) */
+  table.data tr.tree-row td,table.data-table tr.tree-row td{
+    background:var(--surface-2);padding-top:7px;padding-bottom:7px;
+  }
+  .tree-folder{
+    font-family:var(--font-mono);font-size:12px;color:var(--fg);letter-spacing:0.2px;
+    margin-right:8px;
+  }
+  table.data .cell-name a,table.data-table .cell-name a{color:var(--fg);text-decoration:none}
+  table.data .cell-name a:hover,table.data-table .cell-name a:hover{color:var(--accent);text-decoration:underline}
+  table.data .cell-size,table.data-table .cell-size{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--font-mono);font-size:12px;color:var(--fg-2)}
+  table.data .cell-time,table.data-table .cell-time{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);letter-spacing:0.2px}
+  table.data .cell-type,table.data-table .cell-type{max-width:0;overflow:hidden}
+  table.data .cell-type .trunc-inner,table.data-table .cell-type .trunc-inner{font-family:var(--font-mono);font-size:11.5px;color:var(--muted)}
+  table.data .cell-actions,table.data-table .cell-actions{text-align:right;white-space:nowrap}
+  table.data .cell-actions > *,table.data-table .cell-actions > *{display:inline-flex;vertical-align:middle;margin:0}
+  table.data .cell-actions > * + *,table.data-table .cell-actions > * + *{margin-left:6px}
+  table.data .cell-actions form.delete-form,table.data-table .cell-actions form.delete-form{display:inline-flex;margin:0}
+  .trunc-inner{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* visibility filter tabs (public / private / all) */
+  .vis-tabs{
+    display:inline-flex;gap:2px;padding:4px;border:1px solid var(--border-mid);
+    background:var(--surface);border-radius:var(--r-md);
+  }
+  .vis-tab{
+    padding:6px 14px;border-radius:8px;font-size:12.5px;color:var(--muted);
+    text-decoration:none;display:inline-flex;align-items:center;gap:7px;letter-spacing:0.2px;
+    transition:background .12s,color .12s;
+  }
+  .vis-tab:hover{color:var(--fg-2)}
+  .vis-tab.active,.vis-tab.on{background:var(--surface-2);color:var(--fg);box-shadow:inset 0 0 0 1px var(--border-mid)}
+  .pill-toggle{cursor:pointer}
+
+  /* horizontal scroll wrapper around the files table */
+  .pub-scroll{overflow-x:auto;border-radius:var(--r-md)}
+  .pub-files{width:100%}
+
+  /* pager (page size + page nav, used on files page) */
+  .pager-form{display:inline-flex;align-items:center;gap:8px}
+  .pager-label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:1.3px;color:var(--muted);text-transform:uppercase}
+  .pager-select{
+    height:28px;padding:0 8px;background:var(--bg-deep);border:1px solid var(--border-mid);
+    color:var(--fg);font:inherit;font-size:12px;border-radius:8px;outline:0;
+  }
+  .pager-select:focus{border-color:var(--accent-border)}
+  .page-of{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.3px}
+
+  /* inline <form> (e.g. delete button) inside actions cell or anywhere flex */
+  .delete-form{display:inline-flex;margin:0}
+
+  /* ---------------- stored RPC (tenant_rpc.html) ---------------- */
+  .rpc-list{display:flex;flex-direction:column;gap:12px}
+  .rpc-card{
+    background:var(--surface);border:1px solid var(--border-mid);
+    border-radius:var(--r-lg);padding:16px 18px;
+    display:flex;align-items:flex-start;gap:14px;
+    transition:border-color .12s,background .12s;
+  }
+  .rpc-card:hover{border-color:var(--border-strong)}
+  .rpc-card.open{border-color:var(--accent-border);background:var(--surface-2)}
+  .rpc-glyph{
+    width:34px;height:34px;border-radius:10px;
+    background:var(--bg-deep);border:1px solid var(--border-mid);
+    display:grid;place-items:center;color:var(--accent);flex-shrink:0;
+  }
+  .rpc-glyph svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
+  .rpc-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:0}
+  .rpc-name{font-family:var(--font-mono);font-size:13.5px;color:var(--fg);letter-spacing:0.2px;font-weight:500}
+  .rpc-desc{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.5}
+  .rpc-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .rpc-meta{
+    font-family:var(--font-mono);font-size:10.5px;color:var(--muted);
+    text-align:right;flex-shrink:0;line-height:1.6;
+    padding-left:12px;border-left:1px solid var(--border);
+  }
+  .rpc-meta b{color:var(--fg-2);font-weight:500}
+  .rpc-delete-form{display:inline-flex;margin:0}
+
+  /* "+ New function" entry / empty-state in rpc list */
+  .rpc-list .empty{padding:36px 18px}
+
+  /* test playground (tenant_rpc_test.html) — runs through standard
+     .field / .input / .textarea / .card already; nothing extra needed. */
+
+  /* v1.17 — audit log chart cards. */
+  /* v1.17.1 — modal detail grid (drustUI.detail) */
+  .modal-detail-grid{display:grid;grid-template-columns:120px 1fr;gap:8px 16px;margin:0}
+  .modal-detail-grid dt{font:500 11px/1.4 var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:0.08em}
+  .modal-detail-grid dd{font:400 13px/1.5 var(--font-sans);color:var(--fg);margin:0;word-break:break-all}
+  .modal-detail-grid dd.mono{font-family:var(--font-mono);font-size:12px}
+  .modal-detail-grid dd pre{background:var(--bg-deep);padding:8px 10px;border-radius:6px;font:11px/1.4 var(--font-mono);margin:0;overflow-x:auto;white-space:pre-wrap;color:var(--fg-2)}
+  /* v1.32.10 — Supabase-style cell viewer. `f.textarea: true` on a
+     `drustUI.detail` field renders the value inside a readonly
+     <textarea> and promotes its dd to span the full grid width so
+     the editor is the dominant visual element. resize:vertical lets
+     the user drag-grow it for very long content; the dt label still
+     shows above. Pair with `opts.wide: true` so the parent modal
+     widens to ~720px. */
+  .modal-detail-grid dd.full-span{grid-column:1 / -1}
+  .modal-detail-area{
+    width:100%;
+    min-height:240px;
+    max-height:60vh;
+    padding:10px 12px;
+    background:var(--bg-deep);
+    border:1px solid var(--border);
+    border-radius:8px;
+    color:var(--fg-2);
+    font:12px/1.5 var(--font-mono);
+    resize:vertical;
+    white-space:pre-wrap;
+    word-break:break-word;
+    outline:none;
+    box-sizing:border-box;
+  }
+  .modal-detail-area:focus{border-color:var(--accent-border);box-shadow:0 0 0 3px var(--accent-soft)}
+  /* v1.32.10 — wide modal variant for single-value viewers (cell
+     expand, future "inspect record"). Default 460px is too narrow
+     for a readable textarea; ~720px gives ~80 mono chars per line. */
+  .modal.modal-wide{width:min(720px,92vw)}
+
+  /* v1.32.13 — MCP multi-client setup modal */
+  .modal.modal-mcp-setup{width:min(820px,94vw);max-height:80vh;display:flex;flex-direction:column;gap:14px}
+  .modal-mcp-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .modal-mcp-head .modal-title{margin:0}
+  .mcp-os-tabs{display:flex;gap:6px;border-bottom:1px solid var(--border);padding-bottom:8px}
+  .mcp-os-tab{background:transparent;border:1px solid transparent;color:var(--muted);font:500 12.5px/1 var(--font-mono);padding:6px 12px;border-radius:6px;cursor:pointer;letter-spacing:.04em}
+  .mcp-os-tab:hover{color:var(--fg)}
+  .mcp-os-tab.is-active{background:var(--accent-soft);border-color:var(--accent-border);color:var(--accent)}
+  .mcp-clients{display:flex;flex-direction:column;gap:14px;overflow-y:auto;padding-right:4px}
+  .mcp-client-card{background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+  .mcp-client-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+  .mcp-client-name{font:500 14px/1.2 var(--font-sans);margin:0;color:var(--fg)}
+  .mcp-client-paths{font-size:12px;color:var(--muted);margin-bottom:6px}
+  .mcp-client-paths-label{font-weight:500}
+  .mcp-client-path{font-family:var(--font-mono);font-size:11.5px;color:var(--fg-2);display:none}
+  .modal-mcp-setup[data-os="windows"] .mcp-client-path.path-windows{display:inline}
+  .modal-mcp-setup[data-os="macos"]   .mcp-client-path.path-macos{display:inline}
+  .modal-mcp-setup[data-os="linux"]   .mcp-client-path.path-linux{display:inline}
+  .mcp-client-snippet{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font:11.5px/1.5 var(--font-mono);color:var(--fg-2);white-space:pre-wrap;word-break:break-word;margin:0;overflow-x:auto}
+  /* Disabled card (Claude Desktop on Linux) */
+  .modal-mcp-setup[data-os="linux"] .mcp-client-card[data-disabled-on="linux"]{opacity:.5;pointer-events:none}
+  .modal-mcp-setup[data-os="linux"] .mcp-client-card[data-disabled-on="linux"] .btn{cursor:not-allowed}
+
+  /* v1.17.1 — leading-icon search input */
+  .input-with-icon{position:relative;display:inline-flex;align-items:center}
+  .input-with-icon > svg.icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);pointer-events:none}
+  .input-with-icon > .input{padding-left:32px}
+
+  /* v1.17.1 — inline icon inside .btn (NOTE: ".btn .icon" — descendant; ".btn.icon" already exists for icon-only buttons, do not collide) */
+  .btn .icon{width:14px;height:14px;margin-right:4px;vertical-align:-2px;flex-shrink:0}
+
+  /* v1.17.1 — audit row hover & focus (click-to-modal affordance) */
+  .tl-row{cursor:pointer;transition:background 0.15s ease;border-radius:6px;padding-left:6px;padding-right:6px}
+  .tl-row:hover{background:var(--surface)}
+  .tl-row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;background:var(--surface)}
+
+  /* v1.17.1 — toolbar inline field-group (label above input) */
+  .toolbar .field-group{display:inline-flex;flex-direction:column;gap:4px}
+  .toolbar .field-group .field-label{margin-bottom:0}
+
+  /* ---------------- v1.28 collection page (Supabase shell) ----------------
+     v1.28.6 — padding alignment fix. The .page wrapper provides 28/32/80
+     padding for every admin page; the .coll-* sections used 14/18 inside
+     that, so collection / end-users pages ended up with content at 50px
+     from the page edge while other admin pages sit at 32px. UX felt off.
+
+     Fix: negative-margin on the sticky chrome cancels .page's horizontal
+     padding so the bg + border are full-bleed; internal padding of 32px
+     restores content alignment to the canonical 32px edge. Middle
+     sections (.coll-toolbar / .coll-table-wrap) set horizontal padding
+     to 0 and inherit .page's 32px naturally.
+   */
+  .coll-sticky-top{
+    position:sticky; top:0; z-index:20;
+    background:var(--bg);
+    margin:-28px -32px 0;       /* cancel .page padding-top + horizontal */
+    padding:14px 32px 10px;     /* internal padding aligns content to 32px */
+    border-bottom:1px solid var(--border-strong);
+  }
+  .coll-sticky-top .row1{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  /* v1.28.3 — sticky-top h1 inherits the pre-v1.28 `.view-title` look
+     (34px display font, 500 weight, tight tracking). Only the layout
+     properties (flex:1 / min-width:0) are added on top so the title
+     shares row1 with the [⚙] gear and shrinks gracefully. */
+  .coll-sticky-top h1{
+    font-family:var(--font-display);
+    font-size:34px;
+    font-weight:500;
+    letter-spacing:-0.6px;
+    line-height:1.08;
+    margin:6px 0 0;
+    flex:1;min-width:0;
+  }
+  .coll-sticky-top .gear-btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:32px;height:32px;border-radius:6px;
+    background:transparent;border:1px solid var(--border-mid);cursor:pointer;
+  }
+  .coll-sticky-top .gear-btn:hover{background:var(--surface-2)}
+  .coll-desc-inline{
+    font:400 13px/1.5 var(--font-sans);color:var(--muted);
+    display:flex;align-items:baseline;gap:6px;
+  }
+  .coll-desc-inline .desc-text{flex:1;min-width:0;white-space:pre-wrap}
+  .coll-desc-inline .desc-add{
+    display:inline-flex;align-items:center;gap:4px;
+    color:var(--muted-2);cursor:pointer;background:none;border:0;padding:0;
+    font:400 13px/1.5 var(--font-sans);
+  }
+  .coll-desc-inline .desc-add:hover{color:var(--fg)}
+
+  .coll-toolbar{padding:12px 0;display:flex;flex-direction:column;gap:8px}
+  .coll-toolbar .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .coll-chip{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:4px 8px;border-radius:14px;
+    background:var(--surface-2);border:1px solid var(--border-mid);
+    font:400 12px/1 var(--font-mono);
+  }
+  .coll-chip .chip-x{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:16px;height:16px;border-radius:50%;
+    background:transparent;border:0;cursor:pointer;color:var(--muted-2);
+  }
+  .coll-chip .chip-x:hover{background:var(--border-mid);color:var(--fg)}
+
+  /* v1.32.9 — natural column widths + horizontal scroll. v1.28.5's
+     fixed-layout + width:100% pinned the table to its container and
+     clamped EVERY column to 280px regardless of content, which hid the
+     left half of long Chinese / URL / vector-preview cells AND wasted
+     space on cheap columns (id, ts, count). The new layout: container
+     allows overflow-x:auto so wide tables scroll horizontally; the
+     table itself takes max-content (sizes to fit the widest row); each
+     `td` retains the per-cell ceiling (now 360px) + ellipsis so a
+     single absurd value can't bloat its column. Click-to-expand
+     handler in collection_rows.html hands the full content back via
+     the existing detail modal. */
+  .coll-table-wrap{padding:0;overflow-x:auto}
+  .coll-table-wrap table.data{width:max-content;min-width:100%;table-layout:auto}
+  .coll-table-wrap td{
+    max-width:360px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    cursor:pointer;
+  }
+  .coll-table-wrap td:hover{background:var(--surface-2)}
+  /* Sticky first column (Supabase-style). v1.32.9 — keeps the PK / id
+     visible while the user scrolls horizontally through wide rows.
+     z-index sits above sibling cells but below the sticky thead. */
+  .coll-table-wrap th:first-child,
+  .coll-table-wrap td:first-child{
+    position:sticky;
+    left:0;
+    background:var(--bg);
+    z-index:2;
+  }
+  .coll-table-wrap thead th:first-child{z-index:3}
+  .coll-table-wrap tbody tr:hover td:first-child{background:var(--surface)}
+
+  /* v1.28.13 — collection page footer is a thin status bar pinned to
+     the browser viewport bottom. Height matches `.sidebar-foot` (46px)
+     so the sidebar's profile block and the page's pager visually
+     anchor as a single horizontal band at the very bottom of the
+     screen. .app-shell grid is `248px minmax(0,1fr)`, so left:248px
+     aligns the fixed bar with the right pane's left edge. z=30 sits
+     above sticky-top (z=20) and below settings drawer (z=100). */
+  .coll-sticky-bottom{
+    position:fixed; left:248px; right:0; bottom:0; z-index:30;
+    height:46px; padding:0 24px;
+    background:var(--bg-deep);
+    border-top:1px solid var(--border-mid);
+    display:flex; align-items:center; gap:14px;
+    font:400 12px/1 var(--font-sans);
+    color:var(--muted);
+  }
+  .coll-sticky-bottom .pager-info{
+    margin-left:auto;
+    display:flex; align-items:center; gap:10px;
+  }
+  .coll-sticky-bottom .pager-info b{color:var(--fg); font-weight:500;}
+  .coll-sticky-bottom .pager-info .btn{
+    padding:0 10px; height:26px; font-size:12px; border-radius:5px;
+  }
+  /* v1.28.13 — view-tabs restored after the v1.28.12 over-deletion.
+     Slim segmented control: 26px tall, transparent default, surface
+     fill when active, no chunky 6px pill border like the v1.28.x
+     earlier shape. Sits on the footer's left side; pager-info still
+     pushes itself to the right via margin-left:auto. */
+  .coll-sticky-bottom .view-tabs{
+    display:inline-flex; align-items:center; gap:2px;
+  }
+  .coll-sticky-bottom .view-tabs button{
+    padding:0 10px; height:26px;
+    background:transparent; border:0; cursor:pointer;
+    font:500 12px/1 var(--font-sans); color:var(--muted);
+    border-radius:5px;
+    transition:background .12s, color .12s;
+  }
+  .coll-sticky-bottom .view-tabs button:hover{
+    background:var(--surface); color:var(--fg);
+  }
+  .coll-sticky-bottom .view-tabs button.active{
+    background:var(--surface); color:var(--fg);
+  }
+
+  /* v1.28.9 — right-side drawer (replaces v1.28 absolute popover).
+     Fixed full-height column slides in from the right edge. No backdrop
+     dim — the table behind stays visible/interactive so users can keep
+     cross-referencing rows while toggling settings. */
+  .settings-popover{
+    position:fixed; top:0; right:0; bottom:0; z-index:100;
+    width:min(420px, 33vw);
+    background:var(--bg); border-left:1px solid var(--border-mid);
+    box-shadow:-8px 0 24px rgba(0,0,0,0.12);
+    padding:18px 18px 24px 18px;
+    overflow-y:auto;
+    transform:translateX(100%);
+    transition:transform 220ms ease-out;
+  }
+  .settings-popover.is-open{transform:translateX(0);}
+  .settings-popover[hidden]{display:none;}
+  .settings-popover h3{font:600 11px/1 var(--font-sans);text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin:0 0 8px}
+  .settings-popover section + section{margin-top:14px;padding-top:14px;border-top:1px solid var(--border-strong)}
+  .settings-popover .drawer-close{
+    position:absolute; top:10px; right:10px;
+    width:28px; height:28px; padding:0;
+    background:transparent; border:1px solid var(--border-mid);
+    border-radius:6px; cursor:pointer;
+    display:grid; place-items:center;
+    color:var(--fg);
+  }
+  .settings-popover .drawer-close:hover{background:var(--surface-2);}
+  @media (max-width: 600px) {
+    .settings-popover{width:100vw;}
+  }
+
+  /* v1.28.11 — filter popover (chip filter + sort) form controls.
+     Previously referenced --line / --bg-soft (ghost vars since v1.23)
+     for borders, and the children rule was missing background + color
+     entirely — so selects/inputs reverted to UA defaults (white bg +
+     black text) which clashed with the popover's dark surface. Now
+     uses real theme tokens matching the canonical .input / .select. */
+  .filter-popover{
+    position:absolute; z-index:100;
+    background:var(--bg); border:1px solid var(--border-mid);
+    border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,0.35);
+    padding:12px; min-width:320px;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .filter-popover .row{display:flex;gap:6px;align-items:center}
+  .filter-popover select,
+  .filter-popover input{
+    padding:6px 8px;
+    background:var(--bg-deep); color:var(--fg);
+    border:1px solid var(--border-mid); border-radius:6px;
+    font:400 13px/1.4 var(--font-sans); outline:0;
+    transition:border-color .12s, box-shadow .12s;
+  }
+  .filter-popover select:focus,
+  .filter-popover input:focus{
+    border-color:var(--accent-border); box-shadow:0 0 0 3px var(--accent-soft);
+  }
+
+  /* v1.28.2 — modal styling lives on the .coll-modal class, NOT inline.
+     The HTML `hidden` attribute (UA stylesheet → display:none) is the
+     single source of truth for visibility; any element-level inline
+     `display:flex` would override `hidden` and the modal would stay
+     visible on page load. */
+  .coll-modal{
+    position:fixed; inset:0; z-index:200;
+    background:rgba(0,0,0,0.45);
+    display:flex; align-items:center; justify-content:center;
+  }
+  /* `.coll-modal { display:flex }` wins over the UA stylesheet's
+     `[hidden] { display:none }` since both rules have the same
+     specificity but author CSS beats UA CSS. Re-assert display:none
+     for the hidden state — same idiom as .modal-overlay[hidden] /
+     .cmdk-overlay[hidden] above. */
+  .coll-modal[hidden]{display:none}
+  .coll-modal-body{
+    background:var(--bg); border-radius:8px; padding:18px;
+    max-width:680px; width:90%;
+  }
+
+  /* ================================================================
+     Gate 3 backfill — classes templates were already applying with no
+     definition anywhere. Each one rendered unstyled until the ghost-class
+     gate surfaced it. Grouped by the component they belong to so the next
+     reader finds them beside their family, not in an "extras" bucket.
+     ================================================================ */
+
+  /* sidebar brand — .brand is the flex row, .brand-text stacks the
+     name over the meta line. _admin_sidebar.html / _collection_sidebar.html. */
+  .brand-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+
+  /* plane pill tones: apricot for the host admin plane, lilac for a tenant
+     studio. The base .plane-pill is defined above; only the two plane
+     modifiers were missing. */
+  .plane-pill.admin .dot{background:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .plane-pill.tenant .dot{background:var(--lilac);box-shadow:0 0 0 3px var(--lilac-soft)}
+
+  /* role badge — the token that says which bearer is in play. The topbar
+     chrome that used to carry it was retired 2026-05-22 (see the note in
+     the "main" section); the four role colours survive as a documented
+     design-system token and are rendered on /admin/design. */
+  .role-badge{
+    display:inline-flex;align-items:center;height:20px;padding:0 8px;
+    border:1px solid var(--border-mid);border-radius:999px;
+    font-family:var(--font-mono);font-size:10px;letter-spacing:1.1px;
+    text-transform:uppercase;color:var(--muted);background:var(--surface);
+  }
+  .role-badge.admin{color:var(--accent);border-color:var(--accent-border);background:var(--accent-soft)}
+  .role-badge.service{color:var(--info);border-color:var(--info-border);background:var(--info-soft)}
+  .role-badge.anon{color:var(--muted);border-color:var(--border-mid);background:var(--surface-2)}
+  .role-badge.user{color:var(--mint);border-color:var(--mint-border);background:var(--mint-soft)}
+
+  /* stat tile internals. The .stat family (above) names its children
+     .label/.val/.meta; the tile variant uses the flat -label/-value/-delta
+     names, which had no rules at all. Same visual language as .stat. */
+  .stat-tile-label{font-family:var(--font-mono);font-size:10px;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase}
+  .stat-tile-value{font-family:var(--font-display);font-size:32px;font-weight:500;letter-spacing:-0.6px;line-height:1;font-variant-numeric:tabular-nums;color:var(--fg)}
+  .stat-tile-delta{font-size:11.5px;color:var(--muted)}
+  .stat-tile-delta.ok{color:var(--mint)}
+  .stat-tile-delta.bad{color:var(--danger)}
+
+  /* field badges rendered beside a column name in the schema view:
+     PK · FK · JSON · UNIQ · IDX · VEC. collection_rows.html + /admin/design. */
+  .badge-mini{
+    display:inline-flex;align-items:center;height:16px;padding:0 5px;
+    border:1px solid var(--border-mid);border-radius:5px;
+    font-family:var(--font-mono);font-size:9px;letter-spacing:0.9px;
+    text-transform:uppercase;color:var(--muted);background:var(--surface-2);
+    vertical-align:middle;
+  }
+  .badge-mini.pk{color:var(--accent);border-color:var(--accent-border);background:var(--accent-soft)}
+  .badge-mini.fk{color:var(--info);border-color:var(--info-border);background:var(--info-soft)}
+  .badge-mini.json{color:var(--mint);border-color:var(--mint-border);background:var(--mint-soft)}
+  .badge-mini.uniq{color:var(--warn);border-color:var(--warn-border);background:var(--warn-soft)}
+  .badge-mini.idx{color:var(--fg-2)}
+  .badge-mini.vec{color:var(--danger);border-color:var(--danger-border);background:var(--danger-soft)}
+
+  /* meter bar — thin fill indicator; the <i> child is the filled portion,
+     whose width is set inline by the caller. */
+  .meter{height:6px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden;display:block}
+  .meter > i{display:block;height:100%;background:var(--accent);border-radius:inherit}
+  .meter.ok > i{background:var(--mint)}
+  .meter.warn > i{background:var(--warn)}
+  .meter.danger > i{background:var(--danger)}
+
+  /* display typography — the two serif display sizes documented on
+     /admin/design. Named classes so pages can opt in without re-declaring
+     the font shorthand inline. */
+  .display-serif-h1{font:500 36px/1.15 var(--font-display);letter-spacing:-0.8px;color:var(--fg);margin:0}
+  .display-serif-h2{font:500 26px/1.25 var(--font-display);letter-spacing:-0.5px;color:var(--fg);margin:0}
+
+  /* ⌘K palette row leading glyph — sibling of the defined .cmdk-label /
+     .cmdk-hint. */
+  .cmdk-item .cmdk-icon{width:18px;flex-shrink:0;text-align:center;color:var(--muted)}
+
+  /* table cell variants joining the defined .cell-name / .cell-type /
+     .cell-size / .cell-time / .cell-actions family. */
+  table.data .cell-link,table.data-table .cell-link{color:var(--fg);text-decoration:none}
+  table.data .cell-link:hover,table.data-table .cell-link:hover{color:var(--accent);text-decoration:underline}
+  table.data .cell-vis,table.data-table .cell-vis{white-space:nowrap}
+
+  /* file picker + upload hint states. `.filepick-btn` is defined above;
+     its label span and the hint's "ready" state were not. */
+  .filepick-btn-label{pointer-events:none}
+  .upload-hint.ready{color:var(--mint)}
+
+  /* collection editor: the Table / Definition panes, the SSE origin
+     placeholder in the quickstart snippet, and the EXPLAIN output block. */
+  .view-pane{min-width:0}
+  .rt-origin{color:var(--muted-2)}
+  pre.explain{font-family:var(--font-mono);font-size:11.5px;color:var(--fg-2);background:var(--bg-deep);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px;white-space:pre-wrap}
+
+  /* small meta lines under a key / webhook row. */
+  .key-meta{font-size:11.5px;line-height:1.6}
+  .hk-rate{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.3px}
+
+  /* admin_team.html — per-row role picker + remove, right-aligned on one line. */
+  .role-actions{text-align:right;white-space:nowrap}
+  .role-select{height:28px;min-width:0;padding:0 8px;font-size:12px;vertical-align:middle;margin-right:6px}
+
+  /* ---------------- behaviour hooks ----------------
+     Classes that carry NO styling on purpose: they exist solely as
+     querySelector anchors for a page's own script. Declared here — with the
+     script site named — so gate 3 can tell a deliberate hook from a ghost.
+     An undeclared class is the bug the gate exists to catch, so a NEW hook
+     must be added here too; this is a register, not an escape hatch. */
+  .reroll-form{}          /* tenant_api_keys.html: reroll confirm hook */
+  .pat-reroll-form{}      /* settings.html: PAT reroll confirm hook */
+  .cli-revoke-form{}      /* settings.html: CLI token self-revoke form */
+  .restore-form{}         /* backup_inspect.html: restore confirm hook */
+  .tenant-delete-form{}   /* tenants_list.html: tenant-delete confirm hook */
+  .webhook-delete-form{}  /* tenant_webhooks_admin.html: delete confirm JS hook */
+  .tenant-row{}           /* tenants_list.html: tr.tenant-row client-side filter */
+  .egress-row{}           /* tenant_settings.html: egress allowlist row */
+  .egress-remove{}        /* tenant_settings.html: egress row remove button */
+  .row-history-btn{}      /* collection_rows.html: per-row history opener */
+  .drop-idx-btn{}         /* collection_rows.html: drop-index confirm */
+  .desc-save{}            /* collection_rows.html: description save button */
+  .desc-bytes{}           /* collection_rows.html: description byte counter */
+  .idx-row{}              /* collection_rows.html: index builder row */
+  .idx-num{}              /* collection_rows.html: index builder ordinal */
+  .idx-field{}            /* collection_rows.html: index builder field select */
+  .idx-remove{}           /* collection_rows.html: index builder row remove */
+  .p-field{}              /* collection_rows.html: policy rule field select */
+  .p-op{}                 /* collection_rows.html: policy rule operator select */
+  .p-kind{}               /* collection_rows.html: policy rule operand kind */
+  .p-val{}                /* collection_rows.html: policy rule value input */
+  .btn-remove{}           /* admin_team.html: remove-admin button */
+</style>
+
+<script>
+
+window.DRUST_MASCOT_PAL = window.matchMedia('(prefers-color-scheme: dark)').matches
+  ? {"B":"#0a0a0a","E":"#7FE87F","H":"#FFA3C7","P":"#FFA3C7","R":"#d94a4a","S":"#fff7a3","Z":"#7dd3d8"}
+  : {"B":"#2c2723","E":"#5fa861","H":"#d97a9f","P":"#d97a9f","R":"#b9433a","S":"#e8c93b","Z":"#4ab3b8"};
+
+</script>
+</head>
+<body class="login-page">
+<div class="login-shell">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="brand-mark"><canvas class="pix" data-chonk="awake" data-size="22"></canvas></div>
+      <div>
+        <div class="brand-name">drust</div>
+        <div class="brand-meta">multi-tenant sqlite · v1.66.1</div>
+      </div>
+    </div>
+    <h1 class="login-title">Welcome back.</h1>
+    <p class="login-sub">Sign in to manage tenants, OAuth, files, and stored RPCs — internal tool, Tzu Chi Foundation.</p>
+
+    
+
+    
+
+    <form method="post" action="/drust/login">
+      <div class="login-field">
+        <label>Username</label>
+        <input class="login-input" name="username" placeholder="admin" required autofocus autocomplete="username">
+      </div>
+      <div class="login-field">
+        <label>Password</label>
+        <input class="login-input" type="password" name="password" placeholder="••••••••••••" required autocomplete="current-password">
+      </div>
+      <button class="login-cta" type="submit">Sign in →</button>
+    </form>
+
+    
+    <div class="login-divider"><span></span><span>or continue with</span><span></span></div>
+    
+    <a class="oauth-btn" href="/drust/admin/oauth/google/start">
+      
+      
+<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.56c2.08-1.92 3.28-4.74 3.28-8.1Z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.65l-3.56-2.77c-.99.66-2.25 1.06-3.72 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.84 14.11A6.6 6.6 0 0 1 5.5 12c0-.73.13-1.44.34-2.11V7.05H2.18A11 11 0 0 0 1 12c0 1.78.43 3.46 1.18 4.95l3.66-2.84Z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.05l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38Z"/></svg>
+
+      
+      Continue with google
+    </a>
+    
+    
+
+    <div class="login-foot">
+      <span style="display:inline-flex;align-items:center;gap:8px;">
+        <canvas class="pix" data-chonk="awake" data-size="14"></canvas>
+        LiveChonk on duty
+      </span>
+      <span style="opacity:0.5;">·</span>
+      <span>forgot password? ask admin</span>
+    </div>
+  </div>
+</div>
+<!-- _mascot.html — vanilla-JS LiveChonk.
+     Include on any page that wants the mascot. Then place one or more
+     `<canvas class="pix" data-chonk="<mood>" data-size="<px>"></canvas>`
+     elements; this script wires them automatically.
+     Supported moods: awake (default, tracks mouse) | happy | sleep | error | curious | working.
+
+     Extras exposed on `window`:
+       chonkReact(mood, durationMs)  — briefly override every mounted canvas's pose
+                                       and trigger a CSS hop. Default duration 900ms.
+                                       Moods: 'happy' | 'working' | 'oops' | 'curious'.
+     Passive animations (in awake/happy): blink, ear twitch, body sway, stretch. -->
+<style>
+  /* The react animations apply on top of the canvas's static transform.
+     Keep durations short — the mascot should feel alive, not manic. */
+  canvas.pix { display:inline-block; transform-origin: 50% 90%; }
+  canvas.pix.chonk-hop    { animation: chonk-hop 560ms cubic-bezier(.3,.8,.4,1); }
+  canvas.pix.chonk-sway   { animation: chonk-sway 1300ms ease-in-out; }
+  canvas.pix.chonk-stretch{ animation: chonk-stretch 760ms ease-in-out; }
+  canvas.pix.chonk-shake  { animation: chonk-shake 480ms cubic-bezier(.36,.07,.19,.97); }
+  @keyframes chonk-hop {
+    0%   { transform: translateY(0)    scale(1);          }
+    28%  { transform: translateY(-7px) scale(1.08, .94);  }
+    58%  { transform: translateY(0)    scale(.96, 1.06);  }
+    78%  { transform: translateY(-2px) scale(1.02, .98);  }
+    100% { transform: translateY(0)    scale(1);          }
+  }
+  @keyframes chonk-sway {
+    0%,100% { transform: rotate(0deg); }
+    20%     { transform: rotate(-5deg); }
+    50%     { transform: rotate(5deg); }
+    80%     { transform: rotate(-2deg); }
+  }
+  @keyframes chonk-stretch {
+    0%,100% { transform: scale(1); }
+    40%     { transform: scale(1.09, .9); }
+    70%     { transform: scale(.95, 1.07); }
+  }
+  @keyframes chonk-shake {
+    0%,100% { transform: translateX(0); }
+    20%     { transform: translateX(-3px) rotate(-3deg); }
+    40%     { transform: translateX(3px)  rotate(3deg); }
+    60%     { transform: translateX(-2px) rotate(-2deg); }
+    80%     { transform: translateX(2px)  rotate(2deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    canvas.pix.chonk-hop,
+    canvas.pix.chonk-sway,
+    canvas.pix.chonk-stretch,
+    canvas.pix.chonk-shake { animation: none; }
+  }
+</style>
+<script>
+(function () {
+  const DEFAULT_PAL = { '.': null, 'B': '#0a0a0a', 'E': '#7FE87F', 'P': '#FFA3C7', 'Z': '#7dd3d8', 'R': '#d94a4a', 'S': '#fff7a3', 'H': '#FFA3C7' };
+  const PAL = Object.assign({}, DEFAULT_PAL, window.DRUST_MASCOT_PAL || {});
+  const BASE = [
+    '................','................','................',
+    '.B............B.','.BB..........BB.','.BBB........BBB.',
+    '.BBBBBBBBBBBBBB.','BBBBBBBBBBBBBBBB','BBBBBBBBBBBBBBBB',
+    'BBBBBBBBBBBBBBBB','BBBBBBBBBBBBBBBB','BBBBBBBBBBBBBBBB',
+    'BBBBBBBBBBBBBBBB','.BBBBBBBBBBBBBB.','..BBBBBBBBBBBB..',
+    '................',
+  ];
+  function build(pose) {
+    const g = BASE.map(r => r.split(''));
+    const set = (x, y, c) => { if (g[y]) g[y][x] = c; };
+    const nose = () => { set(7,11,'P'); set(8,11,'P'); };
+    const happy = (c) => { c = c || 'E'; set(4,9,c); set(5,8,c); set(10,8,c); set(11,9,c); };
+    const open = (c) => { c = c || 'E'; set(4,8,c); set(5,8,c); set(4,9,c); set(5,9,c); set(10,8,c); set(11,8,c); set(10,9,c); set(11,9,c); };
+    switch (pose) {
+      case 'open': open(); nose(); break;
+      case 'halfblink': set(4,9,'E'); set(5,9,'E'); set(10,9,'E'); set(11,9,'E'); nose(); break;
+      case 'blink': nose(); break;
+      case 'sleep':
+        nose();
+        set(14,2,'Z'); set(15,2,'Z'); set(15,1,'Z'); set(13,4,'Z');
+        break;
+      case 'oops':
+        set(4,8,'R'); set(5,8,'R'); set(4,9,'R'); set(5,9,'R');
+        set(10,8,'R'); set(11,8,'R'); set(10,9,'R'); set(11,9,'R');
+        nose();
+        break;
+      case 'curious':
+        open();
+        set(10,8,'B'); set(11,8,'E'); set(10,9,'B'); set(11,9,'E');
+        nose();
+        break;
+      case 'working':
+        happy(); nose();
+        set(14,3,'Z'); set(15,3,'Z');
+        break;
+      case 'yawn':
+        set(4,9,'E'); set(5,9,'E'); set(10,9,'E'); set(11,9,'E');
+        set(7,10,'B'); set(8,10,'B');
+        set(7,11,'B'); set(8,11,'B');
+        set(15,1,'Z'); set(14,2,'Z');
+        break;
+      case 'love':
+        set(4,8,'H'); set(5,8,'H'); set(4,9,'H'); set(5,9,'H');
+        set(10,8,'H'); set(11,8,'H'); set(10,9,'H'); set(11,9,'H');
+        nose();
+        set(15,1,'H'); set(14,2,'H');
+        break;
+      case 'plain':
+      case 'happy':
+      default:
+        happy(); nose(); break;
+    }
+    return g;
+  }
+  function paint(canvas, grid, scale) {
+    const W = grid[0].length, H = grid.length;
+    canvas.width = W * scale; canvas.height = H * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const c = PAL[grid[y][x]];
+      if (!c) continue;
+      ctx.fillStyle = c;
+      ctx.fillRect(x*scale, y*scale, scale, scale);
+    }
+  }
+  const MOUSE = { x: 0, y: 0, active: false };
+  if (typeof window !== 'undefined' && !window.__chonkMouseInit) {
+    window.__chonkMouseInit = true;
+    window.addEventListener('mousemove', function (e) {
+      MOUSE.x = e.clientX; MOUSE.y = e.clientY; MOUSE.active = true;
+    }, { passive: true });
+    window.addEventListener('blur', function () { MOUSE.active = false; });
+  }
+
+  // Registry of mounted mascots so window.chonkReact can hit every one.
+  const MASCOTS = [];
+
+  function flashClass(el, cls, ms) {
+    el.classList.remove(cls);
+    // force reflow so re-adding the class restarts the animation
+    void el.offsetWidth;
+    el.classList.add(cls);
+    setTimeout(function () { el.classList.remove(cls); }, ms);
+  }
+
+  function reactPoseFor(mood) {
+    if (mood === 'oops' || mood === 'error') return 'oops';
+    if (mood === 'working')                  return 'working';
+    if (mood === 'curious')                  return 'curious';
+    if (mood === 'love')                     return 'love';
+    if (mood === 'yawn')                     return 'yawn';
+    return 'open'; // happy / default
+  }
+
+  function mountLive(canvas, mood, size) {
+    const scale = Math.max(1, Math.floor(size / 16));
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const staticPose = mood === 'sleep' ? 'sleep'
+                     : mood === 'error' ? 'oops'
+                     : mood === 'happy' ? 'plain'
+                     : mood === 'working' ? 'working'
+                     : mood === 'curious' ? 'curious'
+                     : 'open';
+    if (reduced) {
+      const staticGrid = build(staticPose);
+      paint(canvas, staticGrid, scale);
+      MASCOTS.push({
+        canvas: canvas,
+        react: function () { /* no-op under reduced motion */ },
+        repaint: function () { paint(canvas, staticGrid, scale); }
+      });
+      return;
+    }
+    const now = performance.now();
+    const st = {
+      ex: 0, ey: 0, tex: 0, tey: 0,
+      blinkStart: 0,
+      nextBlinkAt: now + 1800 + Math.random()*2200,
+      earEnd: 0,
+      nextEarAt: now + 3000 + Math.random()*8000,
+      nextSwayAt: now + 8000 + Math.random()*7000,
+      nextStretchAt: now + 14000 + Math.random()*12000,
+      reactUntil: 0,
+      reactMood: null,
+    };
+    function schedulePassive(which) {
+      const t = performance.now();
+      if (which === 'sway') st.nextSwayAt = t + 9000 + Math.random()*9000;
+      else if (which === 'stretch') st.nextStretchAt = t + 16000 + Math.random()*14000;
+    }
+    function tick() {
+      const t = performance.now();
+      const isReacting = st.reactUntil > t;
+
+      // Mouse tracking only in plain awake mode and when not reacting
+      if (mood === 'awake' && MOUSE.active && !isReacting) {
+        const r = canvas.getBoundingClientRect();
+        const dx = MOUSE.x - (r.left + r.width/2);
+        const dy = MOUSE.y - (r.top + r.height/2);
+        st.tex = Math.max(-1, Math.min(1, dx/260));
+        st.tey = Math.max(-1, Math.min(1, dy/220));
+      } else {
+        st.tex *= 0.9; st.tey *= 0.9;
+      }
+
+      // Blink schedule (awake / happy)
+      if ((mood === 'awake' || mood === 'happy') && t >= st.nextBlinkAt && t - st.blinkStart > 250) {
+        st.blinkStart = t;
+        st.nextBlinkAt = t + 1800 + Math.random()*2400;
+      }
+      // Ear twitch
+      if (t >= st.nextEarAt && t > st.earEnd) {
+        st.earEnd = t + 180;
+        st.nextEarAt = t + 6000 + Math.random()*10000;
+      }
+      // Passive body sway (awake / happy)
+      if (!isReacting && (mood === 'awake' || mood === 'happy') && t >= st.nextSwayAt) {
+        flashClass(canvas, 'chonk-sway', 1300);
+        schedulePassive('sway');
+      }
+      // Passive stretch (awake / happy) — pose + CSS
+      if (!isReacting && (mood === 'awake' || mood === 'happy') && t >= st.nextStretchAt) {
+        st.reactUntil = t + 480;
+        st.reactMood = 'yawn';
+        flashClass(canvas, 'chonk-stretch', 760);
+        schedulePassive('stretch');
+      }
+
+      // Pose resolution — react override beats everything
+      let pose;
+      if (isReacting) {
+        pose = reactPoseFor(st.reactMood);
+      } else {
+        pose = staticPose;
+        const bt = t - st.blinkStart;
+        const inBlink = st.blinkStart > 0 && bt >= 0 && bt < 180;
+        if (inBlink && (mood === 'awake' || mood === 'happy')) {
+          pose = (bt < 50 || bt >= 130) ? 'halfblink' : 'blink';
+        }
+      }
+      const grid = build(pose);
+
+      // Mouse eye offset only applies in awake mode, not while reacting/blinking
+      if (mood === 'awake' && !isReacting) {
+        const bt2 = t - st.blinkStart;
+        const inBlink = st.blinkStart > 0 && bt2 >= 0 && bt2 < 180;
+        if (!inBlink) {
+          st.ex += (st.tex - st.ex) * 0.25;
+          st.ey += (st.tey - st.ey) * 0.25;
+          const ox = Math.round(st.ex), oy = Math.round(st.ey);
+          const eye = function (cx, cy) {
+            for (let dy = -1; dy <= 2; dy++) for (let dx = -1; dx <= 2; dx++) {
+              if (grid[cy+dy]) grid[cy+dy][cx+dx] = 'B';
+            }
+            for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 2; dx++) {
+              const gx = cx+dx+ox, gy = cy+dy+oy;
+              if (grid[gy] && grid[gy][gx] != null) grid[gy][gx] = 'E';
+            }
+          };
+          eye(4, 8); eye(10, 8);
+        }
+      }
+
+      // Ear twitch overlay (left ear raises)
+      if (t < st.earEnd) {
+        grid[3][1] = '.'; grid[4][1] = '.'; grid[4][2] = '.';
+        grid[5][1] = '.'; grid[5][2] = '.'; grid[5][3] = '.';
+        grid[2][1] = 'B'; grid[3][1] = 'B'; grid[3][2] = 'B';
+        grid[4][1] = 'B'; grid[4][2] = 'B'; grid[4][3] = 'B';
+        grid[5][1] = 'B'; grid[5][2] = 'B'; grid[5][3] = 'B';
+      }
+      paint(canvas, grid, scale);
+    }
+    tick();
+    setInterval(tick, 60);
+
+    // Each mounted mascot gets a react function. window.chonkReact fans out to all.
+    function react(reactMood, durationMs) {
+      const t = performance.now();
+      const dur = Math.max(300, Math.min(4000, durationMs || 900));
+      st.reactUntil = t + dur;
+      st.reactMood = reactMood || 'happy';
+      if (reactMood === 'oops' || reactMood === 'error') {
+        flashClass(canvas, 'chonk-shake', 480);
+      } else {
+        flashClass(canvas, 'chonk-hop', 560);
+      }
+    }
+    MASCOTS.push({ canvas: canvas, react: react });
+  }
+
+  function wire() {
+    document.querySelectorAll('canvas.pix[data-chonk]').forEach(function (c) {
+      if (c.__chonkMounted) return;
+      c.__chonkMounted = true;
+      const mood = c.getAttribute('data-chonk') || 'awake';
+      const size = parseInt(c.getAttribute('data-size') || '18', 10);
+      c.style.width = size + 'px';
+      c.style.height = size + 'px';
+      mountLive(c, mood, size);
+    });
+  }
+
+  // Public API.
+  window.chonkReact = function (mood, durationMs) {
+    MASCOTS.forEach(function (m) { try { m.react(mood, durationMs); } catch (_) {} });
+  };
+
+  // v1.23 — live theme preview hook. Mutates PAL in place; animated mascots
+  // pick up the new colors on the next RAF tick (paint() reads PAL each
+  // frame). Reduced-motion mascots also get a one-shot repaint via the
+  // repaint() helper attached in the static branch.
+  window.chonkSetPAL = function (newPal) {
+    if (!newPal) return;
+    Object.keys(newPal).forEach(function (k) { PAL[k] = newPal[k]; });
+    MASCOTS.forEach(function (m) { if (m.repaint) try { m.repaint(); } catch (_) {} });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wire);
+  } else {
+    wire();
+  }
+})();
+</script>
+</body>
+</html>

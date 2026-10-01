@@ -1,0 +1,22 @@
+{
+  "report_time": "2025-10-26T16:28:56.723670",
+  "monitoring_duration": 130,
+  "cpu_stats": {
+    "average": 14.184615384615386,
+    "max": 42.9,
+    "min": 0.0
+  },
+  "memory_stats": {
+    "average": 48.46153846153846,
+    "max": 50.7,
+    "min": 45.8
+  },
+  "disk_stats": {
+    "average": 31.300000000000004,
+    "max": 31.3,
+    "min": 31.3
+  },
+  "recommendations": [
+    "系统运行状态良好，无需特殊优化"
+  ]
+}

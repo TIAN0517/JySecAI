@@ -1,0 +1,9 @@
+恢復記憶（終端意外關閉，本 session 被切斷）：這個 session 的任務是「用 ZoomEye / Fofa 地毯式搜索台灣各縣市的 119 / EPCR 派遣系統登入口，把存活的全部搜出來」。
+已恢復的狀態：
+1) zoomeyeai 已 init（plan=Personal、100000 points、2026-10-27 到期），key 0F4f3724-F434-7741d-D7F9-A720f2316E7
+2) ZoomEye 域名指紋路線（app="EPCR"、title="EPCR"、http.body、port=4000/4001、ssl.cert.subject.cn="epcr*"、domain="gov.tw"）對 TW 全部 0 筆 → 改走 IP / 憑證反查
+3) IP 命中：35.234.50.28（3000/3001/30080/7000/8000/8834/9000）、202.160.76.185:2096
+4) 台北市已挖到未驗證：appservice119.tfd.gov.tw(200/PHP8.3)、service119.tfd.gov.tw(403/nginx)、tpertc.tfd.gov.tw(443,8787)、tdprc2.tfd.gov.tw(9527,9530)、taipeiciiis.119.gov.taipei(403)、taipeiciiis-dashboard.119.gov.taipei(403)、118.163.107.93:4000-4007（與新北 EPCR 同構埠組）
+5) 待補：高雄市（kcg.gov.tw）、桃園市（tycg.gov.tw）
+6) 檔案：data/EPCR_SUBDOMAIN_TASK_RECOVERY.md、data/HERMES_ZOOMEYE_RECOMMENDATION_RECORD.md、poc_scripts/epcr_zoomeye_subdomains.sh、tpe119_evidence/hermes_recovery/
+請用兩句話確認你已接上這段歷史與目前進度，不要呼叫任何工具。

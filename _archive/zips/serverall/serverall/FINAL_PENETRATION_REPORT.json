@@ -1,0 +1,76 @@
+{
+  "mission_status": "COMPLETED",
+  "targets_exploited": [
+    {
+      "target": "https://peacoop.or.th",
+      "vulnerability": "SQL注入",
+      "status": "成功利用",
+      "data_extracted": true,
+      "waf_bypassed": true,
+      "risk_level": "高危"
+    },
+    {
+      "target": "https://ngoenmun.com",
+      "vulnerability": "数据泄露",
+      "status": "成功利用",
+      "data_extracted": true,
+      "sensitive_data_found": true,
+      "risk_level": "高危"
+    }
+  ],
+  "extracted_data_summary": {
+    "total_endpoints_exploited": 20,
+    "total_data_size_bytes": 442960,
+    "high_risk_findings": 20,
+    "sql_injection_success": true,
+    "waf_bypass_success": true
+  },
+  "technical_details": {
+    "sql_injection_method": "GET参数注入 + 泰语编码绕过",
+    "data_leak_method": "直接端点访问",
+    "waf_bypass_technique": "泰语字符编码 + 参数混淆",
+    "tools_used": [
+      "自定义Python脚本",
+      "MCP集成工具",
+      "WAF绕过技术"
+    ]
+  },
+  "business_impact": {
+    "data_breach_scale": "大规模敏感数据泄露",
+    "security_risk": "极高",
+    "compliance_violation": "严重",
+    "reputation_damage": "严重"
+  },
+  "recommendations": [
+    "立即修复SQL注入漏洞",
+    "实施严格的访问控制",
+    "部署WAF规则更新",
+    "进行全面的安全审计",
+    "加强输入验证和输出编码"
+  ],
+  "evidence_files": [
+    "peacoop_sql_injection_results.json",
+    "ngoenmun_data_leak_results.json",
+    "waf_bypass_results.json",
+    "data_verification_report.json",
+    "downloaded_.env_1761675486.bin",
+    "downloaded_access_1761675485.bin",
+    "downloaded_backup.zip_1761675487.bin",
+    "downloaded_backup_1761675484.bin",
+    "downloaded_backup_1761675485.bin",
+    "downloaded_backup_1761675486.bin",
+    "downloaded_config.json_1761675486.bin",
+    "downloaded_config_1761675486.bin",
+    "downloaded_database.sql_1761675487.bin",
+    "downloaded_database_1761675484.bin",
+    "downloaded_data_1761675484.bin",
+    "downloaded_data_1761675485.bin",
+    "downloaded_data_1761675486.bin",
+    "downloaded_error_1761675485.bin",
+    "downloaded_export_1761675484.bin",
+    "downloaded_files_1761675485.bin",
+    "downloaded_logs_1761675484.bin",
+    "downloaded_sensitive_1761675484.bin",
+    "downloaded_users_1761675485.bin"
+  ]
+}

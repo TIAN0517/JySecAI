@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>FEMET</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="../theme/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  
+  <!-- Custom styles for this template-->
+  <link href="../theme/css/sb-admin-2.min.css" rel="stylesheet">
+  <style>
+      .bg-login-image{
+        background: url(../theme/img/rtc_signin_background.png);
+        background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+      }
+      .login_header{
+          width:100%;
+          
+      }
+      form.user .btn-user,form.user .form-control-user {
+        border-radius: .5rem!important;
+      }
+      .form-group {
+            margin-bottom: 2rem;
+        }
+        #rcorners3 {
+          border-radius: 30px/30px;
+          background-image: linear-gradient(20deg, #9bd6ee, #98f6b7);
+          padding: 10px; 
+          width: 100%;
+          font-family: Noto Sans TC;
+          text-shadow: black 0.1em 0.1em 0.2em;
+          color: #f8f9fc;
+          font-size: 1.5rem;
+        } 
+  </style>
+  
+</head>
+
+<body class="">
+
+  <div class="container">
+
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+
+      <div class="col-xl-10 col-lg-12 col-md-9">
+
+        <div class="card border-0 my-5">
+          <div class="card-body">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+              <div class="col-lg-6 d-none d-lg-block bg-login-image">
+              </div>
+              <div class="col-lg-6">
+                <div class="p-5">
+                <div class="text-center">
+                    <div class="col-md-auto"><p id="rcorners3">即時視訊平台</p></div>
+                  </div>
+<!-- 
+                  <div class="text-center">
+                    <div class="col-md-auto"><img class="login_header" src="https://tpertc.tfd.gov.tw/theme/img/rtc_signin_header.png"></div>
+                  </div> -->
+                  <div class="text-center">
+                    <h1 class="h4 text-gray-900 mb-4">Sign In</h1>
+                  </div>
+                  <form class="user" action=https://tpertc.tfd.gov.tw/rtc/account.php?action=login method="POST" id="loginForm" name="loginForm" onsubmit="return checkSubmit(this);">
+                    <input type="hidden" id="DoType" Name="DoType" value="">
+                    <div class="form-group">
+                    
+                      <input type="text" id="acc" name="acc" value="" class="form-control form-control-user"  aria-describedby="" placeholder="使用者帳戶">
+                    </div>
+                    <div class="form-group">
+                      <input type="password" class="form-control form-control-user" id="pw" name="pw" value="" placeholder="使用者密碼">
+                    </div>
+
+                                        <input type="submit" value="登　　入" class="btn btn-lg btn-primary btn-block mt-3 mb-3">
+                                      </form>
+                  <div class="text-center mt-4">
+                    <div class="">Copyright @ femet2020</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="../theme/vendor/jquery/jquery.min.js"></script>
+  <script src="../theme/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="../theme/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="../theme/js/sb-admin-2.min.js"></script>
+  <script language="javascript">
+      function checkSubmit() {
+        if (this.acc.value.length === 0) {
+          this.msg.innerHTML = '請輸入帳號';
+          return false;
+        }
+        if (this.pw.value.length === 0) {
+          this.msg.innerHTML = '請輸入密碼';
+          return false;
+        }
+
+        this.DoType.value = 'Login';
+      }
+    </script>
+      <!-- Logout Modal-->
+  <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div c

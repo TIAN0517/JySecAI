@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="shortcut icon" href="/company/html/images/favicon.ico" />
+	<link rel="icon" href="/company/html/images/favicon.ico" type="image/ico" />
+    <meta name="csrf-token" content="" />
+    <link rel="stylesheet" href="/html/oaks_plugins/bootstrap5/bootstrap.min.css" />
+    <link rel="stylesheet" href="/html/oaks_plugins/fontawesome-free-6.2.0-web/css/all.min.css" />
+    <link rel="stylesheet" href="/kcg_index/html/css/styleGreen.css">
+    <title>共用式身分驗證系統-密碼變更</title>
+    <link type="text/css" rel="Stylesheet" href="/html/oaks_plugins/BotDetect/public/bdc-layout-stylesheet.css" />
+</head>
+<body>
+    <div class="bgMark"></div>
+    <div class="bgMarkCircle"></div>
+    <div class="bgMarkCircle1"></div>
+    <div id="oaksContentArea" class="contentWrap">
+        <div class="logo text-center">
+            <img src="/kcg_index/html/images/logo2.png" class="img-fluid" alt="logo" width="350">
+        </div>
+        <div id="content">
+            <p class="text-center fw-bolder fs-5 mb-1">
+                密碼變更
+            </p>
+            <div class="text-caption mb-2">
+                若您忘記密碼，請勾選下列任一認證方式完成身分確認程序，完成驗證後，將引導您設定新密碼。
+            </div>
+
+            <ul class="btnRadios">
+                <li>
+                    <button class="btn">
+                        <div class="icon">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div class="text">
+                            <p>電子郵件</p>
+                            <span>透過註冊時設定的電子郵件信箱接收重設密碼連結。</span>
+                        </div>
+                    </button>
+                </li>
+                <li>
+                    <button class="btn">
+                        <div class="icon">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <div class="text">
+                            <p>自然人憑證</p>
+                            <span>插入自然人憑證並完成驗證，即可安全重設密碼。</span>
+                        </div>
+                    </button>
+                </li>
+                <li>
+                    <button class="btn">
+                        <div class="icon">
+                            <i class="fa-solid fa-fingerprint"></i>
+                        </div>
+                        <div class="text">
+                            <p>行動自然人憑證</p>
+                            <span>使用手機的行動自然人憑證 App 進行身分驗證並重設密碼。</span>
+                        </div>
+                    </button>
+                </li>
+            </ul>
+
+            <div class="d-grid gap-2 mt-3">
+                <button class="btn btn-primary disabled JQ_nextStep" type="button">下一步</button>
+            </div>
+            <div class="text-center">
+                <button class="btn" type="button" onclick="window.history.back();">返回</button>
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript" src="/html/oaks_plugins/HackTimer/HackTimer.min.js"></script>
+<script type="text/javascript" src="/html/oaks_plugins/HackTimer/HackTimerWorker.min.js"></script>
+<script type='text/javascript' src='/html/jquery/jquery.min.js?t=20201106'></script>
+<script type='text/javascript' src='/html/jquery/jquery.history.js?t=20201106'></script>
+<script type='text/javascript' src='/html/jquery/jquery.loadmask.js?t=20220427'></script>
+<!--[if lt IE 9]>
+    <script src="/html/jquery/respond.js"></script>
+    <script src="/html/oaks_plugins/html5shiv.js"></script>
+    <script src="/html/js/es5-shim.min.js"></script>
+<![endif]-->
+<script>
+	$.ajaxSetup({ cache: false });
+	var oaks_zta_proxy_path = '';
+	$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+		if (/^https?:\/\//i.test(options.url)) {
+			return;
+		}
+		// 避免重複加 /proxy/
+		if (oaks_zta_proxy_path != '' && options.url.indexOf(oaks_zta_proxy_path+'/') !== 0) {
+			if (options.url.charAt(0) !== '/') {
+				options.url = '/' + options.url;
+			}
+			options.url = oaks_zta_proxy_path + options.url;
+		}
+	});
+</script>    <script type='text/javascript' src="/html/oaks_plugins/bootstrap5/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/html/oaks_plugins/mloading/js/jquery.mloading.js"></script>
+    <script type="text/javascript" src="/html/jquery/tmpl/jquery.tmpl.min.js?t=20220922" ></script>
+    <script type="text/javascript" src="/html/jquery/tmpl/jquery.tmplPlus.min.js?t=20220922" ></script>
+    <script type="text/javascript" src="/html/oaks_plugins/purify.min.js?t=20251212"></script>
+    <script type="text/javascript" src="/html/oaks_plugins/lottie.min.js?t=20250109"></script>
+    <script type="text/javascript" src="/html/oaks_plugins/oaks_basic.js?t=20251212"></script>
+    <script>
+    $('.btnRadios .btn').off().on('click', function () {
+        // 如果已經有 active，則取消
+        if ($(this).hasClass('active')) {
+            $(this).removeClass('active');
+        } else {
+            // 先移除其他的 active，再加到自己
+            $('.btnRadios .btn').removeClass('active');
+            $(this).addClass('active');
+        }
+
+        // 控制「下一步」按鈕的 disabled 狀態
+        if ($('.btnRadios .btn.active').length > 0) {
+            $('.btn.JQ_nextStep').removeClass('disabled');
+        } else {
+            $('.btn.JQ_nextStep').addClass('disabled');
+        }
+    });
+
+    // 處理下一步按鈕點擊
+    $('.btn.JQ_nextStep').off().on('click', function () {
+        if ($(this).hasClass('disabled')) return;
+
+        var selectedText = $('.btnRadios .btn.active .text p').text().trim();
+        if (selectedText === '電子郵件') {
+            changeModule('/forget_password_new.php?action=userinput&type=email');
+        } else if (selectedText === '行動電話號碼') {
+            changeModule('/forget_password_new.php?action=userinput&type=mobile');
+        } else if (selectedText === '自然人憑證') {
+            changeModule('/forget_password_new.php?action=moica_cert');
+        } else if (selectedText === '行動自然人憑證') {
+            changeModule('/forget_password_new.php?action=fido');
+        }
+    });
+    </script>
+</body>
+
+</html>

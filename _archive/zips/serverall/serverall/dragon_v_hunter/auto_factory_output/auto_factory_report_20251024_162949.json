@@ -1,0 +1,92 @@
+{
+  "factory_info": {
+    "name": "Dragon-V 自动化工厂",
+    "version": "1.0",
+    "start_time": "2025-10-24T16:28:22.359721",
+    "end_time": "2025-10-24T16:29:49.460109",
+    "duration_seconds": 87.100388,
+    "target_domains": [
+      "viettelpost.com.vn",
+      "vnpost.vn"
+    ],
+    "configuration": {
+      "max_workers": 3,
+      "timeout": 30,
+      "enable_database": false,
+      "scan_modes": [
+        "fingerprint",
+        "recon",
+        "exploit"
+      ]
+    }
+  },
+  "statistics": {
+    "total_domains": 2,
+    "successful_domains": 0,
+    "total_exploits": 0,
+    "total_failed": 0,
+    "success_rate": 0.0
+  },
+  "recon_results": {
+    "viettelpost.com.vn": {
+      "domain": "viettelpost.com.vn",
+      "subdomains": [],
+      "endpoints": [],
+      "js_files": [],
+      "technologies": [],
+      "vulnerabilities_found": []
+    },
+    "vnpost.vn": {
+      "domain": "vnpost.vn",
+      "subdomains": [],
+      "endpoints": [],
+      "js_files": [],
+      "technologies": [],
+      "vulnerabilities_found": []
+    }
+  },
+  "analysis_results": {
+    "viettelpost.com.vn": {
+      "attack_surface": [],
+      "vulnerability_analysis": {
+        "technologies": [],
+        "risk_level": "low",
+        "potential_vulnerabilities": []
+      },
+      "prioritized_targets": []
+    },
+    "vnpost.vn": {
+      "attack_surface": [],
+      "vulnerability_analysis": {
+        "technologies": [],
+        "risk_level": "low",
+        "potential_vulnerabilities": []
+      },
+      "prioritized_targets": []
+    }
+  },
+  "exploit_results": {
+    "viettelpost.com.vn": {
+      "domain": "viettelpost.com.vn",
+      "targets_tested": 0,
+      "successful_exploits": [],
+      "failed_exploits": []
+    },
+    "vnpost.vn": {
+      "domain": "vnpost.vn",
+      "targets_tested": 0,
+      "successful_exploits": [],
+      "failed_exploits": []
+    }
+  },
+  "processing_results": {
+    "skipped": true,
+    "reason": "Database disabled"
+  },
+  "recommendations": [
+    "✅ Low: 未发现明显漏洞，建议保持定期安全评估",
+    "📊 Medium: 建议定期进行安全扫描",
+    "🔧 Technical: 建议实施自动化安全监控",
+    "📚 Training: 对开发团队进行安全意识培训"
+  ]
+}

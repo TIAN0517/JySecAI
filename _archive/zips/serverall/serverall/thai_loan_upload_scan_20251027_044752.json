@@ -1,0 +1,42 @@
+{
+  "Finnomena": {
+    "url": "https://www.finnomena.com",
+    "vulnerable": false,
+    "message": "未发现上传端点"
+  },
+  "MULA-X": {
+    "url": "https://mula-x.com",
+    "vulnerable": false,
+    "message": "未发现上传端点"
+  },
+  "Krungsri Bank": {
+    "url": "https://www.krungsri.com",
+    "vulnerable": false,
+    "message": "未发现上传端点"
+  },
+  "SCB Bank": {
+    "url": "https://www.scb.co.th",
+    "vulnerable": false,
+    "message": "未发现上传端点"
+  },
+  "Bangkok Bank": {
+    "url": "https://www.bangkokbank.com",
+    "vulnerable": false,
+    "message": "未发现上传端点"
+  },
+  "Kasikorn Bank": {
+    "url": "https://www.kasikornbank.com",
+    "vulnerable": false,
+    "message": "未发现上传端点"
+  },
+  "Money.co.th": {
+    "url": "https://www.money.co.th",
+    "vulnerable": false,
+    "message": "未发现上传端点"
+  },
+  "SCB Easy": {
+    "url": "https://www.scbeasy.com",
+    "vulnerable": false,
+    "message": "未发现上传端点"
+  }
+}

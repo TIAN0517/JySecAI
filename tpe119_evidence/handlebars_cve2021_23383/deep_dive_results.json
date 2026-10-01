@@ -1,0 +1,202 @@
+[
+  {
+    "name": "JCR root",
+    "status": "200",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "JCR dam",
+    "status": "200",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "JCR dam.corporate",
+    "status": "200",
+    "ct": "application/json;charset=utf-8",
+    "size": "222",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "JCR dam.corporate.1",
+    "status": "200",
+    "ct": "application/json;charset=utf-8",
+    "size": "1860",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "JCR dam.corporate.infinity",
+    "status": "300",
+    "ct": "application/json;charset=utf-8",
+    "size": "65",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "myuni root",
+    "status": "404",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "myuni students",
+    "status": "404",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "myuni students.json",
+    "status": "404",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "myuni courses",
+    "status": "404",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "myuni timetable",
+    "status": "404",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "myuni results",
+    "status": "404",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "myuni grades",
+    "status": "404",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "myuni api",
+    "status": "404",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "graphql root",
+    "status": "200",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "graphql execute",
+    "status": "200",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "graphql content",
+    "status": "200",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "graphql api",
+    "status": "200",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "granite login.js",
+    "status": "404",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "cq nav",
+    "status": "404",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "felix console",
+    "status": "200",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "felix status",
+    "status": "200",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "content xml",
+    "status": "200",
+    "ct": "text/html;charset=utf-8",
+    "size": "18537",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "formstack agents",
+    "status": "200",
+    "ct": "text/html; charset=UTF-8",
+    "size": "15935",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "formstack student",
+    "status": "404",
+    "ct": "text/html; charset=UTF-8",
+    "size": "1005",
+    "body_preview": "",
+    "match": null
+  },
+  {
+    "name": "formstack api",
+    "status": "200",
+    "ct": "text/html; charset=UTF-8",
+    "size": "32",
+    "body_preview": "",
+    "match": null
+  }
+]

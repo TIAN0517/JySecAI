@@ -1,0 +1,7 @@
+[
+  {"attempt": 1, "wechatId": "testwechat001", "response": {"status":"0","msg":{"sid":"ca0c639e2c9aac0a...","username":"cffcna6qzp"}}},
+  {"attempt": 1, "wechatId": "testwechat001", "response": {"status":"0","msg":{"sid":"ba7880957ff9f65d...","username":"cffcna6qzp"}}},
+  {"attempt": 3, "wechatId": "testwechat001", "response": {"status":"0","msg":{"sid":"41de45a778d76257...","username":"cffcna6qzp"}}},
+  {"attempt": 4, "wechatId": "testwechat001", "response": {"status":"0","msg":{"sid":"418e22ea563e281a...","username":"cffcna6qzp"}}},
+  {"attempt": 5, "wechatId": "testwechat001", "response": {"status":"0","msg":{"sid":"06210c9f3cc99d68...","username":"cffcna6qzp"}}}
+]

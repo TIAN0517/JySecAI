@@ -1,0 +1,58 @@
+# 内网安全助手配置文件
+# Internal Network Security Assistant Configuration
+
+# 项目信息
+project:
+  name: "内网安全助手"
+  version: "1.0.0"
+  description: "授权内网安全评估工具"
+  author: "Security Team"
+
+# 路径配置
+paths:
+  base_dir: "."
+  data_dir: "data/"
+  output_dir: "output/"
+  logs_dir: "logs/"
+  templates_dir: "templates/"
+  temp_dir: "temp/"
+
+  # 数据文件路径
+  eval_data_dir: "eval/"
+  fingerprints_dir: "fingerprints/"
+  mcp_dir: "mcp/"
+  vuln_dir: "vuln/"
+  vuln_en_dir: "vuln_en/"
+
+# 文件大小限制
+file_limits:
+  max_file_size: 262144  # 256KB in bytes
+  max_preview_lines: 200
+  max_large_file_lines: 50
+  chunk_size: 8192
+
+  # 按文件类型限制
+  json_max_size: 1048576  # 1MB
+  yaml_max_size: 524288    # 512KB
+  log_max_size: 10485760   # 10MB
+
+# 扫描配置
+scanning:
+  # 并发配置
+  max_concurrent_scans: 5
+  max_concurrent_requests: 10
+  request_timeout: 30
+
+  # 重试配置
+  max_retries: 3
+  retry_delay: 1
+  backoff_factor: 2
+
+  # 速率限制
+  requests_per_minute: 60
+  burst_size: 10
+
+  # 目标配置
+  max_targets_per_scan: 100
+  max_depth: 3
+  follow_redirects: true

@@ -1,0 +1,24 @@
+=== api/settings (unauthenticated) ===
+GET https://online.royal-venture.com/api/settings
+{"ok":true,...,"value":"85269568727","label":"WhatsApp 查詢電話"}
+
+=== api/applications/submit (unauthenticated) ===
+POST https://online.royal-venture.com/api/applications/submit
+Content-Type: application/json
+Body: {"loan":{"amount":100000,"purpose":"購房"},"personal":{"surname":"王","phone":"02123456","gender":"M"}}
+Response: {"ok":true,"draftToken":"fabe201c058714eacd2f8b74a90c2ff2e4dce6088472a2628c7e5202ef923589"}
+
+=== api/applications/signatures (with draftToken) ===
+POST https://online.royal-venture.com/api/applications/signatures
+Body: {"token":"fabe201c058714eacd2f8b74a90c2ff2e4dce6088472a2628c7e5202ef923589"}
+Response: {"ok":true}
+
+=== api/applications/draft (with draftToken) ===
+PATCH https://online.royal-venture.com/api/applications/draft
+Body: {"token":"fabe201c058714eacd2f8b74a90c2ff2e4dce6088472a2628c7e5202ef923589","step":1,"data":{"key":"val"}}
+Response: {"ok":false,"error":"Invalid step"}  <-- TOKEN ACCEPTED, step validation only
+
+=== JavaScript source confirms endpoints ===
+const res = await fetch('/api/applications/submit', {method:'POST',...})
+const res = await fetch('/api/applications/draft', {method:'PATCH',...})
+const res = await fetch('/api/applications/signatures', {method:'POST',...})

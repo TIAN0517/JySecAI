@@ -1,0 +1,22 @@
+{
+  "gov_taipei": {
+    "error": "HTTPSConnectionPool(host='epcr.gov.taipei', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x71632f53cc20>, 'Connection to epcr.gov.taipei timed out. (connect timeout=15)'))"
+  },
+  "gov_taipei_4004": {
+    "error": "HTTPSConnectionPool(host='epcr.gov.taipei', port=4004): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x71632f4fe710>, 'Connection to epcr.gov.taipei timed out. (connect timeout=15)'))"
+  },
+  "gov_taipei_4000": {
+    "error": "HTTPSConnectionPool(host='epcr.gov.taipei', port=4000): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x71632f4fee90>, 'Connection to epcr.gov.taipei timed out. (connect timeout=15)'))"
+  },
+  "ssl_cert_taipei": {
+    "issuer": "TWCA Secure SSL Certification Authority, TAIWAN-CA",
+    "validity": "Mar 06 2026 - Mar 06 2027",
+    "subject_cn": "epcr.gov.taipei",
+    "subject_l": "臺北市",
+    "subject_o": "政府機關-臺北市政府消防局",
+    "san": "DNS:epcr.gov.taipei",
+    "key_type": "RSA 2048 bit",
+    "ip": "163.29.40.22",
+    "source": "ZoomEye ssl.cert.subject.cn=\"epcr*.gov.taipei\""
+  }
+}

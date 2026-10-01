@@ -1,0 +1,25 @@
+HTTP/1.1 200 OK
+Vary: Origin, Accept-Encoding
+Content-Security-Policy: default-src 'self' * blob: http://epcr.tpf.gov.tw:4000 https://epcr.tpf.gov.tw:4001 https://epcr.tpf.gov.tw:4002 https://epcr.tpf.gov.tw:4003 https://epcr.tpf.gov.tw:4004 http://epcr.tpf.gov.tw:4005 https://epcr.tpf.gov.tw:4006 https://epcr.tpf.gov.tw:4007 http://epcr.tpf.gov.tw:9000 http://35.234.50.28 http://localhost:8100 http://localhost:18081;style-src 'self' 'unsafe-inline' *.gstatic.com *.googleapis.com *.ggpht maps.google.com;frame-ancestors 'none';script-src 'self' 'unsafe-inline' *.gstatic.com *.googleapis.com *.ggpht maps.google.com * blob:;img-src 'self' data: *.gstatic.com *.googleapis.com *.ggpht maps.google.com http://epcr.tpf.gov.tw:4000 https://epcr.tpf.gov.tw:4001 https://epcr.tpf.gov.tw:4002 https://epcr.tpf.gov.tw:4003 https://epcr.tpf.gov.tw:4004 http://epcr.tpf.gov.tw:4005 https://epcr.tpf.gov.tw:4006 https://epcr.tpf.gov.tw:4007 http://epcr.tpf.gov.tw:9000 http://35.234.50.28 http://localhost:8100 http://localhost:18081;font-src 'self' *.gstatic.com *.googleapis.com *.ggpht maps.google.com
+X-DNS-Prefetch-Control: off
+Expect-CT: max-age=0
+Strict-Transport-Security: max-age=15552000; includeSubDomains
+X-Download-Options: noopen
+X-Content-Type-Options: nosniff
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: no-referrer
+X-XSS-Protection: 0
+Cross-Origin-Embedder-Policy: require-corp
+Cross-Origin-Resource-Policy: same-origin
+Cross-Origin-Opener-Policy: same-origin
+X-Frame-Options: SAMEORIGIN
+Accept-Ranges: bytes
+Cache-Control: public, max-age=0
+Last-Modified: Mon, 13 Apr 2026 10:30:30 GMT
+ETag: W/"37c3-19d866490ab"
+Content-Type: text/html; charset=UTF-8
+Content-Length: 14275
+Date: Tue, 01 Sep 2026 00:15:37 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+

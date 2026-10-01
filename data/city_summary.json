@@ -1,0 +1,59 @@
+{
+  "cities_counties_covered": {
+    "hospitals": {
+      "台北市": 27,
+      "新北市": 25,
+      "桃園市+桃園縣": 7,
+      "台中市": 3,
+      "基隆市": 5,
+      "宜蘭縣": 2,
+      "南投縣": 1
+    },
+    "branches": {
+      "新北市": 85
+    },
+    "caserecords_addresses": {
+      "台北市": 16,
+      "新北市": "majority"
+    }
+  },
+  "hospital_types": {
+    "first_aid_responsibility": 25,
+    "evacuation_accepted": "varies by city",
+    "console_installed": "ONLY in 新北市 (14 hospitals)",
+    "test_mode": 5
+  },
+  "pcr_types": [
+    "OHCA",
+    "創傷",
+    "非創傷",
+    "創傷+非創傷",
+    "新生兒",
+    "內科OHCA",
+    "溺水",
+    "急產",
+    "精神異常",
+    "癲癇",
+    "毒藥物中毒",
+    "一氧化碳中毒",
+    "路倒",
+    "急病",
+    "內科其他",
+    "外科OHCA",
+    "車禍受傷",
+    "電擊傷",
+    "燒燙傷",
+    "穿刺傷",
+    "生物咬螫傷",
+    "墜落傷",
+    "一般外傷",
+    "外科其他"
+  ],
+  "branch_types": {
+    "type1": 61,
+    "type2": 24,
+    "all_in_new_taipei": true
+  },
+  "ohca_found": "0 in 1400 records (all test/old data)",
+  "ohca_field": "toOHCA in Pcrs, PcrType id=1='OHCA'"
+}

@@ -1,0 +1,588 @@
+=== FILE: /home/dacnftp/private.key ===
+-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCdSNVWYvYbu+qL
+u/ZJuxvPxVZBGYbyWTtIxrtJKJGSVhgRboOKfwzdtuQOHY/vTXOi8nig7QNvcqho
+QXzO9YEGU7w93MrxAoFqwxBAg46UIDlWCzNPiWTgbB3ZI94a47+q8x6MZqDX33B6
+8TCeNVI2uS90gx5UQoA5p9eBcgWvnhTVCnWPBPSOcM7kXRWYeOg549wN2G+jpuOk
+DPxIjxV2mHc/tBZFhJ/Ekfv5MtwIZQzszo46E8alh5OIQcSrfB+fCMoQ3emwhMF0
+LzkLVKsFySO12n6zmxbUxMKYP2ATrlQ8r7pM5Pv/L/bnYhpHVXKvlWqRdBCbW7BH
+j4V1WNq/AgMBAAECggEAECe4ffiJNd0N4M9sIzOcTjGDRAmGsmLW84kyGHgZx7Gf
+JD85NKMLI8TS1N5Vd+t5Kq4EFOdzWGGrCZZcZveRiqBUL/h7QdkTiO9DPpUksnNC
+4GMjIJLIsUJ5qGGGQTXObJUvOJWcBMBXEdGvQDjS2nsX9Dw5g8cW25UxTgLzsY9+
+cWHBHULFxDgbXpch2GtDsNNPGitENwujNYusra7Dy0ofvza0Cbit8K7tVo8iAf6Y
+eevyQ5VIsK1Nn1TI3NR2Fl602uR+rtrgwLajTcY1ZSB+0dcGbcWtiVKI4M2JTtrJ
+RDk7HV+r2CEMNXkd98n2uBDWXoPG+Kg1M/i5SVXE2QKBgQDNpNlGQiTybgWjNfg4
+m3LNZ2i1rIvs5naIXgcLvo/5+xYojBs7vX9cW+VdjVVbHiFwCwLpZWFUe3lG5uyL
+wk4FI3D9snD/220lBU9Hey1Sz+jMn1IJhQVw2xzqyBjVNREDfXgCr0hmYxCDiqMz
+TAl0MjromHqKjL8V9BPKCvuBtwKBgQDDzH0S952gKUjTdnh4YK19hqr+ntFRALKx
++a6dJPPZ73dQuSufF9LFqtoQZfPhvCrp0P01iNM3scRIASJoGhf0OxoGJuNa/zB1
+rUlTE2Uxtg+m1/D5MT4cNgG9GmOAJjPkJsYbueBOzifXqoFG0joU42fDgQ9fXSf9
+GkUNzjrPOQKBgQCWNgbbci9IwiLuD9sLhki6TwHGSo4+8iy8+WnOI1lJsSWDYqv1
+3DpuvVVyG22wy/aCwBhVYc9RhYuVxdIdWEXjLPs45SHzUlWMSC+buBboOaQD65Bi
+Eb9iqzqZKKYy/rs5wGlsFJse5tfGLft92dnB/XrYMaC5GYvuvkXCPHlwSwKBgCFH
+aV7G7Wiie7lNYo57SCGUuQ2L6uHMr5KmcHJPLI83L11uC6b/wphMQMIWwgv1Eoop
+NlBaECRgN49RegqdnMKrJPI0u+Hki9UEffj7y/BWFHT0MQX5w6fB2ivNB2ppk9pM
+aNGflyttyMHUPiLOaobQW/uTvQwlZj2TsHb3PXGpAoGAOFoIhx4u8KuYapO4eEWG
+ct0VyvR+4aPFMym2ws4ccqysCgf0wUyRMBzmFi86gbrYa+5bI62Xs6icTHDVArY+
+ZkqI4RJzdlx7PhDiiK6nDzcrYm71dcVYbvTsKY8qThDwkKuu2wLxeRn/XG1XfsnA
+ZZwAR6etAVtSbuV2AXkGJn0=
+-----END PRIVATE KEY-----
+--- END /home/dacnftp/private.key ---
+
+=== FILE: /home/dacnftp/certificate.crt ===
+-----BEGIN CERTIFICATE-----
+MIIFXDCCBESgAwIBAgISAyEVKovG9AFSdLLnOd70LECxMA0GCSqGSIb3DQEBCwUA
+MEoxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MSMwIQYDVQQD
+ExpMZXQncyBFbmNyeXB0IEF1dGhvcml0eSBYMzAeFw0yMDAzMTgwNzIyMzNaFw0y
+MDA2MTYwNzIyMzNaMBcxFTATBgNVBAMMDCoudHlsNzc3LmNvbTCCASIwDQYJKoZI
+hvcNAQEBBQADggEPADCCAQoCggEBAJ1I1VZi9hu76ou79km7G8/FVkEZhvJZO0jG
+u0kokZJWGBFug4p/DN225A4dj+9Nc6LyeKDtA29yqGhBfM71gQZTvD3cyvECgWrD
+EECDjpQgOVYLM0+JZOBsHdkj3hrjv6rzHoxmoNffcHrxMJ41Uja5L3SDHlRCgDmn
+14FyBa+eFNUKdY8E9I5wzuRdFZh46Dnj3A3Yb6Om46QM/EiPFXaYdz+0FkWEn8SR
++/ky3AhlDOzOjjoTxqWHk4hBxKt8H58IyhDd6bCEwXQvOQtUqwXJI7XafrObFtTE
+wpg/YBOuVDyvukzk+/8v9udiGkdVcq+VapF0EJtbsEePhXVY2r8CAwEAAaOCAm0w
+ggJpMA4GA1UdDwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUH
+AwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUMB0k1D5IMlSgpAi4y1HfRtHzwksw
+HwYDVR0jBBgwFoAUqEpqYwR93brm0Tm3pkVl7/Oo7KEwbwYIKwYBBQUHAQEEYzBh
+MC4GCCsGAQUFBzABhiJodHRwOi8vb2NzcC5pbnQteDMubGV0c2VuY3J5cHQub3Jn
+MC8GCCsGAQUFBzAChiNodHRwOi8vY2VydC5pbnQteDMubGV0c2VuY3J5cHQub3Jn
+LzAjBgNVHREEHDAaggwqLnR5bDc3Ny5jb22CCnR5bDc3Ny5jb20wTAYDVR0gBEUw
+QzAIBgZngQwBAgEwNwYLKwYBBAGC3xMBAQEwKDAmBggrBgEFBQcCARYaaHR0cDov
+L2Nwcy5sZXRzZW5jcnlwdC5vcmcwggEEBgorBgEEAdZ5AgQCBIH1BIHyAPAAdgDn
+EvKwN34aYvuOyQxhhPHqezfLVh0RJlvz4PNL8kFUbgAAAXDsvLDfAAAEAwBHMEUC
+ICvkRXBe0wHKxe/tB3J3HQG9CvebsTjkW0ggUs8iXChHAiEA1oWX3wJV/JGinWyu
+a4zueqQd1ZLGpa94anODMV4yI+QAdgAHt1wb5X1o//Gwxh0jFce65ld8V5S3au68
+YToaadOiHAAAAXDsvLESAAAEAwBHMEUCIGX4S2766QqyB3Qsjh5c1w4NY+fVpG99
+TXEML+vJgSFrAiEAtZb4lt2VKr9fBO7kkykZm5zbjIGpu9Rq6NH/aZ7MeaIwDQYJ
+KoZIhvcNAQELBQADggEBAB6viluqJQvsKMtn8PZfpDhAPrkB/spClOGJ+bqtNz4r
+17zM/h4Qns33o8vp2OE9iA8wd+IwwyKZ4zlBFdwU+RJfpD0Mm2vNX1xVL/V9DNnp
+nWY0TdsHKluZSFDGq7ShRD+brL/lGwCjJ/gnO5qCbioYCW+KaMOag6KT4liROzDs
+jF9JQfb2FeCFPi8T21fz74Gl/aaxDJYZvax5YSF38Gy/2+mwMnS3ehupvIFXl45s
+ZPaeFVaQnmRu951oJTGZqrQG3hAYT2yAayeXNrS8riL0PD/kYvGaoMNKxrpLcd1g
+0+HbkDytR7B3oYJ6FTILk4ZMJdeg6qt8sFkNwXum51M=
+-----END CERTIFICATE-----
+--- END /home/dacnftp/certificate.crt ---
+
+=== FILE: /home/dacnftp/ca_bundle.crt ===
+-----BEGIN CERTIFICATE-----
+MIIEkjCCA3qgAwIBAgIQCgFBQgAAAVOFc2oLheynCDANBgkqhkiG9w0BAQsFADA/
+MSQwIgYDVQQKExtEaWdpdGFsIFNpZ25hdHVyZSBUcnVzdCBDby4xFzAVBgNVBAMT
+DkRTVCBSb290IENBIFgzMB4XDTE2MDMxNzE2NDA0NloXDTIxMDMxNzE2NDA0Nlow
+SjELMAkGA1UEBhMCVVMxFjAUBgNVBAoTDUxldCdzIEVuY3J5cHQxIzAhBgNVBAMT
+GkxldCdzIEVuY3J5cHQgQXV0aG9yaXR5IFgzMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEAnNMM8FrlLke3cl03g7NoYzDq1zUmGSXhvb418XCSL7e4S0EF
+q6meNQhY7LEqxGiHC6PjdeTm86dicbp5gWAf15Gan/PQeGdxyGkOlZHP/uaZ6WA8
+SMx+yk13EiSdRxta67nsHjcAHJyse6cF6s5K671B5TaYucv9bTyWaN8jKkKQDIZ0
+Z8h/pZq4UmEUEz9l6YKHy9v6Dlb2honzhT+Xhq+w3Brvaw2VFn3EK6BlspkENnWA
+a6xK8xuQSXgvopZPKiAlKQTGdMDQMc2PMTiVFrqoM7hD8bEfwzB/onkxEz0tNvjj
+/PIzark5McWvxI0NHWQWM6r6hCm21AvA2H3DkwIDAQABo4IBfTCCAXkwEgYDVR0T
+AQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwfwYIKwYBBQUHAQEEczBxMDIG
+CCsGAQUFBzABhiZodHRwOi8vaXNyZy50cnVzdGlkLm9jc3AuaWRlbnRydXN0LmNv
+bTA7BggrBgEFBQcwAoYvaHR0cDovL2FwcHMuaWRlbnRydXN0LmNvbS9yb290cy9k
+c3Ryb290Y2F4My5wN2MwHwYDVR0jBBgwFoAUxKexpHsscfrb4UuQdf/EFWCFiRAw
+VAYDVR0gBE0wSzAIBgZngQwBAgEwPwYLKwYBBAGC3xMBAQEwMDAuBggrBgEFBQcC
+ARYiaHR0cDovL2Nwcy5yb290LXgxLmxldHNlbmNyeXB0Lm9yZzA8BgNVHR8ENTAz
+MDGgL6AthitodHRwOi8vY3JsLmlkZW50cnVzdC5jb20vRFNUUk9PVENBWDNDUkwu
+Y3JsMB0GA1UdDgQWBBSoSmpjBH3duubRObemRWXv86jsoTANBgkqhkiG9w0BAQsF
+AAOCAQEA3TPXEfNjWDjdGBX7CVW+dla5cEilaUcne8IkCJLxWh9KEik3JHRRHGJo
+uM2VcGfl96S8TihRzZvoroed6ti6WqEBmtzw3Wodatg+VyOeph4EYpr/1wXKtx8/
+wApIvJSwtmVi4MFU5aMqrSDE6ea73Mj2tcMyo5jMd6jmeWUHK8so/joWUoHOUgwu
+X4Po1QYz+3dszkDqMp4fklxBwXRsW10KXzPMTZ+sOPAveyxindmjkW8lGy+QsRlG
+PfZ+G6Z6h7mjem0Y+iWlkYcV4PIWL1iwBi8saCbGS5jN2p8M+X+Q7UNKEkROb3N6
+KOqkqm57TH2H3eDJAkSnh6/DNFu0Qg==
+-----END CERTIFICATE-----
+--- END /home/dacnftp/ca_bundle.crt ---
+
+=== FILE: /etc/letsencrypt/live/tyl777.com/privkey.pem ===
+NOT READABLE or DOES NOT EXIST
+
+--- END /etc/letsencrypt/live/tyl777.com/privkey.pem ---
+
+=== FILE: /etc/letsencrypt/live/tyl777.com/fullchain.pem ===
+NOT READABLE or DOES NOT EXIST
+
+--- END /etc/letsencrypt/live/tyl777.com/fullchain.pem ---
+
+=== FILE: /etc/letsencrypt/live/tyl777.com/cert.pem ===
+NOT READABLE or DOES NOT EXIST
+
+--- END /etc/letsencrypt/live/tyl777.com/cert.pem ---
+
+=== FILE: /var/www/html/tyl777/.htaccess ===
+<filesMatch ".(jpg|jpeg|png|gif|ico|json|svg)$">
+Header set Cache-Control "max-age=31536000, public"
+</filesMatch>
+
+<filesMatch ".(css|js)$">
+Header set Cache-Control "max-age=31536000, public"
+</filesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+    
+    # Redirect http to https
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+--- END /var/www/html/tyl777/.htaccess ---
+
+=== FILE: /var/www/html/tyl777/webSocket.php ===
+<?php
+error_reporting(E_ALL ^ E_NOTICE);
+ob_implicit_flush();
+
+//sendLine("WebSocket running");
+
+$webSocket = new SocketService('0.0.0.0', 9453);
+$webSocket->running();
+
+class SocketService{
+	public $sockets;		// socket連接池
+	public $users;			// 所有client连接进来的信息，包括socket、client名字等
+	public $master;			// socket resource
+	
+	// 開始Socket連線
+	public function __construct($address, $port) {
+		// 開始Socket連線並監聽
+		$server = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+		socket_set_option($server, SOL_SOCKET, SO_REUSEADDR, 1);
+		socket_bind($server, $address, $port);
+		socket_listen($server);
+		$this->master = $server;	// 主機資源名稱
+
+		// 將主機資源名稱塞入資源池
+		$this->sockets = [$this->master];
+	}
+	
+	//对创建的socket循环进行监听，处理数据	
+	function running(){
+		// 無限循環至Sokcet斷開
+		while(true){
+			// sendLine("running... " . socket_strerror(socket_last_error($this->master)) );
+			
+			// 判斷監聽資料是否有變化
+			$changes = $this->sockets;
+			$clientWrite = null;	// 客戶端是否有資料；null = 不管是否有改寫變化
+			$except = null;			// 要排除的資料；null = 全部監聽
+			$timeOut = null;		// 超時秒數；null = 有新動作retern
+			socket_select($changes, $write, $except, $timeOut);
+			
+			foreach($changes as $sock){
+				// 連接池沒改變表示為新用戶
+				if($sock == $this->master){
+					// 將新的連線(client)綁定到主機資源中
+					$client = socket_accept($this->master);
+
+					// 將新的連線建立唯一值
+					$key = uniqid();
+					$this->sockets[] = $client;	// 將新的連線加入資源池中
+					$this->users[$key] = [ 'socket' => $client, 'shou' => false];	// 建立新的使用者，shou => 三向交握狀態
+				} else {
+					$recvLen = 0;
+					$buffer = '';
+					// 讀取Socket內容，每次讀取1000bit，
+					do {
+						$l = socket_recv($sock, $buf, 1000, 0);
+						$recvLen += $l;
+						$buffer .= $buf;
+					} while ($l == 1000);
+
+					// 找出該連線對應的ID
+					$clientKey = false;
+					foreach ($this->users as $k => $v) {
+						if($sock == $v['socket']) $clientKey = $k;
+					}
+
+					// 長度小於7 或 找不到使用者表示連線已斷開
+					if($recvLen < 7 || $clientKey == false) {
+						$this->close($clientKey);
+						continue;
+					}
+
+					// 坢斷該連線是否已三向交握
+					if(!$this->users[$clientKey]['shou']) {
+						$this->woshou($clientKey, $buffer);
+					} else {
+						// 針對收到的訊息進行解碼處理
+						$buffer = $this->uncode($buffer, $clientKey);
+						if($buffer == false){
+							continue;
+						}
+						// 確定有資訊，將訊息進行處理
+						$this->msgProcessing($buffer);
+					}
+				}
+			}
+			
+		}
+		
+	}
+	
+	// 關閉特定連線
+	function close($clientKey){
+		// 斷開對應Socket
+		socket_close($this->users[$clientKey]['socket']);
+		// 刪除連線列表內容
+		unset($this->users[$clientKey]);
+
+		$this->sockets= [$this->master];
+
+		// 重新整理資源池
+		foreach($this->users as $v){
+			$this->sockets[] = $v['socket'];
+		}
+	}
+	
+	// 對client開始進行三向交握
+	function woshou($clientKey, $buffer){
+
+		// 取Sec-WebSocket-Key的值加密；$key + 258EAFA5-E914-47DA-95CA-C5AB0DC85B11神秘字串
+		$buf  = substr($buffer,strpos($buffer,'Sec-WebSocket-Key:') + 18);
+		$key  = trim(substr($buf, 0, strpos($buf, "\r\n")));
+		$returnKey = base64_encode(sha1($key . "258EAFA5-E914-47DA-95CA-C5AB0DC85B11", true));
+		
+		$new_message = "HTTP/1.1 101 Switching Protocols\r\n";
+		$new_message .= "Upgrade: websocket\r\n";
+		$new_message .= "Sec-WebSocket-Version: 13\r\n";
+		$new_message .= "Connection: Upgrade\r\n";
+		$new_message .= "Sec-WebSocket-Accept: " . $returnKey . "\r\n\r\n";
+		socket_write($this->users[$clientKey]['socket'],$new_message,strlen($new_message));
+		$this->users[$clientKey]['shou'] = true;
+		return true;
+		
+	}
+	
+	// 解碼訊息
+	function uncode($buffer, $clientKey){
+		$mask = [];
+		$data = '';
+		$bufferPack = unpack('H*', $buffer);	// 將原本二進制解碼為十六進制
+		$head = substr($bufferPack[1], 0, 2);
+		if ($head == '81' && !isset($this->slen[$clientKey])) {
+			$len = substr($bufferPack[1], 2, 2);
+			$len = hexdec($len);
+			if(substr($bufferPack[1] , 2, 2) == 'fe') {
+				$len = substr($bufferPack[1], 4, 4);
+				$len = hexdec($len);
+				$bufferPack[1] = substr($bufferPack[1], 4);
+			} else if(substr($bufferPack[1], 2, 2) == 'ff') {
+				$len = substr($bufferPack[1], 4, 16);
+				$len = hexdec($len);
+				$bufferPack[1] = substr($bufferPack[1], 16);
+			}
+			$mask[] = hexdec(substr($bufferPack[1], 4, 2));
+			$mask[] = hexdec(substr($bufferPack[1], 6, 2));
+			$mask[] = hexdec(substr($bufferPack[1], 8, 2));
+			$mask[] = hexdec(substr($bufferPack[1], 10, 2));
+			$s = 12;
+			$n = 0;
+		} else if($this->slen[$clientKey] > 0) {
+			$len = $this->slen[$clientKey];
+			$mask = $this->ar[$clientKey];
+			$n = $this->n[$clientKey];
+			$s = 0;
+		}
+		
+		$e = strlen($bufferPack[1])-2;
+		for ($i = $s; $i <= $e; $i += 2) {
+			$data .= chr($mask[$n%4]^hexdec(substr($bufferPack[1], $i, 2)));
+			$n++;
+		}
+		$dlen = strlen($data);
+		
+		if($len > 255 && $len > $dlen + intval($this->sjen[$clientKey])) {
+			$this->ar[$clientKey] = $mask;
+			$this->slen[$clientKey] = $len;
+			$this->sjen[$clientKey] = $dlen + intval($this->sjen[$clientKey]);
+			$this->sda[$clientKey] = $this->sda[$clientKey] . $data;
+			$this->n[$clientKey] = $n;
+			return false;
+		} else {
+			unset($this->ar[$clientKey], $this->slen[$clientKey], $this->sjen[$clientKey], $this->n[$clientKey]);
+			$data = $this->sda[$clientKey] . $data;
+			unset($this->sda[$clientKey]);
+			return $data;
+		}
+		
+	}
+	
+	// 對傳送得資訊進行編碼
+	function code($msg){
+		$frame = [];
+		$frame[0] = '81';
+		$len = strlen($msg);
+		if($len < 126) {
+			$frame[1] = $len < 16? '0' . dechex($len):dechex($len);
+		} else if($len < 65025) {
+			$s  =dechex($len);
+			$frame[1] = '7e' . str_repeat('0', 4 - strlen($s)) . $s;
+		} else {
+			$s = dechex($len);
+			$frame[1] = '7f' . str_repeat('0', 16 - strlen($s)) . $s;
+		}
+		// 將訊息轉換為十六進制
+		$msgHex = '';
+		$msgLen = strlen($msg);
+		for ($i = 0; $i < $msgLen; $i++) {
+			$msgHex .= dechex(ord($msg{$i}));
+		}
+		$frame[2] = $msgHex;
+		$data = implode('', $frame);
+		return pack("H*", $data);
+	}
+
+	function msgProcessing($buffer) {
+		$msg = json_decode($buffer, true);
+		if( isset($msg['event']) ) {
+			switch ($msg['event']) {
+				case 'newWish':
+					$msg['event'] = 'newWish';
+					$msg['time'] = date("Y-m-d H:i:s");
+					$this->sendClient($msg);
+					break;
+				
+				default:
+					$msg['online'] = count($this->users);
+					$msg['time'] = date("Y-m-d H:i:s");
+					$this->sendClient($msg);
+			}
+		}
+	}
+
+	function sendClient($msg) {
+		$users = $this->users;
+		$msg = $this->code(json_encode($msg));
+		foreach($users as $user){
+			socket_write($user['socket'], $msg, strlen($msg));
+		}
+	}
+}
+
+function curlPost($url = '', $data = [], $header = [] ){
+	$ch = curl_init();
+	curl_setopt_array($ch, array(
+		CURLOPT_URL => $url,
+		CURLOPT_POST => TRUE,
+		CURLOPT_RETURNTRANSFER => TRUE,
+		CURLOPT_SSL_VERIFYHOST => 1,
+		CURLOPT_SSL_VERIFYPEER => 0,
+		CURLOPT_HTTPHEADER => array(implode(' ',$header)),
+		CURLOPT_POSTFIELDS => http_build_query($data),
+		CURLOPT_TIMEOUT => 5000,
+	));
+	$result = curl_exec($ch);
+	curl_close($ch);
+	return $result;
+}
+
+function sendLine($text){
+	$url = "https://notify-api.line.me/api/notify";
+	$header[] = 'Authorization: Bearer';
+	$header[] = 'xDiRhmrP4dGGTdm6iRvWVqqh37Qynllk8IejXzjw59s';
+	$data['message'] = "\r\n" . date('Y-m-d H:i:s') . "\r\n" . $text;
+	curlPost($url, $data, $header);
+	return true;
+}
+?>
+--- END /var/www/html/tyl777/webSocket.php ---
+
+=== FILE: /var/www/html/tyl777/model/systemConfig.php ===
+<?php
+	define('siteURL'			, '/');
+	define('dbHost'				, '127.0.0.1');						// 資料庫位址
+	define('dbUser'				, 'root');					// 資料庫使用者名稱
+	define('dbPw'				, 'dacn0919167710');				// 資料庫使用者密碼
+	define('dbName'				, 'tyl777');						// 資料庫名稱
+	define('randValue'			, date("Ymd"));						// 供SQL隨機生成頻率用
+	define('imgFont'			, $_SERVER['DOCUMENT_ROOT'] . siteURL . 'docs/font/NotoSans-Regular.ttf');	// 生成圖片使用的字型路徑
+?>
+
+--- END /var/www/html/tyl777/model/systemConfig.php ---
+
+=== FILE: /var/www/html/tyl777/.gitignore ===
+model/systemConfig.php
+wp-content
+docs/left_images/*.jpg
+docs/left_images/*.png
+docs/summerNote_img/images
+docs/card_images/*.jpg
+docs/card_images/*.png
+
+--- END /var/www/html/tyl777/.gitignore ---
+
+=== FILE: /etc/apache2/sites-enabled/tyl777.conf ===
+NOT READABLE or DOES NOT EXIST
+
+--- END /etc/apache2/sites-enabled/tyl777.conf ---
+
+=== FILE: /etc/php/7.4/apache2/php.ini ===
+NOT READABLE or DOES NOT EXIST
+
+--- END /etc/php/7.4/apache2/php.ini ---
+
+=== FILE: /etc/php/7.4/apache2/conf.d/*.ini ===
+NOT READABLE or DOES NOT EXIST
+
+--- END /etc/php/7.4/apache2/conf.d/*.ini ---
+
+=== FILE: /etc/fail2ban/jail.local ===
+NOT READABLE or DOES NOT EXIST
+
+--- END /etc/fail2ban/jail.local ---
+
+=== FILE: /etc/ufw/ufw.conf ===
+# /etc/ufw/ufw.conf
+#
+
+# Set to yes to start on boot. If setting this remotely, be sure to add a rule
+# to allow your remote connection before starting ufw. Eg: 'ufw allow 22/tcp'
+ENABLED=no
+
+# Please use the 'ufw' command to set the loglevel. Eg: 'ufw logging medium'.
+# See 'man ufw' for details.
+LOGLEVEL=low
+
+--- END /etc/ufw/ufw.conf ---
+
+=== FILE: /etc/ssh/sshd_config ===
+#	$OpenBSD: sshd_config,v 1.103 2018/04/09 20:41:22 tj Exp $
+
+# This is the sshd server system-wide configuration file.  See
+# sshd_config(5) for more information.
+
+# This sshd was compiled with PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# The strategy used for options in the default sshd_config shipped with
+# OpenSSH is to specify options with their default value where
+# possible, but leave them commented.  Uncommented options override the
+# default value.
+
+#Port 22
+#AddressFamily any
+#ListenAddress 0.0.0.0
+#ListenAddress ::
+
+#HostKey /etc/ssh/ssh_host_rsa_key
+#HostKey /etc/ssh/ssh_host_ecdsa_key
+#HostKey /etc/ssh/ssh_host_ed25519_key
+
+# Ciphers and keying
+#RekeyLimit default none
+
+# Logging
+#SyslogFacility AUTH
+#LogLevel INFO
+
+# Authentication:
+
+#LoginGraceTime 2m
+#PermitRootLogin prohibit-password
+#StrictModes yes
+#MaxAuthTries 6
+#MaxSessions 10
+
+#PubkeyAuthentication yes
+
+# Expect .ssh/authorized_keys2 to be disregarded by default in future.
+#AuthorizedKeysFile	.ssh/authorized_keys .ssh/authorized_keys2
+
+#AuthorizedPrincipalsFile none
+
+#AuthorizedKeysCommand none
+#AuthorizedKeysCommandUser nobody
+
+# For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
+#HostbasedAuthentication no
+# Change to yes if you don't trust ~/.ssh/known_hosts for
+# HostbasedAuthentication
+#IgnoreUserKnownHosts no
+# Don't read the user's ~/.rhosts and ~/.shosts files
+#IgnoreRhosts yes
+
+# To disable tunneled clear text passwords, change to no here!
+PasswordAuthentication no
+#PermitEmptyPasswords no
+
+# Change to yes to enable challenge-response passwords (beware issues with
+# some PAM modules and threads)
+ChallengeResponseAuthentication no
+
+# Kerberos options
+#KerberosAuthentication no
+#KerberosOrLocalPasswd yes
+#KerberosTicketCleanup yes
+#KerberosGetAFSToken no
+
+# GSSAPI options
+#GSSAPIAuthentication no
+#GSSAPICleanupCredentials yes
+#GSSAPIStrictAcceptorCheck yes
+#GSSAPIKeyExchange no
+
+# Set this to 'yes' to enable PAM authentication, account processing,
+# and session processing. If this is enabled, PAM authentication will
+# be allowed through the ChallengeResponseAuthentication and
+# PasswordAuthentication.  Depending on your PAM configuration,
+# PAM authentication via ChallengeResponseAuthentication may bypass
+# the setting of "PermitRootLogin without-password".
+# If you just want the PAM account and session checks to run without
+# PAM authentication, then enable this but set PasswordAuthentication
+# and ChallengeResponseAuthentication to 'no'.
+UsePAM yes
+
+#AllowAgentForwarding yes
+#AllowTcpForwarding yes
+#GatewayPorts no
+X11Forwarding yes
+#X11DisplayOffset 10
+#X11UseLocalhost yes
+#PermitTTY yes
+PrintMotd no
+#PrintLastLog yes
+#TCPKeepAlive yes
+#PermitUserEnvironment no
+#Compression delayed
+#ClientAliveInterval 0
+#ClientAliveCountMax 3
+#UseDNS no
+#PidFile /var/run/sshd.pid
+#MaxStartups 10:30:100
+#PermitTunnel no
+#ChrootDirectory none
+#VersionAddendum none
+
+# no default banner path
+#Banner none
+
+# Allow client to pass locale environment variables
+AcceptEnv LANG LC_*
+
+# override default of no subsystems
+Subsystem	sftp	/usr/lib/openssh/sftp-server
+
+# Example of overriding settings on a per-user basis
+#Match User anoncvs
+#	X11Forwarding no
+#	AllowTcpForwarding no
+#	PermitTTY no
+#	ForceCommand cvs server
+#
+# Google Compute Engine times out connections after 10 minutes of inactivity.
+# Keep alive ssh connections by sending a packet every 2 minutes.
+ClientAliveInterval 120
+
+# Prevent reverse DNS lookups.
+UseDNS no
+
+--- END /etc/ssh/sshd_config ---
+
+=== SUDOERS ===
+ 

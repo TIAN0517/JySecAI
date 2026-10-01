@@ -1,0 +1,36 @@
+===== GCP EPCR :8000 main =====
+  [200] :8000/ :: ? text/html; charset=UTF-8 '<!DOCTYPE html>\n<html ng-app="EPCRServer">\n<head>\n  <meta charset="utf-8">\n  <meta name="v'
+  [200] :8000/config :: ? application/json; charset '{"port":"6500","hostname":"http://35.234.50.28","vitalSignVideoServer":"http://35.234.50.2'
+  [200] :8000/js/publicConfig.js :: ? application/javascript; c 'app.constant(\'PUBLIC_CONFIG\',{"port":"6500","hostname":"http://35.234.50.28","vitalSignVid'
+  [200] :8000/index.html :: ? text/html; charset=UTF-8 '<!DOCTYPE html>\n<html ng-app="EPCRServer">\n<head>\n  <meta charset="utf-8">\n  <meta name="v'
+  [404] :8000/login :: ? text/html; charset=utf-8 '<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href="/stylesheets/style.'
+  [401] :8000/Users :: ? text/html; charset=utf-8 '<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href="/stylesheets/style.'
+  [401] :8000/Roles :: ? text/html; charset=utf-8 '<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href="/stylesheets/style.'
+  [401] :8000/Permissions :: ? text/html; charset=utf-8 '<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href="/stylesheets/style.'
+  [401] :8000/api :: ? text/html; charset=utf-8 '<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href="/stylesheets/style.'
+  [401] :8000/swagger :: ? text/html; charset=utf-8 '<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href="/stylesheets/style.'
+  [401] :8000/debug :: ? text/html; charset=utf-8 '<!DOCTYPE html><html><head><title></title><link rel="stylesheet" href="/stylesheets/style.'
+
+===== GCP API :9000 (same as :4000) =====
+  [404] :9000/config :: text/html; charset=utf-8 '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Error</title>\n</head'
+  [404] :9000/js/publicConfig.js :: text/html; charset=utf-8 '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Error</title>\n</head'
+  [404] :9000/js/services.js :: text/html; charset=utf-8 '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Error</title>\n</head'
+  [404] :9000/Users :: text/html; charset=utf-8 '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Error</title>\n</head'
+  [404] :9000/Roles :: text/html; charset=utf-8 '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Error</title>\n</head'
+  [404] :9000/Permissions :: text/html; charset=utf-8 '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Error</title>\n</head'
+  [404] :9000/DispatchRecord :: text/html; charset=utf-8 '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Error</title>\n</head'
+  [404] :9000/socket.io/?EIO=3&transport=polling :: text/html; charset=utf-8 '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Error</title>\n</head'
+
+===== GCP :30080 (nginx 403) =====
+  [403] :30080/ :: '<html>\r\n<head><title>403 Forbidden</title></head>\r\n<body>\r\n<'
+  [404] :30080/index.html :: '<html>\r\n<head><title>404 Not Found</title></head>\r\n<body>\r\n<'
+  [404] :30080/live :: '<html>\r\n<head><title>404 Not Found</title></head>\r\n<body>\r\n<'
+  [404] :30080/stat.html :: '<html>\r\n<head><title>404 Not Found</title></head>\r\n<body>\r\n<'
+
+===== open-proxy / redirect probes on :8000 =====
+  [200] /?url=http://evil.com :: loc='?' '<!DOCTYPE html>\n<html ng-app="EPCRServer">\n<head>\n  <meta ch'
+  [200] /?redirect=http://evil.com :: loc='?' '<!DOCTYPE html>\n<html ng-app="EPCRServer">\n<head>\n  <meta ch'
+  [200] /?next=http://evil.com :: loc='?' '<!DOCTYPE html>\n<html ng-app="EPCRServer">\n<head>\n  <meta ch'
+  [401] /redirect?url=http://evil.com :: loc='?' '<!DOCTYPE html><html><head><title></title><link rel="stylesh'
+  [200] /?location=http://evil.com :: loc='?' '<!DOCTYPE html>\n<html ng-app="EPCRServer">\n<head>\n  <meta ch'
+done

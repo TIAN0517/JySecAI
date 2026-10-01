@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/opt/CyberStrikeAI/tmp/workspace/projects/cda6ab9b-2296-4103-b1f0-10410de2eca8/xss_exfil_listener.py", line 103, in <module>
+    main()
+  File "/opt/CyberStrikeAI/tmp/workspace/projects/cda6ab9b-2296-4103-b1f0-10410de2eca8/xss_exfil_listener.py", line 92, in main
+    server = ThreadedTCPServer(("0.0.0.0", port), ExfilHandler)
+  File "/usr/lib/python3.10/socketserver.py", line 452, in __init__
+    self.server_bind()
+  File "/usr/lib/python3.10/socketserver.py", line 466, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use

@@ -1,0 +1,105 @@
+GET /400 SEC | 
+GET /401 SEC | 
+GET /404 SEC | 
+GET /405 SEC | 
+GET /408 SEC | 
+GET /500 SEC | 
+POST /api/app/bind SEC | authorizationToken(query,string), deviceId(query,string), email(query,string), loginMode(query,string)
+POST /api/app/cancel SEC | authorizationToken(query,string), deviceId(query,string)
+POST /api/app/check SEC | authorizationToken(query,string), deviceId(query,string)
+GET /api/app/getCaseList SEC | authorizationToken(query,string)
+GET /api/app/getHistoryCaseList SEC | authorizationToken(query,string), endTime(query,string), startTime(query,string)
+POST /api/app/resend SEC | authorizationToken(query,string), deviceId(query,string)
+POST /api/app/verification SEC | authorizationToken(query,string), deviceId(query,string), verifyCode(query,string)
+GET /api/dscm/getDisBoard SEC | token(query,string)
+GET /api/dscm/getDisPrjEMIS SEC | token(query,string)
+GET /api/dscm/getDisPrjEMISTem SEC | token(query,string)
+GET /api/dscm/getDisaAnn SEC | token(query,string)
+GET /api/dscm/getUplFileRelate SEC | token(query,string)
+GET /api/dscm/getUploadFileInfo SEC | token(query,string)
+GET /api/eoc/details SEC | token(query,string)
+GET /api/getRealTimeFire SEC | token(query,string)
+GET /api/getRealTimeNewAmbulance SEC | token(query,string)
+GET /exception SEC | 
+POST /v3/api/backstage/account/edit/role SEC | role(query,string), userId(query,string)
+POST /v3/api/backstage/account/edit/status SEC | status(query,string), userId(query,string)
+GET /v3/api/backstage/account/list SEC | keyword(query,string), loginMode(query,string), role(query,string)
+GET /v3/api/backstage/analysis/eoc SEC | caseNo(query,string)
+GET /v3/api/backstage/analysis/eoc/report SEC | caseNo(query,string)
+GET /v3/api/backstage/analysis/member SEC | yearMonth(query,string)
+GET /v3/api/backstage/analysis/member/report SEC | yearMonth(query,string)
+GET /v3/api/backstage/analysis/rescue SEC | yearMonth(query,string)
+GET /v3/api/backstage/analysis/rescue/report SEC | yearMonth(query,string)
+GET /v3/api/backstage/analysis/user SEC | yearMonth(query,string)
+GET /v3/api/backstage/analysis/user/report SEC | yearMonth(query,string)
+GET /v3/api/backstage/analysis/web SEC | yearMonth(query,string)
+GET /v3/api/backstage/analysis/web/report SEC | yearMonth(query,string)
+GET /v3/api/backstage/bulletin/detail SEC | bulletinId(query,string)
+POST /v3/api/backstage/bulletin/info/edit SEC | action(query,string), category(query,string), endTime(query,string), eocId(query,string), files(query,array), filesName(query,array), id(query,string), images(query,array), imagesName(query,array), layerCount(query,integer), layerDescription(query,string), priority(query,integer), relatedLink(query,string), startTime(query,string), title(query,string), verifyStatus(query,string)
+POST /v3/api/backstage/bulletin/layer/edit SEC | bulletinId(query,string), bulletinLayerJsonString(query,string), images(query,array)
+GET /v3/api/backstage/bulletin/list SEC | 
+POST /v3/api/backstage/bulletin/verify SEC | id(query,string), verifyStatus(query,string)
+POST /v3/api/backstage/comment/hide SEC | commentId(query,integer), status(query,string)
+GET /v3/api/backstage/comment/list SEC | endTime(query,string), startTime(query,string)
+POST /v3/api/backstage/contactus/close SEC | contactId(query,string)
+GET /v3/api/backstage/contactus/list SEC | endTime(query,string), startTime(query,string)
+POST /v3/api/backstage/contactus/reply SEC | vo(body,ContactUsVo)
+POST /v3/api/backstage/identity/category/delete SEC | id(query,string)
+POST /v3/api/backstage/identity/category/edit SEC | vo(body,IdentityCategoryEditVo)
+POST /v3/api/backstage/identity/category/isEnable SEC | vo(body,StatusEditVo)
+GET /v3/api/backstage/identity/category/list SEC | keyword(query,string)
+POST /v3/api/backstage/identity/message/edit SEC | vo(body,IdentityMessageEditVo)
+GET /v3/api/backstage/identity/message/list SEC | keyword(query,string)
+POST /v3/api/backstage/monitor/isEnable SEC | id(query,string), status(query,string)
+GET /v3/api/backstage/monitor/list SEC | category(query,string), keyword(query,string), status(query,string)
+POST /v3/api/backstage/monitor/log SEC | id(query,string)
+POST /v3/api/backstage/user/detail SEC | 
+POST /v3/api/backstage/user/edit SEC | categoryId(query,string), picture(formData,file), userName(query,string)
+POST /v3/api/backstage/user/pwd/edit SEC | vo(body,UserEditPwdVo)
+GET /v3/api/clamAV/healthz SEC | 
+POST /v3/api/click/log SEC | vo(body,ClickLogVo)
+GET /v3/api/data/electricityEvent SEC | cache(query,string)
+GET /v3/api/data/showWeather SEC | 
+GET /v3/api/data/showWeatherOther SEC | 
+GET /v3/api/data/statistical/disaster SEC | cache(query,string)
+GET /v3/api/data/statistical/hotInfo SEC | cache(query,string)
+GET /v3/api/data/waterEvent SEC | cache(query,string)
+GET /v3/api/eoc/history/list SEC | 
+GET /v3/api/eoc/image SEC | fileNo(query,string)
+GET /v3/api/eoc/list SEC | 
+GET /v3/api/getFile/{path1}/{path2}/{name} SEC | 檔案名稱(path,string), 路徑1(path,string), 路徑2(path,string)
+GET /v3/api/getFile/{path1}/{path2}/{path3}/{name} SEC | 檔案名稱(path,string), 路徑1(path,string), 路徑2(path,string), 路徑3(path,string)
+GET /v3/api/healthz SEC | 
+GET /v3/api/map/around/location SEC | lat(query,number), lng(query,number), townName(query,string)
+POST /v3/api/map/disaster/comment/add SEC | accessToken(query,string), content(query,string), disasterId(query,string), images(formData,array), video(formData,file)
+GET /v3/api/map/disaster/comment/list SEC | itemId(query,string)
+GET /v3/api/map/dynamic/layer SEC | id(query,string), lat(query,number), lng(query,number), type(query,string)
+GET /v3/api/map/dynamic/layer/earthquake SEC | id(query,string), lat(query,number), lng(query,number)
+GET /v3/api/map/dynamic/layer/emap SEC | id(query,string), lat(query,number), lng(query,number), type(query,string)
+GET /v3/api/map/dynamic/layer/rescue SEC | lat(query,number), lng(query,number)
+GET /v3/api/map/eoc SEC | eocId(query,string)
+POST /v3/api/map/personal/focusarea/delete SEC | id(query,integer)
+POST /v3/api/map/personal/focusarea/edit SEC | place(query,string)
+GET /v3/api/map/personal/focusarea/list SEC | 
+GET /v3/api/map/static/layer SEC | id(query,string), lat(query,number), lng(query,number), type(query,string)
+GET /v3/api/mciCase/list SEC | 
+GET /v3/api/mciCase/person SEC | caseId(query,string), keyword(query,string), statusId(query,integer)
+GET /v3/api/menu/around SEC | lat(query,number), lng(query,number)
+POST /v3/api/menu/function SEC | cache(query,string)
+POST /v3/api/menu/layerInfo SEC | code(query,string)
+GET /v3/api/menu/newsInfo SEC | 
+GET /v3/api/onlineCount SEC | 
+POST /v3/api/personal/contact/add SEC | vo(body,ContactVo)
+POST /v3/api/personal/function/read SEC | 功能確認(0:未讀, 1:已確認)(query,string)
+GET /v3/api/user/certification SEC | token(query,string)
+GET /v3/api/user/forgetPwd SEC | email(query,string)
+POST /v3/api/user/login SEC | vo(body,LoginVo)
+GET /v3/api/user/login/fb SEC | code(query,string)
+GET /v3/api/user/login/google SEC | code(query,string)
+GET /v3/api/user/login/line SEC | code(query,string)
+GET /v3/api/user/login/ntp SEC | code(query,string)
+GET /v3/api/user/logout SEC | loginMode(query,string)
+POST /v3/api/user/register SEC | vo(body,RegisterVo)
+POST /v3/api/user/relogin SEC | accessToken(query,string)
+POST /v3/api/village/layer SEC | villageList(query,array)
+GET /v3/api/village/list SEC | 

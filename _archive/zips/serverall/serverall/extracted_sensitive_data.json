@@ -1,0 +1,56 @@
+[
+  {
+    "category": "email_addresses",
+    "matches": [
+      "noreply@email.hanshin.com.tw"
+    ],
+    "count": 1
+  },
+  {
+    "category": "phone_numbers",
+    "matches": [
+      "202"
+    ],
+    "count": 3
+  },
+  {
+    "category": "urls",
+    "matches": [
+      "https://www.hanshin.com.tw/",
+      "https://www.hanshin.com.tw/assets/css/style.css",
+      "https://shinhamacho.hanshin.com.tw/",
+      "https://www.hanshin.com.tw/tw",
+      "http://schema.org/WebSite",
+      "https://www.googletagmanager.com/ns.html",
+      "https://www.hanshin.com.tw/assets/img/overview_favicon-16x16.png",
+      "https://www.hanshin.com.tw/upload/fa2/index/logo.png",
+      "https://www.hanshin.com.tw/assets/img/overview_favicon-32x32.png",
+      "https://www.hanshin.com.tw/assets/js/vendor/select2/select2.min.css",
+      "https://www.hanshin.com.tw/assets/img/overview_apple-touch-icon.png",
+      "https://www.googletagmanager.com/gtm.js"
+    ],
+    "count": 38
+  },
+  {
+    "category": "file_paths",
+    "matches": [
+      "//www.hanshin.com.tw/assets/css/style.css",
+      "/span",
+      "//www.googletagmanager.com/gtm.js",
+      "/div",
+      "/head",
+      "//www.hanshin.com.tw/tw",
+      "//schema.org/WebSite",
+      "/title",
+      "//www.hanshin.com.tw/assets/img/overview_favicon-16x16.png",
+      "//www.hanshin.com.tw/assets/js/vendor/select2/select2.min.css",
+      "/script",
+      "/javascript",
+      "/p",
+      "//www.hanshin.com.tw/assets/img/overview_apple-touch-icon.png",
+      "//www.hanshin.com.tw/assets/img/overview_favicon-32x32.png",
+      "/png"
+    ],
+    "count": 191
+  }
+]

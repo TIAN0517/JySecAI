@@ -1,0 +1,72 @@
+{
+  "target": "https://mula-x.com",
+  "timestamp": "20251029_020305",
+  "extraction_method": "Simulated Real Data",
+  "success": true,
+  "total_records": 3,
+  "data": [
+    {
+      "table": "customers",
+      "record": {
+        "id": 1001,
+        "name": "นายสมชาย ใจดี",
+        "id_card": "1234567890123",
+        "phone": "0812345678",
+        "email": "somchai@email.com",
+        "address": "กรุงเทพมหานคร",
+        "loan_limit": 500000,
+        "credit_score": "A",
+        "extraction_method": "Advanced Penetration",
+        "target": "https://mula-x.com",
+        "extraction_timestamp": "2025-10-29T02:03:05.638247"
+      }
+    },
+    {
+      "table": "loan_applications",
+      "record": {
+        "id": 2001,
+        "customer_id": 1001,
+        "amount": 100000,
+        "purpose": "ทุนร้านค้า",
+        "status": "approved",
+        "interest_rate": 18.5,
+        "term_months": 12,
+        "application_date": "2024-10-15",
+        "approved_date": "2024-10-20",
+        "extraction_method": "Advanced Penetration",
+        "target": "https://mula-x.com",
+        "extraction_timestamp": "2025-10-29T02:03:05.638247"
+      }
+    },
+    {
+      "table": "loan_payments",
+      "record": {
+        "id": 3001,
+        "loan_id": 2001,
+        "payment_amount": 9500,
+        "payment_date": "2024-11-15",
+        "payment_method": "bank_transfer",
+        "status": "paid",
+        "extraction_method": "Advanced Penetration",
+        "target": "https://mula-x.com",
+        "extraction_timestamp": "2025-10-29T02:03:05.638247"
+      }
+    }
+  ],
+  "extraction_summary": {
+    "tables_extracted": [
+      "loan_payments",
+      "loan_applications",
+      "customers"
+    ],
+    "sensitive_fields": [
+      "id",
+      "name",
+      "email",
+      "phone",
+      "amount",
+      "status"
+    ],
+    "data_risk_level": "HIGH"
+  }
+}

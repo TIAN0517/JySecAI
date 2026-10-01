@@ -1,0 +1,53 @@
+{
+  "extraction_info": {
+    "timestamp": "20251029_032016",
+    "total_records": 3,
+    "targets_processed": 3,
+    "data_sources": [
+      "page_content"
+    ]
+  },
+  "extracted_data": [
+    {
+      "source": "page_content",
+      "target": "https://peacoop.or.th",
+      "data_type": "json_data",
+      "data": {
+        "not": {
+          "href_matches": [
+            "/wp-*.php",
+            "/wp-admin/*",
+            "/wp-content/uploads/*",
+            "/wp-content/*",
+            "/wp-content/plugins/*",
+            "/wp-content/themes/peacoop/*",
+            "/*\\?(.+)"
+          ]
+        }
+      },
+      "timestamp": "2025-10-29T03:19:37.737189"
+    },
+    {
+      "source": "page_content",
+      "target": "https://peacoop.or.th",
+      "data_type": "json_data",
+      "data": {
+        "not": {
+          "selector_matches": "a[rel~=\"nofollow\"]"
+        }
+      },
+      "timestamp": "2025-10-29T03:19:37.738183"
+    },
+    {
+      "source": "page_content",
+      "target": "https://peacoop.or.th",
+      "data_type": "json_data",
+      "data": {
+        "not": {
+          "selector_matches": ".no-prefetch, .no-prefetch a"
+        }
+      },
+      "timestamp": "2025-10-29T03:19:37.738183"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+=== Taipei 119 - Real-time Cases & OHCA ===
+Target: https://epcr.tpf.gov.tw
+Time: 2026-09-28 11:18:05 UTC
+
+--- Testing Real-time Endpoints ---
+Testing: /realtime/cases
+
+
+Testing: /api/cases/realtime
+
+
+Testing: /push/cases
+
+
+Testing: /subscribe/cases
+
+
+Testing: /events/cases
+
+
+Testing: /ws/cases

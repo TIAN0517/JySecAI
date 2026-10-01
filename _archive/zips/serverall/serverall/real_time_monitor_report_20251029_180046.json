@@ -1,0 +1,27 @@
+{
+  "report_time": "2025-10-29T18:00:46.569960",
+  "monitoring_status": "Active",
+  "statistics": {
+    "active_attacks": 0,
+    "total_alerts": 0,
+    "total_processes": 2
+  },
+  "recent_successes": [],
+  "vulnerability_alerts": [],
+  "monitored_processes": [
+    {
+      "pid": 27232,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe mcp_penetration_server.py",
+      "target": "mcp_penetration_server.py",
+      "type": "Python Exploit",
+      "status": "Running"
+    },
+    {
+      "pid": 30964,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe mcp_penetration_server.py",
+      "target": "mcp_penetration_server.py",
+      "type": "Python Exploit",
+      "status": "Running"
+    }
+  ]
+}

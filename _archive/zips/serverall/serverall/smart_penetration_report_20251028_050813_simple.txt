@@ -1,0 +1,101 @@
+智能渗透测试报告
+==================================================
+
+测试时间: 2025-10-28 05:08:13
+总目标数: 23
+有漏洞目标: 12
+安全目标: 11
+深度测试目标: 12
+
+漏洞统计:
+------------------------------
+XSS: 407
+SQL注入: 416
+命令注入: 211
+文件上传功能: 41
+
+有漏洞的目标:
+------------------------------
+
+https://www.icbcthai.com
+WAF类型: unknown
+  - XSS: q
+  - XSS: q
+  - XSS: q
+
+https://fundingsocieties.co.th
+WAF类型: cloudflare
+  - SQL注入: id
+  - SQL注入: id
+  - SQL注入: id
+
+https://www.investree.co.th
+WAF类型: cloudflare
+  - SQL注入: id
+  - SQL注入: id
+  - SQL注入: id
+
+https://www.scb.co.th
+WAF类型: cloudflare
+  - SQL注入: q
+  - SQL注入: q
+  - SQL注入: q
+
+https://www.krungsri.com
+WAF类型: imperva
+  - 文件上传功能: N/A
+  - 文件上传功能: N/A
+  - 文件上传功能: N/A
+
+https://www.bangkokbank.com
+WAF类型: akamai
+  - SQL注入: id
+  - SQL注入: id
+  - SQL注入: id
+
+https://www.uob.co.th
+WAF类型: unknown
+  - 文件上传功能: N/A
+  - 文件上传功能: N/A
+  - 文件上传功能: N/A
+
+https://www.finnomena.com
+WAF类型: cloudflare
+  - SQL注入: id
+  - SQL注入: id
+  - SQL注入: id
+
+https://www.rabbitfinance.com
+WAF类型: cloudflare
+  - SQL注入: id
+  - SQL注入: id
+  - SQL注入: id
+
+https://www.mula-x.com
+WAF类型: unknown
+  - 命令注入: cmd
+  - 命令注入: cmd
+  - 命令注入: cmd
+
+https://www.ghb.co.th
+WAF类型: imperva
+  - 文件上传功能: N/A
+  - 文件上传功能: N/A
+  - 文件上传功能: N/A
+
+https://www.gsb.or.th
+WAF类型: unknown
+  - XSS: q
+  - XSS: q
+  - XSS: q
+
+安全建议:
+------------------------------
+[CRITICAL] 立即修复漏洞: 发现 12 个有漏洞的目标需要立即修复
+[HIGH] SQL注入漏洞: https://fundingsocieties.co.th 存在SQL注入漏洞
+[HIGH] SQL注入漏洞: https://www.investree.co.th 存在SQL注入漏洞
+[HIGH] SQL注入漏洞: https://www.scb.co.th 存在SQL注入漏洞
+[MEDIUM] XSS漏洞: https://www.scb.co.th 存在XSS漏洞
+[HIGH] SQL注入漏洞: https://www.bangkokbank.com 存在SQL注入漏洞
+[HIGH] SQL注入漏洞: https://www.finnomena.com 存在SQL注入漏洞
+[HIGH] SQL注入漏洞: https://www.rabbitfinance.com 存在SQL注入漏洞

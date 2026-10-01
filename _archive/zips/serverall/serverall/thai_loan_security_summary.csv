@@ -1,0 +1,8 @@
+目标名称,URL,类型,优先级,可访问性,漏洞数量,状态码,响应时间
+MoneyCat Thailand,https://www.moneycat.co.th,在线贷款平台,高,不可访问,0,,None秒
+Mula-X,https://mula-x.com,私人贷款平台,高,可访问,0,200,0.55秒
+Rocket Cash,https://www.rocket-cash.com,微型贷款平台,中,不可访问,0,,None秒
+KLoan Thailand,https://kloan.co.th,个人贷款平台,高,不可访问,0,,None秒
+NgoenMun Finance,https://ngoenmun.com,金融科技公司,高,可访问,0,200,0.54秒
+Peacoop Credit Union,https://peacoop.or.th,信用合作社,中,可访问,0,200,0.95秒
+Ngern Tid Lor,https://www.ngerntidlor.com,汽车抵押贷款,中,可访问,0,200,0.23秒

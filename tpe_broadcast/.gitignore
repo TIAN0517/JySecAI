@@ -6,3 +6,4 @@ data/*.log
 data/*.json
 data/*.txt
 tpe119_token.json
+bot_routes.json

@@ -1,0 +1,642 @@
+endpoint,status,path,value
+cmd_101_member_profile(PII),0,BankAccount,
+cmd_101_member_profile(PII),0,CPF,
+cmd_101_member_profile(PII),0,FPSAccount,
+cmd_101_member_profile(PII),0,SLPAccount,
+cmd_101_member_profile(PII),0,USDTAddress,
+cmd_101_member_profile(PII),0,accountType,0
+cmd_101_member_profile(PII),0,agmark,
+cmd_101_member_profile(PII),0,banks,LIST(0 items)
+cmd_101_member_profile(PII),0,birthday,0000-00-00
+cmd_101_member_profile(PII),0,canWithdrawal,true
+cmd_101_member_profile(PII),0,email,
+cmd_101_member_profile(PII),0,facebook,
+cmd_101_member_profile(PII),0,icmode,0
+cmd_101_member_profile(PII),0,id,1909
+cmd_101_member_profile(PII),0,imageurl,
+cmd_101_member_profile(PII),0,integral,0.00
+cmd_101_member_profile(PII),0,isBankAudit,
+cmd_101_member_profile(PII),0,isChatroom,1
+cmd_101_member_profile(PII),0,isCredit,0
+cmd_101_member_profile(PII),0,isFirstReserve,0
+cmd_101_member_profile(PII),0,isMute,0
+cmd_101_member_profile(PII),0,isTest,0
+cmd_101_member_profile(PII),0,isUpdateNickname,0
+cmd_101_member_profile(PII),0,isWithdraw,0
+cmd_101_member_profile(PII),0,isWithdraw_member,0
+cmd_101_member_profile(PII),0,line,
+cmd_101_member_profile(PII),0,lockmoney,0.00
+cmd_101_member_profile(PII),0,lv,0
+cmd_101_member_profile(PII),0,memberVip,預設
+cmd_101_member_profile(PII),0,memberlvlID,1
+cmd_101_member_profile(PII),0,memberlvlno,A
+cmd_101_member_profile(PII),0,mode,1
+cmd_101_member_profile(PII),0,money,0.00
+cmd_101_member_profile(PII),0,money2,0.00
+cmd_101_member_profile(PII),0,ndnowBet,0
+cmd_101_member_profile(PII),0,needBet,0
+cmd_101_member_profile(PII),0,nowBet,0
+cmd_101_member_profile(PII),0,password,
+cmd_101_member_profile(PII),0,paypwd,
+cmd_101_member_profile(PII),0,phone,
+cmd_101_member_profile(PII),0,pid,0
+cmd_101_member_profile(PII),0,province,
+cmd_101_member_profile(PII),0,qq,0
+cmd_101_member_profile(PII),0,registime,2026-09-15 03:11:41
+cmd_101_member_profile(PII),0,sa,
+cmd_101_member_profile(PII),0,savemoney,0.00
+cmd_101_member_profile(PII),0,savetime,0
+cmd_101_member_profile(PII),0,savetimeData,LIST(0 items)
+cmd_101_member_profile(PII),0,sex,1
+cmd_101_member_profile(PII),0,showgamegroup,all
+cmd_101_member_profile(PII),0,skype,
+cmd_101_member_profile(PII),0,telegram,
+cmd_101_member_profile(PII),0,truename,TestUser
+cmd_101_member_profile(PII),0,upAgentPid,0
+cmd_101_member_profile(PII),0,upAgentType,3
+cmd_101_member_profile(PII),0,upAgentUrl,
+cmd_101_member_profile(PII),0,upAgentid,1
+cmd_101_member_profile(PII),0,userVerification,False
+cmd_101_member_profile(PII),0,username,cffcna6qzp
+cmd_101_member_profile(PII),0,vipConfig.1,"{'id': '1', 'title': 'VIP1', 'level': '1', 'cond_bet_amount': '100.00', 'cond_cash_in': '100.00', 'cond_relation': '1', 'birthday_money': '10.00', 'festival_money': '10.00', 'lottery_pct': '0', 'free_withdraw_num': '0', 'withdrawal_limit_money': '0', 'addtime': '1762358967', 'updatetime': '176235948"
+cmd_101_member_profile(PII),0,vipConfig.2,"{'id': '9', 'title': 'VIP2', 'level': '2', 'cond_bet_amount': '200.00', 'cond_cash_in': '200.00', 'cond_relation': '1', 'birthday_money': '50.00', 'festival_money': '50.00', 'lottery_pct': '0', 'free_withdraw_num': '0', 'withdrawal_limit_money': '0', 'addtime': '1762359324', 'updatetime': '176235949"
+cmd_101_member_profile(PII),0,vipConfig.3,"{'id': '8', 'title': 'VIP3', 'level': '3', 'cond_bet_amount': '300.00', 'cond_cash_in': '300.00', 'cond_relation': '1', 'birthday_money': '100.00', 'festival_money': '100.00', 'lottery_pct': '0', 'free_withdraw_num': '0', 'withdrawal_limit_money': '0', 'addtime': '1762359261', 'updatetime': '1762359"
+cmd_101_member_profile(PII),0,vipConfig.4,"{'id': '10', 'title': 'VIP4', 'level': '4', 'cond_bet_amount': '400.00', 'cond_cash_in': '400.00', 'cond_relation': '1', 'birthday_money': '150.00', 'festival_money': '150.00', 'lottery_pct': '0', 'free_withdraw_num': '0', 'withdrawal_limit_money': '0', 'addtime': '1762359441', 'updatetime': '176235"
+cmd_101_member_profile(PII),0,vipConfig.5,"{'id': '11', 'title': 'VIP5', 'level': '5', 'cond_bet_amount': '500.00', 'cond_cash_in': '500.00', 'cond_relation': '1', 'birthday_money': '200.00', 'festival_money': '200.00', 'lottery_pct': '0', 'free_withdraw_num': '0', 'withdrawal_limit_money': '0', 'addtime': '1762359476', 'updatetime': '176235"
+cmd_101_member_profile(PII),0,vipConfig.6,"{'id': '12', 'title': 'VIP6', 'level': '6', 'cond_bet_amount': '600.00', 'cond_cash_in': '600.00', 'cond_relation': '1', 'birthday_money': '250.00', 'festival_money': '250.00', 'lottery_pct': '0', 'free_withdraw_num': '0', 'withdrawal_limit_money': '0', 'addtime': '1762359515', 'updatetime': '176235"
+cmd_101_member_profile(PII),0,vipLevel,1
+cmd_101_member_profile(PII),0,vipname,VIP1
+cmd_101_member_profile(PII),0,wechat,
+cmd_101_member_profile(PII),0,wechatChange,0
+cmd_101_member_profile(PII),0,wechatId,testwechat001
+cmd_101_member_profile(PII),0,whatsapp,
+cmd_101_member_profile(PII),0,zalo,
+cmd_110_games,0,games,LIST(247 items)
+cmd_208_finance_summary,0,administrative,0.0
+cmd_208_finance_summary,0,bankfees,0
+cmd_208_finance_summary,0,bankfees2,0
+cmd_208_finance_summary,0,bankfeeslimit,0
+cmd_208_finance_summary,0,data,LIST(0 items)
+cmd_208_finance_summary,0,preferential,0.0
+cmd_208_finance_summary,0,total,0
+cmd_210_system_settings,0,code,lowWithdrawal
+cmd_210_system_settings,0,id,1
+cmd_210_system_settings,0,label,
+cmd_210_system_settings,0,modifytime,2025-11-08 18:03:07
+cmd_210_system_settings,0,musername,mbdas
+cmd_210_system_settings,0,note,最低提款额度
+cmd_210_system_settings,0,status,1
+cmd_210_system_settings,0,value,1000
+cmd_211_bet_records,0,TotalValidBetAmount,0
+cmd_211_bet_records,0,endtime,2026-09-24 14:09:38
+cmd_211_bet_records,0,mid,1909
+cmd_211_bet_records,0,msg,無下注紀錄
+cmd_211_bet_records,0,starttime,2026-09-15 03:11:41
+cmd_211_bet_records,0,username,cffcna6qzp
+cmd_290_truename(PII),0,truename,None
+cmd_300_game_halls,0,gameHall,LIST(247 items)
+cmd_301_game_groups,0,gameGroup,LIST(341 items)
+cmd_302_game_list,0,gameList,LIST(15018 items)
+cmd_310_team_history,0,svGetTeamHisByTeamID,Router Undefind Function: 
+cmd_511_game_launch_url,-7,msg,"您的帳號已凍結,請聯繫客服"
+cmd_516_agent_line_bet_config(95 fields),0,BankAccount,
+cmd_516_agent_line_bet_config(95 fields),0,CPF,
+cmd_516_agent_line_bet_config(95 fields),0,CURP,
+cmd_516_agent_line_bet_config(95 fields),0,FPSAccount,
+cmd_516_agent_line_bet_config(95 fields),0,IDCardNumber,
+cmd_516_agent_line_bet_config(95 fields),0,RFC,
+cmd_516_agent_line_bet_config(95 fields),0,SLPAccount,
+cmd_516_agent_line_bet_config(95 fields),0,USDTAddress,
+cmd_516_agent_line_bet_config(95 fields),0,accountType,0
+cmd_516_agent_line_bet_config(95 fields),0,addip,52.128.238.210
+cmd_516_agent_line_bet_config(95 fields),0,addtime,1789413101
+cmd_516_agent_line_bet_config(95 fields),0,appuid,
+cmd_516_agent_line_bet_config(95 fields),0,birthday,0000-00-00
+cmd_516_agent_line_bet_config(95 fields),0,checkTime,0
+cmd_516_agent_line_bet_config(95 fields),0,company_address,None
+cmd_516_agent_line_bet_config(95 fields),0,company_name,None
+cmd_516_agent_line_bet_config(95 fields),0,company_phone,None
+cmd_516_agent_line_bet_config(95 fields),0,contact_address,None
+cmd_516_agent_line_bet_config(95 fields),0,email,
+cmd_516_agent_line_bet_config(95 fields),0,emailCode,0
+cmd_516_agent_line_bet_config(95 fields),0,emergency_contact_name,None
+cmd_516_agent_line_bet_config(95 fields),0,emergency_contact_phone,None
+cmd_516_agent_line_bet_config(95 fields),0,emergency_contact_relation,None
+cmd_516_agent_line_bet_config(95 fields),0,facebook,
+cmd_516_agent_line_bet_config(95 fields),0,fetchmoney,0.00
+cmd_516_agent_line_bet_config(95 fields),0,fetchnumber,0
+cmd_516_agent_line_bet_config(95 fields),0,gamenumber,0
+cmd_516_agent_line_bet_config(95 fields),0,groupname,BF-預設
+cmd_516_agent_line_bet_config(95 fields),0,icmode,0
+cmd_516_agent_line_bet_config(95 fields),0,id,1909
+cmd_516_agent_line_bet_config(95 fields),0,imageurl,
+cmd_516_agent_line_bet_config(95 fields),0,integral,0.00
+cmd_516_agent_line_bet_config(95 fields),0,isChatroom,1
+cmd_516_agent_line_bet_config(95 fields),0,isFirstReserve,0
+cmd_516_agent_line_bet_config(95 fields),0,isMute,0
+cmd_516_agent_line_bet_config(95 fields),0,isRealnameSystem,0
+cmd_516_agent_line_bet_config(95 fields),0,isTest,0
+cmd_516_agent_line_bet_config(95 fields),0,isUpdateNickname,0
+cmd_516_agent_line_bet_config(95 fields),0,isWithdraw,0
+cmd_516_agent_line_bet_config(95 fields),0,keyword,
+cmd_516_agent_line_bet_config(95 fields),0,lastgid,[]
+cmd_516_agent_line_bet_config(95 fields),0,lastip,52.128.238.210
+cmd_516_agent_line_bet_config(95 fields),0,lastmodifytime,2026-09-24 13:33:03
+cmd_516_agent_line_bet_config(95 fields),0,lasttime,1790230168
+cmd_516_agent_line_bet_config(95 fields),0,line,
+cmd_516_agent_line_bet_config(95 fields),0,lockmoney,0.00
+cmd_516_agent_line_bet_config(95 fields),0,lv,0
+cmd_516_agent_line_bet_config(95 fields),0,lvlock,0
+cmd_516_agent_line_bet_config(95 fields),0,mline,"1909,"
+cmd_516_agent_line_bet_config(95 fields),0,mode,0
+cmd_516_agent_line_bet_config(95 fields),0,money,0.00
+cmd_516_agent_line_bet_config(95 fields),0,money2,0.00
+cmd_516_agent_line_bet_config(95 fields),0,monthly_income,None
+cmd_516_agent_line_bet_config(95 fields),0,musername,cffcna6qzp
+cmd_516_agent_line_bet_config(95 fields),0,note,
+cmd_516_agent_line_bet_config(95 fields),0,occupation,None
+cmd_516_agent_line_bet_config(95 fields),0,onemoney,0.00
+cmd_516_agent_line_bet_config(95 fields),0,online,1
+cmd_516_agent_line_bet_config(95 fields),0,parents,
+cmd_516_agent_line_bet_config(95 fields),0,passerror,1
+cmd_516_agent_line_bet_config(95 fields),0,password,
+cmd_516_agent_line_bet_config(95 fields),0,paypwd,
+cmd_516_agent_line_bet_config(95 fields),0,phone,
+cmd_516_agent_line_bet_config(95 fields),0,phoneCode,0
+cmd_516_agent_line_bet_config(95 fields),0,pid,0
+cmd_516_agent_line_bet_config(95 fields),0,prizenumber,1
+cmd_516_agent_line_bet_config(95 fields),0,province,
+cmd_516_agent_line_bet_config(95 fields),0,qq,0
+cmd_516_agent_line_bet_config(95 fields),0,salt,24TFrMB63P
+cmd_516_agent_line_bet_config(95 fields),0,salt2,YaZcn6CFR8Fy
+cmd_516_agent_line_bet_config(95 fields),0,savemoney,0.00
+cmd_516_agent_line_bet_config(95 fields),0,savetime,0
+cmd_516_agent_line_bet_config(95 fields),0,score,0
+cmd_516_agent_line_bet_config(95 fields),0,sex,1
+cmd_516_agent_line_bet_config(95 fields),0,site,bfc
+cmd_516_agent_line_bet_config(95 fields),0,siteway,
+cmd_516_agent_line_bet_config(95 fields),0,skype,
+cmd_516_agent_line_bet_config(95 fields),0,sort,0
+cmd_516_agent_line_bet_config(95 fields),0,status,1
+cmd_516_agent_line_bet_config(95 fields),0,t_gamegroup_id,1
+cmd_516_agent_line_bet_config(95 fields),0,t_gamegrouplvl_id,1
+cmd_516_agent_line_bet_config(95 fields),0,telegram,
+cmd_516_agent_line_bet_config(95 fields),0,truename,TestUser
+cmd_516_agent_line_bet_config(95 fields),0,upid,0
+cmd_516_agent_line_bet_config(95 fields),0,url,
+cmd_516_agent_line_bet_config(95 fields),0,username,cffcna6qzp
+cmd_516_agent_line_bet_config(95 fields),0,vipLevel,1
+cmd_516_agent_line_bet_config(95 fields),0,warningMember,0
+cmd_516_agent_line_bet_config(95 fields),0,wechat,
+cmd_516_agent_line_bet_config(95 fields),0,wechatChange,0
+cmd_516_agent_line_bet_config(95 fields),0,wechatId,testwechat001
+cmd_516_agent_line_bet_config(95 fields),0,wechatNote,test
+cmd_516_agent_line_bet_config(95 fields),0,whatsapp,
+cmd_516_agent_line_bet_config(95 fields),0,yhmoney,0.00
+cmd_516_agent_line_bet_config(95 fields),0,zalo,
+cmd_518_game_level_config(unauth),0,addtime[0],1701765000
+cmd_518_game_level_config(unauth),0,bankfees[0],0.000
+cmd_518_game_level_config(unauth),0,bankfees2[0],0
+cmd_518_game_level_config(unauth),0,bankfeeslimit[0],0
+cmd_518_game_level_config(unauth),0,cost[0],0
+cmd_518_game_level_config(unauth),0,deposit[0],0
+cmd_518_game_level_config(unauth),0,deposittime[0],0
+cmd_518_game_level_config(unauth),0,feesfreetimes[0],3
+cmd_518_game_level_config(unauth),0,fetchMoney[0],0
+cmd_518_game_level_config(unauth),0,fetchTime[0],0
+cmd_518_game_level_config(unauth),0,freetimeType[0],2
+cmd_518_game_level_config(unauth),0,gamegroupid[0],1
+cmd_518_game_level_config(unauth),0,id[0],1
+cmd_518_game_level_config(unauth),0,isWithdraw[0],0
+cmd_518_game_level_config(unauth),0,isdefault[0],1
+cmd_518_game_level_config(unauth),0,lastmodifytime[0],2026-09-23 11:24:28
+cmd_518_game_level_config(unauth),0,lvlname[0],預設
+cmd_518_game_level_config(unauth),0,lvlno[0],A
+cmd_518_game_level_config(unauth),0,members[0],1443
+cmd_518_game_level_config(unauth),0,mid[0],0
+cmd_518_game_level_config(unauth),0,monthBonus[0],0
+cmd_518_game_level_config(unauth),0,musername[0],BF001
+cmd_518_game_level_config(unauth),0,relaxedlimit[0],0
+cmd_518_game_level_config(unauth),0,showgamegroup[0],all
+cmd_518_game_level_config(unauth),0,status[0],1
+cmd_518_game_level_config(unauth),0,stayLvMoney[0],0
+cmd_518_game_level_config(unauth),0,turnover[0],0
+cmd_518_game_level_config(unauth),0,addtime[1],1701765000
+cmd_518_game_level_config(unauth),0,bankfees[1],0.000
+cmd_518_game_level_config(unauth),0,bankfees2[1],0
+cmd_518_game_level_config(unauth),0,bankfeeslimit[1],0
+cmd_518_game_level_config(unauth),0,cost[1],0
+cmd_518_game_level_config(unauth),0,deposit[1],3000
+cmd_518_game_level_config(unauth),0,deposittime[1],3
+cmd_518_game_level_config(unauth),0,feesfreetimes[1],0
+cmd_518_game_level_config(unauth),0,fetchMoney[1],0
+cmd_518_game_level_config(unauth),0,fetchTime[1],0
+cmd_518_game_level_config(unauth),0,freetimeType[1],1
+cmd_518_game_level_config(unauth),0,gamegroupid[1],1
+cmd_518_game_level_config(unauth),0,id[1],2
+cmd_518_game_level_config(unauth),0,isWithdraw[1],0
+cmd_518_game_level_config(unauth),0,isdefault[1],0
+cmd_518_game_level_config(unauth),0,lastmodifytime[1],2026-09-23 22:50:02
+cmd_518_game_level_config(unauth),0,lvlname[1],上分會員
+cmd_518_game_level_config(unauth),0,lvlno[1],X
+cmd_518_game_level_config(unauth),0,members[1],476
+cmd_518_game_level_config(unauth),0,mid[1],0
+cmd_518_game_level_config(unauth),0,monthBonus[1],0
+cmd_518_game_level_config(unauth),0,musername[1],BF001
+cmd_518_game_level_config(unauth),0,relaxedlimit[1],0
+cmd_518_game_level_config(unauth),0,showgamegroup[1],all
+cmd_518_game_level_config(unauth),0,status[1],1
+cmd_518_game_level_config(unauth),0,stayLvMoney[1],0
+cmd_518_game_level_config(unauth),0,turnover[1],30000
+cmd_518_game_level_config(unauth),0,addtime[2],1760356338
+cmd_518_game_level_config(unauth),0,bankfees[2],0.000
+cmd_518_game_level_config(unauth),0,bankfees2[2],0
+cmd_518_game_level_config(unauth),0,bankfeeslimit[2],0
+cmd_518_game_level_config(unauth),0,cost[2],0
+cmd_518_game_level_config(unauth),0,deposit[2],5000
+cmd_518_game_level_config(unauth),0,deposittime[2],5
+cmd_518_game_level_config(unauth),0,feesfreetimes[2],0
+cmd_518_game_level_config(unauth),0,fetchMoney[2],0
+cmd_518_game_level_config(unauth),0,fetchTime[2],0
+cmd_518_game_level_config(unauth),0,freetimeType[2],0
+cmd_518_game_level_config(unauth),0,gamegroupid[2],1
+cmd_518_game_level_config(unauth),0,id[2],3
+cmd_518_game_level_config(unauth),0,isWithdraw[2],0
+cmd_518_game_level_config(unauth),0,isdefault[2],0
+cmd_518_game_level_config(unauth),0,lastmodifytime[2],2026-09-15 13:20:20
+cmd_518_game_level_config(unauth),0,lvlname[2],USDT層級
+cmd_518_game_level_config(unauth),0,lvlno[2],C
+cmd_518_game_level_config(unauth),0,members[2],8
+cmd_518_game_level_config(unauth),0,mid[2],42
+cmd_518_game_level_config(unauth),0,monthBonus[2],0
+cmd_518_game_level_config(unauth),0,musername[2],BF001
+cmd_518_game_level_config(unauth),0,relaxedlimit[2],0
+cmd_518_game_level_config(unauth),0,showgamegroup[2],all
+cmd_518_game_level_config(unauth),0,status[2],1
+cmd_518_game_level_config(unauth),0,stayLvMoney[2],0
+cmd_518_game_level_config(unauth),0,turnover[2],1000000
+cmd_518_game_level_config(unauth),0,addtime[3],1764231433
+cmd_518_game_level_config(unauth),0,bankfees[3],0.000
+cmd_518_game_level_config(unauth),0,bankfees2[3],0
+cmd_518_game_level_config(unauth),0,bankfeeslimit[3],0
+cmd_518_game_level_config(unauth),0,cost[3],0
+cmd_518_game_level_config(unauth),0,deposit[3],8000
+cmd_518_game_level_config(unauth),0,deposittime[3],8
+cmd_518_game_level_config(unauth),0,feesfreetimes[3],0
+cmd_518_game_level_config(unauth),0,fetchMoney[3],0
+cmd_518_game_level_config(unauth),0,fetchTime[3],0
+cmd_518_game_level_config(unauth),0,freetimeType[3],0
+cmd_518_game_level_config(unauth),0,gamegroupid[3],1
+cmd_518_game_level_config(unauth),0,id[3],4
+cmd_518_game_level_config(unauth),0,isWithdraw[3],1
+cmd_518_game_level_config(unauth),0,isdefault[3],0
+cmd_518_game_level_config(unauth),0,lastmodifytime[3],2026-09-15 14:11:14
+cmd_518_game_level_config(unauth),0,lvlname[3],取款層級
+cmd_518_game_level_config(unauth),0,lvlno[3],A
+cmd_518_game_level_config(unauth),0,members[3],6
+cmd_518_game_level_config(unauth),0,mid[3],50
+cmd_518_game_level_config(unauth),0,monthBonus[3],0
+cmd_518_game_level_config(unauth),0,musername[3],BF001
+cmd_518_game_level_config(unauth),0,relaxedlimit[3],0
+cmd_518_game_level_config(unauth),0,showgamegroup[3],all
+cmd_518_game_level_config(unauth),0,status[3],0
+cmd_518_game_level_config(unauth),0,stayLvMoney[3],0
+cmd_518_game_level_config(unauth),0,turnover[3],1000001
+cmd_518_game_level_config(unauth),0,addtime[4],1784044886
+cmd_518_game_level_config(unauth),0,bankfees[4],0.000
+cmd_518_game_level_config(unauth),0,bankfees2[4],0
+cmd_518_game_level_config(unauth),0,bankfeeslimit[4],0
+cmd_518_game_level_config(unauth),0,cost[4],0
+cmd_518_game_level_config(unauth),0,deposit[4],10000
+cmd_518_game_level_config(unauth),0,deposittime[4],10
+cmd_518_game_level_config(unauth),0,feesfreetimes[4],0
+cmd_518_game_level_config(unauth),0,fetchMoney[4],0
+cmd_518_game_level_config(unauth),0,fetchTime[4],0
+cmd_518_game_level_config(unauth),0,freetimeType[4],0
+cmd_518_game_level_config(unauth),0,gamegroupid[4],1
+cmd_518_game_level_config(unauth),0,id[4],5
+cmd_518_game_level_config(unauth),0,isWithdraw[4],1
+cmd_518_game_level_config(unauth),0,isdefault[4],0
+cmd_518_game_level_config(unauth),0,lastmodifytime[4],2026-09-23 22:50:02
+cmd_518_game_level_config(unauth),0,lvlname[4],上分會員(可超商)
+cmd_518_game_level_config(unauth),0,lvlno[4],B
+cmd_518_game_level_config(unauth),0,members[4],13
+cmd_518_game_level_config(unauth),0,mid[4],50
+cmd_518_game_level_config(unauth),0,monthBonus[4],0
+cmd_518_game_level_config(unauth),0,musername[4],BF001
+cmd_518_game_level_config(unauth),0,relaxedlimit[4],0
+cmd_518_game_level_config(unauth),0,showgamegroup[4],all
+cmd_518_game_level_config(unauth),0,status[4],0
+cmd_518_game_level_config(unauth),0,stayLvMoney[4],0
+cmd_518_game_level_config(unauth),0,turnover[4],1000002
+cmd_519_uid_data,0,birthdayFlag,True
+cmd_519_uid_data,0,count,0
+cmd_519_uid_data,0,uid,1909
+cmd_519_uid_data,0,uidTypeMoney,0
+cmd_520_trading_records,0,count,LIST(0 items)
+cmd_520_trading_records,0,countmoney,0.00
+cmd_520_trading_records,0,endTime,2026-09-24
+cmd_520_trading_records,0,num,4
+cmd_520_trading_records,0,page,1
+cmd_520_trading_records,0,rows,LIST(0 items)
+cmd_520_trading_records,0,startTime,2026-09-24
+cmd_520_trading_records,0,summoney,0.00
+cmd_520_trading_records,0,total,False
+cmd_522_activity_records_1,0,countmoney,0.00
+cmd_522_activity_records_1,0,endTime,2026-09-24
+cmd_522_activity_records_1,0,num,100
+cmd_522_activity_records_1,0,page,1
+cmd_522_activity_records_1,0,rows,LIST(0 items)
+cmd_522_activity_records_1,0,startTime,2026-09-24
+cmd_522_activity_records_1,0,summoney,0.00
+cmd_522_activity_records_1,0,total,False
+cmd_523_activity_records_2,0,countmoney,0.00
+cmd_523_activity_records_2,0,endTime,2026-09-24
+cmd_523_activity_records_2,0,num,4
+cmd_523_activity_records_2,0,page,1
+cmd_523_activity_records_2,0,rows,LIST(0 items)
+cmd_523_activity_records_2,0,startTime,2026-09-24
+cmd_523_activity_records_2,0,summoney,0.00
+cmd_523_activity_records_2,0,total,False
+cmd_524_activity_records_3,0,countmoney,0.00
+cmd_524_activity_records_3,0,endTime,2026-09-24
+cmd_524_activity_records_3,0,num,4
+cmd_524_activity_records_3,0,page,1
+cmd_524_activity_records_3,0,rows,LIST(0 items)
+cmd_524_activity_records_3,0,startTime,2026-09-24
+cmd_524_activity_records_3,0,summoney,0.00
+cmd_524_activity_records_3,0,total,False
+cmd_525_activity_records_4,0,countmoney,0.00
+cmd_525_activity_records_4,0,endTime,2026-09-24
+cmd_525_activity_records_4,0,num,100
+cmd_525_activity_records_4,0,page,1
+cmd_525_activity_records_4,0,rows,LIST(0 items)
+cmd_525_activity_records_4,0,startTime,2026-09-24
+cmd_525_activity_records_4,0,summoney,0.00
+cmd_525_activity_records_4,0,total,False
+cmd_526_activity_records_5,0,countmoney,0.00
+cmd_526_activity_records_5,0,endTime,2026-09-24
+cmd_526_activity_records_5,0,num,100
+cmd_526_activity_records_5,0,page,1
+cmd_526_activity_records_5,0,rows,LIST(0 items)
+cmd_526_activity_records_5,0,startTime,2026-09-24
+cmd_526_activity_records_5,0,summoney,0.00
+cmd_526_activity_records_5,0,total,False
+cmd_529_activity_records_6,0,count.betAmount,0
+cmd_529_activity_records_6,0,count.jackpot,0
+cmd_529_activity_records_6,0,count.netAmount,0
+cmd_529_activity_records_6,0,count.tip,0
+cmd_529_activity_records_6,0,count.validBetAmount,0
+cmd_529_activity_records_6,0,endTime,2026-09-24
+cmd_529_activity_records_6,0,rows,LIST(0 items)
+cmd_529_activity_records_6,0,startTime,2026-09-17
+cmd_529_activity_records_6,0,sum.sumbetAmount,0
+cmd_529_activity_records_6,0,sum.sumjackpot,0
+cmd_529_activity_records_6,0,sum.sumnetAmount,0
+cmd_529_activity_records_6,0,sum.sumtip,0
+cmd_529_activity_records_6,0,sum.sumvalidBetAmount,0
+cmd_529_activity_records_6,0,total,0
+cmd_530_trading_history,0,count.betAmount,0
+cmd_530_trading_history,0,count.jackpot,0
+cmd_530_trading_history,0,count.netAmount,0
+cmd_530_trading_history,0,count.tip,0
+cmd_530_trading_history,0,count.validBetAmount,0
+cmd_530_trading_history,0,endTime,2026-09-24
+cmd_530_trading_history,0,num,4
+cmd_530_trading_history,0,page,1
+cmd_530_trading_history,0,rows,LIST(0 items)
+cmd_530_trading_history,0,startTime,2026-09-24
+cmd_530_trading_history,0,sum.sumbetAmount,0
+cmd_530_trading_history,0,sum.sumjackpot,0
+cmd_530_trading_history,0,sum.sumnetAmount,0
+cmd_530_trading_history,0,sum.sumtip,0
+cmd_530_trading_history,0,sum.sumvalidBetAmount,0
+cmd_530_trading_history,0,total,0
+cmd_531_activity_records_7,0,count,LIST(0 items)
+cmd_531_activity_records_7,0,countmoney,0.00
+cmd_531_activity_records_7,0,endTime,2026-09-24
+cmd_531_activity_records_7,0,num,4
+cmd_531_activity_records_7,0,page,1
+cmd_531_activity_records_7,0,rows,LIST(0 items)
+cmd_531_activity_records_7,0,startTime,2026-09-24
+cmd_531_activity_records_7,0,summoney,0.00
+cmd_531_activity_records_7,0,total,False
+cmd_533_red_packet_activities,0,count,LIST(0 items)
+cmd_533_red_packet_activities,0,countactualmoney,0.00
+cmd_533_red_packet_activities,0,countactualmoneyUSDT,0.00
+cmd_533_red_packet_activities,0,countauditmoney,0.00
+cmd_533_red_packet_activities,0,countcost,0.00
+cmd_533_red_packet_activities,0,countmoney,0.00
+cmd_533_red_packet_activities,0,countwithdrawalfee,0.00
+cmd_533_red_packet_activities,0,endTime,2026-09-24
+cmd_533_red_packet_activities,0,num,4
+cmd_533_red_packet_activities,0,page,1
+cmd_533_red_packet_activities,0,rows,LIST(0 items)
+cmd_533_red_packet_activities,0,startTime,2026-09-24
+cmd_533_red_packet_activities,0,sumactualmoney,0.00
+cmd_533_red_packet_activities,0,sumactualmoneyUSDT,0.00
+cmd_533_red_packet_activities,0,sumauditmoney,0.00
+cmd_533_red_packet_activities,0,sumcost,0.00
+cmd_533_red_packet_activities,0,summoney,0.00
+cmd_533_red_packet_activities,0,sumwithdrawalfee,0.00
+cmd_533_red_packet_activities,0,total,False
+cmd_534_activity_records_8,0,count,LIST(0 items)
+cmd_534_activity_records_8,0,countmoney,0.00
+cmd_534_activity_records_8,0,endTime,2026-09-24
+cmd_534_activity_records_8,0,num,4
+cmd_534_activity_records_8,0,page,1
+cmd_534_activity_records_8,0,rows,LIST(0 items)
+cmd_534_activity_records_8,0,startTime,2026-09-24
+cmd_534_activity_records_8,0,summoney,0.00
+cmd_534_activity_records_8,0,total,False
+cmd_535_activity_records_9,0,count,LIST(0 items)
+cmd_535_activity_records_9,0,countmoney,0.00
+cmd_535_activity_records_9,0,endTime,2026-09-24
+cmd_535_activity_records_9,0,num,4
+cmd_535_activity_records_9,0,page,1
+cmd_535_activity_records_9,0,rows,LIST(0 items)
+cmd_535_activity_records_9,0,startTime,2026-09-24
+cmd_535_activity_records_9,0,summoney,0.00
+cmd_535_activity_records_9,0,total,False
+cmd_536_weekly_report,0,activeBouns.endTime,2026-09-24
+cmd_536_weekly_report,0,activeBouns.rows,[]
+cmd_536_weekly_report,0,activeBouns.startTime,2026-08-01
+cmd_536_weekly_report,0,agentBouns.endTime,2026-09-24
+cmd_536_weekly_report,0,agentBouns.rows,[]
+cmd_536_weekly_report,0,agentBouns.startTime,2026-08-01
+cmd_536_weekly_report,0,agentCommission.endTime,2026-09-24
+cmd_536_weekly_report,0,agentCommission.rows,[]
+cmd_536_weekly_report,0,agentCommission.startTime,2026-08-01
+cmd_536_weekly_report,0,artificialrecord.endTime,2026-09-24
+cmd_536_weekly_report,0,artificialrecord.rows,[]
+cmd_536_weekly_report,0,artificialrecord.startTime,2026-08-01
+cmd_536_weekly_report,0,depositsummoney,0
+cmd_536_weekly_report,0,fetch,LIST(1 items)
+cmd_536_weekly_report,0,handwork,LIST(1 items)
+cmd_536_weekly_report,0,line,LIST(1 items)
+cmd_536_weekly_report,0,num,1
+cmd_536_weekly_report,0,page,10
+cmd_536_weekly_report,0,point.endTime,2026-09-24
+cmd_536_weekly_report,0,point.rows,[]
+cmd_536_weekly_report,0,point.startTime,2026-08-01
+cmd_536_weekly_report,0,qrcode_transfer,LIST(1 items)
+cmd_536_weekly_report,0,returnMoney.endTime,2026-09-24
+cmd_536_weekly_report,0,returnMoney.rows,[]
+cmd_536_weekly_report,0,returnMoney.startTime,2026-08-01
+cmd_536_weekly_report,0,total,0
+cmd_537_referral_config,0,data,LIST(25 items)
+cmd_540_data_count_unknown,0,count,0
+cmd_540_data_count_unknown,0,data,LIST(0 items)
+cmd_541_activity_records_10,0,count,LIST(0 items)
+cmd_541_activity_records_10,0,countmoney,0.00
+cmd_541_activity_records_10,0,endTime,2026-09-24
+cmd_541_activity_records_10,0,num,4
+cmd_541_activity_records_10,0,page,1
+cmd_541_activity_records_10,0,rows,LIST(0 items)
+cmd_541_activity_records_10,0,startTime,2026-09-24
+cmd_541_activity_records_10,0,summoney,0.00
+cmd_541_activity_records_10,0,total,False
+cmd_542_weekly_bet_report,0,lastTwoWeek.2026-09-07,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastTwoWeek.2026-09-08,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastTwoWeek.2026-09-09,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastTwoWeek.2026-09-10,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastTwoWeek.2026-09-11,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastTwoWeek.2026-09-12,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastTwoWeek.2026-09-13,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastTwoWeek.weeksum,"{'strarttime': '2026-09-07 00:00:00', 'endtime': '2026-09-13 23:59:59', 'sumBetAmount': 0, 'sumValidBetAmount': 0, 'sumNetAmount': 0, 'sumBetCount': 0, 'sumreturnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastWeek.2026-09-14,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastWeek.2026-09-15,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastWeek.2026-09-16,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastWeek.2026-09-17,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastWeek.2026-09-18,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastWeek.2026-09-19,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastWeek.2026-09-20,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,lastWeek.weeksum,"{'strarttime': '2026-09-14 00:00:00', 'endtime': '2026-09-20 23:59:59', 'sumBetAmount': 0, 'sumValidBetAmount': 0, 'sumNetAmount': 0, 'sumBetCount': 0, 'sumreturnmoney': 0}"
+cmd_542_weekly_bet_report,0,thisWeek.2026-09-21,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,thisWeek.2026-09-22,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,thisWeek.2026-09-23,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,thisWeek.2026-09-24,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,thisWeek.2026-09-25,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,thisWeek.2026-09-26,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,thisWeek.2026-09-27,"{'betAmount': 0, 'validBetAmount': 0, 'netAmount': 0, 'betcount': 0, 'returnmoney': 0}"
+cmd_542_weekly_bet_report,0,thisWeek.weeksum,"{'strarttime': '2026-09-21 00:00:00', 'endtime': '2026-09-27 23:59:59', 'sumBetAmount': 0, 'sumValidBetAmount': 0, 'sumNetAmount': 0, 'sumBetCount': 0, 'sumreturnmoney': 0}"
+cmd_544_weekly_bet_summary,0,lastTwoWeek.2026-09-07,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastTwoWeek.2026-09-08,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastTwoWeek.2026-09-09,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastTwoWeek.2026-09-10,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastTwoWeek.2026-09-11,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastTwoWeek.2026-09-12,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastTwoWeek.2026-09-13,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastTwoWeek.weeksum,"{'strarttime': '2026-09-07 00:00:00', 'endtime': '2026-09-13 23:59:59', 'sumBetAmount': 0, 'sumAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastWeek.2026-09-14,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastWeek.2026-09-15,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastWeek.2026-09-16,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastWeek.2026-09-17,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastWeek.2026-09-18,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastWeek.2026-09-19,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastWeek.2026-09-20,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,lastWeek.weeksum,"{'strarttime': '2026-09-14 00:00:00', 'endtime': '2026-09-20 23:59:59', 'sumBetAmount': 0, 'sumAmount': 0}"
+cmd_544_weekly_bet_summary,0,thisWeek.2026-09-21,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,thisWeek.2026-09-22,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,thisWeek.2026-09-23,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,thisWeek.2026-09-24,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,thisWeek.2026-09-25,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,thisWeek.2026-09-26,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,thisWeek.2026-09-27,"{'betAmount': 0, 'totalAmount': 0}"
+cmd_544_weekly_bet_summary,0,thisWeek.weeksum,"{'strarttime': '2026-09-21 00:00:00', 'endtime': '2026-09-27 23:59:59', 'sumBetAmount': 0, 'sumAmount': 0}"
+cmd_545_activity_records_11,0,count,LIST(0 items)
+cmd_545_activity_records_11,0,countmoney,0.00
+cmd_545_activity_records_11,0,endTime,2026-09-24
+cmd_545_activity_records_11,0,num,4
+cmd_545_activity_records_11,0,page,1
+cmd_545_activity_records_11,0,rows,LIST(0 items)
+cmd_545_activity_records_11,0,startTime,2026-09-24
+cmd_545_activity_records_11,0,summoney,0.00
+cmd_545_activity_records_11,0,total,False
+cmd_600_config_return,0,return,LIST(0 items)
+cmd_600_config_return,0,returnDef,LIST(0 items)
+cmd_605_downline_members,-1157,msg,無下線會員
+cmd_607_bet_records_weekly,0,lastTwoWeek.2026-09-07,[]
+cmd_607_bet_records_weekly,0,lastTwoWeek.2026-09-08,[]
+cmd_607_bet_records_weekly,0,lastTwoWeek.2026-09-09,[]
+cmd_607_bet_records_weekly,0,lastTwoWeek.2026-09-10,[]
+cmd_607_bet_records_weekly,0,lastTwoWeek.2026-09-11,[]
+cmd_607_bet_records_weekly,0,lastTwoWeek.2026-09-12,[]
+cmd_607_bet_records_weekly,0,lastTwoWeek.2026-09-13,[]
+cmd_607_bet_records_weekly,0,lastWeek.2026-09-14,[]
+cmd_607_bet_records_weekly,0,lastWeek.2026-09-15,[]
+cmd_607_bet_records_weekly,0,lastWeek.2026-09-16,[]
+cmd_607_bet_records_weekly,0,lastWeek.2026-09-17,[]
+cmd_607_bet_records_weekly,0,lastWeek.2026-09-18,[]
+cmd_607_bet_records_weekly,0,lastWeek.2026-09-19,[]
+cmd_607_bet_records_weekly,0,lastWeek.2026-09-20,[]
+cmd_607_bet_records_weekly,0,thisWeek.2026-09-21,[]
+cmd_607_bet_records_weekly,0,thisWeek.2026-09-22,[]
+cmd_607_bet_records_weekly,0,thisWeek.2026-09-23,[]
+cmd_607_bet_records_weekly,0,thisWeek.2026-09-24,[]
+cmd_607_bet_records_weekly,0,thisWeek.2026-09-25,[]
+cmd_607_bet_records_weekly,0,thisWeek.2026-09-26,[]
+cmd_607_bet_records_weekly,0,thisWeek.2026-09-27,[]
+cmd_608_bet_summary,0,mem,LIST(0 items)
+cmd_608_bet_summary,0,pageArr.num,None
+cmd_608_bet_summary,0,pageArr.page,None
+cmd_608_bet_summary,0,pageArr.total,0
+cmd_608_bet_summary,0,total.count,0
+cmd_608_bet_summary,0,total.returnmoney,0
+cmd_608_bet_summary,0,total.validBetAmount,0
+cmd_700_payment_methods_alt,0,addtime[0],2025-11-07 21:17:03
+cmd_700_payment_methods_alt,0,content[0],親愛的貴賓您好：官方LINE客服  服務時間為中午12:00~晚上24:00，如有任何問題請留下您的**『會員帳號』及『詳細問題說明』**，我司客服將在服務時間內依序為您處理，造成您的不便敬請見諒，感謝您的配合！博富敬上
+cmd_700_payment_methods_alt,0,role[0],0
+cmd_700_payment_methods_alt,0,starttime[0],2025-11-07 00:00:00
+cmd_700_payment_methods_alt,0,title[0],公告標題-跑馬燈
+cmd_707_payment_methods,0,paytypelist.ATM,"{'id': '40', 'name': 'ATM', 'type': 'ATM', 'ispc': '0', 'ismoblie': '0', 'isstatus': '1', 'status': '1', 'isOnlineQR': '0', 'tippc': '', 'tipmobile': '', 'tw_tippc': '', 'tw_tipmobile': '', 'en_tippc': '', 'en_tipmobile': '', 'vn_tippc': '', 'vn_tipmobile': '', 'th_tippc': '', 'th_tipmobile': '', 'i"
+cmd_707_payment_methods,0,paytypelist.BankTransfer,"{'id': '1', 'name': '银行转账', 'type': 'BankTransfer', 'ispc': '1', 'ismoblie': '1', 'isstatus': '1', 'status': '1', 'isOnlineQR': '0', 'tippc': '', 'tipmobile': '', 'tw_tippc': '', 'tw_tipmobile': '', 'en_tippc': '', 'en_tipmobile': '', 'vn_tippc': '', 'vn_tipmobile': '', 'th_tippc': '', 'th_tipmobile"
+cmd_707_payment_methods,0,paytypelist.MerchantCode,"{'id': '42', 'name': '超商缴费', 'type': 'MerchantCode', 'ispc': '1', 'ismoblie': '1', 'isstatus': '1', 'status': '1', 'isOnlineQR': '0', 'tippc': '', 'tipmobile': '', 'tw_tippc': '', 'tw_tipmobile': '', 'en_tippc': '', 'en_tipmobile': '', 'vn_tippc': '', 'vn_tipmobile': '', 'th_tippc': '', 'th_tipmobil"
+cmd_707_payment_methods,0,paytypelist.USDT,"{'id': '4', 'name': 'USDT', 'type': 'USDT', 'ispc': '1', 'ismoblie': '1', 'isstatus': '1', 'status': '1', 'isOnlineQR': '0', 'tippc': '', 'tipmobile': '', 'tw_tippc': '', 'tw_tipmobile': '', 'en_tippc': '', 'en_tipmobile': '', 'vn_tippc': '', 'vn_tipmobile': '', 'th_tippc': '', 'th_tipmobile': '', '"
+cmd_713_withdrawal_methods,0,withdrawType,LIST(2 items)
+cmd_716_payment_limits,0,ATM,LIST(0 items)
+cmd_716_payment_limits,0,BankTransfer,LIST(0 items)
+cmd_716_payment_limits,0,MerchantCode,LIST(0 items)
+cmd_716_payment_limits,0,USDT,LIST(0 items)
+cmd_716_payment_limits,0,firstReserve.1000,150000
+cmd_716_payment_limits,0,firstReserve.300,45000
+cmd_716_payment_limits,0,firstReserve.500,75000
+cmd_716_payment_limits,0,moneylimit.0,首存
+cmd_716_payment_limits,0,moneylimit.1000,110000
+cmd_716_payment_limits,0,moneylimit.10000,1100000
+cmd_716_payment_limits,0,moneylimit.300,31000
+cmd_716_payment_limits,0,moneylimit.3000,330000
+cmd_716_payment_limits,0,moneylimit.500,52000
+cmd_716_payment_limits,0,moneylimit.90,9000
+cmd_800_vip_daily_stats,0,canApply,False
+cmd_800_vip_daily_stats,0,dateStr,2026-09-23
+cmd_800_vip_daily_stats,0,report,LIST(0 items)
+cmd_800_vip_daily_stats,0,totalBonus,0
+cmd_800_vip_daily_stats,0,totalDeposit,0
+cmd_800_vip_daily_stats,0,totalValid,0
+cmd_802_vip_summary,0,canApply,False
+cmd_802_vip_summary,0,dateStr,None
+cmd_802_vip_summary,0,report,LIST(0 items)
+cmd_802_vip_summary,0,totalBonus,0
+cmd_802_vip_summary,0,totalDeposit,0
+cmd_802_vip_summary,0,totalValid,0
+cmd_804_vip_application_config,0,canApply,False
+cmd_810_lottery_vip_rewards,0,leftNum,0
+cmd_810_lottery_vip_rewards,0,list,False
+cmd_810_lottery_vip_rewards,0,lotteryCount,None
+cmd_810_lottery_vip_rewards,0,lotteryList,False
+cmd_810_lottery_vip_rewards,0,myLotteryList,False
+cmd_904_vip_info,0,curLevelTitle,VIP1
+cmd_904_vip_info,0,nextLevelCashIn,200.00
+cmd_904_vip_info,0,nextLevelCond,200.00
+cmd_904_vip_info,0,totalValidBet,0.00
+cmd_904_vip_info,0,upLevelNeed,200.00
+cmd_904_vip_info,0,upLevelNeedCashIn,200.00
+cmd_905_user_financial_stats(unauth),,msg,success
+cmd_910_kyc_status,0,data,LIST(0 items)
+cmd_910_kyc_status,0,message,未申請
+cmd_910_kyc_status,0,photoMessage,未申請
+cmd_910_kyc_status,0,photoStatus,-1
+cmd_910_kyc_status,0,status,-1
+cmd_913_user_stats(unauth),,msg,success
+cmd_925_vip_status_check(unauth),,msg,success

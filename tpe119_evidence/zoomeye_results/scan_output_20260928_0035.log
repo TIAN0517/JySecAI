@@ -1,0 +1,33 @@
+[*] Starting ZoomEye EPCR Scan...
+[-] app="EPCR" country:"TW" -> SOCKSHTTPSConnectionPool(host='api.zo.me', port=443): Max retries exceeded with url: /v1/search/unified?keywords=app%3D%22EPCR%22%2520country%3A%22TW%22&page=1&num=20 (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1082)')))
+[+] app="EPCR" country:"TW" -> 0 assets
+[-] app="EPCR" country:"TW" -> SOCKSHTTPSConnectionPool(host='api.zo.me', port=443): Max retries exceeded with url: /v1/search/unified?keywords=app%3D%22EPCR%22%2520country%3A%22TW%22&page=2&num=20 (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1082)')))
+[+] app="EPCR" country:"TW" -> 0 assets
+[-] app="EPCR" country:"TW" -> SOCKSHTTPSConnectionPool(host='api.zo.me', port=443): Max retries exceeded with url: /v1/search/unified?keywords=app%3D%22EPCR%22%2520country%3A%22TW%22&page=3&num=20 (Caused by SSLError(SSLCertVerificationError(1, "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'api.zo.me'. (_ssl.c:1082)")))
+[+] app="EPCR" country:"TW" -> 0 assets
+[-] product:"Apache" country:"TW" title:"login" -> SOCKSHTTPSConnectionPool(host='api.zo.me', port=443): Max retries exceeded with url: /v1/search/unified?keywords=product%3A%22Apache%22%2520country%3A%22TW%22%2520title%3A%22login%22&page=2&num=20 (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1082)')))
+[-] product:"Apache" country:"TW" title:"login" -> SOCKSHTTPSConnectionPool(host='api.zo.me', port=443): Max retries exceeded with url: /v1/search/unified?keywords=product%3A%22Apache%22%2520country%3A%22TW%22%2520title%3A%22login%22&page=1&num=20 (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1082)')))
+[+] product:"Apache" country:"TW" title:"login" -> 0 assets
+[+] product:"Apache" country:"TW" title:"login" -> 0 assets
+[-] product:"Apache" country:"TW" title:"login" -> SOCKSHTTPSConnectionPool(host='api.zo.me', port=443): Max retries exceeded with url: /v1/search/unified?keywords=product%3A%22Apache%22%2520country%3A%22TW%22%2520title%3A%22login%22&page=3&num=20 (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1082)')))
+[+] product:"Apache" country:"TW" title:"login" -> 0 assets
+[-] port:4004 country:"TW" title:"Auth" -> SOCKSHTTPSConnectionPool(host='api.zo.me', port=443): Max retries exceeded with url: /v1/search/unified?keywords=port%3A4004%2520country%3A%22TW%22%2520title%3A%22Auth%22&page=1&num=20 (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1082)')))
+[+] port:4004 country:"TW" title:"Auth" -> 0 assets
+[-] port:4004 country:"TW" title:"Auth" -> SOCKSHTTPSConnectionPool(host='api.zo.me', port=443): Max retries exceeded with url: /v1/search/unified?keywords=port%3A4004%2520country%3A%22TW%22%2520title%3A%22Auth%22&page=2&num=20 (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1082)')))
+[+] port:4004 country:"TW" title:"Auth" -> 0 assets
+[-] port:4004 country:"TW" title:"Auth" -> SOCKSHTTPSConnectionPool(host='api.zo.me', port=443): Max retries exceeded with url: /v1/search/unified?keywords=port%3A4004%2520country%3A%22TW%22%2520title%3A%22Auth%22&page=3&num=20 (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1082)')))
+[+] port:4004 country:"TW" title:"Auth" -> 0 assets
+[-] product:"nginx" country:"TW" after:"2024-01-01" -> SOCKSHTTPSConnectionPool(host='api.zo.me', port=443): Max retries exceeded with url: /v1/search/unified?keywords=product%3A%22nginx%22%2520country%3A%22TW%22%2520after%3A%222024-01-01%22&page=1&num=20 (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1082)')))
+[+] product:"nginx" country:"TW" after:"2024-01-01" -> 0 assets
+[-] product:"nginx" country:"TW" after:"2024-01-01" -> SOCKSHTTPSConnectionPool(host='api.zo.me', port=443): Max retries exceeded with url: /v1/search/unified?keywords=product%3A%22nginx%22%2520country%3A%22TW%22%2520after%3A%222024-01-01%22&page=2&num=20 (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1082)')))
+[+] product:"nginx" country:"TW" after:"2024-01-01" -> 0 assets
+[-] product:"nginx" country:"TW" after:"2024-01-01" -> SOCKSHTTPSConnectionPool(host='api.zo.me', port=443): Max retries exceeded with url: /v1/search/unified?keywords=product%3A%22nginx%22%2520country%3A%22TW%22%2520after%3A%222024-01-01%22&page=3&num=20 (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1082)')))
+[+] product:"nginx" country:"TW" after:"2024-01-01" -> 0 assets
+Traceback (most recent call last):
+  File "/mnt/c/Users/Administrator/desktop/JySecAI/tpe119_evidence/zoomeye_results/multi_source_scan.py", line 91, in <module>
+    main()
+    ~~~~^^
+  File "/mnt/c/Users/Administrator/desktop/JySecAI/tpe119_evidence/zoomeye_results/multi_source_scan.py", line 84, in main
+    with open(output_path, "w", encoding="utf-8") as f:
+         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'zoomeye_results/epcr_taiwan_gov_assets.json'

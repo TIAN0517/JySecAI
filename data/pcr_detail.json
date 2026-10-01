@@ -1,0 +1,425 @@
+{
+  "uuid": "84479c6a-9d9e-4019-a772-c9200f9df4d9",
+  "contactedAt": "2019-01-11T12:10:20.000Z",
+  "arrivedHospitalAt": null,
+  "handOverAt": null,
+  "leftHospitalAt": null,
+  "endforMciAt": null,
+  "name": null,
+  "identityNo": null,
+  "age": null,
+  "weight": null,
+  "patientAddress": null,
+  "refuseToProvideTelephone": true,
+  "telephone": null,
+  "unableToSign": false,
+  "reasonOfUnableToSign": null,
+  "emtHaveExplained": null,
+  "agreedToUsePersonalInfo": false,
+  "sceneAddress": null,
+  "longitude": null,
+  "latitude": null,
+  "distanceToHospital": null,
+  "etaToHospital": null,
+  "isEmergency": false,
+  "strecherNotReturned": false,
+  "customRelationship": null,
+  "serialNumber": 1,
+  "refuseMedicalprocess": false,
+  "toOHCA": false,
+  "otherHospitalName": null,
+  "chartNo": null,
+  "birthday": null,
+  "hasTP": false,
+  "patientAddressUnknown": false,
+  "refuseAppointment": false,
+  "numberOfEmt": 1,
+  "numberOfPropertyImg": 0,
+  "orderGivenBy": null,
+  "drSuggestion": null,
+  "uploadedTemsis": "N",
+  "createdAt": "2019-01-11T12:10:13.000Z",
+  "updatedAt": "2019-10-24T13:24:00.000Z",
+  "AwarenessId": null,
+  "BreathId": null,
+  "DeathAssessmentId": null,
+  "DesignatedHospitalReasonId": 6,
+  "DispatchRecordUuid": "c9b78fec-7c91-4abb-a3d0-2e3767662eca",
+  "HospitalTriageLevelId": null,
+  "MciPcrId": null,
+  "SexId": null,
+  "RelationshipId": 3,
+  "HospitalUuid": null,
+  "signatureForPropertyId": null,
+  "PcrTypeId": null,
+  "SymptomId": null,
+  "signatureForHandoverId": null,
+  "signatureForAgreementId": 1,
+  "StatusId": 23,
+  "ReasonToChooseFullHospitalId": null,
+  "ReasonOfRefuseToProvideTelephoneId": null,
+  "PcrCancelReasonId": 2,
+  "PcrDoctorOrderStatusId": 3,
+  "PcrClassificationId": null,
+  "PcrReasonOfNoSignatureId": 1,
+  "hardcopyPdfId": null,
+  "pcrPictureId": null,
+  "Relationship": {
+    "id": 3,
+    "name": "父母",
+    "createdAt": "2019-01-11T11:33:28.000Z",
+    "updatedAt": "2019-01-11T11:33:28.000Z"
+  },
+  "DesignatedHospitalReason": {
+    "id": 6,
+    "name": "未送醫",
+    "createdAt": "2019-01-11T11:33:27.000Z",
+    "updatedAt": "2019-01-11T11:33:27.000Z"
+  },
+  "Properties": [],
+  "Hospital": null,
+  "Emts": [
+    {
+      "id": 1,
+      "name": "Test01",
+      "code": "3334",
+      "createdAt": "2019-01-11T12:08:25.000Z",
+      "updatedAt": "2019-07-26T09:37:06.000Z",
+      "BranchId": 61,
+      "currentLevelId": null,
+      "EmtPcrMap": {
+        "createdAt": "2019-01-11T12:12:01.000Z",
+        "updatedAt": "2019-01-11T12:12:01.000Z",
+        "EmtId": 1,
+        "PcrUuid": "84479c6a-9d9e-4019-a772-c9200f9df4d9",
+        "signatureId": 2,
+        "EmtLevelId": null
+      }
+    }
+  ],
+  "CaseDescriptions": [],
+  "Sex": null,
+  "PropertyImgs": [],
+  "signatureForAgreement": {
+    "id": 1,
+    "fileName": "1547208673240.png",
+    "fileId": -238,
+    "mimeType": "image/png",
+    "createdAt": "2019-01-11T12:11:17.000Z",
+    "updatedAt": "2022-04-11T05:39:47.000Z",
+    "EmtId": null,
+    "ImageTypeId": 4,
+    "MciPcrId": null
+  },
+  "signatureForHandover": null,
+  "signatureForProperty": null,
+  "DispatchRecord": {
+    "uuid": "c9b78fec-7c91-4abb-a3d0-2e3767662eca",
+    "dispatchedAt": "2019-01-11T12:10:13.000Z",
+    "departedAt": "2019-01-11T12:10:17.000Z",
+    "arrivedAt": "2019-01-11T12:10:20.000Z",
+    "leftAt": "2019-01-11T12:12:02.000Z",
+    "returnedBaseAt": "2019-01-11T12:12:04.000Z",
+    "canceledAt": null,
+    "endforMciAt": null,
+    "refusedAt": null,
+    "hasTP": false,
+    "serialNumber": 1,
+    "externalKey": null,
+    "ambulanceCode": "海山91",
+    "realAddress": null,
+    "dispatchCancelReasonDescription": null,
+    "createdAt": "2019-01-11T12:10:13.000Z",
+    "updatedAt": "2019-01-11T12:12:05.000Z",
+    "AmbulanceId": 1,
+    "BranchTypeId": 2,
+    "CaseRecordId": 1,
+    "DispatchCancelReasonId": null,
+    "DisinfectionLevelId": null,
+    "StatusId": 9,
+    "MciCaseRecordUuid": null,
+    "BranchId": 7,
+    "BranchGroupId": 1,
+    "DispatchTypeId": null,
+    "CaseRecord": {
+      "id": 1,
+      "recordUuid": "Test190111201013",
+      "dispatchedAt": "2019-01-11T12:10:13.000Z",
+      "endedAt": "2019-01-11T12:12:04.000Z",
+      "mciBeganAt": null,
+      "address": null,
+      "longitude": null,
+      "latitude": null,
+      "reporterPhone": null,
+      "isSimulation": true,
+      "hasMER": false,
+      "caseRecipientUpdatedAt": null,
+      "createdAt": "2019-01-11T12:10:13.000Z",
+      "updatedAt": "2019-01-11T12:12:05.000Z",
+      "CaseRecipientId": 1,
+      "StatusId": 4,
+      "ZipCodeId": null,
+      "ZipCode": null,
+      "CaseRecipient": {
+        "id": 1,
+        "name": "指揮中心",
+        "createdAt": "2019-07-15T10:23:58.000Z",
+        "updatedAt": "2019-07-15T10:23:58.000Z"
+      }
+    },
+    "DispatchCancelReason": null,
+    "Ambulance": {
+      "id": 1,
+      "code": "海山91(舊)",
+      "licenseNo": "BFR-0561",
+      "disinfectedAt": "2024-12-03T08:22:03.000Z",
+      "voip": "live:.cid.fc993da83927c476",
+      "disabled": false,
+      "createdAt": "2019-01-11T11:33:18.000Z",
+      "updatedAt": "2024-12-03T11:05:59.000Z",
+      "BranchId": 7,
+      "DisinfectionLevelId": 3,
+      "Branch": {
+        "id": 7,
+        "name": "海山",
+        "address": "新北市板橋區英士路151號",
+        "phone": "02-22596285",
+        "fax": "02-22510499",
+        "longitude": 121.459947,
+        "latitude": 25.024047,
+        "disabled": false,
+        "simulationOnly": false,
+        "createdAt": "2019-01-11T11:33:18.000Z",
+        "updatedAt": "2019-07-22T08:41:58.000Z",
+        "BranchGroupId": 1,
+        "ZipCodeId": 22,
+        "BranchTypeId": 2
+      }
+    },
+    "Branch": {
+      "id": 7,
+      "name": "海山"
+    },
+    "BranchGroup": {
+      "id": 1,
+      "name": "第一大隊"
+    }
+  },
+  "AssistantRecords": [],
+  "HospitalTriageLevel": null,
+  "PcrClassification": null,
+  "BurnRecords": [],
+  "DiagramRecords": [],
+  "Ambs": [
+    {
+      "id": 10,
+      "description": "你叫他/她或捏肩膀有無反應嗎？",
+      "createdAt": "2019-01-11T11:33:19.000Z",
+      "updatedAt": "2019-01-11T11:33:19.000Z",
+      "AmbCategoryId": 2,
+      "AmbPcrMap": {
+        "answer": true,
+        "createdAt": "2019-01-11T12:10:13.000Z",
+        "updatedAt": "2019-01-11T12:10:13.000Z",
+        "AmbId": 10,
+        "PcrUuid": "84479c6a-9d9e-4019-a772-c9200f9df4d9"
+      },
+      "AmbCategory": {
+        "id": 2,
+        "code": "ALGST",
+        "name": "過敏/叮螫",
+        "expertCode": "AL",
+        "createdAt": "2019-01-11T11:33:19.000Z",
+        "updatedAt": "2019-01-11T11:33:19.000Z"
+      }
+    },
+    {
+      "id": 11,
+      "description": "呼吸平穩或很喘嗎？",
+      "createdAt": "2019-01-11T11:33:19.000Z",
+      "updatedAt": "2019-01-11T11:33:19.000Z",
+      "AmbCategoryId": 2,
+      "AmbPcrMap": {
+        "answer": false,
+        "createdAt": "2019-01-11T12:10:13.000Z",
+        "updatedAt": "2019-01-11T12:10:13.000Z",
+        "AmbId": 11,
+        "PcrUuid": "84479c6a-9d9e-4019-a772-c9200f9df4d9"
+      },
+      "AmbCategory": {
+        "id": 2,
+        "code": "ALGST",
+        "name": "過敏/叮螫",
+        "expertCode": "AL",
+        "createdAt": "2019-01-11T11:33:19.000Z",
+        "updatedAt": "2019-01-11T11:33:19.000Z"
+      }
+    },
+    {
+      "id": 12,
+      "description": "吞嚥有困難嗎？",
+      "createdAt": "2019-01-11T11:33:19.000Z",
+      "updatedAt": "2019-01-11T11:33:19.000Z",
+      "AmbCategoryId": 2,
+      "AmbPcrMap": {
+        "answer": true,
+        "createdAt": "2019-01-11T12:10:13.000Z",
+        "updatedAt": "2019-01-11T12:10:13.000Z",
+        "AmbId": 12,
+        "PcrUuid": "84479c6a-9d9e-4019-a772-c9200f9df4d9"
+      },
+      "AmbCategory": {
+        "id": 2,
+        "code": "ALGST",
+        "name": "過敏/叮螫",
+        "expertCode": "AL",
+        "createdAt": "2019-01-11T11:33:19.000Z",
+        "updatedAt": "2019-01-11T11:33:19.000Z"
+      }
+    },
+    {
+      "id": 13,
+      "description": "胸或喉嚨有緊縮感嗎？",
+      "createdAt": "2019-01-11T11:33:19.000Z",
+      "updatedAt": "2019-01-11T11:33:19.000Z",
+      "AmbCategoryId": 2,
+      "AmbPcrMap": {
+        "answer": false,
+        "createdAt": "2019-01-11T12:10:13.000Z",
+        "updatedAt": "2019-01-11T12:10:13.000Z",
+        "AmbId": 13,
+        "PcrUuid": "84479c6a-9d9e-4019-a772-c9200f9df4d9"
+      },
+      "AmbCategory": {
+        "id": 2,
+        "code": "ALGST",
+        "name": "過敏/叮螫",
+        "expertCode": "AL",
+        "createdAt": "2019-01-11T11:33:19.000Z",
+        "updatedAt": "2019-01-11T11:33:19.000Z"
+      }
+    },
+    {
+      "id": 14,
+      "description": "有頭暈目眩、快昏倒、盜汗或蒼白虛弱嗎？",
+      "createdAt": "2019-01-11T11:33:20.000Z",
+      "updatedAt": "2019-01-11T11:33:20.000Z",
+      "AmbCategoryId": 2,
+      "AmbPcrMap": {
+        "answer": true,
+        "createdAt": "2019-01-11T12:10:13.000Z",
+        "updatedAt": "2019-01-11T12:10:13.000Z",
+        "AmbId": 14,
+        "PcrUuid": "84479c6a-9d9e-4019-a772-c9200f9df4d9"
+      },
+      "AmbCategory": {
+        "id": 2,
+        "code": "ALGST",
+        "name": "過敏/叮螫",
+        "expertCode": "AL",
+        "createdAt": "2019-01-11T11:33:19.000Z",
+        "updatedAt": "2019-01-11T11:33:19.000Z"
+      }
+    },
+    {
+      "id": 15,
+      "description": "以前曾有過嚴重的過敏反應嗎？",
+      "createdAt": "2019-01-11T11:33:20.000Z",
+      "updatedAt": "2019-01-11T11:33:20.000Z",
+      "AmbCategoryId": 2,
+      "AmbPcrMap": {
+        "answer": false,
+        "createdAt": "2019-01-11T12:10:13.000Z",
+        "updatedAt": "2019-01-11T12:10:13.000Z",
+        "AmbId": 15,
+        "PcrUuid": "84479c6a-9d9e-4019-a772-c9200f9df4d9"
+      },
+      "AmbCategory": {
+        "id": 2,
+        "code": "ALGST",
+        "name": "過敏/叮螫",
+        "expertCode": "AL",
+        "createdAt": "2019-01-11T11:33:19.000Z",
+        "updatedAt": "2019-01-11T11:33:19.000Z"
+      }
+    },
+    {
+      "id": 16,
+      "description": "他/她有沒有疹子或紅腫？",
+      "createdAt": "2019-01-11T11:33:20.000Z",
+      "updatedAt": "2019-01-11T11:33:20.000Z",
+      "AmbCategoryId": 2,
+      "AmbPcrMap": {
+        "answer": false,
+        "createdAt": "2019-01-11T12:10:13.000Z",
+        "updatedAt": "2019-01-11T12:10:13.000Z",
+        "AmbId": 16,
+        "PcrUuid": "84479c6a-9d9e-4019-a772-c9200f9df4d9"
+      },
+      "AmbCategory": {
+        "id": 2,
+        "code": "ALGST",
+        "name": "過敏/叮螫",
+        "expertCode": "AL",
+        "createdAt": "2019-01-11T11:33:19.000Z",
+        "updatedAt": "2019-01-11T11:33:19.000Z"
+      }
+    },
+    {
+      "id": 17,
+      "description": "他/她有沒有無抱怨會癢？",
+      "createdAt": "2019-01-11T11:33:20.000Z",
+      "updatedAt": "2019-01-11T11:33:20.000Z",
+      "AmbCategoryId": 2,
+      "AmbPcrMap": {
+        "answer": true,
+        "createdAt": "2019-01-11T12:10:13.000Z",
+        "updatedAt": "2019-01-11T12:10:13.000Z",
+        "AmbId": 17,
+        "PcrUuid": "84479c6a-9d9e-4019-a772-c9200f9df4d9"
+      },
+      "AmbCategory": {
+        "id": 2,
+        "code": "ALGST",
+        "name": "過敏/叮螫",
+        "expertCode": "AL",
+        "createdAt": "2019-01-11T11:33:19.000Z",
+        "updatedAt": "2019-01-11T11:33:19.000Z"
+      }
+    },
+    {
+      "id": 18,
+      "description": "為何會發生這種情形？",
+      "createdAt": "2019-01-11T11:33:20.000Z",
+      "updatedAt": "2019-01-11T11:33:20.000Z",
+      "AmbCategoryId": 2,
+      "AmbPcrMap": {
+        "answer": false,
+        "createdAt": "2019-01-11T12:10:13.000Z",
+        "updatedAt": "2019-01-11T12:10:13.000Z",
+        "AmbId": 18,
+        "PcrUuid": "84479c6a-9d9e-4019-a772-c9200f9df4d9"
+      },
+      "AmbCategory": {
+        "id": 2,
+        "code": "ALGST",
+        "name": "過敏/叮螫",
+        "expertCode": "AL",
+        "createdAt": "2019-01-11T11:33:19.000Z",
+        "updatedAt": "2019-01-11T11:33:19.000Z"
+      }
+    }
+  ],
+  "PcrType": null,
+  "PcrCancelReason": {
+    "id": 2,
+    "name": "他轄載走"
+  },
+  "PcrReasonOfNoSignature": {
+    "id": 1,
+    "name": "同意簽名"
+  },
+  "FormBundles": [],
+  "PcrArrivedHospitalHistories": [],
+  "TemsisCases": []
+}

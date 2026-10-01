@@ -1,0 +1,11 @@
+{
+  "scan_params": {
+    "start": 1,
+    "end": 99999,
+    "delay": 0.1,
+    "pad_width": 5,
+    "save_dir": "."
+  },
+  "found": [],
+  "total_found": 0
+}

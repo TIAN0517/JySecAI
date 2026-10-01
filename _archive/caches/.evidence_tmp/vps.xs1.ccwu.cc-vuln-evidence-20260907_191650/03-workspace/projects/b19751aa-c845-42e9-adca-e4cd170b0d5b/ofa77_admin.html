@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="utf-8"/>
+    <title>ofa77精品商城</title>
+    <meta name="keywords" content="ofa77精品商城"/>
+    <meta name="description" content="ofa77精品商城"/>
+    <link rel="shortcut icon" type="image/x-icon"
+          href="https://ofa77.shop/uploads/web/2024/04/23/66276739431ae.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <link rel="stylesheet" href="https://ofa77.shop/views/admin/default/module/unionshop/assets/html/libs/assets/animate.css/animate.css" type="text/css"/>
+    <link rel="stylesheet" href="https://ofa77.shop/views/admin/default/module/unionshop/assets/html/libs/assets/font-awesome/css/font-awesome.min.css" type="text/css"/>
+    <link rel="stylesheet" href="https://ofa77.shop/views/admin/default/module/unionshop/assets/html/libs/assets/simple-line-icons/css/simple-line-icons.css"
+          type="text/css"/>
+    <link rel="stylesheet" href="https://ofa77.shop/views/admin/default/module/unionshop/assets/html/libs/jquery/bootstrap/dist/css/bootstrap.css" type="text/css"/>
+    <link rel="stylesheet" href="https://ofa77.shop/views/admin/default/module/unionshop/assets/html/css/font.css" type="text/css"/>
+    <link rel="stylesheet" href="https://ofa77.shop/views/admin/default/module/unionshop/assets/html/css/app.css" type="text/css"/>
+    <link rel="stylesheet" href="https://ofa77.shop/views/admin/default/module/unionshop/assets/css/h-css.css" type="text/css"/>
+
+</head>
+<body>
+<div class="app app-header-fixed "><style>
+    .thumbnail {
+        padding: 0px;
+    }
+</style>
+<div class="app app-header-fixed ">
+
+
+    <div class="container w-xxl w-auto-xs">
+        <a href class="navbar-brand block m-t">ofa77精品商城</a>
+        <div class="m-b-lg">
+
+            <form name="form" class="form-validation" method="post">
+                <input type="hidden" name="_token" value="lPNGTCZvZ4RX5A4WRCEGRe5cv2OoObz86mZaIKuq">
+                <div class="text-danger wrapper text-center">
+                </div>
+                <div class="list-group list-group-sm">
+                    <div class="list-group-item">
+                        
+                        <input type="text" placeholder="帳號" class="form-control no-border"
+                               name="username" required>
+                    </div>
+                    <div class="list-group-item">
+                        
+                        <input type="password" placeholder="密碼" class="form-control no-border"
+                               name="password" required>
+                    </div>
+
+                                        
+                                        
+                </div>
+                <button type="submit" class="btn btn-lg btn-primary btn-block">
+                    
+                    登入
+                </button>
+            </form>
+        </div>
+        <div class="text-center" ng-include="'tpl/blocks/page_footer.html'">
+            <p>
+                <small class="text-muted">ofa77精品商城<br>&copy; 2026</small>
+            </p>
+        </div>
+    </div>
+
+
+</div>
+
+<!-- footer -->
+<!-- footer -->
+<footer id="footer" class="app-footer" role="footer">
+    <div class="wrapper b-t bg-light">
+            <span class="pull-right">
+                <a href ui-scroll="app" class="m-l-sm text-muted"><i
+                            class="fa fa-long-arrow-up"></i></a>
+            </span>
+        &copy; 2026 ofa77精品商城 Copyright.
+    </div>
+</footer>
+<!-- / footer --><!-- / footer -->
+</div>
+<script>
+    var alert_title = "你確定要此操作嗎";
+    var alert_yes = "確認";
+    var alert_no = "取消";
+    var alert_info = "資訊";
+    var choose_file = "選擇檔案";
+</script>
+<script src="https://ofa77.shop/views/admin/default/module/unionshop/assets/html/libs/jquery/jquery/dist/jquery.js"></script>
+<script src="https://ofa77.shop/views/admin/default/module/unionshop/assets/html/libs/jquery/bootstrap/dist/js/bootstrap.js"></script>
+<script src="https://ofa77.shop/views/admin/default/module/unionshop/assets/html/js/ui-load.js"></script>
+<script src="https://ofa77.shop/views/admin/default/module/unionshop/assets/html/js/ui-jp.config.js"></script>
+<script src="https://ofa77.shop/views/admin/default/module/unionshop/assets/html/js/ui-jp.js"></script>
+<script src="https://ofa77.shop/views/admin/default/module/unionshop/assets/html/js/ui-nav.js"></script>
+<script src="https://ofa77.shop/views/admin/default/module/unionshop/assets/html/js/ui-toggle.js"></script>
+<script src="https://ofa77.shop/views/admin/default/module/unionshop/assets/html/js/ui-client.js"></script>
+<script src="https://ofa77.shop/views/admin/default/module/unionshop/assets/layer/layer.js"></script>
+<script src="https://ofa77.shop/views/admin/default/module/unionshop/assets/laydate/laydate.js"></script>
+<script>
+    $('.h-fr').click(function () {
+        $(this).parent('div').remove()
+    });
+    var _id_err = 'id錯誤';
+    var _logistics_tig_err = '物流標識不能為空';
+    var _logistics_num_err = '物流編號錯誤';
+        function getAllMsgNum() {
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': "lPNGTCZvZ4RX5A4WRCEGRe5cv2OoObz86mZaIKuq"
+            },
+            "method": "post",
+            "url": "https://ofa77.shop/module/admin/unionshop/index/getAllMsgNum",
+            "data": {},
+            "dataType": 'json',
+            "success": function (res) {
+                if (res.status == 200) {
+                    // layer.closeAll();
+
+                    $('.h-allGoodsNum-num').html(res.data.allGoodsNum <= 99 ? res.data.allGoodsNum : '99+');
+                    $('.h-allGoodsLowStatusNum-num').html(res.data.allGoodsLowStatusNum <= 99 ? res.data.allGoodsLowStatusNum : '99+');
+
+                    if (res.data.allGoodsNum > 0) $('.h-allGoodsNum-num').removeClass('hide');
+                    if (res.data.allGoodsLowStatusNum > 0) $('.h-allGoodsLowStatusNum-num').removeClass('hide');
+                } else {
+                    layer.msg(res.msg, {icon: 5})
+                }
+            },
+            "error": function (res) {
+                console.log(res);
+            }
+        });
+    }
+
+    //30秒获取要处理的数量
+    setInterval(function () {
+        getAllMsgNum();
+    }, 10 * 1000);
+    getAllMsgNum();
+    </script>
+<script src="https://ofa77.shop/views/admin/default/module/unionshop/assets/js/h-app.js"></script>
+</body>
+</html>

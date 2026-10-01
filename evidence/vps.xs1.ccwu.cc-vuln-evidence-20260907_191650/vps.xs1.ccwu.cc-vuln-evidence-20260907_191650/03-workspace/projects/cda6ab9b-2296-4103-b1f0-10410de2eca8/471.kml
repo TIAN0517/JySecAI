@@ -1,0 +1,1000 @@
+﻿<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2"><Document><name>水庫警示資料</name><Style id="其他災情_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/其他災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="水利設施災害_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/水利設施災害_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="水利設施災情_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/水利設施災害_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="火災_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/火災_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="道路、隧道災情_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/道路_隧道災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="車輛及交通事故_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/車輛及交通事故_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="車輛、交通事故_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/車輛及交通事故_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="路樹災情_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/路樹災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="建物毀損_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/建物毀損_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="民生、基礎設施災情_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/民生基礎設施災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="廣告招牌災情_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/廣告招牌災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="土石災情_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/土石災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="環境汙染_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/環境汙染_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="鐵路、高鐵及捷運災情_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/道路_隧道災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="鐵路、高鐵捷運災情_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/道路_隧道災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="橋梁災情_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/橋梁災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="積淹水災情_待處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/積淹水災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="其他災情_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/其他災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="水利設施災害_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/水利設施災害_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="水利設施災情_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/水利設施災害_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="火災_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/火災_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="道路、隧道災情_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/道路_隧道災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="車輛及交通事故_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/車輛及交通事故_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="車輛、交通事故_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/車輛及交通事故_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="路樹災情_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/路樹災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="建物毀損_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/建物毀損_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="民生、基礎設施災情_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/民生基礎設施災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="廣告招牌災情_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/廣告招牌災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="土石災情_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/土石災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="環境汙染_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/環境汙染_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="鐵路、高鐵及捷運災情_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/道路_隧道災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="鐵路、高鐵捷運災情_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/道路_隧道災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="橋梁災情_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/橋梁災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="積淹水災情_未指派"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/積淹水災情_待處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="其他災情_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/其他災情_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="水利設施災害_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/水利設施災害_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="水利設施災情_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/水利設施災害_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="火災_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/火災_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="道路、隧道災情_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/道路_隧道災情_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="車輛及交通事故_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/車輛及交通事故_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="車輛、交通事故_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/車輛及交通事故_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="路樹災情_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/路樹災情_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="建物毀損_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/建物毀損_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="民生、基礎設施災情_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/民生基礎設施災情_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="廣告招牌災情_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/廣告招牌災情_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="土石災情_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/土石災情_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="環境汙染_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/環境汙染_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="鐵路、高鐵及捷運災情_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/鐵路_高鐵及捷運災情_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="鐵路、高鐵捷運災情_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/鐵路_高鐵及捷運災情_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="橋梁災情_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/橋梁災情_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="積淹水災情_已處理"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/積淹水災情_已處理.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="其他災情_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/其他災情_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="水利設施災害_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/水利設施災害_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="水利設施災情_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/水利設施災害_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="火災_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/火災_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="道路、隧道災情_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/道路_隧道災情_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="車輛及交通事故_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/車輛及交通事故_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="車輛、交通事故_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/車輛及交通事故_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="路樹災情_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/路樹災情_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="建物毀損_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/建物毀損_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="民生、基礎設施災情_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/民生基礎設施災情_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="廣告招牌災情_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/廣告招牌災情_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="土石災情_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/土石災情_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="環境汙染_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/環境汙染_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="鐵路、高鐵及捷運災情_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/鐵路_高鐵及捷運災情_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="鐵路、高鐵捷運災情_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/鐵路_高鐵及捷運災情_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="橋梁災情_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/橋梁災情_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Style id="積淹水災情_處理中"><IconStyle><scale>0.8</scale><Icon><href>https://bear.emic.gov.tw/BearBack/uploadFile/mmLayer/icon/積淹水災情_處理中.png</href></Icon><hotSpot x="0.5" xunits="fraction" y="0" yunits="fraction" /></IconStyle><ListStyle /></Style><Placemark><name>神岡區厚生路與圳前路口</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 0704熱對流影響 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 積淹水災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-04 17:31:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 神岡區厚生路與圳前路口 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#積淹水災情_已處理</styleUrl><Point><coordinates>120.6733321,24.26568</coordinates></Point></Placemark><Placemark><name>河南路文心路口</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 0704熱對流影響 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 積淹水災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-04 20:00:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 河南路文心路口 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#積淹水災情_已處理</styleUrl><Point><coordinates>120.6270131,24.183088</coordinates></Point></Placemark><Placemark><name>臺中市北區</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 0704熱對流影響 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 積淹水災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-04 20:50:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市北區 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        &lt;iframe  width="282" height="215" style="overflow: hidden;" src="https://bear.emic.gov.tw/MY/webpages/webMaster/disasterPhoto.aspx?CASE_NO=042025060711326"&gt;&lt;/iframe&gt;
+      </description><styleUrl>#積淹水災情_已處理</styleUrl><Point><coordinates>120.6809521,24.158639</coordinates></Point></Placemark><Placemark><name>臺中市西屯區</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 0704熱對流影響 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 積淹水災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-04 21:07:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市西屯區 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#積淹水災情_已處理</styleUrl><Point><coordinates>120.6270131,24.183088</coordinates></Point></Placemark><Placemark><name>臺中市西屯區</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 0704熱對流影響 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 積淹水災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-04 21:12:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市西屯區 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#積淹水災情_已處理</styleUrl><Point><coordinates>120.6270131,24.183088</coordinates></Point></Placemark><Placemark><name>向上南路一段 &amp; 大進街</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 0704熱對流影響 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 民生、基礎設施災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-04 23:25:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 向上南路一段 &amp; 大進街 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        &lt;iframe  width="282" height="215" style="overflow: hidden;" src="https://bear.emic.gov.tw/MY/webpages/webMaster/disasterPhoto.aspx?CASE_NO=042025060712023"&gt;&lt;/iframe&gt;
+      </description><styleUrl>#民生、基礎設施災情_已處理</styleUrl><Point><coordinates>120.6177379,24.141655</coordinates></Point></Placemark><Placemark><name>高雄市前鎮區德昌街3巷5巷中...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風高雄市災害應變中心 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 路樹災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 14:57:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 高雄市前鎮區德昌街3巷5巷中間 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        &lt;iframe  width="282" height="215" style="overflow: hidden;" src="https://bear.emic.gov.tw/MY/webpages/webMaster/disasterPhoto.aspx?CASE_NO=042025060716552"&gt;&lt;/iframe&gt;
+      </description><styleUrl>#路樹災情_已處理</styleUrl><Point><coordinates>120.319614,22.580622</coordinates></Point></Placemark><Placemark><name>嘉義縣鹿草鄉後寮村57號</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風中央災害應變中心 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 積淹水災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 15:06:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 嘉義縣鹿草鄉後寮村57號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#積淹水災情_已處理</styleUrl><Point><coordinates>120.319265,23.432881</coordinates></Point></Placemark><Placemark><name>臺中市南屯區東興路與向上南路...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 18:43:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市南屯區東興路與向上南路口 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.65321,24.135912</coordinates></Point></Placemark><Placemark><name>臺中市北區北屯路８巷１之２號</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 積淹水災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 18:43:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市北區北屯路８巷１之２號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#積淹水災情_已處理</styleUrl><Point><coordinates>120.692209,24.15973</coordinates></Point></Placemark><Placemark><name>臺中市南屯區五權西路上，與向...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 積淹水災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 18:45:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市南屯區五權西路上，與向心路口，靠近7-11超商 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#積淹水災情_已處理</styleUrl><Point><coordinates>120.617858,24.153199</coordinates></Point></Placemark><Placemark><name>臺中市西屯區市政路與朝貴路交...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 18:52:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市西屯區市政路與朝貴路交叉口 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.64649,24.155111</coordinates></Point></Placemark><Placemark><name>台灣大道與漢口路一段路口</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 18:56:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 台灣大道與漢口路一段路口 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.6270131,24.183088</coordinates></Point></Placemark><Placemark><name>臺中市南屯區大墩十一街與黎明...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 18:58:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市南屯區大墩十一街與黎明路口 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.652758,24.148924</coordinates></Point></Placemark><Placemark><name>臺中市南區西川里忠明南路５６...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 19:02:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市南區西川里忠明南路５６２號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.657087,24.13116</coordinates></Point></Placemark><Placemark><name>三民西路[臺中市南區崇倫里6...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 19:23:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 三民西路[臺中市南區崇倫里6鄰西川一路155號] &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.656096706595,24.127775</coordinates></Point></Placemark><Placemark><name>臺中市南屯區</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 19:25:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市南屯區 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.6177379,24.141655</coordinates></Point></Placemark><Placemark><name>臺中市南屯區</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 19:45:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市南屯區 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.6177379,24.141655</coordinates></Point></Placemark><Placemark><name>臺中市西屯區市政路，朝富路至...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 20:13:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市西屯區市政路，朝富路至龍富路五段沿線 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.64649,24.155111</coordinates></Point></Placemark><Placemark><name>臺中市西屯區西屯區市政路與朝...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 20:13:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市西屯區西屯區市政路與朝貴路交叉口 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.6270131,24.183088</coordinates></Point></Placemark><Placemark><name>臺中市南屯區豐偉路[臺中市南...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 20:21:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市南屯區豐偉路[臺中市南屯區豐樂里25鄰文心南七路300號] &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.645058279817,24.129666</coordinates></Point></Placemark><Placemark><name>臺中市南屯區</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 21:23:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市南屯區 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.6177379,24.141655</coordinates></Point></Placemark><Placemark><name>臺中市南屯區向心南路[臺中市...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 21:25:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市南屯區向心南路[臺中市南屯區豐樂里24鄰向心南路710號] &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.643928431135,24.130986</coordinates></Point></Placemark><Placemark><name>臺中市西屯區福安路[臺中市西...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 21:30:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市西屯區福安路[臺中市西屯區福和里2鄰臺灣大道四段675號] &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.621410284878,24.180192</coordinates></Point></Placemark><Placemark><name>臺中市中區光復路64號</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 22:25:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市中區光復路64號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.680953,24.144072</coordinates></Point></Placemark><Placemark><name>臺中市南區</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風外圍環流 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-05 23:09:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺中市南區 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.6646178,24.121141</coordinates></Point></Placemark><Placemark><name>臺東縣臺東市傳廣路360巷</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風災害應變中心 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-06 00:43:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 臺東縣臺東市傳廣路360巷 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>121.144723,22.764537</coordinates></Point></Placemark><Placemark><name>屏東縣九如鄉玉泉街1號</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風災害應變中心 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 民生、基礎設施災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-06 06:25:06 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 屏東縣九如鄉玉泉街1號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#民生、基礎設施災情_已處理</styleUrl><Point><coordinates>120.512631996183,22.719848</coordinates></Point></Placemark><Placemark><name>高雄市三民區十全路與自立1路...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風高雄市災害應變中心 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-06 07:16:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 高雄市三民區十全路與自立1路口 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_已處理</styleUrl><Point><coordinates>120.315922,22.645251</coordinates></Point></Placemark><Placemark><name>高雄市左營區南屏路263巷2...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風高雄市災害應變中心 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 建物毀損 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-06 07:20:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 高雄市左營區南屏路263巷26弄與249巷 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#建物毀損_已處理</styleUrl><Point><coordinates>120.29915,22.669965</coordinates></Point></Placemark><Placemark><name>新竹縣新豐鄉瑞興村南興橋旁水...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風中央災害應變中心 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 水利設施災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-06 10:20:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 新竹縣新豐鄉瑞興村南興橋旁水利溝[新竹縣新豐鄉瑞興村12鄰崁頭223號] &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        &lt;iframe  width="282" height="215" style="overflow: hidden;" src="https://bear.emic.gov.tw/MY/webpages/webMaster/disasterPhoto.aspx?CASE_NO=042025060722053"&gt;&lt;/iframe&gt;
+      </description><styleUrl>#水利設施災情_已處理</styleUrl><Point><coordinates>121.002726411619,24.905925</coordinates></Point></Placemark><Placemark><name>新竹縣新豐鄉上坑村8鄰及9鄰</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風中央災害應變中心 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 民生、基礎設施災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-06 10:44:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 新竹縣新豐鄉上坑村8鄰及9鄰 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#民生、基礎設施災情_已處理</styleUrl><Point><coordinates>120.984757,24.894829</coordinates></Point></Placemark><Placemark><name>台東縣太麻里鄉多良村10鄰多...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風災害應變中心 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 道路、隧道災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-06 07:59:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 台東縣太麻里鄉多良村10鄰多良2-2號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        &lt;iframe  width="282" height="215" style="overflow: hidden;" src="https://bear.emic.gov.tw/MY/webpages/webMaster/disasterPhoto.aspx?CASE_NO=042025060721211"&gt;&lt;/iframe&gt;
+      </description><styleUrl>#道路、隧道災情_待處理</styleUrl><Point><coordinates>120.938315,22.526734</coordinates></Point></Placemark><Placemark><name>屏東縣滿州鄉山頂路38號</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風災害應變中心 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-06 07:52:32 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 屏東縣滿州鄉山頂路38號 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        &lt;iframe  width="282" height="215" style="overflow: hidden;" src="https://bear.emic.gov.tw/MY/webpages/webMaster/disasterPhoto.aspx?CASE_NO=072025060721141"&gt;&lt;/iframe&gt;
+      </description><styleUrl>#其他災情_處理中</styleUrl><Point><coordinates>120.857272395013,22.023762</coordinates></Point></Placemark><Placemark><name>高雄市小港區二苓路與民益路口...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風高雄市災害應變中心 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 廣告招牌災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-06 08:06:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 高雄市小港區二苓路與民益路口(小田園早餐店) &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#廣告招牌災情_處理中</styleUrl><Point><coordinates>120.350948,22.565152</coordinates></Point></Placemark><Placemark><name>高雄市左營區博愛四路226巷...</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風高雄市災害應變中心 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-06 09:16:00 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 高雄市左營區博愛四路226巷3號12樓 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_處理中</styleUrl><Point><coordinates>120.314593,22.684626</coordinates></Point></Placemark><Placemark><name>屏東縣滿州鄉舊公路36號旁</name><description>
+        &lt;div style='width:360px;padding:5px;margin:10px;' &gt;
+          &lt;table style='width:340px;border: 1px solid #AA9;' &gt;
+            &lt;tr style='background-color:#C8EBFA'&gt;
+            &lt;td style="width:100px"&gt; 事件 &lt;/td&gt; 
+            &lt;td&gt; 丹娜絲颱風災害應變中心 &lt;/td&gt;
+            &lt;/tr&gt;
+          
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 災情 &lt;/td&gt; 
+              &lt;td&gt; 其他災情 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr style='background-color:#C8EBFA'&gt;
+              &lt;td style="width:100px"&gt; 時間 &lt;/td&gt; 
+              &lt;td&gt; 2025-07-06 10:35:19 &lt;/td&gt;
+            &lt;/tr&gt;
+
+            &lt;tr &gt;
+              &lt;td style="width:100px"&gt; 說明 &lt;/td&gt; 
+              &lt;td&gt; 屏東縣滿州鄉舊公路36號旁 &lt;/td&gt;
+            &lt;/tr&gt;
+
+          &lt;/table&gt;
+         &lt;/div&gt;   
+        
+        
+      </description><styleUrl>#其他災情_處理中</styleUrl><Point><coordinates>120.829527667171,22.008894</coordinates></Point></Placemark></Document></kml>

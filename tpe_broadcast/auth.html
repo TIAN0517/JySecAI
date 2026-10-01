@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="utf-8" />
+    <title>述碼方舟</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=5, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta content="述碼方舟" name="description" />
+    <meta content="述碼方舟" name="author" />
+        
+        <!-- <meta http-equiv="Content-Security-Policy-Report-Only" content="default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'nonce-2726c7f26c'"> -->
+    
+
+
+    <script nonce="2726c7f26c">
+    basedir = '';
+    baseurl = 'https://kfa.kcg.gov.tw/';
+
+    var ChartColorTheme = [
+                        '#36A2EB', '#FFCE56', '#FF6384', '#CC65FE', 
+                        '#1D4E89', '#FF6F61', '#5F4B8B', '#88B04B', '#F7CAC9', '#91A8D0', 
+                        '#964F4C', '#AD5E99', '#964F4C', '#DD4124', '#D94F70', '#45B5AA', 
+                        '#E770BD', '#64E572', '#FF9655', '#F568A6', '#36A2EB',
+                        ];
+    </script>
+
+	<!-- ================== BEGIN BASE CSS STYLE ================== -->
+	<link href="https://kfa.kcg.gov.tw/assets/manager/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://kfa.kcg.gov.tw/assets/manager/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" /> 
+    <link href="https://kfa.kcg.gov.tw/assets/manager/jquery-ui-1.13.0/jquery-ui.min.css" rel="stylesheet" /> 
+
+	<link href="https://kfa.kcg.gov.tw/assets/manager/theme/css/default.css" rel="stylesheet" id="theme" />
+    <link href="https://kfa.kcg.gov.tw/assets/manager/theme/css/style-responsive.css" rel="stylesheet" />
+
+	<!-- ================== END BASE CSS STYLE ================== -->
+	
+	<!-- ================== FLAG CSS STYLE ================== -->
+    <link href="https://kfa.kcg.gov.tw/assets/manager/flag-icon/css/flag-icon.css" rel="stylesheet" />
+	<!-- ================== FLAG CSS STYLE ================== -->
+
+    <!-- ================== SWITCH BUTTON CSS STYLE ================== -->
+    <link href="https://kfa.kcg.gov.tw/assets/manager/switch-button/nsdi-switch-control.css" rel="stylesheet" />
+    <!-- ================== SWITCH BUTTON CSS STYLE ================== -->
+
+    <!-- ================== LIGHTBOX CSS STYLE ================== -->
+    <link href="https://kfa.kcg.gov.tw/assets/manager/lightbox/css/lightbox.css" rel="stylesheet" />
+    <!-- ================== LIGHTBOX CSS STYLE ================== -->
+    
+</head>
+<body>
+    
+    <div class="login-cover">
+        <div class="login-cover-image" style="background-image: url('https://kfa.kcg.gov.tw/assets/manager/theme/image/bg-1.jpg')" data-id="login-cover-image"></div>
+        <div class="login-cover-bg"></div>
+    </div>
+    <!-- begin #page-container -->
+    <div id="page-container" class="">
+        <!-- begin login -->
+        <div class="login login-v2" data-pageload-addclass="animated">
+            <!-- begin brand -->
+            <div class="login-header p-b-20">
+                <div class="brand">
+                    <center><img src="https://kfa.kcg.gov.tw/assets/manager/theme/image/logo.png" ><small>white rabbit</small></center>
+                </div>
+            </div>
+            <!-- end brand -->
+            <div class="login-content">
+                <form  method="POST" id="login" >
+                    <div class="form-group m-b-20">
+                        <input type="text" class="form-control form-control-lg" placeholder="驗證碼" name="2123403a5e5fa6ce7fd300e27cb670a4" id="2123403a5e5fa6ce7fd300e27cb670a4" />
+                    </div>
+
+                    <div>
+                        <button type="button" class="btn btn-lg eje-login">登入</button>
+                    </div>
+                                    </form>
+            </div>
+        </div>
+        <!-- end login -->
+        
+        
+        
+        <!-- begin theme-panel -->
+        
+        <!-- end theme-panel -->
+    </div>
+    <!-- end page container -->
+        
+    <!-- ================== BEGIN BASE JS ================== -->
+    <script src="https://kfa.kcg.gov.tw/assets/manager/jquery/jquery-3.6.0.min.js"></script>
+    <script src="https://kfa.kcg.gov.tw/assets/manager/jquery-ui-1.13.0/jquery-ui.min.js"></script>
+    <script src="https://kfa.kcg.gov.tw/assets/manager/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kfa.kcg.gov.tw/assets/manager/theme/js/apps.js"></script>
+    <!-- ================== END PAGE LEVEL JS ================== -->
+    <!-- ================== BEGIN toast container ================== -->
+    <div class="toast-container position-fixed top-0 end-0 p-10"></div>
+    <script>
+        const setToast  = msg => {
+            const container = document.querySelector('.toast-container');
+            let content = document.createElement('div');
+            content.innerHTML = '<div class="d-flex">' +
+                        '<div class="toast-body w-100">' + msg + '</div>' +
+                        '<button type="button" class="btn-close m-t-10 m-r-10" data-bs-dismiss="toast" aria-label="Close"></button>' +
+                    '</div>';
+            content.setAttribute('role',"alert");
+            content.setAttribute('aria-live',"assertive");
+            content.setAttribute('aria-atomic',"true");
+            content.classList.add('toast','text-dark','bg-gradient-orange','align-items-center');
+            container.appendChild(content);
+            container.style.zIndex = 9999;
+
+            let obj = container.querySelector('.toast:last-child');
+            let toast = new bootstrap.Toast(obj)
+            toast.show();
+            obj.addEventListener('hidden.bs.toast', function () {
+                this.remove()
+            })
+        }
+          
+    </script>
+    <!-- ================== END toast container ================== -->
+
+    <script>
+        $(document).ready(function() {
+            App.init();
+            
+            $(document).bind("ajaxSuccess", function(event, xhr, settings){
+                if(xhr.status == 203){
+                    let txt = $.parseJSON(xhr.responseText);
+                    alert(txt.msg);
+                    window.location.reload()
+                }
+            });
+            
+            $('.eje-login').click(function(){
+                let Check = true;
+                let status;
+               
+                $('.invalid-feedback').remove();
+                $('.is-invalid').removeClass('is-invalid');
+                let checklist = ['2123403a5e5fa6ce7fd300e27cb670a4'];
+              
+                for(j=0;j<checklist.length;j++){
+                    if($('#'+checklist[j]).val() == ''){
+                        $('#'+checklist[j]).addClass('is-invalid').after('<div class="invalid-feedback">*必填</div>');
+                        $('#'+checklist[j]).css({'border-color': '#bf6767'})
+                        
+                        $('#'+checklist[j]).focus(function(){
+                            $(this).css({'border-color': 'transparent'})
+                            $(this).removeClass('is-invalid');
+                            $(this).parent().find('.invalid-feedback').remove();
+                        })
+                        Check = false;
+                    }
+                };
+
+                if(!Check){
+                    Nsdi.setLoadingAnimix(false);
+                    return false;
+                }
+
+                let formdata = {
+                                    '2123403a5e5fa6ce7fd300e27cb670a4' : $('#2123403a5e5fa6ce7fd300e27cb670a4').val(),
+                                    '569823fc79eec1d7e6356ffcfd3c56ea' : '0a68a682b3c1de94168d441ddca4e85b57408970338a18a0bb936e4a0d2c592edd98173196974888827533399a0abc9060ddb0a4481ae502a46c0e56225e5e38cfcfcf93bcf73d219a26a3a91e797ff4',
+                                    '_nsdiview' : 'ccb5cfd14eccc4db0d06b1421305ee724d3fc77a717de29c9049e038b9643e80ef3a1896bdac6ab7247f84feb7e541ced95f9014cc1d780012b40e54bba11730GPQiEsV0OHZgFkGTym7+ByfA6WzBIzHTrSwkaE2ncopv2VVwG8u5BzWEc7aZcun0o3O1cMaovPe+ofZ/XWnDjQ=='
+                                }
+
+                $.ajax({
+                    url:  'https://kfa.kcg.gov.tw/auths',
+                    type: 'post',
+                    data: formdata
+                }).done(function(data){
+                    if(data.status == 'success'){
+                        window.location = data.redirect;
+                    } else {
+                        setToast(data.msg);
+                    }
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    setToast('登入失敗，請洽管理員');
+                });
+            })
+
+            $('#login').keypress(function(e) {
+                if(e.which == 13) {
+                    $('.eje-login').click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

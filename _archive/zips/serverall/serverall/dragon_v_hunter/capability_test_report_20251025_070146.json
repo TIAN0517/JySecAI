@@ -1,0 +1,30 @@
+{
+  "system_name": "Dragon-V Hunter",
+  "evaluation_date": "2025-10-25T07:01:46.258701",
+  "targets_tested": 3,
+  "summary": {
+    "total_targets": 3,
+    "successful_tests": 1,
+    "vulnerable_targets": 1,
+    "high_risk_targets": 1,
+    "success_rate": 33.33333333333333,
+    "vulnerability_rate": 100.0
+  },
+  "detailed_findings": [
+    {
+      "target": "shopee.vn",
+      "risk_factors": [
+        "缂哄皯瀹夊叏澶撮儴: X-Frame-Options, X-XSS-Protection, X-Powered-By",
+        "发现开放目录: 10个"
+      ],
+      "risk_score": 55
+    }
+  ],
+  "capability_assessment": {
+    "connectivity_testing": "PASS",
+    "vulnerability_detection": "PASS",
+    "comprehensive_analysis": "PASS",
+    "technical_fingerprinting": "PASS",
+    "risk_assessment": "PASS"
+  }
+}

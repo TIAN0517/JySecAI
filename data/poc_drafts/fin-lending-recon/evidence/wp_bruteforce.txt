@@ -1,0 +1,32 @@
+--- www.newloan.com.tw ---
+www.newloan.com.tw wp-login admin:admin -> HTTP 200
+www.newloan.com.tw wp-login admin:password -> HTTP 200
+www.newloan.com.tw wp-login admin:123456 -> HTTP 200
+www.newloan.com.tw wp-login admin:admin123 -> HTTP 200
+www.newloan.com.tw wp-login admin:test123 -> HTTP 200
+www.newloan.com.tw wp-login administrator:admin -> HTTP 200
+www.newloan.com.tw wp-login administrator:password -> HTTP 200
+www.newloan.com.tw wp-login administrator:123456 -> HTTP 200
+www.newloan.com.tw wp-login administrator:admin123 -> HTTP 200
+www.newloan.com.tw wp-login administrator:test123 -> HTTP 503
+www.newloan.com.tw wp-login test:admin -> HTTP 503
+www.newloan.com.tw wp-login test:password -> HTTP 503
+www.newloan.com.tw wp-login test:123456 -> HTTP 503
+www.newloan.com.tw wp-login test:admin123 -> HTTP 503
+www.newloan.com.tw wp-login test:test123 -> HTTP 429
+--- www.muchenloan.com ---
+www.muchenloan.com wp-login admin:admin -> HTTP 000
+www.muchenloan.com wp-login admin:password -> HTTP 000
+www.muchenloan.com wp-login admin:123456 -> HTTP 000
+www.muchenloan.com wp-login admin:admin123 -> HTTP 000
+www.muchenloan.com wp-login admin:test123 -> HTTP 000
+www.muchenloan.com wp-login administrator:admin -> HTTP 000
+www.muchenloan.com wp-login administrator:password -> HTTP 000
+www.muchenloan.com wp-login administrator:123456 -> HTTP 000
+www.muchenloan.com wp-login administrator:admin123 -> HTTP 000
+www.muchenloan.com wp-login administrator:test123 -> HTTP 000
+www.muchenloan.com wp-login test:admin -> HTTP 000
+www.muchenloan.com wp-login test:password -> HTTP 000
+www.muchenloan.com wp-login test:123456 -> HTTP 000
+www.muchenloan.com wp-login test:admin123 -> HTTP 000
+www.muchenloan.com wp-login test:test123 -> HTTP 000

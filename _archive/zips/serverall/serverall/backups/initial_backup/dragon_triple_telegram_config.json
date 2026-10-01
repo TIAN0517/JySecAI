@@ -1,0 +1,17 @@
+{
+  "bot": {
+    "token": "your_telegram_token_here",
+    "admin_users": [
+      123456789
+    ],
+    "bot_name": "Dragon-V Triple Bot",
+    "version": "1.0"
+  },
+  "menu": {
+    "welcome_message": "🐉 欢迎使用 Dragon-V Triple Bot!",
+    "help_message": "这是帮助信息",
+    "menu_timeout": 300,
+    "auto_cleanup": true
+  },
+  "permissions": {
+    

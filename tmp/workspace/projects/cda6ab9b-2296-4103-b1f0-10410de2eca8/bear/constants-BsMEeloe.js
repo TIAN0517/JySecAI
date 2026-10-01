@@ -1,0 +1,1 @@
+var e=`_e_magic`,t=`emic_gps_permission`,n=`emit_town_geojson`,r=`v.2.0`,i=window.location.host===`sbear.emic.gov.tw`,a={default:`1`,elder:`2`,kid:`3`,voice:`4`},o={default:`1`,disaster:`2`,edu:`3`,life:`4`,mountain:`5`,water:`6`},s={female:0,male:1,bear:2,female_jk:3,male_dk:4};export{s as a,a as c,r as i,e as n,o,n as r,i as s,t};

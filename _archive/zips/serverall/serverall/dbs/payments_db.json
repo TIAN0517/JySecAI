@@ -1,0 +1,176 @@
+{
+  "database_name": "payments_db",
+  "total_records": 12,
+  "created_time": "2025-10-29T02:17:01.078462",
+  "source_type": "consolidated_extraction",
+  "records": [
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 4399,
+        "loan_id": 4423,
+        "payment_amount_baht": 7187,
+        "payment_date": "2025-10-29",
+        "payment_method": "ชำระที่เคาน์เตอร์",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 72801,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 0
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 9138,
+        "loan_id": 8974,
+        "payment_amount_baht": 9814,
+        "payment_date": "2025-10-29",
+        "payment_method": "บัตรเครดิต",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 141926,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 269
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 8344,
+        "loan_id": 6586,
+        "payment_amount_baht": 7585,
+        "payment_date": "2025-10-29",
+        "payment_method": "พร้อมเพย์",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 61691,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 0
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 6483,
+        "loan_id": 3288,
+        "payment_amount_baht": 9211,
+        "payment_date": "2025-10-29",
+        "payment_method": "บัตรเครดิต",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 4681,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 0
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 9176,
+        "loan_id": 8248,
+        "payment_amount_baht": 8243,
+        "payment_date": "2025-10-29",
+        "payment_method": "บัตรเครดิต",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 79774,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 68
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 8767,
+        "loan_id": 2144,
+        "payment_amount_baht": 15813,
+        "payment_date": "2025-10-29",
+        "payment_method": "โอนเงิน",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 101745,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 0
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 4399,
+        "loan_id": 4423,
+        "payment_amount_baht": 7187,
+        "payment_date": "2025-10-29",
+        "payment_method": "ชำระที่เคาน์เตอร์",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 72801,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 0
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 9138,
+        "loan_id": 8974,
+        "payment_amount_baht": 9814,
+        "payment_date": "2025-10-29",
+        "payment_method": "บัตรเครดิต",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 141926,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 269
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 8344,
+        "loan_id": 6586,
+        "payment_amount_baht": 7585,
+        "payment_date": "2025-10-29",
+        "payment_method": "พร้อมเพย์",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 61691,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 0
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 6483,
+        "loan_id": 3288,
+        "payment_amount_baht": 9211,
+        "payment_date": "2025-10-29",
+        "payment_method": "บัตรเครดิต",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 4681,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 0
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 9176,
+        "loan_id": 8248,
+        "payment_amount_baht": 8243,
+        "payment_date": "2025-10-29",
+        "payment_method": "บัตรเครดิต",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 79774,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 68
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 8767,
+        "loan_id": 2144,
+        "payment_amount_baht": 15813,
+        "payment_date": "2025-10-29",
+        "payment_method": "โอนเงิน",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 101745,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 0
+      }
+    }
+  ]
+}

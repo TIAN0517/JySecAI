@@ -1,0 +1,1142 @@
+{
+  "target": "Amity University",
+  "scan_time": "2025-10-28 09:42:12",
+  "scan_type": "极速高级渗透测试",
+  "total_vulnerabilities": 56,
+  "critical_findings": [
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/upload.html",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/upload.html",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/api/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/api/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/api/file/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/api/file/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.phtml",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.phtml",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "test.php",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/test.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "config.php",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/config.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "upload.php",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/upload.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.jpg",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.txt",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.phtml",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.phtml",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "test.php",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/test.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "config.php",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/config.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "upload.php",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/upload.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.jpg",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.txt",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.phtml",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.phtml",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "test.php",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/test.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "config.php",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/config.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "upload.php",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/upload.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.jpg",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.txt",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.phtml",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.phtml",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "test.php",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/test.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "config.php",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/config.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "upload.php",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/upload.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.jpg",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.txt",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.phtml",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.phtml",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "test.php",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/test.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "config.php",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/config.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "upload.php",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/upload.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.jpg",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.txt",
+      "accessible": true
+    }
+  ],
+  "vulnerability_summary": {
+    "file_upload": 56
+  },
+  "detailed_results": [
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/upload.html",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/upload.html",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/api/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/api/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/api/file/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/api/file/upload",
+      "indicators": [
+        "file"
+      ]
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.phtml",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.phtml",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "test.php",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/test.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "config.php",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/config.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "upload.php",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/upload.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.jpg",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.txt",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.phtml",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.phtml",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "test.php",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/test.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "config.php",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/config.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "upload.php",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/upload.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.jpg",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/upload.php",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.txt",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.phtml",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.phtml",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "test.php",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/test.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "config.php",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/config.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "upload.php",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/upload.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.jpg",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/file_upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.txt",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.phtml",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.phtml",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "test.php",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/test.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "config.php",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/config.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "upload.php",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/upload.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.jpg",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/admin/upload",
+      "indicators": [
+        "file"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.txt",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.phtml",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.phtml",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "test.php",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/test.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "config.php",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/config.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "upload.php",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/upload.php",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.jpg",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.jpg",
+      "accessible": true
+    },
+    {
+      "type": "file_upload",
+      "filename": "shell.php.txt",
+      "endpoint": "/files/upload",
+      "indicators": [
+        "complete",
+        "done"
+      ],
+      "file_url": "https://mail.amity.edu/files/shell.php.txt",
+      "accessible": true
+    }
+  ],
+  "recommendations": [
+    "发现 56 个安全漏洞，建议立即修复",
+    "实施输入验证和输出编码",
+    "使用参数化查询防止SQL注入",
+    "加强文件上传安全检查",
+    "实施强认证和会话管理",
+    "部署Web应用防火墙(WAF)",
+    "定期进行安全代码审查"
+  ]
+}

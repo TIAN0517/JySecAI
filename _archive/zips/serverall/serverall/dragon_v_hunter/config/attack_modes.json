@@ -1,0 +1,405 @@
+{
+  "attack_modes": {
+    "full_chain": {
+      "name": "完整渗透链",
+      "description": "执行完整的业务逻辑渗透，从指纹识别到数据外泄",
+      "phases": [
+        "fingerprinting",
+        "attack_chain_generation",
+        "attack_execution",
+        "database_weaponization",
+        "data_exfiltration"
+      ],
+      "duration": "10-30分钟",
+      "skill_level": "expert",
+      "success_probability": "高",
+      "risk_level": "极高",
+      "use_cases": [
+        "深度安全评估",
+        "红队演练",
+        "业务逻辑漏洞发现"
+      ],
+      "output": {
+        "detailed_report": true,
+        "execution_logs": true,
+        "evidence_collection": true
+      }
+    },
+    "fingerprint_only": {
+      "name": "仅指纹识别",
+      "description": "只执行越南化深度指纹识别，了解目标系统特征",
+      "phases": [
+        "fingerprinting"
+      ],
+      "duration": "1-3分钟",
+      "skill_level": "beginner",
+      "success_probability": "极高",
+      "risk_level": "低",
+      "use_cases": [
+        "目标信息收集",
+        "系统特征分析",
+        "攻击前侦察"
+      ],
+      "output": {
+        "detailed_report": true,
+        "execution_logs": false,
+        "evidence_collection": false
+      }
+    },
+    "chain_only": {
+      "name": "仅攻击链生成",
+      "description": "基于指纹识别结果生成业务逻辑攻击链",
+      "phases": [
+        "fingerprinting",
+        "attack_chain_generation"
+      ],
+      "duration": "2-5分钟",
+      "skill_level": "intermediate",
+      "success_probability": "中",
+      "risk_level": "低",
+      "use_cases": [
+        "攻击路径规划",
+        "安全策略制定",
+        "防御能力评估"
+      ],
+      "output": {
+        "detailed_report": true,
+        "execution_logs": false,
+        "evidence_collection": false
+      }
+    },
+    "stealth_recon": {
+      "name": "隐蔽侦察",
+      "description": "低风险、低影响的系统侦察",
+      "phases": [
+        "passive_fingerprinting",
+        "endpoint_discovery",
+        "vulnerability_scanning"
+      ],
+      "duration": "3-8分钟",
+      "skill_level": "intermediate",
+      "success_probability": "中",
+      "risk_level": "低",
+      "use_cases": [
+        "合法漏洞研究",
+        "安全审计",
+        "合规性检查"
+      ],
+      "output": {
+        "detailed_report": true,
+        "execution_logs": true,
+        "evidence_collection": false
+      }
+    },
+    "business_logic_exploit": {
+      "name": "业务逻辑利用",
+      "description": "专门针对业务逻辑漏洞进行测试",
+      "phases": [
+        "business_logic_analysis",
+        "vulnerability_detection",
+        "exploitation_attempt"
+      ],
+      "duration": "5-15分钟",
+      "skill_level": "expert",
+      "success_probability": "高",
+      "risk_level": "高",
+      "use_cases": [
+        "业务逻辑漏洞测试",
+        "流程安全评估",
+        "权限提升测试"
+      ],
+      "output": {
+        "detailed_report": true,
+        "execution_logs": true,
+        "evidence_collection": true
+      }
+    },
+    "data_exfiltration_test": {
+      "name": "数据外泄测试",
+      "description": "测试各种隐蔽数据外泄技术",
+      "phases": [
+        "data_access",
+        "exfiltration_technique",
+        "stealth_analysis"
+      ],
+      "duration": "8-20分钟",
+      "skill_level": "expert",
+      "success_probability": "中",
+      "risk_level": "高",
+      "use_cases": [
+        "数据泄露风险评估",
+        "外泄防护测试",
+        "监控有效性验证"
+      ],
+      "output": {
+        "detailed_report": true,
+        "execution_logs": true,
+        "evidence_collection": true
+      }
+    },
+    "persistence_test": {
+      "name": "持久化测试",
+      "description": "测试系统的持久化后门和访问控制",
+      "phases": [
+        "access_analysis",
+        "persistence_technique",
+        "backdoor_creation"
+      ],
+      "duration": "10-25分钟",
+      "skill_level": "expert",
+      "success_probability": "中",
+      "risk_level": "极高",
+      "use_cases": [
+        "持久化风险评估",
+        "清理效果验证",
+        "访问控制测试"
+      ],
+      "output": {
+        "detailed_report": true,
+        "execution_logs": true,
+        "evidence_collection": true
+      }
+    },
+    "impact_simulation": {
+      "name": "业务影响模拟",
+      "description": "模拟不同攻击对业务的具体影响",
+      "phases": [
+        "business_analysis",
+        "impact_modeling",
+        "scenario_simulation"
+      ],
+      "duration": "15-40分钟",
+      "skill_level": "expert",
+      "success_probability": "高",
+      "risk_level": "极高",
+      "use_cases": [
+        "业务连续性测试",
+        "灾难恢复演练",
+        "业务影响评估"
+      ],
+      "output": {
+        "detailed_report": true,
+        "execution_logs": true,
+        "business_metrics": true,
+        "financial_impact": true
+      }
+    },
+    "custom_chain": {
+      "name": "自定义攻击链",
+      "description": "基于配置文件执行自定义攻击链",
+      "phases": [
+        "custom_chain_loading",
+        "custom_execution",
+        "custom_analysis"
+      ],
+      "duration": "可配置",
+      "skill_level": "expert",
+      "success_probability": "可配置",
+      "risk_level": "可配置",
+      "use_cases": [
+        "特定业务场景测试",
+        "定制化安全评估",
+        "新漏洞验证"
+      ],
+      "output": {
+        "detailed_report": true,
+        "execution_logs": true,
+        "evidence_collection": true
+      }
+    }
+  },
+  "target_profiles": {
+    "vietnamese_logistics_system": {
+      "name": "越南物流系统",
+      "characteristics": [
+        "技术栈：IIS + ASP.NET + SQL Server",
+        "业务：订单管理、物流追踪、支付处理",
+        "本地化：越南语界面、越南客户数据",
+        "安全：常见漏洞、业务逻辑缺陷"
+      ],
+      "recommended_modes": [
+        "full_chain",
+        "business_logic_exploit",
+        "data_exfiltration_test"
+      ],
+      "risk_assessment": {
+        "high_risk_operations": [
+          "database_weaponization",
+          "persistence_test",
+          "impact_simulation"
+        ],
+        "medium_risk_operations": [
+          "attack_chain_execution",
+          "data_exfiltration"
+        ],
+        "low_risk_operations": [
+          "fingerprinting",
+          "reconnaissance"
+        ]
+      }
+    },
+    "vietnamese_ecommerce": {
+      "name": "越南电商平台",
+      "characteristics": [
+        "技术栈：多样化（PHP、Java、Python）",
+        "业务：商品管理、订单处理、支付网关",
+        "本地化：越南支付方式、越南物流集成",
+        "安全：支付漏洞、数据泄露风险"
+      ],
+      "recommended_modes": [
+        "full_chain",
+        "data_exfiltration_test",
+        "business_logic_exploit"
+      ]
+    },
+    "vietnamese_government": {
+      "name": "越南政府系统",
+      "characteristics": [
+        "技术栈：传统技术栈",
+        "业务：公共服务、数据管理",
+        "本地化：越南政府规范",
+        "安全：严格的访问控制"
+      ],
+      "recommended_modes": [
+        "stealth_recon",
+        "fingerprint_only"
+      ]
+    },
+    "generic_vietnamese_web": {
+      "name": "通用越南网站",
+      "characteristics": [
+        "技术栈：常见Web技术",
+        "业务：多样化业务功能",
+        "本地化：越南语内容",
+        "安全：一般Web漏洞"
+      ],
+      "recommended_modes": [
+        "fingerprint_only",
+        "chain_only"
+      ]
+    }
+  },
+  "execution_profiles": {
+    "fast_scan": {
+      "name": "快速扫描",
+      "timeout_per_step": 5,
+      "retry_attempts": 1,
+      "parallel_execution": true,
+      "detail_level": "basic"
+    },
+    "thorough_scan": {
+      "name": "彻底扫描",
+      "timeout_per_step": 30,
+      "retry_attempts": 3,
+      "parallel_execution": false,
+      "detail_level": "detailed"
+    },
+    "stealth_scan": {
+      "name": "隐蔽扫描",
+      "timeout_per_step": 15,
+      "retry_attempts": 1,
+      "parallel_execution": false,
+      "detail_level": "minimal"
+    },
+    "comprehensive_scan": {
+      "name": "全面扫描",
+      "timeout_per_step": 45,
+      "retry_attempts": 5,
+      "parallel_execution": true,
+      "detail_level": "comprehensive"
+    }
+  },
+  "risk_levels": {
+    "extreme": {
+      "name": "极端风险",
+      "description": "可能导致系统完全崩溃、数据完全泄露、业务完全中断",
+      "allowed_operations": [],
+      "required_approvals": [
+        "executive_approval",
+        "legal_review",
+        "business_approval"
+      ],
+      "mitigation_requirements": [
+        "full_system_backup",
+        "rollback_plan",
+        "emergency_response_team"
+      ]
+    },
+    "high": {
+      "name": "高风险",
+      "description": "可能导致部分数据泄露、服务中断、财务损失",
+      "allowed_operations": [
+        "fingerprinting",
+        "reconnaissance"
+      ],
+      "required_approvals": [
+        "manager_approval",
+        "business_approval"
+      ],
+      "mitigation_requirements": [
+        "partial_backup",
+        "rollback_plan"
+      ]
+    },
+    "medium": {
+      "name": "中等风险",
+      "description": "可能导致有限的漏洞发现、轻微的业务影响",
+      "allowed_operations": [
+        "basic_scanning",
+        "vulnerability_detection"
+      ],
+      "required_approvals": [
+        "team_lead_approval"
+      ],
+      "mitigation_requirements": [
+        "logging_monitoring"
+      ]
+    },
+    "low": {
+      "name": "低风险",
+      "description": "最小化的风险，主要用于安全研究和教育",
+      "allowed_operations": [
+        "information_gathering",
+        "passive_reconnaissance"
+      ],
+      "required_approvals": [
+        "technical_approval"
+      ],
+      "mitigation_requirements": [
+        "standard_logging"
+      ]
+    }
+  },
+  "compliance_requirements": {
+    "legal_disclaimer": {
+      "text": "⚠️ 重要法律声明：本工具仅用于授权的安全测试和教育目的。未经授权对任何系统进行测试均属违法行为，使用者需自行承担所有法律责任。所有测试必须获得系统所有者的明确书面许可。",
+      "required": true
+    },
+    "usage_restrictions": {
+      "allowed_purposes": [
+        "授权的红队演练",
+        "漏洞研究",
+        "安全审计",
+        "教育训练"
+      ],
+      "restricted_purposes": [
+        "未授权测试",
+        "恶意攻击",
+        "数据窃取",
+        "破坏行为"
+      ]
+    },
+    "reporting_requirements": {
+      "mandatory_reports": [
+        "测试结果报告",
+        "漏洞修复建议",
+        "风险评估报告"
+      ],
+      "recommended_reports": [
+        "业务影响分析",
+        "安全态势评估",
+        "持续改进建议"
+      ]
+    }
+  }
+}

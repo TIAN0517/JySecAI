@@ -1,0 +1,114 @@
+{
+  "fsm": [
+    {
+      "url": "https://fsm.119.gov.taipei/",
+      "error": "SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<SOCKSHTTPSConnection(host='fsm.119.gov.taipei', port=443) at 0x7ac0d4ed9"
+    },
+    {
+      "url": "https://fsm.119.gov.taipei/w/fsm119/index",
+      "error": "SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded with url: /w/fsm119/index (Caused by ConnectTimeoutError(<SOCKSHTTPSConnection(host='fsm.119.gov.taipei', port=443) "
+    },
+    {
+      "url": "https://fsm.119.gov.taipei/login",
+      "error": "SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded with url: /login (Caused by ConnectTimeoutError(<SOCKSHTTPSConnection(host='fsm.119.gov.taipei', port=443) at 0x7ac0"
+    },
+    {
+      "url": "https://fsm.119.gov.taipei/admin/login",
+      "error": "SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded with url: /admin/login (Caused by ConnectTimeoutError(<SOCKSHTTPSConnection(host='fsm.119.gov.taipei', port=443) at "
+    },
+    {
+      "url": "https://fsm.119.gov.taipei/auth/genToken",
+      "error": "SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded with url: /auth/genToken (Caused by ConnectTimeoutError(<SOCKSHTTPSConnection(host='fsm.119.gov.taipei', port=443) a"
+    },
+    {
+      "url": "https://fsm.119.gov.taipei/auth/fetchServerData",
+      "error": "SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded with url: /auth/fetchServerData (Caused by ConnectTimeoutError(<SOCKSHTTPSConnection(host='fsm.119.gov.taipei', port"
+    },
+    {
+      "url": "https://fsm.119.gov.taipei/oauth/token",
+      "error": "SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded with url: /oauth/token (Caused by ConnectTimeoutError(<SOCKSHTTPSConnection(host='fsm.119.gov.taipei', port=443) at "
+    },
+    {
+      "url": "https://fsm.119.gov.taipei/api/getUserToken",
+      "error": "SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded with url: /api/getUserToken (Caused by ConnectTimeoutError(<SOCKSHTTPSConnection(host='fsm.119.gov.taipei', port=443"
+    },
+    {
+      "url": "https://fsm.119.gov.taipei/sso/login",
+      "error": "SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded with url: /sso/login (Caused by ConnectTimeoutError(<SOCKSHTTPSConnection(host='fsm.119.gov.taipei', port=443) at 0x"
+    },
+    {
+      "url": "https://fsm.119.gov.taipei/cas/login",
+      "error": "SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded with url: /cas/login (Caused by ConnectTimeoutError(<SOCKSHTTPSConnection(host='fsm.119.gov.taipei', port=443) at 0x"
+    },
+    {
+      "url": "https://fsm.119.gov.taipei/user/login",
+      "error": "SOCKSHTTPSConnectionPool(host='fsm.119.gov.taipei', port=443): Max retries exceeded with url: /user/login (Caused by ConnectTimeoutError(<SOCKSHTTPSConnection(host='fsm.119.gov.taipei', port=443) at 0"
+    }
+  ],
+  "epcr": [
+    {
+      "url": "https://118.163.107.93:4000/",
+      "final_url": "https://118.163.107.93:4000/",
+      "status": 200,
+      "len": 13961,
+      "title": "EPCR",
+      "has_form": false,
+      "has_pw": false,
+      "content_type": "text/html; charset=UTF-8",
+      "server": "",
+      "login_links": [],
+      "js_files": [
+        "bower_components/jquery/dist/jquery.min.js",
+        "bower_components/jquery-migrate-official/dist/jquery-migrate.js",
+        "bower_components/ngmap/build/scripts/ng-map.min.js",
+        "bower_components/jquery/dist/jquery.js",
+        "bower_components/angular/angular.min.js",
+        "bower_components/angular-animate/angular-animate.min.js",
+        "bower_components/angular-ui-router/release/angular-ui-router.min.js",
+        "bower_components/bootstrap/dist/js/bootstrap.min.js",
+        "bower_components/angular-strap/dist/angular-strap.min.js",
+        "bower_components/angular-strap/dist/angular-strap.tpl.min.js"
+      ],
+      "body_preview": "<!DOCTYPE html>\n<html ng-app=\"EPCRServer\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>EPCR</title>\n\n  <link href=\"bower_components/bootstrap/dist/css/bootstrap.min.css\" rel=\"stylesheet\" type=\"text/css\" />\n  <!-- <link href=\"stylesheets/theme.css\" rel=\"stylesheet\" type=\"text/css\" /> -->\n  <link href=\"stylesheets/style.css\" rel=\"stylesheet\" type=\"text/css\" />\n  <link href=\"stylesheets/inOpStatus.css\" rel=\"stylesheet\" type=\"text/css\" />\n  <script src=\"bower_components/jquery/dist/jquery.min.js\"></script>\n  <script src=\"bower_components/jquery-migrate-official/dist/jquery-migrate.js\"></script>\n\n    <!--<script id=\"myScript\" src=\"bower_components/ngmap/build/scripts/ng-map.min.js\"></script>\n-->\n    <script>\n      document.addEventListener('DOMContentLoaded', function() {\n        // 取得當前網址\n        var currentUrl = window.location.href;\n        console.log(currentUrl)\n        // 檢查是否匹配 /A/#/ABC\n        if (!currentUrl.includes('/caseDetailPrint')) {\n          var existingScript = document.getElementById('myScript'); // 獲取指定的 script 標籤\n          if(existingScript){\n            existingScript.src = 'https://maps.google.com/maps/api/js?key=AIzaSyB-ZbIMj6Now6cnwor9QRwjx6zEnzdYvU4'; // 替換為新的 JavaScript 檔案 URL\n            // 重新加載 script\n            var newScript = document.createElement('script');\n            newScript.src = existingScript.src; // 使用新的 src\n            newScript.id = existingScript.id; // 保持 id\n                // 設定 onload 事件\n                newScript.onload = function() {\n                    console.log('新腳本已加載完成！');\n                };\n            existingScript.parentNode.replaceChild(newScript, existingScript); // 替換舊的 script\n          }else{\n            // 動態創建 script 標籤\n            var script = document.createElement('script');\n            script.src = 'https://maps.google.com/maps/api/js?key=AIzaSyB-ZbIMj6Now6cnwor9QRwjx6zEnzdYvU4';  // 指定要加載的外部資源\n            script.async = false;  // 非同步加"
+    },
+    {
+      "url": "https://118.163.107.93:4001/",
+      "final_url": "https://118.163.107.93:4001/",
+      "status": 200,
+      "len": 170,
+      "title": "Express",
+      "has_form": false,
+      "has_pw": false,
+      "content_type": "text/html; charset=utf-8",
+      "server": "",
+      "login_links": [],
+      "js_files": [],
+      "body_preview": "<!DOCTYPE html><html><head><title>Express</title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>Express</h1><p>Welcome to Express</p></body></html>"
+    },
+    {
+      "url": "https://118.163.107.93:4002/",
+      "final_url": "https://118.163.107.93:4002/",
+      "status": 200,
+      "len": 6174,
+      "title": "Hospital Server",
+      "has_form": false,
+      "has_pw": false,
+      "content_type": "text/html; charset=UTF-8",
+      "server": "",
+      "login_links": [],
+      "js_files": [
+        "bower_components/jquery/dist/jquery.js",
+        "bower_components/jquery-migrate-official/dist/jquery-migrate.js",
+        "bower_components/angular/angular.js",
+        "bower_components/angular-animate/angular-animate.js",
+        "bower_components/angular-ui-router/release/angular-ui-router.js",
+        "bower_components/bootstrap/dist/js/bootstrap.js",
+        "bower_components/angular-strap/dist/angular-strap.js",
+        "bower_components/angular-strap/dist/angular-strap.tpl.js",
+        "bower_components/moment/moment.js",
+        "bower_components/lodash/dist/lodash.js"
+      ],
+      "body_preview": "<!DOCTYPE html>\n<html ng-app=\"HospitalServer\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Hospital Server</title>\n\n  <link href=\"bower_components/bootstrap/dist/css/bootstrap.css\" rel=\"stylesheet\" type=\"text/css\" />\n  <link href=\"stylesheets/style.css\" rel=\"stylesheet\" type=\"text/css\" />\n  <script src=\"bower_components/jquery/dist/jquery.js\"></script>\n  <script src=\"bower_components/jquery-migrate-official/dist/jquery-migrate.js\"></script>\n  <script src=\"bower_components/angular/angular.js\"></script>\n  <script src=\"bower_components/angular-animate/angular-animate.js\"></script>\n  <script src=\"bower_components/angular-ui-router/release/angular-ui-router.js\"></script>\n  <script src=\"bower_components/bootstrap/dist/js/bootstrap.js\"></script>\n  <!-- AngularStrap -->\n  <script src=\"bower_components/angular-strap/dist/angular-strap.js\"></script>\n  <script src=\"bower_components/angular-strap/dist/angular-strap.tpl.js\"></script>\n  <!-- <link href=\"stylesheets/libs.min.css\" rel=\"stylesheet\" type=\"text/css\" /> -->\n  <link href=\"stylesheets/alert.css\" rel=\"stylesheet\" type=\"text/css\" />\n  <link rel=\"stylesheet\" href=\"bower_components/angular-motion/dist/angular-motion.min.css\">\n  <!-- moment -->\n  <script src=\"bower_components/moment/moment.js\"></script>\n  <!-- lodash -->\n  <script src=\"bower_components/lodash/dist/lodash.js\"></script>\n  <!-- Angular Local Storage -->\n  <script src=\"bower_components/angular-local-storage/dist/angular-local-storage.js\"></script>\n  <!-- Angular cookies -->\n  <script src=\"bower_components/angular-cookies/angular-cookies.js\"></script>\n  <!-- Angular Busy -->\n  <link href=\"bower_components/angular-busy/dist/angular-busy.css\" rel=\"stylesheet\" type=\"text/css\" />\n  <script src=\"bower_components/angular-busy/dist/angular-busy.js\"></script>\n  <!-- ng-table -->\n  <link rel=\"stylesheet\" href=\"bower_components/ng-table/dist/ng-table.css\">\n  <script src=\"bower_components/ng-table/dist/ng-ta"
+    }
+  ]
+}

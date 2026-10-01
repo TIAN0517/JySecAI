@@ -1,0 +1,62 @@
+============================================================
+目录扫描报告
+============================================================
+扫描时间: 2025-10-29T07:05:44.380757
+扫描目录: C:\Users\Administrator\desktop\serverall
+扫描耗时: 6.95 秒
+总文件数: 40642
+允许文件: 30103
+阻止文件: 10539
+
+文件类型统计:
+------------------------------
+  .js: 15770 个
+  .py: 4200 个
+  .json: 4149 个
+  .md: 2588 个
+  .yaml: 1307 个
+  .txt: 606 个
+  .yml: 282 个
+  .css: 270 个
+  .pyc: 233 个
+  .gz: 150 个
+  .ps1: 111 个
+  .cmd: 108 个
+  .html: 75 个
+  .xml: 56 个
+  .log: 46 个
+  .sql: 35 个
+  .sh: 23 个
+  .csv: 20 个
+  .db: 14 个
+  .sqlite: 12 个
+  .bat: 12 个
+  .php: 8 个
+  .pem: 6 个
+  .cfg: 5 个
+  .zip: 4 个
+  .rst: 4 个
+  .conf: 4 个
+  .toml: 3 个
+  无扩展名: 1 个
+  .key: 1 个
+
+目录分布统计 (前10):
+------------------------------
+  根目录: 1767 个
+  Dast-Xray-web\node_modules\lodash: 636 个
+  Dast-Xray-web\node_modules\microcli\node_modules\lodash: 636 个
+  Dast-Xray-web\node_modules\caniuse-lite\data\features: 581 个
+  Dast-Xray-web\node_modules\lodash\fp: 415 个
+  vuln_unified\2: 399 个
+  Dast-Xray-web\node_modules\.cache\vue-loader: 360 个
+  Dast-Xray-web\node_modules\core-js\modules: 335 个
+  Dast-Xray-web\node_modules\eslint\lib\rules: 276 个
+  attack_monitor_20251029_032931: 268 个
+
+文件大小分布:
+------------------------------
+  1KB-1MB: 16990 个
+  1MB-10MB: 16 个
+  <1KB: 13096 个
+  >10MB: 1 个

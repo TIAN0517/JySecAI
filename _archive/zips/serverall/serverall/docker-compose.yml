@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  xss-platform:
+    build: .
+    container_name: xss-testing-platform
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    
+  # 可选: 添加数据库服务
+  database:
+    image: sqlite:latest
+    volumes:
+      - ./data:/data
+    restart: unless-stopped

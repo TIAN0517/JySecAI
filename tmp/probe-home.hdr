@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Access-Control-Allow-Headers: Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With
+Access-Control-Allow-Methods: POST, OPTIONS, GET, PUT, DELETE
+Access-Control-Max-Age: 600
+Content-Type: text/html; charset=utf-8
+Date: Thu, 10 Sep 2026 15:46:10 GMT
+Transfer-Encoding: chunked
+

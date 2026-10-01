@@ -1,0 +1,85 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>🔍 XSS载荷分析工具</title>
+        <style>
+            body { background: #0f0f23; color: #00ff41; font-family: monospace; padding: 20px; }
+            .container { max-width: 800px; margin: 0 auto; }
+            .input-area { margin: 20px 0; }
+            textarea { width: 100%; height: 150px; background: rgba(0,0,0,0.7); color: #00ff41; border: 1px solid #00ff41; padding: 10px; }
+            .result { background: rgba(0,255,65,0.1); border: 1px solid #00ff41; padding: 15px; margin: 10px 0; }
+            .high-risk { border-color: #ff0000; }
+            .medium-risk { border-color: #ffa500; }
+            .low-risk { border-color: #00ff41; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🔍 XSS载荷分析工具</h1>
+            <a href="/">← 返回</a>
+            <hr>
+            
+            <div class="input-area">
+                <h3>输入XSS载荷进行分析:</h3>
+                <textarea id="payloadInput" placeholder="在此输入XSS载荷..."></textarea>
+                <br>
+                <button onclick="analyzePayload()" style="background: #00ff41; color: black; border: none; padding: 10px 20px; cursor: pointer;">分析载荷</button>
+            </div>
+            
+            <div id="result" class="result">
+                分析结果将显示在这里...
+            </div>
+        </div>
+        
+        <script>
+        function analyzePayload() {
+            const payload = document.getElementById('payloadInput').value;
+            if (!payload.trim()) {
+                alert('请输入XSS载荷');
+                return;
+            }
+            
+            // 模拟分析逻辑
+            const result = document.getElementById('result');
+            let riskLevel = 'low';
+            let techniques = [];
+            
+            // 基础分析
+            if (payload.includes('<script>')) {
+                techniques.push('脚本标签注入');
+                riskLevel = 'high';
+            }
+            if (payload.includes('on')) {
+                techniques.push('事件处理器注入');
+                riskLevel = 'high';
+            }
+            if (payload.includes('javascript:')) {
+                techniques.push('JavaScript协议');
+                riskLevel = 'high';
+            }
+            if (payload.includes('<img')) {
+                techniques.push('图片标签注入');
+                riskLevel = 'medium';
+            }
+            if (payload.includes('<svg')) {
+                techniques.push('SVG注入');
+                riskLevel = 'medium';
+            }
+            
+            let riskClass = riskLevel + '-risk';
+            let riskColor = riskLevel === 'high' ? '#ff0000' : riskLevel === 'medium' ? '#ffa500' : '#00ff41';
+            
+            result.innerHTML = `
+                <h3 style="color: ${riskColor}">风险等级: ${riskLevel.toUpperCase()}</h3>
+                <p><strong>载荷长度:</strong> ${payload.length} 字符</p>
+                <p><strong>检测到的技术:</strong> ${techniques.join(', ') || '无'}</p>
+                <p><strong>载荷内容:</strong></p>
+                <pre style="background: rgba(0,0,0,0.5); padding: 10px; overflow-x: auto;">${payload}</pre>
+            `;
+            result.className = 'result ' + riskClass;
+        }
+        </script>
+    </body>
+    </html>
+    

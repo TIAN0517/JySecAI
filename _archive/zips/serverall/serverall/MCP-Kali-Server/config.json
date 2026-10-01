@@ -1,0 +1,26 @@
+{
+  "server": {
+    "host": "0.0.0.0",
+    "port": 5001,
+    "debug": false
+  },
+  "mcp": {
+    "timeout": 300,
+    "kali_server_url": "http://localhost:5001"
+  },
+  "tools": {
+    "nmap": {
+      "default_scan_type": "-sV",
+      "default_timeout": 180
+    },
+    "gobuster": {
+      "default_wordlist": "/usr/share/wordlists/dirb/common.txt"
+    },
+    "dirb": {
+      "default_wordlist": "/usr/share/wordlists/dirb/common.txt"
+    },
+    "sqlmap": {
+      "default_timeout": 300
+    }
+  }
+}

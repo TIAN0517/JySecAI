@@ -1,0 +1,23 @@
+{
+  "report_title": "量子加密载荷生成与验证报告",
+  "report_time": "2025-10-28 13:39:44",
+  "tool_version": "QuantumEncryptedPayloadGenerator v1.0",
+  "quantum_technologies": {
+    "superposition_encoding": "量子叠加态编码",
+    "entanglement_encoding": "量子纠缠编码",
+    "quantum_key_distribution": "量子密钥分发",
+    "post_quantum_cryptography": "后量子密码学"
+  },
+  "summary": {
+    "total_payloads_generated": 493,
+    "successful_attacks": 0,
+    "overall_success_rate": "0.00%",
+    "quantum_states_utilized": 10,
+    "quantum_key_pool_size": 4
+  },
+  "attack_type_effectiveness": {
+    "sqli": {
+      "total": 116,
+      "successful": 0,
+      "success_rate": 0.0,
+      "quantum_states_used": 

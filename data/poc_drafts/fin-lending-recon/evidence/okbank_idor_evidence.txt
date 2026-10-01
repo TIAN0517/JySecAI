@@ -1,0 +1,643 @@
+
+
+<!DOCTYPE html>
+<html  lang="zh-Hant-TW">
+<head>
+
+<!-- imc -->
+
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PQ5FVS');</script>
+<!-- End Google Tag Manager -->
+
+
+<script>
+fbq('track', 'CompleteRegistration', {value: 1, currency: 'USD'}, {eventID: '2302540'});
+</script>
+
+
+<meta charset="big5">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<title></title>
+
+<!-- CSS -->
+<link rel="stylesheet" href="../Event/css/bootstrap.css">
+<link rel="stylesheet" href="../Event/css/fonts.css">
+<link rel="stylesheet" href="../Event/css/fontawesome-all.css">
+<link rel="stylesheet" href="../Event/css/form.css">
+<link rel="stylesheet" href="../Event/css/style.css">
+<link rel="stylesheet" href="../Event/css/okevent.css">
+
+<script language="JavaScript">
+<!--
+
+function jsTrim(str) 
+{ 
+  var startp=0; 
+  var endp= str.length - 1; 
+ 
+  if (str.length == 0) 
+  { 
+    return str; 
+  } 
+  for (ci=0; ci < str.length; ci++) 
+  { 
+    startp++; 
+    if (str.charAt(ci) != " ") { startp--; break; } 
+  } 
+  if (startp == str.length) { return ""; } 
+  for (ci=str.length-1; ci >= 0; ci--) 
+  { 
+    endp--; 
+    if (str.charAt(ci) != " ") { endp++; break; } 
+  } 
+  return str.substring(startp, endp+1); 
+}
+
+function p_car_kind_check()
+{ sform.p_car_Loan[0].selected = true;
+	if (jsTrim(sform.p_car_kind.value)=="nn" || jsTrim(sform.p_car_kind.value)=="")
+	  { show_p_car_Loan.style.display='none'; }
+  else
+  	{ show_p_car_Loan.style.display=''; }
+}
+
+function p_scar_kind_check()
+{ sform.p_scar_Loan[0].selected = true;
+	if (jsTrim(sform.p_scar_kind.value)=="nn" || jsTrim(sform.p_scar_kind.value)=="")
+	  { show_p_scar_Loan.style.display='none'; }
+  else
+  	{ show_p_scar_Loan.style.display=''; }
+}
+
+function p_job_kind_check()
+{
+	sform.p_company_kind[0].selected = true;
+	sform.p_job_month[0].selected = true;
+	
+	if ( jsTrim(sform.p_job_kind.value)=="" )
+	  { show_p_company_kind.style.display='none'; show_p_job_month.style.display='none'; }
+  else if (jsTrim(sform.p_job_kind.value)=="bossy" )
+  	{ show_p_company_kind.style.display=''; show_p_job_month.style.display='none'; }
+  else 
+  	{ show_p_company_kind.style.display='none'; show_p_job_month.style.display=''; }
+}
+
+function p_company_kind_check()
+{ 
+	sform.p_job_month[0].selected = true;
+	
+	if ( jsTrim(sform.p_company_kind.value)=="" )
+	  { show_p_job_month.style.display='none'; }
+  else if (jsTrim(sform.p_company_kind.value)=="over300w" )
+  	{ show_p_job_month.style.display='none'; }
+  else 
+  	{ show_p_job_month.style.display=''; }
+}
+
+function check_send()
+{ 
+	var pass = 1;
+  var txt ="";
+  //您名下有房或土地嗎？
+  if (jsTrim(sform.p_house_kind.value)=="")
+   {
+     pass = 0;
+     txt = txt + " || 房";
+   }
+
+	//您名下有汽車嗎？
+  if (jsTrim(sform.p_car_kind.value)=="")
+   {
+     pass = 0;
+     txt = txt + " || 車";
+   }
+	if (jsTrim(sform.p_car_kind.value)!="nn" && jsTrim(sform.p_car_kind.value)!="")
+  	{ 
+  		//汽車貸款已繳款多久？
+  	  if (jsTrim(sform.p_car_Loan.value)=="")
+       {
+         pass = 0;
+         txt = txt + " || 繳";
+       }
+  	}
+  	
+	//您名下有摩托車嗎？
+  if (jsTrim(sform.p_scar_kind.value)=="")
+   {
+     pass = 0;
+     txt = txt + " || 摩托車";
+   }
+	if (jsTrim(sform.p_scar_kind.value)!="nn" && jsTrim(sform.p_scar_kind.value)!="")
+  	{ 
+  		//摩托車貸款已繳款多久？
+  	  if (jsTrim(sform.p_scar_Loan.value)=="")
+       {
+         pass = 0;
+         txt = txt + " || 繳";
+       }
+  	}
+	
+	//您目前從事甚麼工作？
+  if (jsTrim(sform.p_job_kind.value)=="")
+   {
+     pass = 0;
+     txt = txt + " || 作";
+   }
+   
+	if (jsTrim(sform.p_job_kind.value)=="bossy" )
+  	{ 
+  		//企業成立多久？ p_company_kind
+      if (jsTrim(sform.p_company_kind.value)=="")
+       {
+         pass = 0;
+         txt = txt + " || 成";
+       }
+       
+     if (jsTrim(sform.p_company_kind.value)!="over300w" )
+  	   { 
+  		   //現在這家公司服務多久？ p_job_month
+         if (jsTrim(sform.p_job_month.value)=="")
+          {
+            pass = 0;
+            txt = txt + " || 服";
+          }
+  	   }
+       
+  	}
+  else 
+  	{ 
+  		//現在這家公司服務多久？ p_job_month
+      if (jsTrim(sform.p_job_month.value)=="")
+       {
+         pass = 0;
+         txt = txt + " || 服";
+       }
+  	}
+
+
+	//在這家公司平均一個月的收入？ p_salary_range
+  if (jsTrim(sform.p_salary_range.value)=="")
+   {
+     pass = 0;
+     txt = txt + " || 收";
+   }
+  
+	//薪水領現金或轉帳？ p_salary_kind
+  if (jsTrim(sform.p_salary_kind.value)=="")
+   {
+     pass = 0;
+     txt = txt + " || 領";
+   }
+  
+  //現職的扣繳憑單？ p_salary_voucher
+  if (jsTrim(sform.p_salary_voucher.value)=="")
+   {
+     pass = 0;
+     txt = txt + " || 憑";
+   }
+
+	//有無投勞保在現職公司？ p_insure_kind
+  if (jsTrim(sform.p_insure_kind.value)=="")
+   {
+     pass = 0;
+     txt = txt + " || 保";
+   }
+
+	//與銀行往來信用是否正常？ p_credit_kind
+  if (jsTrim(sform.p_credit_kind.value)=="")
+   {
+     pass = 0;
+     txt = txt + " || 往";
+   }
+
+	//名下信用卡/現金卡/貸款有多少？ p_debt_amount
+  if (jsTrim(sform.p_debt_amount.value)=="")
+   {
+     pass = 0;
+     txt = txt + " || 貸";
+   }
+
+  //近三個月？ p_other_apply
+  if (jsTrim(sform.p_other_apply.value)=="")
+   {
+     pass = 0;
+     txt = txt + " || 近";
+   }
+  
+  //確認?
+  if (pass == 0)
+     { 
+     	 if (confirm('提醒您，尚有資料未填寫，填寫完整可加速智慧系統精準分析，您是否要繼續填寫？'))
+     	   { alert('請繼續填寫!!'); return false; }
+     	 else
+     	 	 {  
+     	 	 }
+     }
+   else
+     	 	 {  
+     	 	 }
+}
+// -->
+</script>
+</head>
+
+<body>
+
+
+<header class="questionnaire-top">
+<div class="logo"><img src="../Event/images/logo.png" alt=""></div>
+</header>
+<div class="questionnaire-in">
+<div class="form-w">
+<form action="Event_apply_next_DB.asp" method="post" name="sform" id="sform" onSubmit="return check_send();">
+<ul>
+<li>
+<h3 class="text-center txtc-1 pad-t15 pad-b10">親愛的客戶您好</h3>
+<h6 class="text-center txtc-1 lh24"><i class="fas fa-sun fa-spin"></i> 為幫助智慧系統更精準分析，請您填寫以下資料，讓成功從現在開始</h6>
+</li>
+
+<!--[ A-1 ]-->
+<li class="bgc-6">
+<div id="show_p_job_kind">
+<h6 class="lh24">A-1.您目前從事甚麼工作？</h6>
+<select id="p_job_kind" name="p_job_kind" class="form-text" size="1" onchange="p_job_kind_check();">
+<option value="">請選擇</option>
+
+<option value="employee">一般員工(職業軍人/公司僱請)</option>
+
+<option value="bossy">有營登企業主 </option>
+
+<option value="allother">其他</option>
+
+</select>
+</div>
+<!--[ A-2 ]-->
+<div class="pad-t15" id="show_p_job_month" style="display:none;">
+<h6 class="lh24">A-2.現在這家公司服務多久？<font color="#b81c22">〈不算前職年資〉</font></h6>
+<select id="p_job_month" name="p_job_month" class="form-text" size="1">
+<option value="">請選擇</option>
+
+<option value="na">沒有工作   </option>
+
+<option value="under3m">未滿3個月</option>
+
+<option value="3m_6m">3個月以上-未滿6個月</option>
+
+<option value="6m_12m">6個月以上-未滿1年</option>
+
+<option value="12m_24m">1年以上-未滿2年</option>
+
+<option value="24m_36m">2年以上-未滿3年</option>
+
+<option value="over36m">3年以上</option>
+
+</select>
+</div>
+<!--[ A-2 ]-->
+<div class="pad-t15" id="show_p_company_kind" style="display:none;">
+<h6 class="lh24">A-2.企業成立多久？</h6>
+<select id="p_company_kind" name="p_company_kind" class="form-text" size="1" onchange="p_company_kind_check();">
+<option value="">請選擇</option>
+
+<option value="over300w">一年以上+年營收300萬以上</option>
+
+<option value="150w_299w">一年以上+年營收150-299萬</option>
+
+<option value="under149w">一年以上+年營收149萬以下</option>
+
+<option value="6m_12m">6個月-未滿一年</option>
+
+<option value="under6m">6個月以下</option>
+
+</select>
+</div>
+</li>
+
+<!--[ B-1 ]-->
+<li>
+<h6 class="lh24">B-1.您名下有房或土地嗎？</h6>
+<select id="p_house_kind" name="p_house_kind" class="form-text" size="1">
+<option value="">請選擇</option>
+
+<option value="y">有</option>
+
+<option value="n">無</option>
+
+</select>
+</li>	
+
+<!--[ C-1 ]-->
+<li class="bgc-6">
+<div id="show_p_car_kind">
+<h6 class="lh24">C-1.您名下有汽車嗎？</h6>
+<select id="p_car_kind" name="p_car_kind" class="form-text" size="1" onchange="p_car_kind_check();">
+<option value="">請選擇</option>
+
+<option value="nn">無汽車</option>
+
+<option value="ya">有汽車，14年以內(2012以後出廠)</option>
+
+<option value="yb">有汽車，14年以上(2011以前出廠)</option>
+
+<option value="yo">其他</option>
+
+</select>
+</div>
+<!--[ C-2 ]-->
+<div class="pad-t15" id="show_p_car_Loan" style="display:none;">
+<h6 class="lh24">C-2.汽車貸款已繳款多久？</h6>
+<select id="p_car_Loan" name="p_car_Loan" class="form-text" size="1">
+<option value="">請選擇</option>
+
+<option value="na">沒有貸款</option>
+
+<option value="under12m">貸款未滿一年</option>
+
+<option value="over12m_y">貸款已繳一年,繳款正常</option>
+
+<option value="over12m_n">貸款已繳一年,遲繳超過30天</option>
+
+</select>
+</div>
+</li>	
+
+
+<!--[ D-1 ]-->
+<li>
+<div id="show_p_scar_kind">
+<h6 class="lh24">D-1.您名下有摩托車嗎？</h6>
+<select id="p_scar_kind" name="p_scar_kind" class="form-text" size="1" onchange="p_scar_kind_check();">
+<option value="">請選擇</option>
+
+<option value="nn">無</option>
+
+<option value="y">有</option>
+
+</select>
+</div>
+<!--[ D-2 ]-->
+<div class="pad-t15" id="show_p_scar_Loan" style="display:none;">
+<h6 class="lh24">D-2.請問摩托車有貸款嗎？</h6>
+<select id="p_scar_Loan" name="p_scar_Loan" class="form-text" size="1">
+<option value="">請選擇</option>
+
+<option value="n">沒有貸款</option>
+
+<option value="y">有貸款</option>
+
+</select>
+</div>
+</li>	
+
+
+<!--[ E-1 ]-->
+<li class="bgc-6" id="show_p_salary_range">
+<h6 class="lh24">E-1.在這家公司平均一個月的收入？<font color="#b81c22">〈不計算兼差/非正職收入〉</font></h6>
+<select id="p_salary_range" name="p_salary_range" class="form-text" size="1">
+<option value="">請選擇</option>
+
+<option value="00000_10000">0-10000</option>
+
+<option value="10001_20000">10001-20000</option>
+
+<option value="20001_25000">20001-25000</option>
+
+<option value="25001_30000">25001-30000</option>
+
+<option value="30001_35000">30001-35000</option>
+
+<option value="35001_40000">35001-40000</option>
+
+<option value="40001_45000">40001-45000</option>
+
+<option value="45001_50000">45001-50000</option>
+
+<option value="50001_55000">50,001-55,000</option>
+
+<option value="55001_60000">55,001-60,000</option>
+
+<option value="60001_65000">60,001-65,000</option>
+
+<option value="65001_70000">65,001-70,000</option>
+
+<option value="70001_75000">70,001-75,000</option>
+
+<option value="75001_80000">75,001-80,000</option>
+
+<option value="80001_85000">80,001-85,000</option>
+
+<option value="85001_90000">85,001-90,000</option>
+
+<option value="90001_95000">90,001-95,000</option>
+
+<option value="95001_100000">95,001-100,000</option>
+
+<option value="100001_110000">100,001-110,000</option>
+
+<option value="110001_120000">110,001-120,000</option>
+
+<option value="120001_130000">120,001以上</option>
+
+</select>
+</li>
+
+<!--[ F-1 ]-->
+<li id="show_p_salary_kind">
+<h6 class="lh24">F-1.薪水領現金或轉帳？</h6>
+<select id="p_salary_kind" name="p_salary_kind" class="form-text" size="1">
+<option value="">請選擇</option>
+
+<option value="transfer">薪資轉帳</option>
+
+<option value="cash_1w_y">領現金，每月有萬元存入且每筆結餘千位數</option>
+
+<option value="cash_1w_n">領現金，每月無萬元存入或有結餘低於千位數</option>
+
+<option value="na">無收入</option>
+
+</select>
+</li>
+
+<!--[ G-1 ]-->
+              
+<li class="bgc-6" id="show_p_salary_voucher">
+<h6 class="lh24">G-1.公司是否有幫您報所得收入？</h6>
+<select id="p_salary_voucher" name="p_salary_voucher" class="form-text" size="1">
+<option value="">請選擇</option>
+
+<option value="n">無</option>
+
+<option value="under_30w">有申報30萬以下</option>
+
+<option value="30w_35w">有申報30萬-35萬</option>
+
+<option value="35w_40w">有申報35萬-40萬</option>
+
+<option value="40w_45w">有申報40萬-45萬</option>
+
+<option value="45w_50w">有申報45萬-50萬</option>
+
+<option value="over_50w">有申報50萬以上</option>
+
+</select>
+</li>
+
+<!--[ H-1 ]-->
+<li id="show_p_insure_kind">
+<h6 class="lh24">H-1.有無投勞保在現職公司？</h6>
+<select id="p_insure_kind" name="p_insure_kind" class="form-text" size="1">
+<option value="">請選擇</option>
+
+<option value="y">有(投勞保、軍保、公保)</option>
+
+<option value="n">無(含投保工會、農漁保)</option>
+
+</select>
+</li>
+
+
+
+<!--[ I-1 ]-->
+<li class="bgc-6" id="show_p_debt_amount">
+<h6 class="lh24">I-1.名下信用卡/現金卡/信貸，目前總欠款餘額有多少？<font color="#b81c22">〈扣除房車學貸〉</font></h6>
+<select id="p_debt_amount" name="p_debt_amount" class="form-text" size="1">
+<option value="">請選擇</option>
+
+<option value="never">從未使用</option>
+
+<option value="no_debt">債務已結清</option>
+
+<option value="000_010">0-10萬</option>
+
+<option value="011_020">11-20萬</option>
+
+<option value="021_030">21-30萬</option>
+
+<option value="031_040">31-40萬</option>
+
+<option value="041_050">41-50萬</option>
+
+<option value="051_060">51-60萬</option>
+
+<option value="061_070">61-70萬</option>
+
+<option value="071_080">71-80萬</option>
+
+<option value="081_090">81-90萬</option>
+
+<option value="091_100">91-100萬</option>
+
+<option value="101_110">101-110萬</option>
+
+<option value="111_120">111-120萬</option>
+
+<option value="121_130">121-130萬</option>
+
+<option value="131_140">131-140萬</option>
+
+<option value="141_150">141-150萬</option>
+
+<option value="151_160">151-160萬</option>
+
+<option value="161_170">161-170萬</option>
+
+<option value="171_180">171-180萬</option>
+
+<option value="181_190">181-190萬</option>
+
+<option value="191_200">191-200萬</option>
+
+<option value="201_220">201-220萬</option>
+
+<option value="221_240">221-240萬</option>
+
+<option value="241_999">241萬以上</option>
+
+</select>
+</li>
+
+<!--[ J-1 ]-->
+<li id="show_p_credit_kind">
+<h6 class="lh24">J-1.與銀行往來信用是否正常？</h6>
+<select id="p_credit_kind" name="p_credit_kind" class="form-text" size="1">
+<option value="">請選擇</option>
+
+<option value="normal">正常</option>
+
+<option value="under30d">遲繳30天以內</option>
+
+<option value="over30d">遲繳30天以上/信用異常</option>
+
+<option value="abnormal_m">已協商/協商中(想降低月付金)</option>
+
+<option value="abnormal_c">已協商/協商中(想增加現金)</option>
+
+</select>
+</li>
+
+<!--[ K-1 ]-->
+<li class="bgc-6" id="show_p_other_apply">
+<h6 class="lh24">K-1.近三個月有沒有找過銀行或其他貸款公司辦理任何貸款或信用卡？</h6>
+<select id="p_other_apply" name="p_other_apply" class="form-text" size="1">
+<option value="">請選擇</option>
+
+<option value="equal_0">0家</option>
+
+<option value="equal_1">1家</option>
+
+<option value="equal_2">2家</option>
+
+<option value="equal_3">3家</option>
+
+<option value="over_4">4家以上</option>
+
+</select>
+</li>
+
+
+<!--[ L-1 ]-->
+<li id="">
+<h6 class="lh24">L-1.填寫常用e-mail信箱，搶先收到最新貸款優惠訊息</h6>
+<input name="email" type="email" class="form-text" title="" placeholder="輸入E-MAIL" onblur="if(this.placeholder=='') this.placeholder='輸入E-MAIL';" onfocus="if(this.placeholder=='輸入E-MAIL') this.placeholder='';"/>
+</li>	
+
+
+<!-- okline_w -->
+
+
+
+
+<input type="hidden" name="nextid" value="2302540">
+<input type="hidden" name="A_col4" value="">
+<li><input name="submit" type="submit" class="form-submit" value="填完送出"></li>
+<li><h6 class="text-center txtc-1 lh24">感謝您的填寫，將盡快回覆您分析結果，祝您心想事成。</h6></li>
+</ul>
+</form>
+</div>
+</div>
+<!-- footer -->
+<footer>OK忠訓國際股份有限公司 &copy; Copyright All Rights Reserved.	</footer>
+
+<!-- imc -->
+
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PQ5FVS"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+
+<input type="hidden" name="gtm_eland" id="gtm_eland" value="">
+
+</body>
+</html>

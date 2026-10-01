@@ -1,0 +1,21 @@
+2025-10-28 14:26:54,608 - __main__ - INFO - 零日漏洞挖掘引擎初始化完成
+2025-10-28 14:26:54,608 - __main__ - INFO - 开始对目标 Thai Logistics System 进行零日漏洞挖掘
+2025-10-28 14:26:54,609 - __main__ - INFO - 开始对 Thai Logistics System 进行模糊测试，持续时间: 300秒
+2025-10-28 14:28:41,348 - __main__ - INFO - 模糊测试完成，发现 0 个候选漏洞，耗时 106.74秒
+2025-10-28 14:28:41,349 - __main__ - ERROR - 零日漏洞挖掘过程异常: name 'request' is not defined
+2025-10-28 15:30:44,561 - __main__ - INFO - 零日漏洞挖掘引擎初始化完成
+2025-10-28 15:30:44,562 - __main__ - INFO - 开始对目标 Thai Logistics System 进行零日漏洞挖掘
+2025-10-28 15:30:44,562 - __main__ - INFO - 开始对 Thai Logistics System 进行模糊测试，持续时间: 300秒
+2025-10-28 15:31:09,337 - __main__ - INFO - 零日漏洞挖掘引擎初始化完成
+2025-10-28 15:31:09,337 - __main__ - INFO - 开始对目标 Thai Logistics System 进行零日漏洞挖掘
+2025-10-28 15:31:09,338 - __main__ - INFO - 开始对 Thai Logistics System 进行模糊测试，持续时间: 300秒
+2025-10-29 04:20:16,771 - __main__ - INFO - 零日漏洞挖掘引擎初始化完成
+2025-10-29 04:20:16,772 - __main__ - INFO - 开始对目标 Thai Logistics System 进行零日漏洞挖掘
+2025-10-29 04:20:16,772 - __main__ - INFO - 开始对 Thai Logistics System 进行模糊测试，持续时间: 300秒
+2025-10-29 04:22:04,658 - __main__ - INFO - 模糊测试完成，发现 0 个候选漏洞，耗时 107.89秒
+2025-10-29 04:22:04,659 - __main__ - ERROR - 零日漏洞挖掘过程异常: name 'request' is not defined
+2025-10-29 04:28:06,129 - __main__ - INFO - 零日漏洞挖掘引擎初始化完成
+2025-10-29 04:28:06,129 - __main__ - INFO - 开始对目标 Thai Logistics System 进行零日漏洞挖掘
+2025-10-29 04:28:06,129 - __main__ - INFO - 开始对 Thai Logistics System 进行模糊测试，持续时间: 300秒
+2025-10-29 04:29:53,936 - __main__ - INFO - 模糊测试完成，发现 0 个候选漏洞，耗时 107.81秒
+2025-10-29 04:29:53,936 - __main__ - ERROR - 零日漏洞挖掘过程异常: name 'request' is not defined

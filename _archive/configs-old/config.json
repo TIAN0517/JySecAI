@@ -1,0 +1,7 @@
+{
+  "title": "Huihui-CyberStrike",
+  "model": "huihui-ai/Huihui-CyberStrike-OffSec-35B-abliterated-GGUF",
+  "apiBase": "https://ui86wy2ws2x2l01b.us-east-1.aws.endpoints.huggingface.cloud/v1",
+  "apiKey": "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",
+  "provider": "openai"
+}

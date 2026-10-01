@@ -1,0 +1,43 @@
+{
+  "bot": {
+    "token": "your_telegram_token_here",
+    "admin_users": [123456789],
+    "bot_name": "Dragon-V Triple Bot",
+    "version": "1.0"
+  },
+  "menu": {
+    "welcome_message": "🐉 欢迎使用 Dragon-V Triple Bot!",
+    "help_message": "这是帮助信息",
+    "menu_timeout": 300,
+    "auto_cleanup": true
+  },
+  "permissions": {
+    "admin": {
+      "functions": ["all"],
+      "max_tasks": 20,
+      "priority": 1
+    },
+    "premium": {
+      "functions": ["enterprise", "professional", "security"],
+      "max_tasks": 10,
+      "priority": 2
+    },
+    "basic": {
+      "functions": ["professional", "security"],
+      "max_tasks": 5,
+      "priority": 3
+    },
+    "guest": {
+      "functions": ["professional"],
+      "max_tasks": 2,
+      "priority": 4
+    }
+  },
+  "messages": {
+    "processing": "🔄 正在处理您的请求...",
+    "completed": "✅ 任务完成！",
+    "failed": "❌ 任务失败",
+    "loading": "⏳ 正在加载...",
+    "timeout": "⏰ 菜单已超时，请重新输入命令"
+  }
+}

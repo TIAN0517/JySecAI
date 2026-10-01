@@ -1,0 +1,9 @@
+.env
+.git/HEAD
+.git/config
+db.sql
+backup.sql
+wp-config.php
+readme.html
+wp-content/debug.log
+.htaccess

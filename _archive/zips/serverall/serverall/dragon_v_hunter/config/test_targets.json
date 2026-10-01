@@ -1,0 +1,40 @@
+{
+  "test_targets": [
+    {
+      "id": "github_test",
+      "name": "GitHub Test",
+      "url": "https://github.com",
+      "priority": "high",
+      "scan_mode": "fingerprint-only",
+      "timeout": 10,
+      "tags": ["测试", "可访问", "GitHub"]
+    },
+    {
+      "id": "stackoverflow_test",
+      "name": "Stack Overflow Test",
+      "url": "https://stackoverflow.com",
+      "priority": "high",
+      "scan_mode": "fingerprint-only",
+      "timeout": 10,
+      "tags": ["测试", "可访问", "Stack Overflow"]
+    },
+    {
+      "id": "wikipedia_test",
+      "name": "Wikipedia Test",
+      "url": "https://wikipedia.org",
+      "priority": "high",
+      "scan_mode": "fingerprint-only",
+      "timeout": 10,
+      "tags": ["测试", "可访问", "维基百科"]
+    },
+    {
+      "id": "google_test",
+      "name": "Google Test",
+      "url": "https://google.com",
+      "priority": "high",
+      "scan_mode": "fingerprint-only",
+      "timeout": 10,
+      "tags": ["测试", "可访问", "Google"]
+    }
+  ]
+}

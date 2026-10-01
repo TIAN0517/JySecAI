@@ -1,0 +1,164 @@
+{
+  "scan_type": "Smart Zero-Day Testing",
+  "timestamp": "2025-10-28 09:35:37",
+  "results": [
+    {
+      "target": "http://www.siamloan.com",
+      "vulnerabilities": [
+        {
+          "target": "http://www.siamloan.com",
+          "parameter": "q",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.siamloan.com",
+          "parameter": "search",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.siamloan.com",
+          "parameter": "id",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.siamloan.com",
+          "parameter": "name",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.siamloan.com",
+          "parameter": "url",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.siamloan.com",
+          "parameter": "redirect",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        }
+      ],
+      "vulnerable": true,
+      "scan_time": "2025-10-28 09:35:19"
+    },
+    {
+      "target": "https://www.quickcash.co.th",
+      "vulnerabilities": [
+        {
+          "target": "https://www.quickcash.co.th",
+          "parameter": "q",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "https://www.quickcash.co.th",
+          "parameter": "search",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "https://www.quickcash.co.th",
+          "parameter": "id",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "https://www.quickcash.co.th",
+          "parameter": "name",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "https://www.quickcash.co.th",
+          "parameter": "url",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "https://www.quickcash.co.th",
+          "parameter": "redirect",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        }
+      ],
+      "vulnerable": true,
+      "scan_time": "2025-10-28 09:35:20"
+    },
+    {
+      "target": "http://www.finnomena.com",
+      "vulnerabilities": [
+        {
+          "target": "http://www.finnomena.com",
+          "parameter": "q",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.finnomena.com",
+          "parameter": "search",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.finnomena.com",
+          "parameter": "id",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.finnomena.com",
+          "parameter": "name",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.finnomena.com",
+          "parameter": "url",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        },
+        {
+          "target": "http://www.finnomena.com",
+          "parameter": "redirect",
+          "payload": "<script>alert(1)</script>",
+          "type": "XSS",
+          "status_code": 200
+        }
+      ],
+      "vulnerable": true,
+      "scan_time": "2025-10-28 09:35:25"
+    },
+    {
+      "target": "http://www.bcnlp.ac.th",
+      "vulnerabilities": [],
+      "vulnerable": false,
+      "scan_time": "2025-10-28 09:35:37"
+    }
+  ],
+  "summary": {
+    "total_targets": 4,
+    "vulnerable_targets": 3,
+    "total_vulnerabilities": 18
+  }
+}

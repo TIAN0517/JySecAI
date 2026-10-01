@@ -1,0 +1,9 @@
+HTTP/2 200 
+date: Wed, 02 Sep 2026 21:18:03 GMT
+content-type: application/json;charset=UTF-8
+set-cookie: JSESSIONID=DC0057E9469FA9F28F4E13DD3C9B2C3F; Path=/LongtermCareService; Secure; HttpOnly
+set-cookie: citrix_ns_id=AAM7i5KYajtuDgIJAAAAADsm6070azPnV3gnO1gYXTPng98hH-48cSawT0CoYduOOw==D5aYag==SijjVnQ1A4TsQNWhs3ZFR2SPoD0=; Domain=.tzuchi.org.tw; Path=/; Secure; HttpOnly
+cf-cache-status: DYNAMIC
+server: cloudflare
+cf-ray: a34f8b864aa7a9cd-TPE
+

@@ -1,0 +1,17 @@
+快速管理后台渗透测试报告
+========================================
+
+目标: https://scb.co.th
+  可访问路径: 2
+  认证绕过: 失败
+  可访问详情:
+    - /admin: https://scb.co.th/admin
+    - /login: https://scb.co.th/login
+
+目标: https://finnomena.com
+  可访问路径: 2
+  认证绕过: 成功
+  可访问详情:
+    - /admin: https://finnomena.com/admin
+    - /wp-admin: https://finnomena.com/wp-admin
+

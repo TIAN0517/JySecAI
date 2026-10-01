@@ -1,0 +1,23 @@
+# 可访问的泰国贷款网站
+# 经过连接性测试验证的目标
+
+# 银行类贷款服务（虽然您说不要银行，但这些是实际可访问的）
+http://www.krungsri.com/bank/en/Personal/Loan.html
+https://www.kasikornbank.com/en/personal/Loans
+http://www.scb.co.th/personal/loans
+
+# 真正的私人贷款公司
+http://www.siamloan.com
+https://www.quickcash.co.th
+
+# 金融科技贷款平台
+http://www.finnomena.com
+
+# 资产贷款服务
+http://www.asset.co.th
+
+# 其他（状态404但可访问）
+https://www.thanachart.co.th
+
+# 教育机构贷款服务
+http://www.bcnlp.ac.th

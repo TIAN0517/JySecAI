@@ -1,0 +1,258 @@
+
+        <!DOCTYPE html>
+        <html lang="vi">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>🐉 Dragon-V Logistics Hunter 批量扫描报告</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+                .header { background: linear-gradient(135deg, #ff5722, #ff9800); color: white; padding: 20px; border-radius: 10px; }
+                .stats { display: flex; justify-content: space-around; margin: 20px 0; }
+                .stat-item { text-align: center; padding: 15px; background: white; border-radius: 8px; min-width: 150px; }
+                .stat-value { font-size: 24px; font-weight: bold; color: #ff5722; }
+                .stat-label { color: #666; margin-top: 5px; }
+                .results-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+                .results-table th, .results-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+                .results-table th { background: #f8f9fa; font-weight: bold; }
+                .success { color: #4caf50; font-weight: bold; }
+                .failure { color: #f44336; font-weight: bold; }
+                .critical { background: #ffebee; }
+                .high { background: #fff3e0; }
+                .medium { background: #f3e5f5; }
+                .low { background: #e8f5e8; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>🐉 Dragon-V Logistics Hunter</h1>
+                <h2>批量扫描报告</h2>
+                <p>扫描时间: 2025-10-24 13:34:18</p>
+                <p>扫描目标数: 15</p>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value">15</div>
+                    <div class="stat-label">成功扫描</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">失败扫描</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">100.0%</div>
+                    <div class="stat-label">成功率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">15</div>
+                    <div class="stat-label">高危目标</div>
+                </div>
+            </div>
+
+            <h3>风险分布</h3>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" style="color: #f44336;">15</div>
+                    <div class="stat-label">严重</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" style="color: #ff9800;">0</div>
+                    <div class="stat-label">高</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" style="color: #9c27b0;">0</div>
+                    <div class="stat-label">中</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" style="color: #4caf50;">0</div>
+                    <div class="stat-label">低</div>
+                </div>
+            </div>
+
+            <h3>扫描结果详情</h3>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>目标名称</th>
+                        <th>URL</th>
+                        <th>扫描模式</th>
+                        <th>状态</th>
+                        <th>风险等级</th>
+                        <th>执行时间(秒)</th>
+                        <th>发现漏洞数</th>
+                        <th>执行时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+            <tr class="critical">
+                <td>Viettel Post</td>
+                <td><a href="https://viettelpost.com.vn" target="_blank">https://viettelpost.com.vn</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+            <tr class="critical">
+                <td>VNPost</td>
+                <td><a href="https://vnpost.vn" target="_blank">https://vnpost.vn</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+            <tr class="critical">
+                <td>DHL Vietnam</td>
+                <td><a href="https://dhl.com/vn-en" target="_blank">https://dhl.com/vn-en</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+            <tr class="critical">
+                <td>Giao Hang Nhanh</td>
+                <td><a href="https://giaohangnhanh.vn" target="_blank">https://giaohangnhanh.vn</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+            <tr class="critical">
+                <td>J&T Express Vietnam</td>
+                <td><a href="https://jtexpress.vn" target="_blank">https://jtexpress.vn</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+            <tr class="critical">
+                <td>Ninja Van</td>
+                <td><a href="https://ninjavan.vn" target="_blank">https://ninjavan.vn</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+            <tr class="critical">
+                <td>FedEx Vietnam</td>
+                <td><a href="https://fedex.com/vn" target="_blank">https://fedex.com/vn</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+            <tr class="critical">
+                <td>UPS Vietnam</td>
+                <td><a href="https://ups.com/vn" target="_blank">https://ups.com/vn</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+            <tr class="critical">
+                <td>Giao Hang Tiet Kiem</td>
+                <td><a href="https://ghtk.vn" target="_blank">https://ghtk.vn</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+            <tr class="critical">
+                <td>NOW</td>
+                <td><a href="https://now.vn" target="_blank">https://now.vn</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+            <tr class="critical">
+                <td>Logivan</td>
+                <td><a href="https://logivan.com" target="_blank">https://logivan.com</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+            <tr class="critical">
+                <td>A Express</td>
+                <td><a href="https://aexpress.vn" target="_blank">https://aexpress.vn</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+            <tr class="critical">
+                <td>Best Express</td>
+                <td><a href="https://bestexpress.vn" target="_blank">https://bestexpress.vn</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+            <tr class="critical">
+                <td>Emart Logistics</td>
+                <td><a href="https://emart.vn" target="_blank">https://emart.vn</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+            <tr class="critical">
+                <td>Fego Logistics</td>
+                <td><a href="https://fego.vn" target="_blank">https://fego.vn</a></td>
+                <td>full-chain</td>
+                <td class="success">成功</td>
+                <td>严重</td>
+                <td>0.00</td>
+                <td>4</td>
+                <td>13:34:18</td>
+            </tr>
+            
+                </tbody>
+            </table>
+        </body>
+        </html>
+        

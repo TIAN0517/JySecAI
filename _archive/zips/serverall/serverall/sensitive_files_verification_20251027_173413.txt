@@ -1,0 +1,15 @@
+敏感文件验证报告
+==================================================
+
+MULA-X 文件验证结果:
+- https://mula-x.com/.git/config: 存在 (状态码: 200)
+- https://mula-x.com/.env: 存在 (状态码: 200)
+- https://mula-x.com/wp-config.php: 存在 (状态码: 200)
+- https://mula-x.com/config.php: 存在 (状态码: 200)
+- https://mula-x.com/backup.sql: 存在 (状态码: 200)
+
+Ngoen Mun 文件验证结果:
+- https://ngoenmun.com/.env: 存在 (状态码: 200)
+- https://ngoenmun.com/wp-config.php: 存在 (状态码: 200)
+- https://ngoenmun.com/config.php: 存在 (状态码: 200)
+- https://ngoenmun.com/backup.sql: 存在 (状态码: 200)

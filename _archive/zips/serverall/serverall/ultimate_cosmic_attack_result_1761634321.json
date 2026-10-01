@@ -1,0 +1,2933 @@
+{
+  "system": "ULTIMATE_COSMIC_ATTACK_SYSTEM",
+  "execution_time": 0.012619972229003906,
+  "targets_analyzed": 4,
+  "darkweb_intelligence": {
+    "market_intelligence": {
+      "active_markets": [
+        {
+          "market_name": "whitehouse",
+          "onion_address": "whitehouse.onion",
+          "status": "ACTIVE",
+          "vendors": 256,
+          "listings": 1748,
+          "reputation_score": 4.069850390870236
+        },
+        {
+          "market_name": "exploitmarket",
+          "onion_address": "exploitmarket.onion",
+          "status": "ACTIVE",
+          "vendors": 492,
+          "listings": 3996,
+          "reputation_score": 2.452798745347267
+        },
+        {
+          "market_name": "zeroDay",
+          "onion_address": "zeroDay.onion",
+          "status": "ACTIVE",
+          "vendors": 64,
+          "listings": 2850,
+          "reputation_score": 2.9087879983426084
+        }
+      ],
+      "exploit_listings": [
+        {
+          "exploit_id": "290e72af",
+          "cve_id": "CVE-2024-9453",
+          "exploit_type": "XSS",
+          "price": 3047.689206918315,
+          "seller": "hacker_882",
+          "rating": 4.0092950481533745,
+          "verified": false
+        },
+        {
+          "exploit_id": "290e72af",
+          "cve_id": "CVE-2024-2977",
+          "exploit_type": "XSS",
+          "price": 19125.949467655137,
+          "seller": "hacker_242",
+          "rating": 3.201708913121718,
+          "verified": true
+        },
+        {
+          "exploit_id": "290e72af",
+          "cve_id": "CVE-2024-9709",
+          "exploit_type": "PRIV_ESCALATION",
+          "price": 24572.38556997162,
+          "seller": "hacker_104",
+          "rating": 4.558052560091928,
+          "verified": true
+        },
+        {
+          "exploit_id": "290e72af",
+          "cve_id": "CVE-2024-8578",
+          "exploit_type": "LFI",
+          "price": 1324.925126543871,
+          "seller": "hacker_955",
+          "rating": 4.745892971766688,
+          "verified": false
+        },
+        {
+          "exploit_id": "290e72af",
+          "cve_id": "CVE-2024-3688",
+          "exploit_type": "LFI",
+          "price": 43001.460358520046,
+          "seller": "hacker_392",
+          "rating": 3.0510962966664446,
+          "verified": false
+        },
+        {
+          "exploit_id": "290e72af",
+          "cve_id": "CVE-2024-9208",
+          "exploit_type": "PRIV_ESCALATION",
+          "price": 25013.884503945075,
+          "seller": "hacker_691",
+          "rating": 3.4675791745019855,
+          "verified": true
+        },
+        {
+          "exploit_id": "290e72af",
+          "cve_id": "CVE-2024-4914",
+          "exploit_type": "XSS",
+          "price": 45174.36948022197,
+          "seller": "hacker_198",
+          "rating": 4.724943961186519,
+          "verified": false
+        },
+        {
+          "exploit_id": "290e72af",
+          "cve_id": "CVE-2024-1175",
+          "exploit_type": "PRIV_ESCALATION",
+          "price": 25003.185119419526,
+          "seller": "hacker_548",
+          "rating": 4.981948944918868,
+          "verified": false
+        },
+        {
+          "exploit_id": "46a5deab",
+          "cve_id": "CVE-2024-1620",
+          "exploit_type": "PRIV_ESCALATION",
+          "price": 5350.043359834069,
+          "seller": "hacker_601",
+          "rating": 4.27047582410299,
+          "verified": true
+        },
+        {
+          "exploit_id": "46a5deab",
+          "cve_id": "CVE-2024-3613",
+          "exploit_type": "SQL_INJECTION",
+          "price": 9338.235093568104,
+          "seller": "hacker_102",
+          "rating": 3.0111047585447936,
+          "verified": true
+        },
+        {
+          "exploit_id": "46a5deab",
+          "cve_id": "CVE-2024-4005",
+          "exploit_type": "SQL_INJECTION",
+          "price": 6044.555291560726,
+          "seller": "hacker_804",
+          "rating": 4.380886568434935,
+          "verified": false
+        },
+        {
+          "exploit_id": "46a5deab",
+          "cve_id": "CVE-2024-1616",
+          "exploit_type": "PRIV_ESCALATION",
+          "price": 24264.099616133943,
+          "seller": "hacker_37",
+          "rating": 4.857778938502053,
+          "verified": false
+        },
+        {
+          "exploit_id": "46a5deab",
+          "cve_id": "CVE-2024-1073",
+          "exploit_type": "SQL_INJECTION",
+          "price": 7145.066166441599,
+          "seller": "hacker_611",
+          "rating": 3.2991703258913363,
+          "verified": false
+        },
+        {
+          "exploit_id": "46a5deab",
+          "cve_id": "CVE-2024-5795",
+          "exploit_type": "LFI",
+          "price": 49581.97401783313,
+          "seller": "hacker_222",
+          "rating": 4.540624296535077,
+          "verified": false
+        },
+        {
+          "exploit_id": "46a5deab",
+          "cve_id": "CVE-2024-7608",
+          "exploit_type": "LFI",
+          "price": 3753.844254021682,
+          "seller": "hacker_596",
+          "rating": 3.5886910278724766,
+          "verified": false
+        },
+        {
+          "exploit_id": "46a5deab",
+          "cve_id": "CVE-2024-1267",
+          "exploit_type": "XSS",
+          "price": 6574.412912829896,
+          "seller": "hacker_891",
+          "rating": 3.0586885501927767,
+          "verified": true
+        },
+        {
+          "exploit_id": "46a5deab",
+          "cve_id": "CVE-2024-8785",
+          "exploit_type": "XSS",
+          "price": 29604.87252246997,
+          "seller": "hacker_955",
+          "rating": 4.543761776960204,
+          "verified": false
+        },
+        {
+          "exploit_id": "f566b0b8",
+          "cve_id": "CVE-2024-7695",
+          "exploit_type": "XSS",
+          "price": 17922.19397424971,
+          "seller": "hacker_533",
+          "rating": 3.9818331756073,
+          "verified": false
+        },
+        {
+          "exploit_id": "f566b0b8",
+          "cve_id": "CVE-2024-3662",
+          "exploit_type": "XSS",
+          "price": 509.9820741055764,
+          "seller": "hacker_903",
+          "rating": 4.483434271339405,
+          "verified": false
+        },
+        {
+          "exploit_id": "f566b0b8",
+          "cve_id": "CVE-2024-6019",
+          "exploit_type": "LFI",
+          "price": 46912.171805085585,
+          "seller": "hacker_885",
+          "rating": 4.144948671306056,
+          "verified": true
+        },
+        {
+          "exploit_id": "f566b0b8",
+          "cve_id": "CVE-2024-3759",
+          "exploit_type": "XSS",
+          "price": 16941.966730012486,
+          "seller": "hacker_903",
+          "rating": 4.089028224035567,
+          "verified": true
+        },
+        {
+          "exploit_id": "f566b0b8",
+          "cve_id": "CVE-2024-7533",
+          "exploit_type": "LFI",
+          "price": 47336.31380976129,
+          "seller": "hacker_200",
+          "rating": 4.158841061801647,
+          "verified": false
+        },
+        {
+          "exploit_id": "f566b0b8",
+          "cve_id": "CVE-2024-4311",
+          "exploit_type": "SQL_INJECTION",
+          "price": 4602.848628777546,
+          "seller": "hacker_260",
+          "rating": 3.720809605602928,
+          "verified": false
+        }
+      ],
+      "vulnerability_sales": [],
+      "malware_offers": [],
+      "cybercrime_services": []
+    },
+    "forum_intelligence": {
+      "active_discussions": [
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in IIS",
+          "author": "user_3715",
+          "posts": 56,
+          "views": 2892,
+          "last_activity": "2025-10-27T07:52:01.211941",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in Apache",
+          "author": "user_5207",
+          "posts": 98,
+          "views": 1621,
+          "last_activity": "2025-10-25T19:52:01.211941",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in IIS",
+          "author": "user_551",
+          "posts": 59,
+          "views": 445,
+          "last_activity": "2025-10-28T03:52:01.211941",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in Apache",
+          "author": "user_8644",
+          "posts": 34,
+          "views": 2249,
+          "last_activity": "2025-10-27T02:52:01.211941",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in IIS",
+          "author": "user_1073",
+          "posts": 143,
+          "views": 2070,
+          "last_activity": "2025-10-26T11:52:01.211941",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in IIS",
+          "author": "user_9997",
+          "posts": 200,
+          "views": 1497,
+          "last_activity": "2025-10-27T11:52:01.211941",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_380",
+          "posts": 128,
+          "views": 2867,
+          "last_activity": "2025-10-28T02:52:01.211941",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in IIS",
+          "author": "user_2688",
+          "posts": 43,
+          "views": 1153,
+          "last_activity": "2025-10-28T05:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in nginx",
+          "author": "user_8299",
+          "posts": 91,
+          "views": 3326,
+          "last_activity": "2025-10-27T12:52:01.211941",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in IIS",
+          "author": "user_6115",
+          "posts": 11,
+          "views": 189,
+          "last_activity": "2025-10-28T11:52:01.211941",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in nginx",
+          "author": "user_4270",
+          "posts": 189,
+          "views": 3937,
+          "last_activity": "2025-10-26T03:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_7118",
+          "posts": 14,
+          "views": 2979,
+          "last_activity": "2025-10-26T01:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_2652",
+          "posts": 172,
+          "views": 2286,
+          "last_activity": "2025-10-27T07:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in nginx",
+          "author": "user_2707",
+          "posts": 97,
+          "views": 3975,
+          "last_activity": "2025-10-27T15:52:01.211941",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in nginx",
+          "author": "user_7202",
+          "posts": 153,
+          "views": 4826,
+          "last_activity": "2025-10-27T07:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "breachforums",
+          "thread_id": "49a6a97790d38a9a",
+          "title": "New 0day found in Apache",
+          "author": "user_9390",
+          "posts": 152,
+          "views": 3955,
+          "last_activity": "2025-10-27T08:52:01.211941",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "raidforums",
+          "thread_id": "85327d2fd6f78817",
+          "title": "New 0day found in Apache",
+          "author": "user_1581",
+          "posts": 148,
+          "views": 1350,
+          "last_activity": "2025-10-28T01:52:01.211941",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "raidforums",
+          "thread_id": "85327d2fd6f78817",
+          "title": "New 0day found in nginx",
+          "author": "user_371",
+          "posts": 64,
+          "views": 3270,
+          "last_activity": "2025-10-27T01:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "raidforums",
+          "thread_id": "85327d2fd6f78817",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_5130",
+          "posts": 162,
+          "views": 3974,
+          "last_activity": "2025-10-27T16:52:01.211941",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "raidforums",
+          "thread_id": "85327d2fd6f78817",
+          "title": "New 0day found in Apache",
+          "author": "user_8396",
+          "posts": 30,
+          "views": 4938,
+          "last_activity": "2025-10-25T16:52:01.211941",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "raidforums",
+          "thread_id": "85327d2fd6f78817",
+          "title": "New 0day found in nginx",
+          "author": "user_3182",
+          "posts": 133,
+          "views": 4798,
+          "last_activity": "2025-10-25T20:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_8385",
+          "posts": 33,
+          "views": 510,
+          "last_activity": "2025-10-27T19:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_3922",
+          "posts": 167,
+          "views": 4666,
+          "last_activity": "2025-10-27T03:52:01.211941",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_3458",
+          "posts": 155,
+          "views": 2248,
+          "last_activity": "2025-10-25T14:52:01.211941",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_1372",
+          "posts": 86,
+          "views": 4178,
+          "last_activity": "2025-10-25T21:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in IIS",
+          "author": "user_1406",
+          "posts": 177,
+          "views": 1400,
+          "last_activity": "2025-10-27T00:52:01.211941",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in Apache",
+          "author": "user_108",
+          "posts": 136,
+          "views": 3368,
+          "last_activity": "2025-10-26T02:52:01.211941",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in IIS",
+          "author": "user_4143",
+          "posts": 197,
+          "views": 4317,
+          "last_activity": "2025-10-27T10:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in IIS",
+          "author": "user_364",
+          "posts": 193,
+          "views": 3858,
+          "last_activity": "2025-10-28T10:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in nginx",
+          "author": "user_7828",
+          "posts": 144,
+          "views": 3425,
+          "last_activity": "2025-10-26T21:52:01.211941",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_8377",
+          "posts": 141,
+          "views": 1314,
+          "last_activity": "2025-10-26T13:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in Apache",
+          "author": "user_5217",
+          "posts": 60,
+          "views": 1535,
+          "last_activity": "2025-10-26T05:52:01.211941",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in nginx",
+          "author": "user_883",
+          "posts": 125,
+          "views": 1037,
+          "last_activity": "2025-10-28T01:52:01.211941",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in Apache",
+          "author": "user_5795",
+          "posts": 151,
+          "views": 2063,
+          "last_activity": "2025-10-26T23:52:01.211941",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_5379",
+          "posts": 194,
+          "views": 820,
+          "last_activity": "2025-10-27T01:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_6267",
+          "posts": 81,
+          "views": 1707,
+          "last_activity": "2025-10-26T00:52:01.211941",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in Apache",
+          "author": "user_5658",
+          "posts": 34,
+          "views": 4186,
+          "last_activity": "2025-10-26T09:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in nginx",
+          "author": "user_7598",
+          "posts": 14,
+          "views": 966,
+          "last_activity": "2025-10-26T09:52:01.211941",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in Apache",
+          "author": "user_8053",
+          "posts": 147,
+          "views": 571,
+          "last_activity": "2025-10-27T00:52:01.211941",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "exploit.in",
+          "thread_id": "6c608407e55c9a09",
+          "title": "New 0day found in IIS",
+          "author": "user_9733",
+          "posts": 89,
+          "views": 2981,
+          "last_activity": "2025-10-28T08:52:01.211941",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "darkwebforums",
+          "thread_id": "be7054d4ea25c434",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_1344",
+          "posts": 89,
+          "views": 2940,
+          "last_activity": "2025-10-25T21:52:01.211941",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "darkwebforums",
+          "thread_id": "be7054d4ea25c434",
+          "title": "New 0day found in IIS",
+          "author": "user_2880",
+          "posts": 88,
+          "views": 2791,
+          "last_activity": "2025-10-26T01:52:01.212939",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "darkwebforums",
+          "thread_id": "35a32f3da8fa6df3",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_7323",
+          "posts": 178,
+          "views": 4690,
+          "last_activity": "2025-10-26T20:52:01.212939",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "darkwebforums",
+          "thread_id": "35a32f3da8fa6df3",
+          "title": "New 0day found in nginx",
+          "author": "user_4044",
+          "posts": 143,
+          "views": 3138,
+          "last_activity": "2025-10-28T12:52:01.212939",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "darkwebforums",
+          "thread_id": "35a32f3da8fa6df3",
+          "title": "New 0day found in IIS",
+          "author": "user_6644",
+          "posts": 52,
+          "views": 3848,
+          "last_activity": "2025-10-27T13:52:01.212939",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "darkwebforums",
+          "thread_id": "35a32f3da8fa6df3",
+          "title": "New 0day found in Apache",
+          "author": "user_6546",
+          "posts": 22,
+          "views": 3056,
+          "last_activity": "2025-10-27T19:52:01.212939",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "darkwebforums",
+          "thread_id": "35a32f3da8fa6df3",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_9738",
+          "posts": 61,
+          "views": 585,
+          "last_activity": "2025-10-26T16:52:01.212939",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "darkwebforums",
+          "thread_id": "35a32f3da8fa6df3",
+          "title": "New 0day found in nginx",
+          "author": "user_5808",
+          "posts": 13,
+          "views": 604,
+          "last_activity": "2025-10-27T06:52:01.212939",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "darkwebforums",
+          "thread_id": "35a32f3da8fa6df3",
+          "title": "New 0day found in Apache",
+          "author": "user_7342",
+          "posts": 13,
+          "views": 3508,
+          "last_activity": "2025-10-27T23:52:01.212939",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "darkwebforums",
+          "thread_id": "35a32f3da8fa6df3",
+          "title": "New 0day found in Apache",
+          "author": "user_9779",
+          "posts": 126,
+          "views": 3498,
+          "last_activity": "2025-10-27T16:52:01.212939",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "darkwebforums",
+          "thread_id": "35a32f3da8fa6df3",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_8888",
+          "posts": 110,
+          "views": 2647,
+          "last_activity": "2025-10-28T02:52:01.212939",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "cybercrimeforum",
+          "thread_id": "778644e66683c5a6",
+          "title": "New 0day found in nginx",
+          "author": "user_8454",
+          "posts": 59,
+          "views": 3563,
+          "last_activity": "2025-10-28T03:52:01.212939",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "cybercrimeforum",
+          "thread_id": "778644e66683c5a6",
+          "title": "New 0day found in IIS",
+          "author": "user_3373",
+          "posts": 17,
+          "views": 675,
+          "last_activity": "2025-10-27T16:52:01.212939",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "cybercrimeforum",
+          "thread_id": "778644e66683c5a6",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_3153",
+          "posts": 102,
+          "views": 1754,
+          "last_activity": "2025-10-28T09:52:01.212939",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "cybercrimeforum",
+          "thread_id": "778644e66683c5a6",
+          "title": "New 0day found in IIS",
+          "author": "user_2785",
+          "posts": 103,
+          "views": 2137,
+          "last_activity": "2025-10-27T23:52:01.212939",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "cybercrimeforum",
+          "thread_id": "778644e66683c5a6",
+          "title": "New 0day found in IIS",
+          "author": "user_9012",
+          "posts": 156,
+          "views": 2388,
+          "last_activity": "2025-10-27T14:52:01.212939",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "cybercrimeforum",
+          "thread_id": "778644e66683c5a6",
+          "title": "New 0day found in IIS",
+          "author": "user_4991",
+          "posts": 187,
+          "views": 4202,
+          "last_activity": "2025-10-26T07:52:01.212939",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "cybercrimeforum",
+          "thread_id": "778644e66683c5a6",
+          "title": "New 0day found in Apache",
+          "author": "user_1934",
+          "posts": 185,
+          "views": 4393,
+          "last_activity": "2025-10-26T03:52:01.212939",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "cybercrimeforum",
+          "thread_id": "778644e66683c5a6",
+          "title": "New 0day found in IIS",
+          "author": "user_2165",
+          "posts": 196,
+          "views": 3919,
+          "last_activity": "2025-10-26T15:52:01.212939",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "cybercrimeforum",
+          "thread_id": "778644e66683c5a6",
+          "title": "New 0day found in nginx",
+          "author": "user_853",
+          "posts": 135,
+          "views": 1629,
+          "last_activity": "2025-10-28T11:52:01.212939",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "undergroundforum",
+          "thread_id": "371ee98fc06d307e",
+          "title": "New 0day found in Apache",
+          "author": "user_6939",
+          "posts": 167,
+          "views": 2594,
+          "last_activity": "2025-10-26T06:52:01.212939",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "undergroundforum",
+          "thread_id": "371ee98fc06d307e",
+          "title": "New 0day found in IIS",
+          "author": "user_5462",
+          "posts": 91,
+          "views": 4946,
+          "last_activity": "2025-10-26T21:52:01.212939",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "undergroundforum",
+          "thread_id": "371ee98fc06d307e",
+          "title": "New 0day found in nginx",
+          "author": "user_1156",
+          "posts": 109,
+          "views": 236,
+          "last_activity": "2025-10-26T07:52:01.212939",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "undergroundforum",
+          "thread_id": "371ee98fc06d307e",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_1971",
+          "posts": 17,
+          "views": 4736,
+          "last_activity": "2025-10-25T19:52:01.212939",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "undergroundforum",
+          "thread_id": "371ee98fc06d307e",
+          "title": "New 0day found in IIS",
+          "author": "user_8941",
+          "posts": 71,
+          "views": 2024,
+          "last_activity": "2025-10-26T12:52:01.212939",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "undergroundforum",
+          "thread_id": "371ee98fc06d307e",
+          "title": "New 0day found in nginx",
+          "author": "user_4778",
+          "posts": 155,
+          "views": 673,
+          "last_activity": "2025-10-27T21:52:01.212939",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "undergroundforum",
+          "thread_id": "371ee98fc06d307e",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_7174",
+          "posts": 194,
+          "views": 1775,
+          "last_activity": "2025-10-26T23:52:01.212939",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "undergroundforum",
+          "thread_id": "371ee98fc06d307e",
+          "title": "New 0day found in nginx",
+          "author": "user_979",
+          "posts": 74,
+          "views": 1726,
+          "last_activity": "2025-10-27T05:52:01.212939",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "undergroundforum",
+          "thread_id": "371ee98fc06d307e",
+          "title": "New 0day found in IIS",
+          "author": "user_4262",
+          "posts": 94,
+          "views": 2330,
+          "last_activity": "2025-10-27T19:52:01.212939",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "undergroundforum",
+          "thread_id": "371ee98fc06d307e",
+          "title": "New 0day found in Apache",
+          "author": "user_5987",
+          "posts": 88,
+          "views": 648,
+          "last_activity": "2025-10-25T14:52:01.212939",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "undergroundforum",
+          "thread_id": "371ee98fc06d307e",
+          "title": "New 0day found in nginx",
+          "author": "user_6216",
+          "posts": 194,
+          "views": 1204,
+          "last_activity": "2025-10-27T17:52:01.212939",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "blackhatworld",
+          "thread_id": "c8aaff6fc7bcc71f",
+          "title": "New 0day found in IIS",
+          "author": "user_857",
+          "posts": 67,
+          "views": 3901,
+          "last_activity": "2025-10-28T03:52:01.212939",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "blackhatworld",
+          "thread_id": "c8aaff6fc7bcc71f",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_8530",
+          "posts": 75,
+          "views": 738,
+          "last_activity": "2025-10-26T01:52:01.212939",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "blackhatworld",
+          "thread_id": "c8aaff6fc7bcc71f",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_5833",
+          "posts": 153,
+          "views": 687,
+          "last_activity": "2025-10-27T14:52:01.212939",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "blackhatworld",
+          "thread_id": "c8aaff6fc7bcc71f",
+          "title": "New 0day found in IIS",
+          "author": "user_5732",
+          "posts": 107,
+          "views": 682,
+          "last_activity": "2025-10-26T18:52:01.212939",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "blackhatworld",
+          "thread_id": "c8aaff6fc7bcc71f",
+          "title": "New 0day found in IIS",
+          "author": "user_3240",
+          "posts": 112,
+          "views": 3087,
+          "last_activity": "2025-10-25T20:52:01.212939",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "blackhatworld",
+          "thread_id": "c8aaff6fc7bcc71f",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_3654",
+          "posts": 84,
+          "views": 2736,
+          "last_activity": "2025-10-27T16:52:01.212939",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "blackhatworld",
+          "thread_id": "c8aaff6fc7bcc71f",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_8195",
+          "posts": 115,
+          "views": 3767,
+          "last_activity": "2025-10-27T12:52:01.212939",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "blackhatworld",
+          "thread_id": "c8aaff6fc7bcc71f",
+          "title": "New 0day found in IIS",
+          "author": "user_355",
+          "posts": 155,
+          "views": 180,
+          "last_activity": "2025-10-25T15:52:01.212939",
+          "threat_level": "LOW"
+        },
+        {
+          "forum": "blackhatworld",
+          "thread_id": "c8aaff6fc7bcc71f",
+          "title": "New 0day found in Apache",
+          "author": "user_6104",
+          "posts": 120,
+          "views": 4822,
+          "last_activity": "2025-10-25T22:52:01.212939",
+          "threat_level": "MEDIUM"
+        },
+        {
+          "forum": "blackhatworld",
+          "thread_id": "c8aaff6fc7bcc71f",
+          "title": "New 0day found in Apache",
+          "author": "user_4886",
+          "posts": 97,
+          "views": 2624,
+          "last_activity": "2025-10-28T01:52:01.212939",
+          "threat_level": "CRITICAL"
+        },
+        {
+          "forum": "blackhatworld",
+          "thread_id": "c8aaff6fc7bcc71f",
+          "title": "New 0day found in nginx",
+          "author": "user_6093",
+          "posts": 35,
+          "views": 4635,
+          "last_activity": "2025-10-27T14:52:01.212939",
+          "threat_level": "HIGH"
+        },
+        {
+          "forum": "blackhatworld",
+          "thread_id": "c8aaff6fc7bcc71f",
+          "title": "New 0day found in OpenSSL",
+          "author": "user_737",
+          "posts": 146,
+          "views": 2746,
+          "last_activity": "2025-10-27T00:52:01.212939",
+          "threat_level": "MEDIUM"
+        }
+      ],
+      "vulnerability_reveals": [],
+      "attack_techniques": [],
+      "tool_sharing": [],
+      "recruitment_posts": []
+    },
+    "group_intelligence": {
+      "active_groups": [
+        {
+          "group_name": "APT28",
+          "country_of_origin": "IR",
+          "activity_level": "LOW",
+          "primary_targets": [
+            "FINANCE",
+            "HEALTHCARE",
+            "GOVERNMENT",
+            "TECHNOLOGY"
+          ],
+          "known_tools": [
+            "POWERSHELL_EMPIRE",
+            "CUSTOM_MALWARE",
+            "EMPIRE"
+          ],
+          "infrastructure_count": 57
+        },
+        {
+          "group_name": "APT29",
+          "country_of_origin": "CN",
+          "activity_level": "MEDIUM",
+          "primary_targets": [
+            "DEFENSE",
+            "ENERGY",
+            "HEALTHCARE"
+          ],
+          "known_tools": [
+            "CUSTOM_MALWARE",
+            "POWERSHELL_EMPIRE"
+          ],
+          "infrastructure_count": 62
+        },
+        {
+          "group_name": "Lazarus",
+          "country_of_origin": "CN",
+          "activity_level": "MEDIUM",
+          "primary_targets": [
+            "GOVERNMENT",
+            "TECHNOLOGY"
+          ],
+          "known_tools": [
+            "METASPLOIT",
+            "CUSTOM_MALWARE",
+            "ZERO_DAY_EXPLOITS",
+            "EMPIRE"
+          ],
+          "infrastructure_count": 10
+        },
+        {
+          "group_name": "Fancy Bear",
+          "country_of_origin": "IR",
+          "activity_level": "LOW",
+          "primary_targets": [
+            "HEALTHCARE",
+            "ENERGY",
+            "TELECOMMUNICATIONS",
+            "FINANCE"
+          ],
+          "known_tools": [
+            "METASPLOIT",
+            "POWERSHELL_EMPIRE",
+            "COBALT_STRIKE",
+            "CUSTOM_MALWARE"
+          ],
+          "infrastructure_count": 100
+        },
+        {
+          "group_name": "Cozy Bear",
+          "country_of_origin": "US",
+          "activity_level": "LOW",
+          "primary_targets": [
+            "DEFENSE",
+            "TELECOMMUNICATIONS",
+            "ENERGY"
+          ],
+          "known_tools": [
+            "ZERO_DAY_EXPLOITS",
+            "POWERSHELL_EMPIRE",
+            "CUSTOM_MALWARE"
+          ],
+          "infrastructure_count": 76
+        },
+        {
+          "group_name": "Equation Group",
+          "country_of_origin": "IR",
+          "activity_level": "HIGH",
+          "primary_targets": [
+            "ENERGY",
+            "HEALTHCARE",
+            "TECHNOLOGY"
+          ],
+          "known_tools": [
+            "ZERO_DAY_EXPLOITS",
+            "CUSTOM_MALWARE",
+            "EMPIRE",
+            "COBALT_STRIKE"
+          ],
+          "infrastructure_count": 43
+        },
+        {
+          "group_name": "Shadow Brokers",
+          "country_of_origin": "RU",
+          "activity_level": "HIGH",
+          "primary_targets": [
+            "GOVERNMENT",
+            "ENERGY",
+            "TECHNOLOGY",
+            "TELECOMMUNICATIONS"
+          ],
+          "known_tools": [
+            "COBALT_STRIKE",
+            "CUSTOM_MALWARE"
+          ],
+          "infrastructure_count": 13
+        },
+        {
+          "group_name": "Anonymous",
+          "country_of_origin": "NK",
+          "activity_level": "LOW",
+          "primary_targets": [
+            "DEFENSE",
+            "TELECOMMUNICATIONS"
+          ],
+          "known_tools": [
+            "CUSTOM_MALWARE",
+            "METASPLOIT"
+          ],
+          "infrastructure_count": 30
+        },
+        {
+          "group_name": "LulzSec",
+          "country_of_origin": "RU",
+          "activity_level": "MEDIUM",
+          "primary_targets": [
+            "TECHNOLOGY",
+            "FINANCE",
+            "TELECOMMUNICATIONS"
+          ],
+          "known_tools": [
+            "CUSTOM_MALWARE",
+            "POWERSHELL_EMPIRE",
+            "EMPIRE",
+            "COBALT_STRIKE"
+          ],
+          "infrastructure_count": 93
+        }
+      ],
+      "recent_activities": [],
+      "target_sectors": [],
+      "attack_patterns": [],
+      "infrastructure": []
+    },
+    "threat_analysis": {
+      "malicious_ips": [
+        {
+          "ip": "192.176.154.203",
+          "country": "BR",
+          "asn": 94732,
+          "reputation_score": 0.23322325079535694,
+          "first_seen": "2025-01-27T14:52:01.212939",
+          "malicious_activities": 491
+        },
+        {
+          "ip": "8.236.6.179",
+          "country": "IR",
+          "asn": 45822,
+          "reputation_score": 0.4213369266703294,
+          "first_seen": "2025-01-02T14:52:01.212939",
+          "malicious_activities": 129
+        },
+        {
+          "ip": "141.149.2.199",
+          "country": "CN",
+          "asn": 39759,
+          "reputation_score": 0.7671799484950529,
+          "first_seen": "2025-08-23T14:52:01.212939",
+          "malicious_activities": 598
+        },
+        {
+          "ip": "231.35.216.219",
+          "country": "RU",
+          "asn": 41359,
+          "reputation_score": 0.6237931750037792,
+          "first_seen": "2024-12-25T14:52:01.212939",
+          "malicious_activities": 511
+        },
+        {
+          "ip": "129.152.252.214",
+          "country": "BR",
+          "asn": 1976,
+          "reputation_score": 0.6378999165151431,
+          "first_seen": "2025-10-05T14:52:01.212939",
+          "malicious_activities": 657
+        },
+        {
+          "ip": "3.162.14.92",
+          "country": "NK",
+          "asn": 39000,
+          "reputation_score": 0.4340367381835659,
+          "first_seen": "2025-03-03T14:52:01.212939",
+          "malicious_activities": 190
+        },
+        {
+          "ip": "97.40.107.186",
+          "country": "RU",
+          "asn": 44157,
+          "reputation_score": 0.1879904643158531,
+          "first_seen": "2025-02-05T14:52:01.212939",
+          "malicious_activities": 620
+        },
+        {
+          "ip": "36.130.87.244",
+          "country": "BR",
+          "asn": 22993,
+          "reputation_score": 0.799751392429068,
+          "first_seen": "2025-01-04T14:52:01.212939",
+          "malicious_activities": 950
+        },
+        {
+          "ip": "143.140.171.83",
+          "country": "CN",
+          "asn": 33131,
+          "reputation_score": 0.6037127606880387,
+          "first_seen": "2024-12-26T14:52:01.212939",
+          "malicious_activities": 225
+        },
+        {
+          "ip": "89.255.242.96",
+          "country": "US",
+          "asn": 30856,
+          "reputation_score": 0.3086863701135781,
+          "first_seen": "2025-08-02T14:52:01.212939",
+          "malicious_activities": 923
+        },
+        {
+          "ip": "193.148.223.246",
+          "country": "IR",
+          "asn": 10313,
+          "reputation_score": 0.23127887395992,
+          "first_seen": "2025-07-03T14:52:01.212939",
+          "malicious_activities": 935
+        },
+        {
+          "ip": "240.195.207.23",
+          "country": "CN",
+          "asn": 85238,
+          "reputation_score": 0.6565242980558718,
+          "first_seen": "2025-08-19T14:52:01.212939",
+          "malicious_activities": 408
+        },
+        {
+          "ip": "178.220.99.108",
+          "country": "IN",
+          "asn": 68244,
+          "reputation_score": 0.7690939801127923,
+          "first_seen": "2025-08-13T14:52:01.212939",
+          "malicious_activities": 523
+        },
+        {
+          "ip": "85.194.183.154",
+          "country": "NK",
+          "asn": 67919,
+          "reputation_score": 0.37548510430531545,
+          "first_seen": "2025-10-04T14:52:01.212939",
+          "malicious_activities": 97
+        },
+        {
+          "ip": "85.155.203.138",
+          "country": "RU",
+          "asn": 24528,
+          "reputation_score": 0.574555813690217,
+          "first_seen": "2025-04-05T14:52:01.212939",
+          "malicious_activities": 509
+        },
+        {
+          "ip": "81.27.39.98",
+          "country": "US",
+          "asn": 51444,
+          "reputation_score": 0.11285553245774738,
+          "first_seen": "2024-12-06T14:52:01.212939",
+          "malicious_activities": 528
+        },
+        {
+          "ip": "78.164.125.197",
+          "country": "IN",
+          "asn": 51366,
+          "reputation_score": 0.4220595123389165,
+          "first_seen": "2025-09-16T14:52:01.212939",
+          "malicious_activities": 344
+        },
+        {
+          "ip": "164.90.46.89",
+          "country": "CN",
+          "asn": 16589,
+          "reputation_score": 0.5457906195836636,
+          "first_seen": "2024-12-24T14:52:01.212939",
+          "malicious_activities": 342
+        },
+        {
+          "ip": "32.221.216.46",
+          "country": "US",
+          "asn": 87750,
+          "reputation_score": 0.5688822224752645,
+          "first_seen": "2025-03-23T14:52:01.212939",
+          "malicious_activities": 641
+        },
+        {
+          "ip": "231.21.51.247",
+          "country": "IR",
+          "asn": 15502,
+          "reputation_score": 0.5794495718535179,
+          "first_seen": "2025-10-05T14:52:01.212939",
+          "malicious_activities": 125
+        },
+        {
+          "ip": "12.62.151.160",
+          "country": "CN",
+          "asn": 44134,
+          "reputation_score": 0.2764604467144064,
+          "first_seen": "2025-07-02T14:52:01.212939",
+          "malicious_activities": 297
+        },
+        {
+          "ip": "180.62.222.247",
+          "country": "US",
+          "asn": 14119,
+          "reputation_score": 0.606824370347825,
+          "first_seen": "2025-05-20T14:52:01.212939",
+          "malicious_activities": 353
+        },
+        {
+          "ip": "181.31.183.203",
+          "country": "IR",
+          "asn": 40538,
+          "reputation_score": 0.41458857522856896,
+          "first_seen": "2024-11-16T14:52:01.212939",
+          "malicious_activities": 767
+        },
+        {
+          "ip": "70.76.73.182",
+          "country": "IN",
+          "asn": 73265,
+          "reputation_score": 0.17227202508512962,
+          "first_seen": "2025-08-12T14:52:01.212939",
+          "malicious_activities": 484
+        },
+        {
+          "ip": "116.170.184.242",
+          "country": "IR",
+          "asn": 8751,
+          "reputation_score": 0.586177304342215,
+          "first_seen": "2025-07-23T14:52:01.212939",
+          "malicious_activities": 23
+        },
+        {
+          "ip": "146.217.62.13",
+          "country": "RU",
+          "asn": 19421,
+          "reputation_score": 0.4600450001332298,
+          "first_seen": "2025-01-10T14:52:01.212939",
+          "malicious_activities": 585
+        },
+        {
+          "ip": "42.211.222.208",
+          "country": "BR",
+          "asn": 46724,
+          "reputation_score": 0.5582518163130749,
+          "first_seen": "2025-09-19T14:52:01.212939",
+          "malicious_activities": 574
+        },
+        {
+          "ip": "155.231.163.202",
+          "country": "NK",
+          "asn": 57519,
+          "reputation_score": 0.5214220538403408,
+          "first_seen": "2025-05-22T14:52:01.212939",
+          "malicious_activities": 619
+        },
+        {
+          "ip": "168.201.190.43",
+          "country": "BR",
+          "asn": 1364,
+          "reputation_score": 0.14928693147810954,
+          "first_seen": "2025-01-15T14:52:01.212939",
+          "malicious_activities": 784
+        },
+        {
+          "ip": "35.68.28.189",
+          "country": "BR",
+          "asn": 32197,
+          "reputation_score": 0.7251767740305881,
+          "first_seen": "2024-11-28T14:52:01.212939",
+          "malicious_activities": 160
+        },
+        {
+          "ip": "18.156.247.92",
+          "country": "CN",
+          "asn": 96274,
+          "reputation_score": 0.8568354919366818,
+          "first_seen": "2025-05-23T14:52:01.212939",
+          "malicious_activities": 282
+        },
+        {
+          "ip": "208.22.13.224",
+          "country": "CN",
+          "asn": 1122,
+          "reputation_score": 0.8450317712487228,
+          "first_seen": "2025-09-27T14:52:01.213938",
+          "malicious_activities": 643
+        }
+      ],
+      "suspicious_domains": [
+        {
+          "domain": "c2-2686.com",
+          "ip_address": "18.156.247.92",
+          "creation_date": "2025-03-15T14:52:01.213938",
+          "registrar": "GoDaddy",
+          "threat_score": 0.846504974201818
+        },
+        {
+          "domain": "suspicious-9439.com",
+          "ip_address": "12.62.151.160",
+          "creation_date": "2025-04-07T14:52:01.213938",
+          "registrar": "GoDaddy",
+          "threat_score": 0.6082789919969456
+        },
+        {
+          "domain": "malicious-4257.com",
+          "ip_address": "181.31.183.203",
+          "creation_date": "2025-09-12T14:52:01.213938",
+          "registrar": "Register.com",
+          "threat_score": 0.6066357333891927
+        },
+        {
+          "domain": "phishing-7010.com",
+          "ip_address": "8.236.6.179",
+          "creation_date": "2025-08-23T14:52:01.213938",
+          "registrar": "GoDaddy",
+          "threat_score": 0.6572278368801151
+        },
+        {
+          "domain": "suspicious-8056.com",
+          "ip_address": "85.155.203.138",
+          "creation_date": "2024-02-25T14:52:01.213938",
+          "registrar": "Network Solutions",
+          "threat_score": 0.8021054568838499
+        },
+        {
+          "domain": "c2-2083.com",
+          "ip_address": "143.140.171.83",
+          "creation_date": "2024-05-15T14:52:01.213938",
+          "registrar": "Network Solutions",
+          "threat_score": 0.5637694956321124
+        },
+        {
+          "domain": "c2-7610.com",
+          "ip_address": "35.68.28.189",
+          "creation_date": "2025-06-09T14:52:01.213938",
+          "registrar": "Network Solutions",
+          "threat_score": 0.6882366095822813
+        },
+        {
+          "domain": "phishing-8007.com",
+          "ip_address": "141.149.2.199",
+          "creation_date": "2024-04-11T14:52:01.213938",
+          "registrar": "NameCheap",
+          "threat_score": 0.7341713297369843
+        },
+        {
+          "domain": "suspicious-9305.com",
+          "ip_address": "129.152.252.214",
+          "creation_date": "2024-12-29T14:52:01.213938",
+          "registrar": "Register.com",
+          "threat_score": 0.7413670318299217
+        },
+        {
+          "domain": "suspicious-7551.com",
+          "ip_address": "42.211.222.208",
+          "creation_date": "2024-01-10T14:52:01.213938",
+          "registrar": "Register.com",
+          "threat_score": 0.8827968504519741
+        },
+        {
+          "domain": "c2-3237.com",
+          "ip_address": "70.76.73.182",
+          "creation_date": "2024-11-11T14:52:01.213938",
+          "registrar": "Network Solutions",
+          "threat_score": 0.7327791633907783
+        },
+        {
+          "domain": "suspicious-6405.com",
+          "ip_address": "208.22.13.224",
+          "creation_date": "2025-01-22T14:52:01.213938",
+          "registrar": "Register.com",
+          "threat_score": 0.7553789551471364
+        },
+        {
+          "domain": "suspicious-2951.com",
+          "ip_address": "32.221.216.46",
+          "creation_date": "2025-04-19T14:52:01.213938",
+          "registrar": "Network Solutions",
+          "threat_score": 0.8381691443755634
+        },
+        {
+          "domain": "malicious-8354.com",
+          "ip_address": "240.195.207.23",
+          "creation_date": "2025-10-17T14:52:01.213938",
+          "registrar": "Network Solutions",
+          "threat_score": 0.5636244292423356
+        },
+        {
+          "domain": "malicious-388.com",
+          "ip_address": "32.221.216.46",
+          "creation_date": "2024-01-25T14:52:01.213938",
+          "registrar": "Register.com",
+          "threat_score": 0.6894827923952676
+        },
+        {
+          "domain": "suspicious-1281.com",
+          "ip_address": "168.201.190.43",
+          "creation_date": "2024-07-24T14:52:01.213938",
+          "registrar": "Register.com",
+          "threat_score": 0.5650893709555451
+        },
+        {
+          "domain": "phishing-2015.com",
+          "ip_address": "89.255.242.96",
+          "creation_date": "2024-02-28T14:52:01.213938",
+          "registrar": "GoDaddy",
+          "threat_score": 0.6149013038408048
+        },
+        {
+          "domain": "suspicious-2318.com",
+          "ip_address": "193.148.223.246",
+          "creation_date": "2024-07-30T14:52:01.213938",
+          "registrar": "NameCheap",
+          "threat_score": 0.8116932383499558
+        },
+        {
+          "domain": "c2-3645.com",
+          "ip_address": "155.231.163.202",
+          "creation_date": "2024-01-23T14:52:01.213938",
+          "registrar": "NameCheap",
+          "threat_score": 0.6015045693084903
+        },
+        {
+          "domain": "malicious-5626.com",
+          "ip_address": "164.90.46.89",
+          "creation_date": "2025-06-28T14:52:01.213938",
+          "registrar": "GoDaddy",
+          "threat_score": 0.92523006336041
+        },
+        {
+          "domain": "phishing-7192.com",
+          "ip_address": "97.40.107.186",
+          "creation_date": "2024-09-22T14:52:01.213938",
+          "registrar": "NameCheap",
+          "threat_score": 0.8051703726731422
+        },
+        {
+          "domain": "suspicious-9740.com",
+          "ip_address": "85.155.203.138",
+          "creation_date": "2024-11-05T14:52:01.213938",
+          "registrar": "NameCheap",
+          "threat_score": 0.9490983225491731
+        },
+        {
+          "domain": "malicious-6092.com",
+          "ip_address": "97.40.107.186",
+          "creation_date": "2025-09-16T14:52:01.213938",
+          "registrar": "NameCheap",
+          "threat_score": 0.9248776488580099
+        },
+        {
+          "domain": "c2-8797.com",
+          "ip_address": "143.140.171.83",
+          "creation_date": "2024-10-15T14:52:01.213938",
+          "registrar": "GoDaddy",
+          "threat_score": 0.9206508223296833
+        },
+        {
+          "domain": "malicious-7040.com",
+          "ip_address": "155.231.163.202",
+          "creation_date": "2024-05-09T14:52:01.213938",
+          "registrar": "Network Solutions",
+          "threat_score": 0.9947202789171194
+        },
+        {
+          "domain": "phishing-9067.com",
+          "ip_address": "155.231.163.202",
+          "creation_date": "2023-11-17T14:52:01.213938",
+          "registrar": "NameCheap",
+          "threat_score": 0.7058325071437661
+        },
+        {
+          "domain": "suspicious-9598.com",
+          "ip_address": "8.236.6.179",
+          "creation_date": "2024-03-12T14:52:01.213938",
+          "registrar": "Register.com",
+          "threat_score": 0.9488437788869681
+        },
+        {
+          "domain": "malicious-5044.com",
+          "ip_address": "78.164.125.197",
+          "creation_date": "2023-11-02T14:52:01.213938",
+          "registrar": "NameCheap",
+          "threat_score": 0.5582316625667811
+        },
+        {
+          "domain": "suspicious-6600.com",
+          "ip_address": "208.22.13.224",
+          "creation_date": "2025-06-06T14:52:01.213938",
+          "registrar": "GoDaddy",
+          "threat_score": 0.6200436250686852
+        },
+        {
+          "domain": "phishing-5227.com",
+          "ip_address": "231.35.216.219",
+          "creation_date": "2025-09-29T14:52:01.213938",
+          "registrar": "Network Solutions",
+          "threat_score": 0.8659016061193285
+        },
+        {
+          "domain": "malicious-2505.com",
+          "ip_address": "85.155.203.138",
+          "creation_date": "2024-01-11T14:52:01.213938",
+          "registrar": "GoDaddy",
+          "threat_score": 0.7941609648593897
+        },
+        {
+          "domain": "c2-1593.com",
+          "ip_address": "18.156.247.92",
+          "creation_date": "2024-03-11T14:52:01.213938",
+          "registrar": "GoDaddy",
+          "threat_score": 0.7084459484970433
+        },
+        {
+          "domain": "malicious-2109.com",
+          "ip_address": "180.62.222.247",
+          "creation_date": "2025-04-24T14:52:01.213938",
+          "registrar": "Network Solutions",
+          "threat_score": 0.5848968305694278
+        },
+        {
+          "domain": "c2-9762.com",
+          "ip_address": "146.217.62.13",
+          "creation_date": "2024-06-05T14:52:01.213938",
+          "registrar": "GoDaddy",
+          "threat_score": 0.9888137416846956
+        },
+        {
+          "domain": "suspicious-4517.com",
+          "ip_address": "231.21.51.247",
+          "creation_date": "2024-07-22T14:52:01.213938",
+          "registrar": "Register.com",
+          "threat_score": 0.5030191053603416
+        },
+        {
+          "domain": "phishing-8479.com",
+          "ip_address": "85.155.203.138",
+          "creation_date": "2024-03-29T14:52:01.213938",
+          "registrar": "Network Solutions",
+          "threat_score": 0.5032651141821938
+        },
+        {
+          "domain": "phishing-4529.com",
+          "ip_address": "36.130.87.244",
+          "creation_date": "2024-04-29T14:52:01.213938",
+          "registrar": "GoDaddy",
+          "threat_score": 0.5877403024357839
+        },
+        {
+          "domain": "malicious-9404.com",
+          "ip_address": "36.130.87.244",
+          "creation_date": "2024-07-17T14:52:01.213938",
+          "registrar": "NameCheap",
+          "threat_score": 0.7616029873359036
+        },
+        {
+          "domain": "suspicious-4257.com",
+          "ip_address": "141.149.2.199",
+          "creation_date": "2024-12-08T14:52:01.213938",
+          "registrar": "NameCheap",
+          "threat_score": 0.7933616769565224
+        },
+        {
+          "domain": "suspicious-6594.com",
+          "ip_address": "164.90.46.89",
+          "creation_date": "2024-01-27T14:52:01.213938",
+          "registrar": "NameCheap",
+          "threat_score": 0.9407383091620367
+        },
+        {
+          "domain": "c2-9679.com",
+          "ip_address": "3.162.14.92",
+          "creation_date": "2025-08-13T14:52:01.213938",
+          "registrar": "GoDaddy",
+          "threat_score": 0.9831119355983584
+        },
+        {
+          "domain": "malicious-9772.com",
+          "ip_address": "231.21.51.247",
+          "creation_date": "2025-10-06T14:52:01.213938",
+          "registrar": "GoDaddy",
+          "threat_score": 0.6760765127464964
+        },
+        {
+          "domain": "c2-9625.com",
+          "ip_address": "35.68.28.189",
+          "creation_date": "2024-05-12T14:52:01.213938",
+          "registrar": "NameCheap",
+          "threat_score": 0.8969107588547272
+        },
+        {
+          "domain": "c2-4543.com",
+          "ip_address": "208.22.13.224",
+          "creation_date": "2025-04-15T14:52:01.213938",
+          "registrar": "GoDaddy",
+          "threat_score": 0.6403101417578354
+        },
+        {
+          "domain": "c2-7213.com",
+          "ip_address": "178.220.99.108",
+          "creation_date": "2024-01-17T14:52:01.213938",
+          "registrar": "NameCheap",
+          "threat_score": 0.9555684443515531
+        }
+      ],
+      "malware_hashes": [
+        {
+          "hash": "cd84f352e812173b5856e90121b253c7e3b4fb5f7ba9bae1cbf4916a89c6fb66",
+          "hash_type": "SHA256",
+          "malware_family": "NotPetya",
+          "first_seen": "2025-05-02T14:52:01.213938",
+          "detection_rate": 0.7715571912694394
+        },
+        {
+          "hash": "22c8c1cfe9c02d7612aaa956adf1ebc5ce1f5bf9f2e15a28a3cafc9fc77ee1f8",
+          "hash_type": "SHA256",
+          "malware_family": "Ryuk",
+          "first_seen": "2025-06-24T14:52:01.213938",
+          "detection_rate": 0.24182489399082988
+        },
+        {
+          "hash": "2efb02927dc1de42ee4716dcb341cd43b91166333f3231a83eaf3231f8f8b66f",
+          "hash_type": "SHA256",
+          "malware_family": "NotPetya",
+          "first_seen": "2025-07-11T14:52:01.213938",
+          "detection_rate": 0.1409904081462096
+        },
+        {
+          "hash": "0bba606d42c0663fb26f09a2402519b278bb1dcfa373df93c19c0417df5153e6",
+          "hash_type": "SHA256",
+          "malware_family": "TrickBot",
+          "first_seen": "2025-05-05T14:52:01.213938",
+          "detection_rate": 0.6312122491892591
+        },
+        {
+          "hash": "01a99d626bde26f9dc2141ceb63aa558cfa73f8dd959c0a5af586e9e90697339",
+          "hash_type": "SHA256",
+          "malware_family": "Emotet",
+          "first_seen": "2025-05-09T14:52:01.213938",
+          "detection_rate": 0.7745762772011593
+        },
+        {
+          "hash": "a77fe29a9e663ebecf965ac519a1e51f0c388f4be192e1e2e17568c0b334ddb4",
+          "hash_type": "SHA256",
+          "malware_family": "NotPetya",
+          "first_seen": "2025-09-01T14:52:01.213938",
+          "detection_rate": 0.7765623501236812
+        },
+        {
+          "hash": "8222bdf26c70d27dfa397948a4fe9064aec02ca59f4a0fe13288048b851d6501",
+          "hash_type": "SHA256",
+          "malware_family": "Ryuk",
+          "first_seen": "2025-08-18T14:52:01.213938",
+          "detection_rate": 0.672844227452266
+        },
+        {
+          "hash": "4c10986744f98085d6a4beaa45ca1d2f73befc9017de09fc4b36ea8e6f1e4532",
+          "hash_type": "SHA256",
+          "malware_family": "WannaCry",
+          "first_seen": "2025-06-02T14:52:01.213938",
+          "detection_rate": 0.11671720483415703
+        },
+        {
+          "hash": "8f8045cc356453fda79ac8ab5836fd10ac0112cf7ad2a7c1146c50837c9cba18",
+          "hash_type": "SHA256",
+          "malware_family": "WannaCry",
+          "first_seen": "2025-08-05T14:52:01.213938",
+          "detection_rate": 0.10422371168458859
+        },
+        {
+          "hash": "5a5c45e988a93d5f0af012e4a3076f98bca7c36c6392b9d0a7047e0a15c706e7",
+          "hash_type": "SHA256",
+          "malware_family": "NotPetya",
+          "first_seen": "2025-05-09T14:52:01.213938",
+          "detection_rate": 0.19852507757856744
+        }
+      ],
+      "phishing_urls": [],
+      "attack_patterns": [],
+      "risk_assessment": {
+        "overall_risk_level": "CRITICAL",
+        "threat_score": 0.34660719446478166,
+        "confidence_level": 0.8145696224734723,
+        "immediate_threats": 8,
+        "emerging_threats": 13
+      }
+    },
+    "attack_predictions": {
+      "attack_predictions": [
+        {
+          "timestamp": "2025-10-28T15:52:01.213938",
+          "attack_type": "RANSOMWARE",
+          "probability": 0.2875918183433498,
+          "confidence": 0.669775234139651,
+          "potential_impact": "LOW"
+        },
+        {
+          "timestamp": "2025-10-28T16:52:01.213938",
+          "attack_type": "XSS",
+          "probability": 0.21380909808895568,
+          "confidence": 0.9481473787509342,
+          "potential_impact": "CRITICAL"
+        },
+        {
+          "timestamp": "2025-10-28T17:52:01.213938",
+          "attack_type": "XSS",
+          "probability": 0.13636637241128316,
+          "confidence": 0.76072874950339,
+          "potential_impact": "MEDIUM"
+        },
+        {
+          "timestamp": "2025-10-28T18:52:01.213938",
+          "attack_type": "PHISHING",
+          "probability": 0.44825969876729677,
+          "confidence": 0.8881111174753601,
+          "potential_impact": "HIGH"
+        },
+        {
+          "timestamp": "2025-10-28T19:52:01.213938",
+          "attack_type": "XSS",
+          "probability": 0.4416792372365077,
+          "confidence": 0.7466824897689283,
+          "potential_impact": "CRITICAL"
+        },
+        {
+          "timestamp": "2025-10-28T20:52:01.213938",
+          "attack_type": "RANSOMWARE",
+          "probability": 0.11174318771361046,
+          "confidence": 0.9126763011230594,
+          "potential_impact": "CRITICAL"
+        },
+        {
+          "timestamp": "2025-10-28T21:52:01.213938",
+          "attack_type": "DDOS",
+          "probability": 0.16257455196417897,
+          "confidence": 0.7698456420436717,
+          "potential_impact": "HIGH"
+        },
+        {
+          "timestamp": "2025-10-28T22:52:01.213938",
+          "attack_type": "SQL_INJECTION",
+          "probability": 0.29155854692898164,
+          "confidence": 0.8082172331630215,
+          "potential_impact": "HIGH"
+        },
+        {
+          "timestamp": "2025-10-28T23:52:01.213938",
+          "attack_type": "DDOS",
+          "probability": 0.7572456510055395,
+          "confidence": 0.7896488011342827,
+          "potential_impact": "MEDIUM"
+        },
+        {
+          "timestamp": "2025-10-29T00:52:01.213938",
+          "attack_type": "RANSOMWARE",
+          "probability": 0.37333917628812985,
+          "confidence": 0.7344710905193653,
+          "potential_impact": "CRITICAL"
+        },
+        {
+          "timestamp": "2025-10-29T01:52:01.213938",
+          "attack_type": "XSS",
+          "probability": 0.583080969576278,
+          "confidence": 0.8859407192209099,
+          "potential_impact": "LOW"
+        },
+        {
+          "timestamp": "2025-10-29T02:52:01.213938",
+          "attack_type": "DDOS",
+          "probability": 0.13332325401633544,
+          "confidence": 0.6972208104829746,
+          "potential_impact": "LOW"
+        },
+        {
+          "timestamp": "2025-10-29T03:52:01.213938",
+          "attack_type": "PHISHING",
+          "probability": 0.5431346127390013,
+          "confidence": 0.8532444123173957,
+          "potential_impact": "LOW"
+        },
+        {
+          "timestamp": "2025-10-29T04:52:01.213938",
+          "attack_type": "RANSOMWARE",
+          "probability": 0.5112354910511039,
+          "confidence": 0.6923045521819134,
+          "potential_impact": "LOW"
+        },
+        {
+          "timestamp": "2025-10-29T05:52:01.213938",
+          "attack_type": "DDOS",
+          "probability": 0.31041532128881344,
+          "confidence": 0.9109548077696981,
+          "potential_impact": "CRITICAL"
+        },
+        {
+          "timestamp": "2025-10-29T06:52:01.213938",
+          "attack_type": "RANSOMWARE",
+          "probability": 0.796469565668543,
+          "confidence": 0.6026232284182343,
+          "potential_impact": "MEDIUM"
+        },
+        {
+          "timestamp": "2025-10-29T07:52:01.213938",
+          "attack_type": "PHISHING",
+          "probability": 0.1572983399157245,
+          "confidence": 0.6903258063291172,
+          "potential_impact": "MEDIUM"
+        },
+        {
+          "timestamp": "2025-10-29T08:52:01.213938",
+          "attack_type": "DDOS",
+          "probability": 0.2750785499869636,
+          "confidence": 0.7910900769161453,
+          "potential_impact": "MEDIUM"
+        },
+        {
+          "timestamp": "2025-10-29T09:52:01.213938",
+          "attack_type": "RANSOMWARE",
+          "probability": 0.6906342072916393,
+          "confidence": 0.7711695956002319,
+          "potential_impact": "HIGH"
+        },
+        {
+          "timestamp": "2025-10-29T10:52:01.213938",
+          "attack_type": "PHISHING",
+          "probability": 0.37796351412193274,
+          "confidence": 0.6371449808754129,
+          "potential_impact": "MEDIUM"
+        },
+        {
+          "timestamp": "2025-10-29T11:52:01.213938",
+          "attack_type": "DDOS",
+          "probability": 0.761311199404239,
+          "confidence": 0.7422345472519257,
+          "potential_impact": "CRITICAL"
+        },
+        {
+          "timestamp": "2025-10-29T12:52:01.213938",
+          "attack_type": "RANSOMWARE",
+          "probability": 0.48390387824692616,
+          "confidence": 0.8137482303173926,
+          "potential_impact": "LOW"
+        },
+        {
+          "timestamp": "2025-10-29T13:52:01.213938",
+          "attack_type": "RANSOMWARE",
+          "probability": 0.7245943368307088,
+          "confidence": 0.9355945033438293,
+          "potential_impact": "CRITICAL"
+        },
+        {
+          "timestamp": "2025-10-29T14:52:01.213938",
+          "attack_type": "RANSOMWARE",
+          "probability": 0.46733486187214957,
+          "confidence": 0.6450114148131011,
+          "potential_impact": "CRITICAL"
+        }
+      ],
+      "target_predictions": [
+        {
+          "sector": "FINANCE",
+          "attack_probability": 0.3642450456651407,
+          "primary_attack_vectors": [
+            "SUPPLY_CHAIN",
+            "INSIDER_THREAT"
+          ],
+          "risk_level": "LOW"
+        },
+        {
+          "sector": "HEALTHCARE",
+          "attack_probability": 0.6864646441683463,
+          "primary_attack_vectors": [
+            "ZERO_DAY",
+            "RANSOMWARE",
+            "INSIDER_THREAT"
+          ],
+          "risk_level": "LOW"
+        },
+        {
+          "sector": "GOVERNMENT",
+          "attack_probability": 0.32725522068210067,
+          "primary_attack_vectors": [
+            "RANSOMWARE",
+            "PHISHING"
+          ],
+          "risk_level": "MEDIUM"
+        },
+        {
+          "sector": "ENERGY",
+          "attack_probability": 0.423355547377171,
+          "primary_attack_vectors": [
+            "INSIDER_THREAT",
+            "PHISHING",
+            "ZERO_DAY"
+          ],
+          "risk_level": "MEDIUM"
+        },
+        {
+          "sector": "TECHNOLOGY",
+          "attack_probability": 0.34328024109792676,
+          "primary_attack_vectors": [
+            "SUPPLY_CHAIN",
+            "RANSOMWARE",
+            "PHISHING"
+          ],
+          "risk_level": "MEDIUM"
+        }
+      ],
+      "vulnerability_predictions": [],
+      "timeline_predictions": []
+    },
+    "darkweb_dominance": false
+  },
+  "ai_evolution_results": {
+    "initial_population": 50,
+    "evolved_population": 50,
+    "evolution_generations": 0,
+    "elite_agents": [
+      {
+        "agent_id": "ai_agent_5",
+        "generation": 0,
+        "fitness_score": 1.0,
+        "attack_strategies": [
+          "RCE",
+          "XSS",
+          "LFI",
+          "SOCIAL_ENGINEERING",
+          "COMMAND_INJECTION"
+        ],
+        "learning_rate": 0.09767772878126697,
+        "adaptation_speed": 0.6975916677369105,
+        "success_rate": 0.359096922862883,
+        "neural_network_weights": [
+          [
+            0.45212560130913104,
+            0.5923237666953556,
+            0.17238361831115734,
+            0.18843032895012257,
+            0.9492184547379159,
+            0.5003111865913865,
+            0.9580547341431221,
+            0.5142610318699354,
+            0.5218492642083858,
+            0.693614142605551
+          ],
+          [
+            0.5623827108914091,
+            0.36307871486022825,
+            0.3384348796814206,
+            0.864998587125926,
+            0.053800559537721115,
+            0.10224219727036621,
+            0.7512338691889634,
+            0.042848801243137835,
+            0.05375769380821571,
+            0.49289555304308563
+          ],
+          [
+            0.11612974196630965,
+            0.08198999961276343,
+            0.04243990617987614,
+            0.7716950312788112,
+            0.05815335202985161,
+            0.6225336454228207,
+            0.8250389794817453,
+            0.830176256583035,
+            0.508632521329993,
+            0.897129420872529
+          ],
+          [
+            0.7619790200138623,
+            0.6237417721755915,
+            0.7087681632694987,
+            0.16826057687610907,
+            0.2530848503127343,
+            0.39319919206192533,
+            0.5662250549008467,
+            0.8532634783752584,
+            0.27901692046229276,
+            0.42903296910013866
+          ],
+          [
+            0.173437234734112,
+            0.10508521358502743,
+            0.6993074087852009,
+            0.7495468777360413,
+            0.11074377653398759,
+            0.05888008318947491,
+            0.9206973167023361,
+            0.1943716357662687,
+            0.13804300192084307,
+            0.4636304297386178
+          ],
+          [
+            0.5225383089667269,
+            0.6982683741894886,
+            0.607695097566923,
+            0.07248784205435177,
+            0.1143735285573223,
+            0.8802537631118514,
+            0.3644847184562696,
+            0.04351715975962456,
+            0.07847646269305442,
+            0.22826088259826527
+          ],
+          [
+            0.4521229258558429,
+            0.4237857038835937,
+            0.49418473407321495,
+            0.6490608709439107,
+            0.9914956183135084,
+            0.16628006131322837,
+            0.6360094412777727,
+            0.7072455074320859,
+            0.2134251797408111,
+            0.7283649711572534
+          ],
+          [
+            0.39839399761441163,
+            0.8257775639928003,
+            0.5126610619443822,
+            0.9499098578095525,
+            0.3186563827830631,
+            0.40674662532191286,
+            0.5241517580634304,
+            0.9865801189991005,
+            0.5800015211557497,
+            0.9998347193257954
+          ],
+          [
+            0.730259666319178,
+            0.9067243037919289,
+            0.08332314657943884,
+            0.20750348192666324,
+            0.5968763784176835,
+            0.7887638745505552,
+            0.6500890035413213,
+            0.8455797898058874,
+            0.41833229484765166,
+            0.7808089478133267
+          ],
+          [
+            0.7878019436108692,
+            0.029094708168342698,
+            0.28074826583948764,
+            0.4468446027014372,
+            0.6514281950651337,
+            0.31856323292380784,
+            0.7776191512667194,
+            0.0029980645588778554,
+            0.33702228132761636,
+            0.8747058813647065
+          ]
+        ]
+      },
+      {
+        "agent_id": "ai_agent_6",
+        "generation": 0,
+        "fitness_score": 1.0,
+        "attack_strategies": [
+          "RCE",
+          "LFI",
+          "PRIVILEGE_ESCALATION",
+          "RFI",
+          "SQL_INJECTION",
+          "XSS"
+        ],
+        "learning_rate": 0.057926819132205994,
+        "adaptation_speed": 0.8598433588030525,
+        "success_rate": 0.5537057390966034,
+        "neural_network_weights": [
+          [
+            0.9604581935679859,
+            0.8794228399670336,
+            0.6316637037911662,
+            0.9454646780684154,
+            0.09943774781633374,
+            0.5348974248054222,
+            0.7494616183893339,
+            0.5279782145038785,
+            0.13909702231557475,
+            0.20193165431884685
+          ],
+          [
+            0.5019828769204187,
+            0.8542575726044664,
+            0.05548195055728167,
+            0.8989633496784615,
+            0.31024152844683106,
+            0.108477158075717,
+            0.3687735165932383,
+            0.03545935898316244,
+            0.5211494644942005,
+            0.27735251565439956
+          ],
+          [
+            0.9449441443726749,
+            0.7335979879458079,
+            0.2695153939567675,
+            0.3519634089031237,
+            0.2089552319166048,
+            0.061161020970094127,
+            0.9304187753964385,
+            0.7031538940770876,
+            0.28843220324943875,
+            0.9139767159097641
+          ],
+          [
+            0.36560209050882675,
+            0.6621745179929942,
+            0.7060214762849948,
+            0.6337636167739081,
+            0.388204311174697,
+            0.9168495507206159,
+            0.3128595485125377,
+            0.1863174569418653,
+            0.2408979726122542,
+            0.6539340807210778
+          ],
+          [
+            0.6275738444811498,
+            0.04207944550021914,
+            0.8777764821957015,
+            0.04450077401301711,
+            0.6043277751872898,
+            0.9232040772072136,
+            0.7176736025229583,
+            0.37715107713638196,
+            0.9797964700101199,
+            0.3267391972425967
+          ],
+          [
+            0.8738661125603795,
+            0.3402815069999303,
+            0.8585982838962791,
+            0.3379925495376358,
+            0.730378949991209,
+            0.1878957033271592,
+            0.878995400774704,
+            0.22866193224509856,
+            0.8129481395031679,
+            0.03362659376191768
+          ],
+          [
+            0.6569460668449304,
+            0.26365234311332,
+            0.6703184701420072,
+            0.9567312826696304,
+            0.8961678449511709,
+            0.21386779097806285,
+            0.8276280483643307,
+            0.19244032631906827,
+            0.011516193069553982,
+            0.4757879219724972
+          ],
+          [
+            0.12647881210334433,
+            0.6013909356815403,
+            0.44719823537844094,
+            0.7012592945588524,
+            0.6602325919725291,
+            0.2733671939640592,
+            0.7646383409235549,
+            0.9672317604609886,
+            0.21099566969097772,
+            0.74829862411552
+          ],
+          [
+            0.6250782422801711,
+            0.8232644433850517,
+            0.671813019593886,
+            0.9343635851542478,
+            0.0027503090911912276,
+            0.7887069886771696,
+            0.8970768645491631,
+            0.3004175265151203,
+            0.786229906624293,
+            0.8641586726660401
+          ],
+          [
+            0.06430839145470613,
+            0.9462632799121791,
+            0.8745823849672125,
+            0.15382105211082775,
+            0.025363060189459663,
+            0.6367433915423765,
+            0.7061355163656924,
+            0.1674561242421887,
+            0.4539637961253883,
+            0.27764607270555597
+          ]
+        ]
+      },
+      {
+        "agent_id": "ai_agent_9",
+        "generation": 0,
+        "fitness_score": 1.0,
+        "attack_strategies": [
+          "XSS",
+          "SSRF",
+          "RCE",
+          "RFI",
+          "SOCIAL_ENGINEERING"
+        ],
+        "learning_rate": 0.08695271235412859,
+        "adaptation_speed": 0.8271199184074189,
+        "success_rate": 0.4065148228465263,
+        "neural_network_weights": [
+          [
+            0.2912459292287741,
+            0.9077101287241135,
+            0.4673483136620755,
+            0.0347338861513643,
+            0.7359711304930994,
+            0.796936020406209,
+            0.4260521750887384,
+            0.35323093451787213,
+            0.8996726885228794,
+            0.05555030594139787
+          ],
+          [
+            0.15762328368705258,
+            0.45850784931809274,
+            0.8992394696988555,
+            0.1688864407459153,
+            0.8712110598305602,
+            0.9742024485133014,
+            0.47800780517483465,
+            0.19511372707886177,
+            0.19136593532791824,
+            0.14904106395401184
+          ],
+          [
+            0.19581884359295343,
+            0.2515687765248672,
+            0.9444154595273871,
+            0.27949382408521384,
+            0.9305736324925956,
+            0.9041784022551855,
+            0.963484898091608,
+            0.8660684683407213,
+            0.17137880396134442,
+            0.5596691360649295
+          ],
+          [
+            0.2366405799963721,
+            0.6791813007011758,
+            0.010226966356784772,
+            0.4800171126986581,
+            0.46653614920359465,
+            0.059818051851639464,
+            0.9728187192728625,
+            0.6061851982450194,
+            0.7662243265568757,
+            0.1307251644973021
+          ],
+          [
+            0.679173090791821,
+            0.4646340794925756,
+            0.8610200219207857,
+            0.21398101391836655,
+            0.7350248569600808,
+            0.09001207239033149,
+            0.9203995230041786,
+            0.6728340186838833,
+            0.30811243463173965,
+            0.9128779852635527
+          ],
+          [
+            0.5853139893693067,
+            0.32065638389173756,
+            0.7099846687995062,
+            0.9836982249582229,
+            0.7305140468279352,
+            0.5157369133337091,
+            0.1995087871569009,
+            0.46370500154260885,
+            0.4108536404609927,
+            0.3822726221561026
+          ],
+          [
+            0.42961582653850117,
+            0.13845578816207982,
+            0.4472151456009277,
+            0.8358524113832045,
+            0.3190089910545848,
+            0.2846130479689898,
+            0.961995319908718,
+            0.031799146310193316,
+            0.8002962479042542,
+            0.13097489084786307
+          ],
+          [
+            0.049850982045413494,
+            0.06623759991836597,
+            0.20287918219610568,
+            0.4363245398876868,
+            0.12916522441386558,
+            0.08795770092150035,
+            0.9559937081356497,
+            0.4608627732340296,
+            0.7063407980525322,
+            0.7011722345074699
+          ],
+          [
+            0.12269936014310567,
+            0.721700405957682,
+            0.32209051568823976,
+            0.2855611036432737,
+            0.0019753329425912236,
+            0.3599569186969668,
+            0.05004099842382104,
+            0.214497165387307,
+            0.22426415047524395,
+            0.005481105855828838
+          ],
+          [
+            0.9227855525504715,
+            0.5058777832223574,
+            0.9973440575448649,
+            0.4176283584067533,
+            0.9368580958621208,
+            0.6806565326287785,
+            0.5682366558663869,
+            0.7941286989028257,
+            0.6973220801154357,
+            0.46926165970866274
+          ]
+        ]
+      },
+      {
+        "agent_id": "ai_agent_15",
+        "generation": 0,
+        "fitness_score": 1.0,
+        "attack_strategies": [
+          "SQL_INJECTION",
+          "RCE",
+          "PRIVILEGE_ESCALATION",
+          "LFI",
+          "SOCIAL_ENGINEERING",
+          "COMMAND_INJECTION"
+        ],
+        "learning_rate": 0.09840978778033804,
+        "adaptation_speed": 0.8908902314539271,
+        "success_rate": 0.5824335644649651,
+        "neural_network_weights": [
+          [
+            0.5064322747895943,
+            0.6052936090003235,
+            0.05052215013670813,
+            0.0883582109739034,
+            0.7667556290251746,
+            0.02462286413995407,
+            0.6509711280065859,
+            0.3167992835525484,
+            0.5291401330783306,
+            0.10733526470030086
+          ],
+          [
+            0.9818712489200723,
+            0.19659714734351996,
+            0.9221809883103884,
+            0.3119859686328985,
+            0.9701069396227684,
+            0.5120244415120737,
+            0.8468693508651095,
+            0.6813637922074027,
+            0.18922222900798635,
+            0.0861329361138844
+          ],
+          [
+            0.8839408048716602,
+            0.7239142204587125,
+            0.22098674726709988,
+            0.7096122582835539,
+            0.27929131797756623,
+            0.17194950279362653,
+            0.46657488928979374,
+            0.7122812643577029,
+            0.8521536038161921,
+            0.4856545578048308
+          ],
+          [
+            0.6709161265824208,
+            0.23051795185229662,
+            0.34227873026174227,
+            0.11752653443776473,
+            0.961520118397764,
+            0.6663728887150112,
+            0.6475118877095513,
+            0.5354929730606703,
+            0.3272648797498444,
+            0.5292813699706487
+          ],
+          [
+            0.1334373232187951,
+            0.0845165374726623,
+            0.2635532713017872,
+            0.5766164404107885,
+            0.4546491761452498,
+            0.21345230377547508,
+            0.8027709751334704,
+            0.5643934371507329,
+            0.8660094956267622,
+            0.5007925266890387
+          ],
+          [
+            0.7412390677892382,
+            0.8114263364657194,
+            0.8469210175230449,
+            0.2198900322380708,
+            0.15764039957170362,
+            0.8154209785669233,
+            0.7145642913859287,
+            0.12195302580308776,
+            0.8389523114382753,
+            0.467901899364921
+          ],
+          [
+            0.9122156958801234,
+            0.5076494454378385,
+            0.4548262380374134,
+            0.07030669043365811,
+            0.1407066625271619,
+            0.09441578646958804,
+            0.1991446744780927,
+            0.9149936912546945,
+            0.04672943976415833,
+            0.38385061668279996
+          ],
+          [
+            0.3476383671848349,
+            0.26991397783516,
+            0.25055909731333703,
+            0.7195921158019585,
+            0.13577192494865797,
+            0.5759937313803547,
+            0.2753040361519712,
+            0.775115855282936,
+            0.6346454071314779,
+            0.61189725350291
+          ],
+          [
+            0.7273595166373269,
+            0.7007585316531317,
+            0.052028616321956545,
+            0.966868532195863,
+            0.46429075626911764,
+            0.47913014173253754,
+            0.278058556051618,
+            0.018052324448454615,
+            0.4689387655393368,
+            0.8304449659842587
+          ],
+          [
+            0.13991849230865583,
+            0.3025486982153316,
+            0.8552696065771218,
+            0.14113967053435905,
+            0.9967917286081814,
+            0.23928730286767386,
+            0.7955198039496545,
+            0.716348701557211,
+            0.7736345181496169,
+            0.17530677373884684
+          ]
+        ]
+      },
+      {
+        "agent_id": "ai_agent_19",
+        "generation": 0,
+        "fitness_score": 1.0,
+        "attack_strategies": [
+          "SQL_INJECTION",
+          "RFI",
+          "RCE",
+          "SOCIAL_ENGINEERING",
+          "LFI",
+          "COMMAND_INJECTION"
+        ],
+        "learning_rate": 0.047597246869065496,
+        "adaptation_speed": 0.7686116597712704,
+        "success_rate": 0.201182410863366,
+        "neural_network_weights": [
+          [
+            0.40868124201393485,
+            0.8544370319992944,
+            0.7248410413469045,
+            0.5500612523556059,
+            0.48038671750280537,
+            0.3117946587139313,
+            0.7646013720920479,
+            0.036310058527024736,
+            0.6514741770385365,
+            0.028289368963735906
+          ],
+          [
+            0.01218585919341808,
+            0.08671086045081677,
+            0.22216500575684894,
+            0.8815782490126218,
+            0.5341189574953903,
+            0.628783332913641,
+            0.8529730511309045,
+            0.03790617747494507,
+            0.6577389539773565,
+            0.1849279869912589
+          ],
+          [
+            0.0919513357294165,
+            0.817136890049362,
+            0.5341810227187963,
+            0.9152581070089537,
+            0.979599486272648,
+            0.33969261385666805,
+            0.8188437084889503,
+            0.5920602609124954,
+            0.3130569645945199,
+            0.09941928977957026
+          ],
+          [
+            0.6338324506893254,
+            0.8193752285280353,
+            0.8899468913417877,
+            0.83311448038445,
+            0.945713972527394,
+            0.7712791678201442,
+            0.6133057179258868,
+            0.7507048379957825,
+            0.7778534879573712,
+            0.2518814764102514
+          ],
+          [
+            0.28045290884778407,
+            0.15257638942778273,
+            0.8301232457471942,
+            0.5894035655508005,
+            0.1886135298063525,
+            0.860931446878884,
+            0.8572232733364451,
+            0.995481772643578,
+            0.5070271753458785,
+            0.24032001357560273
+          ],
+          [
+            0.5181118991098966,
+            0.299309134720938,
+            0.07310575630234206,
+            0.575076776728211,
+            0.505479699722202,
+            0.5994445617981181,
+            0.6683591952292275,
+            0.45108483250125053,
+            0.9922061946657609,
+            0.6573166612010779
+          ],
+          [
+            0.35908654581062294,
+            0.511607810187906,
+            0.8139516035676535,
+            0.4134955339318779,
+            0.6436901098818057,
+            0.543828947074733,
+            0.7860802373023552,
+            0.2651659155320796,
+            0.9994294208842199,
+            0.03185288843854939
+          ],
+          [
+            0.3180281288958411,
+            0.040773905253225995,
+            0.5796774764011887,
+            0.5928659607313963,
+            0.9258609813006924,
+            0.5689906466254696,
+            0.582734737709822,
+            0.8024023459831549,
+            0.058959749142809326,
+            0.26676268688320937
+          ],
+          [
+            0.824005580432686,
+            0.9221970284407264,
+            0.49946271790806573,
+            0.8636400648141593,
+            0.5594969949058023,
+            0.09829367282983925,
+            0.8720225100956457,
+            0.018549177679215934,
+            0.8365299910486601,
+            0.7116589646018118
+          ],
+          [
+            0.09996628015021602,
+            0.15528852646164693,
+            0.7996315316956658,
+            0.6726276262308278,
+            0.12093194801228169,
+            0.565119403364045,
+            0.8460384160075003,
+            0.16513327685394974,
+            0.14960935089434557,
+            0.34983476803899105
+          ]
+        ]
+      }
+    ],
+    "highest_fitness": 1.0,
+    "ai_supremacy_achieved": true
+  },
+  "alien_technology": {
+    "alien_artifacts_analyzed": 8,
+    "technologies_reverse_engineered": 8,
+    "blueprints_generated": 8,
+    "terrestrial_feasibility": 0.5740957672030178,
+    "alien_mastery": true
+  },
+  "ultimate_attack_results": {
+    "targets_compromised": 4,
+    "attack_success_rate": 1.0,
+    "cosmic_dominance_achieved": true,
+    "multidimensional_penetration": true,
+    "target_results": [
+      {
+        "target": "https://peacoop.or.th",
+        "attack_vectors": [
+          "QUANTUM_NEURAL_ASSAULT",
+          "DARKWEB_INTEL_DRIVEN",
+          "AI_EVOLUTION_OPTIMIZED",
+          "ALIEN_TECH_POWERED",
+          "COSMIC_DIMENSION_BREACH"
+        ],
+        "success_probability": 0.9829263267955769,
+        "exploitation_success": true,
+        "data_extracted": {
+          "sensitive_records": 30094,
+          "intelligence_value": 0.8788599974415046,
+          "strategic_advantage": "SUPREME"
+        },
+        "cosmic_impact": {
+          "dimensional_stability": 0.7442564476821313,
+          "reality_integrity": 0.9611225565590991,
+          "temporal_coherence": 0.8734566141654476
+        }
+      },
+      {
+        "target": "https://mula-x.com/",
+        "attack_vectors": [
+          "QUANTUM_NEURAL_ASSAULT",
+          "DARKWEB_INTEL_DRIVEN",
+          "AI_EVOLUTION_OPTIMIZED",
+          "ALIEN_TECH_POWERED",
+          "COSMIC_DIMENSION_BREACH"
+        ],
+        "success_probability": 0.9856655796013213,
+        "exploitation_success": true,
+        "data_extracted": {
+          "sensitive_records": 39948,
+          "intelligence_value": 0.8804557875058481,
+          "strategic_advantage": "SUPREME"
+        },
+        "cosmic_impact": {
+          "dimensional_stability": 0.8744676071507328,
+          "reality_integrity": 0.9138628016168051,
+          "temporal_coherence": 0.8790739729909904
+        }
+      },
+      {
+        "target": "https://www.hanshin.com.tw/",
+        "attack_vectors": [
+          "QUANTUM_NEURAL_ASSAULT",
+          "DARKWEB_INTEL_DRIVEN",
+          "AI_EVOLUTION_OPTIMIZED",
+          "ALIEN_TECH_POWERED",
+          "COSMIC_DIMENSION_BREACH"
+        ],
+        "success_probability": 0.952078416071722,
+        "exploitation_success": true,
+        "data_extracted": {
+          "sensitive_records": 30785,
+          "intelligence_value": 0.8715401107283713,
+          "strategic_advantage": "SUPREME"
+        },
+        "cosmic_impact": {
+          "dimensional_stability": 0.7740524085748768,
+          "reality_integrity": 0.9316418664979021,
+          "temporal_coherence": 0.8818126053331885
+        }
+      },
+      {
+        "target": "https://ngoenmun.com/",
+        "attack_vectors": [
+          "QUANTUM_NEURAL_ASSAULT",
+          "DARKWEB_INTEL_DRIVEN",
+          "AI_EVOLUTION_OPTIMIZED",
+          "ALIEN_TECH_POWERED",
+          "COSMIC_DIMENSION_BREACH"
+        ],
+        "success_probability": 0.9603441266932725,
+        "exploitation_success": true,
+        "data_extracted": {
+          "sensitive_records": 83364,
+          "intelligence_value": 0.9142763150226659,
+          "strategic_advantage": "SUPREME"
+        },
+        "cosmic_impact": {
+          "dimensional_stability": 0.9082074772542921,
+          "reality_integrity": 0.9823785274915195,
+          "temporal_coherence": 0.9556159643035518
+        }
+      }
+    ]
+  },
+  "cosmic_summary": {
+    "cosmic_attack_status": "ULTIMATE_ACHIEVEMENT",
+    "dimensional_control": "ABSOLUTE",
+    "temporal_mastery": "COMPLETE",
+    "quantum_supremacy": "UNCHALLENGED",
+    "alien_technology_integration": "SUCCESSFUL",
+    "darkweb_intelligence_network": "GLOBAL_DOMINANCE",
+    "ai_evolution_cluster": "SINGULARITY_REACHED",
+    "overall_cosmic_power": "INFINITE",
+    "recommendation": "COSMIC_DOMINATION_COMPLETE"
+  }
+}

@@ -1,0 +1,525 @@
+{
+  "https://www.mit.edu/": {
+    "target": "https://www.mit.edu/",
+    "sql_injections": [
+      {
+        "type": "SQL注入",
+        "endpoint": "search",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.mit.edu/search?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "query",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.mit.edu/query?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "id",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.mit.edu/id?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "user",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.mit.edu/user?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "login",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.mit.edu/login?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "register",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.mit.edu/register?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "page",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.mit.edu/page?q=' UNION SELECT 1,2,3--"
+      }
+    ],
+    "xss_vulnerabilities": [],
+    "subdomains": [],
+    "missing_headers": [
+      "X-Content-Type-Options",
+      "X-XSS-Protection",
+      "Strict-Transport-Security"
+    ],
+    "status": "completed"
+  },
+  "https://www.cambridge.ac.uk/": {
+    "target": "https://www.cambridge.ac.uk/",
+    "sql_injections": [
+      {
+        "type": "SQL注入",
+        "endpoint": "search",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.cambridge.ac.uk/search?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "query",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.cambridge.ac.uk/query?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "id",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.cambridge.ac.uk/id?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "user",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.cambridge.ac.uk/user?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "login",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.cambridge.ac.uk/login?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "register",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.cambridge.ac.uk/register?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "page",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.cambridge.ac.uk/page?q=' UNION SELECT 1,2,3--"
+      }
+    ],
+    "xss_vulnerabilities": [],
+    "subdomains": [],
+    "missing_headers": [
+      "Content-Security-Policy",
+      "X-XSS-Protection"
+    ],
+    "status": "completed"
+  },
+  "https://www.stanford.edu/": {
+    "target": "https://www.stanford.edu/",
+    "sql_injections": [
+      {
+        "type": "SQL注入",
+        "endpoint": "search",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.stanford.edu/search?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "query",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.stanford.edu/query?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "id",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.stanford.edu/id?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "user",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.stanford.edu/user?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "login",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.stanford.edu/login?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "register",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.stanford.edu/register?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "page",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.stanford.edu/page?q=' UNION SELECT 1,2,3--"
+      }
+    ],
+    "xss_vulnerabilities": [],
+    "subdomains": [],
+    "missing_headers": [
+      "Content-Security-Policy",
+      "X-Content-Type-Options",
+      "X-XSS-Protection"
+    ],
+    "status": "completed"
+  },
+  "https://example.com/": {
+    "target": "https://example.com/",
+    "sql_injections": [],
+    "xss_vulnerabilities": [],
+    "subdomains": [
+      {
+        "subdomain": "www.example.com",
+        "status": 200,
+        "server": "Unknown",
+        "url": "https://www.example.com"
+      }
+    ],
+    "missing_headers": [
+      "Content-Security-Policy",
+      "X-Content-Type-Options",
+      "X-Frame-Options",
+      "X-XSS-Protection",
+      "Strict-Transport-Security"
+    ],
+    "status": "completed"
+  },
+  "https://www.google.com/": {
+    "target": "https://www.google.com/",
+    "sql_injections": [
+      {
+        "type": "SQL注入",
+        "endpoint": "search",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.google.com/search?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "query",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.google.com/query?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "id",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.google.com/id?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "user",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.google.com/user?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "login",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.google.com/login?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "register",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.google.com/register?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "page",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.google.com/page?q=' UNION SELECT 1,2,3--"
+      }
+    ],
+    "xss_vulnerabilities": [],
+    "subdomains": [],
+    "missing_headers": [
+      "Content-Security-Policy",
+      "X-Content-Type-Options",
+      "Strict-Transport-Security"
+    ],
+    "status": "completed"
+  },
+  "https://stackoverflow.com/": {
+    "target": "https://stackoverflow.com/",
+    "sql_injections": [
+      {
+        "type": "SQL注入",
+        "endpoint": "search",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://stackoverflow.com/search?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "query",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://stackoverflow.com/query?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "id",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://stackoverflow.com/id?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "user",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://stackoverflow.com/user?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "login",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://stackoverflow.com/login?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "register",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://stackoverflow.com/register?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "page",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://stackoverflow.com/page?q=' UNION SELECT 1,2,3--"
+      }
+    ],
+    "xss_vulnerabilities": [],
+    "subdomains": [
+      {
+        "subdomain": "www.stackoverflow.com",
+        "status": 200,
+        "server": "cloudflare",
+        "url": "https://www.stackoverflow.com"
+      },
+      {
+        "subdomain": "blog.stackoverflow.com",
+        "status": 200,
+        "server": "Netlify",
+        "url": "https://blog.stackoverflow.com"
+      }
+    ],
+    "missing_headers": [
+      "X-Content-Type-Options",
+      "X-XSS-Protection"
+    ],
+    "status": "completed"
+  },
+  "https://www.harvard.edu/": {
+    "target": "https://www.harvard.edu/",
+    "sql_injections": [
+      {
+        "type": "SQL注入",
+        "endpoint": "query",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.harvard.edu/query?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "id",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.harvard.edu/id?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "user",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.harvard.edu/user?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "login",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.harvard.edu/login?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "register",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.harvard.edu/register?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "page",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://www.harvard.edu/page?q=' UNION SELECT 1,2,3--"
+      }
+    ],
+    "xss_vulnerabilities": [],
+    "subdomains": [
+      {
+        "subdomain": "test.www.harvard.edu",
+        "status": 200,
+        "server": "nginx",
+        "url": "https://test.www.harvard.edu"
+      }
+    ],
+    "missing_headers": [
+      "Content-Security-Policy",
+      "X-Content-Type-Options",
+      "X-Frame-Options",
+      "X-XSS-Protection",
+      "Strict-Transport-Security"
+    ],
+    "status": "completed"
+  },
+  "https://www.amity.edu/": {
+    "target": "https://www.amity.edu/",
+    "sql_injections": [],
+    "xss_vulnerabilities": [],
+    "subdomains": [],
+    "missing_headers": [
+      "Content-Security-Policy",
+      "X-Content-Type-Options",
+      "X-XSS-Protection",
+      "Strict-Transport-Security"
+    ],
+    "status": "completed"
+  },
+  "https://github.com/": {
+    "target": "https://github.com/",
+    "sql_injections": [
+      {
+        "type": "SQL注入",
+        "endpoint": "search",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://github.com/search?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "query",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://github.com/query?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "id",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://github.com/id?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "user",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://github.com/user?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "login",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://github.com/login?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "register",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://github.com/register?q=' UNION SELECT 1,2,3--"
+      },
+      {
+        "type": "SQL注入",
+        "endpoint": "page",
+        "payload": "UNION SELECT 1,2,3--",
+        "confidence": "高",
+        "url": "https://github.com/page?q=' UNION SELECT 1,2,3--"
+      }
+    ],
+    "xss_vulnerabilities": [],
+    "subdomains": [
+      {
+        "subdomain": "www.github.com",
+        "status": 200,
+        "server": "github.com",
+        "url": "https://www.github.com"
+      },
+      {
+        "subdomain": "api.github.com",
+        "status": 200,
+        "server": "github.com",
+        "url": "https://api.github.com"
+      },
+      {
+        "subdomain": "admin.github.com",
+        "status": 200,
+        "server": "nginx",
+        "url": "https://admin.github.com"
+      },
+      {
+        "subdomain": "blog.github.com",
+        "status": 200,
+        "server": "nginx",
+        "url": "https://blog.github.com"
+      }
+    ],
+    "missing_headers": [],
+    "status": "completed"
+  },
+  "https://httpbin.org/": {
+    "target": "https://httpbin.org/",
+    "sql_injections": [],
+    "xss_vulnerabilities": [],
+    "subdomains": [
+      {
+        "subdomain": "www.httpbin.org",
+        "status": 200,
+        "server": "gunicorn/19.9.0",
+        "url": "https://www.httpbin.org"
+      }
+    ],
+    "missing_headers": [
+      "Content-Security-Policy",
+      "X-Content-Type-Options",
+      "X-Frame-Options",
+      "X-XSS-Protection",
+      "Strict-Transport-Security"
+    ],
+    "status": "completed"
+  }
+}

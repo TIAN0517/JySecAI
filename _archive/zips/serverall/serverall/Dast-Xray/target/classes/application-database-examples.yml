@@ -1,0 +1,69 @@
+# 数据库配置示例文件
+# 复制此文件为 application-prod.yml 并修改相应配置
+
+server:
+  port: 8090
+
+spring:
+  # 数据源配置
+  datasource:
+    # H2 内存数据库 (默认配置)
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    schema: classpath:schema.sql
+
+    # H2 文件数据库 (持久化存储)
+    # url: jdbc:h2:file:./data/dast-xray;DB_CLOSE_ON_EXIT=FALSE
+    # username: sa
+    # password: yourpassword
+    # driver-class-name: org.h2.Driver
+
+    # MySQL 配置 (生产环境推荐)
+    # url: jdbc:mysql://localhost:3306/dast_xray?useSSL=false&serverTimezone=UTC&characterEncoding=utf8&allowPublicKeyRetrieval=true
+    # username: root
+    # password: yourpassword
+    # driver-class-name: com.mysql.cj.jdbc.Driver
+
+    # PostgreSQL 配置
+    # url: jdbc:postgresql://localhost:5432/dast_xray
+    # username: postgres
+    # password: yourpassword
+    # driver-class-name: org.postgresql.Driver
+
+  # H2 控制台配置 (仅对H2数据库有效)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # SQL 初始化配置
+  sql:
+    init:
+      mode: always
+
+# MyBatis 配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.dast.back.Bean
+  configuration:
+    map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 分页插件配置
+pagehelper:
+  helperDialect: h2        # 根据数据库类型修改: mysql, postgresql, h2
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+# 数据库连接池配置 (可选)
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000

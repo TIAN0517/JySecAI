@@ -1,0 +1,43 @@
+{
+  "scan_time": "2025-10-29T04:09:01.874575",
+  "duration_seconds": 140.03159856796265,
+  "targets_tested": 5,
+  "total_vulnerabilities": 0,
+  "results": [
+    {
+      "target": "MoneyCat Thailand",
+      "url": "https://www.moneycat.co.th",
+      "vulnerabilities": [],
+      "status": "completed",
+      "vulnerability_count": 0
+    },
+    {
+      "target": "Mula-X",
+      "url": "https://mula-x.com",
+      "vulnerabilities": [],
+      "status": "completed",
+      "vulnerability_count": 0
+    },
+    {
+      "target": "Rocket Cash",
+      "url": "https://www.rocket-cash.com",
+      "vulnerabilities": [],
+      "status": "completed",
+      "vulnerability_count": 0
+    },
+    {
+      "target": "KLoan Thailand",
+      "url": "https://kloan.co.th",
+      "vulnerabilities": [],
+      "status": "completed",
+      "vulnerability_count": 0
+    },
+    {
+      "target": "NgoenMun Finance",
+      "url": "https://ngoenmun.com",
+      "vulnerabilities": [],
+      "status": "completed",
+      "vulnerability_count": 0
+    }
+  ]
+}

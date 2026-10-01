@@ -1,0 +1,566 @@
+
+// WhatsApp 號碼從後台讀取，如讀取失敗則用此備用號碼
+const WA_PHONE_FALLBACK = '85269568727';
+
+function applyWaLinks(phone) {
+  const msgs = {
+    enquiry: '您好，我正在填寫貸款申請表，想向你們查詢。',
+    docs:    '您好，我想提交貸款申請所需文件：\n• 香港身份證（正面）\n• 地址證明（近3個月）\n• 銀行月結單（最近3個月）\n• 信貸報告（如有）',
+    plain:   '',
+  };
+  document.querySelectorAll('[data-wa]').forEach(function(el) {
+    var type = el.getAttribute('data-wa') || 'plain';
+    var msg  = msgs[type] || '';
+    el.href = 'https://wa.me/' + phone + (msg ? '?text=' + encodeURIComponent(msg) : '');
+  });
+  var telEl = document.getElementById('waPhoneTel');
+  if (telEl) {
+    var local = phone.replace(/^852/, '');
+    telEl.href = 'tel:+' + phone;
+    telEl.textContent = local.replace(/(\d{4})(\d{4})/, '$1 $2');
+  }
+}
+
+fetch('/api/settings?key=whatsapp_phone')
+  .then(function(r) { return r.ok ? r.json() : null; })
+  .then(function(d) { applyWaLinks(d && d.value ? d.value : WA_PHONE_FALLBACK); })
+  .catch(function()  { applyWaLinks(WA_PHONE_FALLBACK); });
+
+// ══════════════════════════════════════════════════════════════════════════════
+// R1b — Per-step API wiring (submit / draft PATCH / signatures) with draft
+// resume via sessionStorage. Each step's Next button POST/PATCHes before
+// advancing; on 401 the token is cleared and user is bounced back to step 1.
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── State ──
+let currentStep = 1;
+const creditRows = [];
+const pads = {};
+let draftToken = null;
+
+const DRAFT_TOKEN_KEY = 'rv_draft_token';
+const DRAFT_STEP_KEY  = 'rv_draft_step';
+
+// ── DOMContentLoaded: pre-load one credit record + restore any in-progress draft ──
+window.addEventListener('DOMContentLoaded', () => {
+  addCreditRow();
+  if (!adoptTokenFromHash()) {
+    restoreDraft();
+    prefillFromParams();
+  }
+});
+
+// ── 主站卡片直開 case 後帶 #rvt=token 過嚟：直接落地 step 2 ──
+function adoptTokenFromHash() {
+  try {
+    const m = location.hash.match(/rvt=([0-9a-f]{64})/);
+    if (!m) return false;
+    draftToken = m[1];
+    try {
+      sessionStorage.setItem(DRAFT_TOKEN_KEY, draftToken);
+      sessionStorage.setItem(DRAFT_STEP_KEY, '2');
+    } catch { /* ignore */ }
+    // 即刻清走 URL 上嘅 token，避免留喺 history / 俾人 copy
+    history.replaceState(null, '', location.pathname + location.search);
+    currentStep = 2;
+    showStep(2);
+    return true;
+  } catch { return false; }
+}
+
+// ── URL 預填：royal-venture.com 查詢卡片帶入 ?name=&phone=&amt=&type=&src= ──
+// 只喺全新 step 1 先預填；有進行中 draft（step ≥2）就唔郁
+function prefillFromParams() {
+  if (currentStep !== 1) return;
+  try {
+    const q = new URLSearchParams(location.search);
+    const name  = (q.get('name')  || '').trim();
+    const phone = (q.get('phone') || '').replace(/\D/g, '');
+    const amtRaw = (q.get('amt') || '').replace(/[^\d]/g, '');
+    const type  = q.get('type') || '';
+    if (name) document.getElementById('surname').value = name;
+    if (/^\d{8}$/.test(phone)) document.getElementById('phone').value = phone;
+    if (amtRaw) {
+      const n = parseInt(amtRaw, 10);
+      const opts = [10000, 20000, 30000, 50000, 80000, 100000, 150000, 200000, 300000, 500000];
+      let best = null, bd = Infinity;
+      for (const o of opts) { const d = Math.abs(o - n); if (d < bd) { bd = d; best = o; } }
+      if (n >= 500000) best = 500000;
+      if (best) document.getElementById('loanAmount').value = String(best);
+    }
+    if (type) {
+      let purpose = '';
+      if (type.indexOf('清數') > -1 || type.indexOf('結餘') > -1) purpose = '整合貸款';
+      else if (type.indexOf('裝修') > -1) purpose = '裝修';
+      if (purpose) document.getElementById('loanPurpose').value = purpose;
+    }
+  } catch { /* 預填失敗唔阻申請流程 */ }
+}
+
+function restoreDraft() {
+  try {
+    const savedToken = sessionStorage.getItem(DRAFT_TOKEN_KEY);
+    const savedStep  = sessionStorage.getItem(DRAFT_STEP_KEY);
+    if (savedToken && savedStep) {
+      draftToken = savedToken;
+      const stepNum = parseInt(savedStep, 10);
+      if (stepNum >= 2 && stepNum <= 5) {
+        currentStep = stepNum;
+        showStep(stepNum);
+      }
+    }
+  } catch { /* sessionStorage unavailable — proceed with fresh step 1 */ }
+}
+
+// ── Step navigation ──
+function showStep(n) {
+  document.querySelectorAll('.step-section').forEach(s => s.classList.remove('active'));
+  const target = n === 'complete' ? document.getElementById('stepComplete') : document.getElementById('step' + n);
+  if (target) target.classList.add('active');
+
+  const fill = { 1: 20, 2: 40, 3: 60, 4: 80, 5: 95, complete: 100 };
+  document.getElementById('progress').style.width = (fill[n] || 20) + '%';
+
+  document.querySelectorAll('.step-item').forEach(el => {
+    const s = +el.dataset.step;
+    const dot = el.querySelector('.step-dot');
+    el.classList.remove('active', 'done');
+    if (typeof n === 'number') {
+      if (s === n) { el.classList.add('active'); dot.textContent = s; }
+      else if (s < n) { el.classList.add('done'); dot.textContent = '✓'; }
+      else { dot.textContent = s; }
+    } else {
+      el.classList.add('done'); dot.textContent = '✓';
+    }
+  });
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (n === 5) {
+    // Signature step: set date + init sig pad + sync docs.
+    // initPad has a `pads[n]` guard — revisiting preserves already-drawn signature.
+    const today = new Date();
+    const dateStr = today.getFullYear() + '年' +
+      String(today.getMonth()+1).padStart(2,'0') + '月' +
+      String(today.getDate()).padStart(2,'0') + '日';
+    const dispEl = document.getElementById('sigDateDisplay');
+    if (dispEl) dispEl.textContent = dateStr;
+    setTimeout(() => { initPad(1); syncDocFields(); }, 100);
+  }
+}
+
+// prevStep is a plain back-nav (no API call, no validate).
+function prevStep(from) {
+  currentStep = from - 1;
+  showStep(currentStep);
+}
+
+// nextStep kept as a no-API helper for internal advance (not wired to any button).
+function nextStep(from) {
+  currentStep = from + 1;
+  showStep(currentStep);
+}
+
+function showComplete() {
+  showStep('complete');
+}
+
+// ── Validation ──
+function validate(step) {
+  let ok = true;
+  const setErr = (id, show) => {
+    const el = document.getElementById('err-' + id);
+    if (el) { el.classList.toggle('show', show); if (show) ok = false; }
+  };
+  const setInputErr = (id, show) => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('error', show);
+  };
+
+  if (step === 1) {
+    const surname = document.getElementById('surname').value.trim();
+    setErr('surname', !surname); setInputErr('surname', !surname);
+    const phone = document.getElementById('phone').value.trim();
+    const phoneOk = /^\d{8}$/.test(phone);
+    setErr('phone', !phoneOk); setInputErr('phone', !phoneOk);
+    const gender = document.getElementById('gender').value;
+    setErr('gender', !gender);
+  } else if (step === 5) {
+    const fullName = document.getElementById('fullName').value.trim();
+    setErr('fullName', !fullName); setInputErr('fullName', !fullName);
+  }
+  // Steps 2/3/4 have no required fields (all optional on both client + server).
+  return ok;
+}
+
+// ── syncDocFields: inject fullName + hkid into doc 二/三 placeholders ──
+function syncDocFields() {
+  const hkid = document.getElementById('hkid')?.value?.trim() || '—';
+  const fullName = document.getElementById('fullName')?.value?.trim() || '—';
+  document.querySelectorAll('#hkidDisplay, #hkidDisplay2').forEach(el => el.textContent = hkid);
+  document.querySelectorAll('#nameDisplay1, #nameDisplay2').forEach(el => el.textContent = fullName);
+}
+
+// ── Toggle groups (single-select + multi-select) ──
+function setSingle(groupId, hiddenId, value, el) {
+  const group = document.getElementById(groupId);
+  const hidden = document.getElementById(hiddenId);
+  const already = el.classList.contains('selected');
+  group.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('selected'));
+  if (!already) { el.classList.add('selected'); hidden.value = value; }
+  else { hidden.value = ''; }
+  const errEl = document.getElementById('err-' + hiddenId);
+  if (errEl && hidden.value) errEl.classList.remove('show');
+}
+
+function setMulti(el) {
+  el.classList.toggle('selected');
+}
+
+// ── Step 4: property card visibility toggle (driven by hasProperty '是'/'否') ──
+function togglePropertyCard() {
+  const val = document.getElementById('hasProperty').value;
+  const card = document.getElementById('propertyCard');
+  if (card) card.style.display = val === '是' ? 'block' : 'none';
+}
+
+// ── Credit rows ──
+function addCreditRow() {
+  const id = Date.now();
+  creditRows.push(id);
+  const num = creditRows.length;
+  const wrap = document.getElementById('creditRows');
+  const div = document.createElement('div');
+  div.id = 'cr-' + id;
+  div.className = 'credit-record-card';
+  div.innerHTML = `
+    <div class="credit-record-header">
+      <span class="credit-record-badge">記錄 ${num}</span>
+      <button type="button" class="credit-delete-btn" onclick="removeCreditRow(${id})">刪除</button>
+    </div>
+    <div class="credit-record-body">
+      <div>
+        <div class="credit-field-label">銀行 / 財務機構名稱</div>
+        <input type="text" placeholder="例：滙豐銀行" id="cr-lender-${id}">
+      </div>
+      <div class="credit-row2">
+        <div>
+          <div class="credit-field-label">貸款額 (HKD)</div>
+          <input type="number" min="0" placeholder="0" id="cr-amount-${id}">
+        </div>
+        <div>
+          <div class="credit-field-label">期數（月）</div>
+          <input type="number" min="0" placeholder="0" id="cr-months-${id}">
+        </div>
+      </div>
+      <div class="credit-row2">
+        <div>
+          <div class="credit-field-label">每月供款 (HKD)</div>
+          <input type="number" min="0" placeholder="0" id="cr-monthly-${id}">
+        </div>
+        <div>
+          <div class="credit-field-label">已供期數</div>
+          <input type="number" min="0" placeholder="0" id="cr-paid-${id}">
+        </div>
+      </div>
+      <div class="credit-row2">
+        <div>
+          <div class="credit-field-label">申請次數</div>
+          <input type="number" min="0" placeholder="0" id="cr-apps-${id}">
+        </div>
+        <div>
+          <div class="credit-field-label">供款日（每月）</div>
+          <input type="text" placeholder="1-31" id="cr-day-${id}">
+        </div>
+      </div>
+      <div>
+        <div class="credit-field-label">還款週期</div>
+        <select id="cr-cycle-${id}">
+          <option value="">請選擇</option>
+          <option value="每月">每月</option>
+          <option value="每兩週">每兩週</option>
+          <option value="每週">每週</option>
+          <option value="其他">其他</option>
+        </select>
+      </div>
+    </div>`;
+  wrap.appendChild(div);
+}
+
+function removeCreditRow(id) {
+  const el = document.getElementById('cr-' + id);
+  if (el) el.remove();
+  const i = creditRows.indexOf(id);
+  if (i > -1) creditRows.splice(i, 1);
+  document.querySelectorAll('.credit-record-badge').forEach((b, idx) => {
+    b.textContent = '記錄 ' + (idx + 1);
+  });
+}
+
+// ── API error UI ──
+function clearApiError(step) {
+  const el = document.getElementById('apiError' + step);
+  if (el) { el.textContent = ''; el.classList.remove('show'); }
+}
+function showApiError(step, msg) {
+  const el = document.getElementById('apiError' + step);
+  if (el) { el.textContent = msg; el.classList.add('show'); }
+}
+
+// ── Token expiry handler: clear draft + bounce back to step 1 ──
+function handleTokenExpired() {
+  try {
+    sessionStorage.removeItem(DRAFT_TOKEN_KEY);
+    sessionStorage.removeItem(DRAFT_STEP_KEY);
+  } catch { /* ignore */ }
+  draftToken = null;
+  alert('連線已逾時，請由第一步重新開始');
+  currentStep = 1;
+  showStep(1);
+}
+
+// ── Per-step submit ──
+
+async function submitStep1() {
+  if (!validate(1)) return;
+  const btn = document.getElementById('step1NextBtn');
+  const orig = btn.textContent;
+  btn.disabled = true; btn.textContent = '上傳中…';
+  clearApiError(1);
+  try {
+    const res = await fetch('/api/applications/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        loan: {
+          amount:  document.getElementById('loanAmount').value,
+          purpose: document.getElementById('loanPurpose').value,
+        },
+        personal: {
+          surname: document.getElementById('surname').value.trim(),
+          phone:   document.getElementById('phone').value.trim(),
+          gender:  document.getElementById('gender').value,
+        },
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) {
+      showApiError(1, data.error || '提交失敗，請稍後再試');
+      btn.disabled = false; btn.textContent = orig;
+      return;
+    }
+    draftToken = data.draftToken;
+    // 真 lead conversion：step 1 成功 = 系統已開 case（姓氏+電話），銷售可跟進
+    // label 沿用舊「Tally Form Submit（真 lead）」，語義一致（短表單提交）
+    try {
+      if (typeof gtag === 'function') {
+        gtag('event', 'conversion', { 'send_to': 'AW-18205751190/z--ECIzYn7kcEJbvlulD' });
+      }
+    } catch { /* tracking 失敗唔阻流程 */ }
+    try {
+      sessionStorage.setItem(DRAFT_TOKEN_KEY, draftToken);
+      sessionStorage.setItem(DRAFT_STEP_KEY, '2');
+    } catch { /* ignore */ }
+    currentStep = 2;
+    showStep(2);
+  } catch {
+    showApiError(1, '網絡錯誤，請重試');
+    btn.disabled = false; btn.textContent = orig;
+  }
+}
+
+async function patchStep(step, data, btnId) {
+  const btn = document.getElementById(btnId);
+  const orig = btn.textContent;
+  btn.disabled = true; btn.textContent = '上傳中…';
+  clearApiError(step);
+  try {
+    const res = await fetch('/api/applications/draft', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: draftToken, step, data }),
+    });
+    if (res.status === 401) { handleTokenExpired(); return; }
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok || !body.ok) {
+      showApiError(step, body.error || '提交失敗，請稍後再試');
+      btn.disabled = false; btn.textContent = orig;
+      return;
+    }
+    const next = step + 1;
+    try { sessionStorage.setItem(DRAFT_STEP_KEY, String(next)); } catch { /* ignore */ }
+    currentStep = next;
+    showStep(next);
+  } catch {
+    showApiError(step, '網絡錯誤，請重試');
+    btn.disabled = false; btn.textContent = orig;
+  }
+}
+
+function submitStep2() {
+  if (!validate(2)) return;
+  patchStep(2, {
+    dateOfBirth: document.getElementById('dateOfBirth').value,
+    address:     document.getElementById('address').value.trim(),
+    marital:     document.getElementById('marital').value,
+    livesWith:   [...document.querySelectorAll('#livesWithGroup .btn-toggle.selected')].map(b => b.textContent),
+  }, 'step2NextBtn');
+}
+
+function submitStep3() {
+  if (!validate(3)) return;
+  const credits = creditRows.map(id => ({
+    lender:         document.getElementById('cr-lender-'  + id)?.value || '',
+    amount:         document.getElementById('cr-amount-'  + id)?.value || '',
+    months:         document.getElementById('cr-months-'  + id)?.value || '',
+    monthlyPayment: document.getElementById('cr-monthly-' + id)?.value || '',
+    paidMonths:     document.getElementById('cr-paid-'    + id)?.value || '',
+    applications:   document.getElementById('cr-apps-'    + id)?.value || '',
+    paymentDay:     document.getElementById('cr-day-'     + id)?.value || '',
+  })).filter(r => r.lender);
+  patchStep(3, {
+    totalDebt:     document.getElementById('totalDebt').value,
+    creditRecords: credits,
+  }, 'step3NextBtn');
+}
+
+function submitStep4() {
+  if (!validate(4)) return;
+  const occupation = document.getElementById('occupation').value.trim();
+  patchStep(4, {
+    occupation,
+    monthlyIncome:           document.getElementById('monthlyIncome').value,
+    employmentTenure:        document.getElementById('tenure').value,
+    hasProperty:             document.getElementById('hasProperty').value,
+    companyName:             document.getElementById('companyName').value.trim(),
+    companyAddress:          document.getElementById('companyAddress').value.trim(),
+    companyPhone:            document.getElementById('companyPhone').value.trim(),
+    jobTitle:                occupation,  // job_title mirrors occupation in this unified UI
+    employmentType:          document.getElementById('employmentType').value,
+    salaryMethod:            document.getElementById('salaryMethod').value,
+    propertyAddress:         document.getElementById('propertyAddress').value.trim(),
+    propertyDebt:            document.getElementById('propertyDebt').value,
+    propertyMonthlyPayment:  document.getElementById('propertyMonthlyPayment').value,
+    propertyPurchaseDate:    document.getElementById('propertyPurchaseDate').value,
+  }, 'step4NextBtn');
+}
+
+async function submitStep5() {
+  if (!validate(5)) return;
+  const btn = document.getElementById('step5SubmitBtn');
+  const orig = btn.textContent;
+  btn.disabled = true; btn.textContent = '上傳中…';
+  clearApiError(5);
+  try {
+    const sigDataUrl = pads[1] && pads[1].hasDrawn ? pads[1].canvas.toDataURL('image/png') : null;
+    const res = await fetch('/api/applications/signatures', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token:    draftToken,
+        fullName: document.getElementById('fullName').value.trim(),
+        hkid:     document.getElementById('hkid').value.trim(),
+        sig1: sigDataUrl, sig2: sigDataUrl, sig3: sigDataUrl,
+      }),
+    });
+    if (res.status === 401) { handleTokenExpired(); return; }
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok || !body.ok) {
+      showApiError(5, body.error || '提交失敗，請稍後再試');
+      btn.disabled = false; btn.textContent = orig;
+      return;
+    }
+    try {
+      sessionStorage.removeItem(DRAFT_TOKEN_KEY);
+      sessionStorage.removeItem(DRAFT_STEP_KEY);
+    } catch { /* ignore */ }
+    showComplete();
+  } catch {
+    showApiError(5, '網絡錯誤，請重試');
+    btn.disabled = false; btn.textContent = orig;
+  }
+}
+
+// ── Privacy Policy modal ──
+function openPrivacy(e) {
+  if (e) e.preventDefault();
+  document.getElementById('privacyModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closePrivacy() {
+  document.getElementById('privacyModal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+// ── Signature pads ──
+function initPad(n) {
+  const canvas = document.getElementById('pad' + n);
+  if (!canvas || pads[n]) return;
+
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  const w = rect.width || canvas.parentElement.offsetWidth;
+  const h = 140;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.strokeStyle = '#1A1A2E';
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  let drawing = false;
+  let lastX = 0, lastY = 0;
+
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    return { x: src.clientX - r.left, y: src.clientY - r.top };
+  }
+
+  function start(e) {
+    e.preventDefault();
+    drawing = true;
+    const p = getPos(e);
+    lastX = p.x; lastY = p.y;
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    if (pads[n]) pads[n].hasDrawn = true;
+  }
+  function move(e) {
+    e.preventDefault();
+    if (!drawing) return;
+    const p = getPos(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    lastX = p.x; lastY = p.y;
+    pads[n].hasDrawn = true;
+    // Clear sig error on draw
+    document.getElementById('err-sig')?.classList.remove('show');
+  }
+  function end(e) { e.preventDefault(); drawing = false; }
+
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  canvas.addEventListener('mouseup', end);
+  canvas.addEventListener('mouseleave', end);
+  canvas.addEventListener('touchstart', start, { passive: false });
+  canvas.addEventListener('touchmove', move, { passive: false });
+  canvas.addEventListener('touchend', end, { passive: false });
+
+  pads[n] = { canvas, ctx, dpr, hasDrawn: false };
+}
+
+function clearPad(n) {
+  if (!pads[n]) return;
+  const { canvas, ctx, dpr } = pads[n];
+  ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+  pads[n].hasDrawn = false;
+  // Re-init so user can draw again
+  delete pads[n];
+  setTimeout(() => initPad(n), 10);
+}

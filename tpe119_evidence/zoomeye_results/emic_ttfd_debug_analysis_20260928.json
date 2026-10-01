@@ -1,0 +1,29 @@
+{
+  "target": "emic.ttfd.gov.tw (Taitung EMIC - CodeIgniter app)",
+  "date": "2026-09-28",
+  "proxy": "202.160.76.157:11081",
+  "ip": "59.125.241.181",
+  "redirect_path": "/dspost/public/",
+  "session_cookie": "ci_session (CodeIgniter)",
+  "findings": {
+    "debug_mode_enabled": {
+      "debug_bar": "CodeIgniter Profiler / Debug Bar active in production",
+      "kint_debugger": "Kint PHP debugger loaded",
+      "debug_view": "DEBUG-VIEW START marker present in HTML",
+      "auto_refresh": "meta http-equiv=refresh content=300",
+      "impact": "CRITICAL - debug mode in production exposes SQL queries, session data, config, and internal paths"
+    },
+    "paths": {
+      "/dspost/public/" : "200 (main entry, CodeIgniter with debug)",
+      "/dspost" : "301 (redirect to /dspost/public/)",
+      "/dspost/public/index.php" : "200 (CodeIgniter front controller)",
+      "/dspost/public/index.php/report" : "302 (redirect, likely auth-required)",
+      "/api" : "404",
+      "/.env" : "404"
+    }
+  },
+  "vulnerabilities": [
+    "DEBUG mode enabled (CodeIgniter Profiler/Kint — exposes internal data)",
+    "CI debug bar enabled (information disclosure via /dspost/public AJAX endpoint)"
+  ]
+}

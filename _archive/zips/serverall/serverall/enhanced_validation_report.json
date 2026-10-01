@@ -1,0 +1,108 @@
+{
+  "timestamp": "2025-10-28 06:25:25",
+  "targets_tested": 4,
+  "validation_results": [
+    {
+      "target": "https://fundingsocieties.co.th",
+      "sql_injection": {
+        "detected": true,
+        "confidence": 0.17391304347826086,
+        "evidence": [
+          "sql",
+          "error"
+        ]
+      },
+      "xss": {
+        "detected": false,
+        "confidence": 0.0,
+        "evidence": []
+      },
+      "command_injection": {
+        "detected": false,
+        "confidence": 0.0,
+        "evidence": []
+      },
+      "overall_confidence": 0.17391304347826086
+    },
+    {
+      "target": "https://www.investree.co.th",
+      "sql_injection": {
+        "detected": true,
+        "confidence": 0.2608695652173913,
+        "evidence": [
+          "syntax",
+          "warning",
+          "error"
+        ]
+      },
+      "xss": {
+        "detected": false,
+        "confidence": 0.0,
+        "evidence": []
+      },
+      "command_injection": {
+        "detected": true,
+        "confidence": 0.26666666666666666,
+        "evidence": [
+          "uid=",
+          "whoami"
+        ]
+      },
+      "overall_confidence": 0.26666666666666666
+    },
+    {
+      "target": "https://www.uob.co.th",
+      "sql_injection": {
+        "detected": false,
+        "confidence": 0.0,
+        "evidence": []
+      },
+      "xss": {
+        "detected": true,
+        "confidence": 0.2727272727272727,
+        "evidence": [
+          "<script>",
+          "window.location",
+          "location.href"
+        ]
+      },
+      "command_injection": {
+        "detected": false,
+        "confidence": 0.0,
+        "evidence": []
+      },
+      "overall_confidence": 0.2727272727272727
+    },
+    {
+      "target": "https://www.scb.co.th",
+      "sql_injection": {
+        "detected": false,
+        "confidence": 0.0,
+        "evidence": []
+      },
+      "xss": {
+        "detected": false,
+        "confidence": 0.0,
+        "evidence": []
+      },
+      "command_injection": {
+        "detected": true,
+        "confidence": 0.4,
+        "evidence": [
+          "root",
+          "uid=",
+          "whoami"
+        ]
+      },
+      "overall_confidence": 0.4
+    }
+  ],
+  "summary": {
+    "total_targets": 4,
+    "vulnerable_targets": 4,
+    "sql_injection_count": 2,
+    "xss_count": 1,
+    "command_injection_count": 2,
+    "overall_confidence_avg": 0.27832674571805005
+  }
+}

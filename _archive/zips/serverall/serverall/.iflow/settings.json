@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "hk-transportation-mcp-server": {
+      "description": "提供香港交通相关数据查询，包括乘客统计、巴士路线和边界等候时间等功能",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "iflow-mcp_hk_transportation_mcp_server",
+        "hk_transportation_mcp_server"
+      ]
+    }
+  }
+}

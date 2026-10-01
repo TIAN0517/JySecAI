@@ -1,0 +1,17 @@
+{
+  "target_url": "https://www.lazada.vn",
+  "analysis_time": "2025-10-25T06:55:02.778546",
+  "connectivity": {
+    "status_code": 200,
+    "response_time": 0.959707,
+    "content_length": 483302,
+    "server": "Tengine",
+    "content_type": "text/html; charset=utf-8"
+  },
+  "technology": {
+    "technologies": [
+      "React"
+    ],
+    "script_count": 45,
+    "css_count": 3,
+    "title": 

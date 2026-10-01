@@ -1,0 +1,76 @@
+{
+  "basic_access": {
+    "status_code": 200,
+    "response_time": 0.229895,
+    "content_length": 81253,
+    "headers": {
+      "Date": "Sat, 25 Oct 2025 15:51:29 GMT",
+      "Server": "Apache",
+      "Cache-Control": "no-cache, private",
+      "Set-Cookie": "XSRF-TOKEN=eyJpdiI6IjNlZmJ6SDhhRis5U2lSTHNyY3RrVFE9PSIsInZhbHVlIjoiXC8zbGhpUnF5Nk9zQzlSMHZjZ2h4RVVmcnhyT0R0OXZmMlczZGFsMWxHSUhlbjYrOGdma1pwdkxIcVpyQU4za3YiLCJtYWMiOiI4ZDBhNzI2OTNmNDk2MGJlNDkxODlkMjJjZWVmZGIyZmE2MzZhNDIwOWEwOGNlOGMwYjY2NDJiMThhMmM3OTQxIn0%3D; expires=Sat, 25-Oct-2025 17:51:30 GMT; Max-Age=7200; path=/; domain=.hanshin.com.tw, laravel_session=1xgzq4YOsdeqIeveAL1hvnYGqVzck8FAXNVFaJsY; expires=Sat, 25-Oct-2025 17:51:30 GMT; Max-Age=7200; path=/; domain=.hanshin.com.tw; httponly",
+      "Keep-Alive": "timeout=5, max=99",
+      "Connection": "Keep-Alive",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=UTF-8"
+    },
+    "success": true
+  },
+  "title": "漢神 | HANSHIN",
+  "server": "Apache",
+  "technologies": [
+    "php"
+  ],
+  "security_issues": [
+    {
+      "type": "forms_analysis",
+      "indicators": [
+        "input",
+        "email"
+      ]
+    },
+    {
+      "type": "javascript_files",
+      "indicators": [
+        ".js",
+        "javascript",
+        "jquery"
+      ]
+    },
+    {
+      "type": "css_files",
+      "indicators": [
+        ".css",
+        "stylesheet"
+      ]
+    },
+    {
+      "type": "iframe_content",
+      "indicators": [
+        "<iframe",
+        "iframe"
+      ]
+    }
+  ],
+  "taiwan_issues": [
+    {
+      "type": "taiwan_content",
+      "description": "包含繁体中文台湾相关内容"
+    },
+    {
+      "type": "payment_methods",
+      "description": "支持台湾本地支付方式"
+    },
+    {
+      "type": "contact_info",
+      "description": "提供台湾电话号码"
+    }
+  ],
+  "performance": {
+    "status": "优秀",
+    "response_time": 0.229895,
+    "content_length": 81253,
+    "score": 10
+  },
+  "success": true,
+  "overall_risk": "LOW"
+}

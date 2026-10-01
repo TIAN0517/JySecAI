@@ -1,6 +1,21 @@
+import re
+import unicodedata
+
 import requests
 
 GOOGLE_API_KEY = "DEBUG_KEY_FOR_TESTING"  # Works via gmapapi.jsonutil.online proxy — no billing needed
+
+
+def _format_house_number(value: str) -> str:
+    text = unicodedata.normalize("NFKC", str(value or "")).strip()
+    text = re.sub(r"\s+", "", text)
+    number = r"[0-9一二三四五六七八九十百千零〇]+(?:[-之][0-9一二三四五六七八九十百千零〇]+)?"
+    text = re.sub(fr"^({number})樓({number})$", r"\1號\2樓", text)
+    text = re.sub(r"樓號$", "樓", text)
+    text = re.sub(r"號號$", "號", text)
+    if text and "號" not in text:
+        text += "號"
+    return text
 
 def reverse_geocode(lat: float, lng: float, api_key: str = GOOGLE_API_KEY) -> dict:
     """反查經緯度對應門牌地址 (Google Geocoding API → Nominatim fallback)。"""
@@ -18,6 +33,7 @@ def reverse_geocode(lat: float, lng: float, api_key: str = GOOGLE_API_KEY) -> di
 
         if data.get("status") == "OK" and data.get("results"):
             best_match = data["results"][0]
+            location = best_match.get("geometry", {}).get("location", {})
             components = {}
             for comp in best_match.get("address_components", []):
                 types = comp.get("types", [])
@@ -35,7 +51,13 @@ def reverse_geocode(lat: float, lng: float, api_key: str = GOOGLE_API_KEY) -> di
                 "formatted_address": best_match.get("formatted_address"),
                 "street_number": components.get("street_number"),
                 "has_building_no": bool(components.get("street_number") and "號" in components["street_number"]),
-                "components": components
+                "components": components,
+                "types": best_match.get("types", []),
+                "name": best_match.get("name", ""),
+                "location_type": best_match.get("geometry", {}).get("location_type"),
+                "lat": location.get("lat"),
+                "lng": location.get("lng"),
+                "query_coordinates": [lat, lng],
             }
     except Exception:
         pass
@@ -58,7 +80,8 @@ def reverse_geocode(lat: float, lng: float, api_key: str = GOOGLE_API_KEY) -> di
         neighbourhood = addr.get("neighbourhood", "") or addr.get("suburb", "")
 
         # Build clean Taiwanese address: city + district + neighborhood + road +號
-        parts = [p for p in [city, district, neighbourhood, road, house_number] if p]
+        number_display = _format_house_number(house_number)
+        parts = [p for p in [city, district, neighbourhood, road, number_display] if p]
         formatted = "".join(parts)
         if not formatted:
             return {"success": False, "formatted_address": None}
@@ -67,8 +90,16 @@ def reverse_geocode(lat: float, lng: float, api_key: str = GOOGLE_API_KEY) -> di
             "success": True,
             "formatted_address": formatted,
             "street_number": house_number,
-            "has_building_no": bool(house_number and "號" in house_number),
-            "components": {"street_number": house_number, "route": road, "city": city, "district": district}
+            "has_building_no": bool(house_number),
+            "components": {"street_number": house_number, "route": road, "city": city, "district": district},
+            "types": [data.get("type", "")],
+            "name": data.get("name", ""),
+            "amenity": addr.get("amenity", ""),
+            "category": data.get("category", data.get("class", "")),
+            "place_type": data.get("type", ""),
+            "lat": data.get("lat"),
+            "lng": data.get("lon"),
+            "query_coordinates": [lat, lng],
         }
     except Exception as e:
         return {"success": False, "error": str(e)}

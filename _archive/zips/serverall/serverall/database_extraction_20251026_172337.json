@@ -1,0 +1,18 @@
+{
+  "target": "https://siamdl.co.th",
+  "timestamp": "2025-10-26 17:23:37",
+  "results": {
+    "/?id=1": {
+      "database_type": "MySQL",
+      "sensitive_tables": [],
+      "credentials": {},
+      "full_dump": {}
+    },
+    "/search?q=1": {
+      "database_type": "MySQL",
+      "sensitive_tables": [],
+      "credentials": {},
+      "full_dump": {}
+    }
+  }
+}

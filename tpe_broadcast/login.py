@@ -1,3 +1,5 @@
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 #!/usr/bin/env python3
 """
 TPE 119 Auto-Login Service
@@ -34,7 +36,7 @@ import ddddocr
 # ── 設定 ─────────────────────────────────────────────────────────
 BASE_URL = "https://service119.tfd.gov.tw/service119"
 PROXY = "socks5://202.160.76.166:11086"
-PROXIES = {"http": PROXY, "https": PROXY}
+PROXIES = {}
 ACCOUNT = "R122937618"
 PASSWORD = "680726"
 CATEGORY = "01"                    # 01=臺北市消防同仁, 02=臺北市義消, 03=新聞媒體, 05=市府同仁

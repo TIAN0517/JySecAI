@@ -1,0 +1,15 @@
+{
+  "target_url": "https://tiki.vn",
+  "analysis_time": "2025-10-25T07:01:33.745343",
+  "connectivity": {
+    "status_code": 200,
+    "response_time": 0.495656,
+    "content_length": 211692,
+    "server": "Unknown",
+    "content_type": "text/html; charset=utf-8"
+  },
+  "technology": {
+    "technologies": [],
+    "script_count": 37,
+    "css_count": 1,
+    "title": 

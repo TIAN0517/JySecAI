@@ -1,0 +1,418 @@
+{
+  "www.momoshop.com.tw": {
+    "A": [
+      "104.116.243.41",
+      "104.116.243.43"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 2,
+    "geo_first": {
+      "status": "success",
+      "country": "Taiwan",
+      "regionName": "Taiwan",
+      "city": "Taipei",
+      "org": "Akamai Technologies, Inc.",
+      "as": "AS20940 Akamai International B.V.",
+      "hosting": true
+    },
+    "guessed_subs": []
+  },
+  "24h.pchome.com.tw": {
+    "A": [
+      "34.149.253.14"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 0,
+    "geo_first": {
+      "status": "success",
+      "country": "United States",
+      "regionName": "Missouri",
+      "city": "Kansas City",
+      "org": "Google Cloud",
+      "as": "AS396982 Google LLC",
+      "hosting": true
+    },
+    "guessed_subs": []
+  },
+  "www.etmall.com.tw": {
+    "A": [
+      "220.130.115.7"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 0,
+    "geo_first": {
+      "status": "success",
+      "country": "Taiwan",
+      "regionName": "Kaohsiung",
+      "city": "Kaohsiung",
+      "org": "Chunghwa Telecom Co. Ltd.",
+      "as": "AS3462 Data Communication Business Group",
+      "hosting": false
+    },
+    "guessed_subs": []
+  },
+  "www.ego-finance.com.tw": {
+    "A": [],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 0,
+    "guessed_subs": []
+  },
+  "www.welend.hk": {
+    "A": [
+      "104.18.15.14",
+      "104.18.14.14"
+    ],
+    "AAAA": [
+      "2606:4700::6812:e0e",
+      "2606:4700::6812:f0e"
+    ],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 1,
+    "geo_first": {
+      "status": "success",
+      "country": "Canada",
+      "regionName": "Ontario",
+      "city": "Toronto",
+      "org": "Cloudflare, Inc.",
+      "as": "AS13335 Cloudflare, Inc.",
+      "hosting": true
+    },
+    "guessed_subs": []
+  },
+  "www.newloan.com.tw": {
+    "A": [
+      "172.67.213.198",
+      "104.21.75.50"
+    ],
+    "AAAA": [
+      "2606:4700:3035::6815:4b32",
+      "2606:4700:3036::ac43:d5c6"
+    ],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 0,
+    "geo_first": {
+      "status": "success",
+      "country": "Canada",
+      "regionName": "Ontario",
+      "city": "Toronto",
+      "org": "Cloudflare, Inc.",
+      "as": "AS13335 Cloudflare, Inc.",
+      "hosting": true
+    },
+    "guessed_subs": []
+  },
+  "www.shincredit.com.tw": {
+    "A": [
+      "218.211.168.196"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 0,
+    "geo_first": {
+      "status": "success",
+      "country": "Taiwan",
+      "regionName": "Taipei City",
+      "city": "Taipei",
+      "org": "NCICNET",
+      "as": "AS9919 New Century InfoComm Tech Co., Ltd.",
+      "hosting": false
+    },
+    "guessed_subs": []
+  },
+  "www.superbank.com.tw": {
+    "A": [
+      "23.101.27.182"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 3,
+    "geo_first": {
+      "status": "success",
+      "country": "Singapore",
+      "regionName": "Central Singapore",
+      "city": "Singapore",
+      "org": "Microsoft Azure App Service (southeastasia)",
+      "as": "AS8075 Microsoft Corporation",
+      "hosting": true
+    },
+    "guessed_subs": []
+  },
+  "www.tac.finance": {
+    "A": [
+      "218.211.168.193"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 0,
+    "geo_first": {
+      "status": "success",
+      "country": "Taiwan",
+      "regionName": "Taipei City",
+      "city": "Taipei",
+      "org": "NCICNET",
+      "as": "AS9919 New Century InfoComm Tech Co., Ltd.",
+      "hosting": false
+    },
+    "guessed_subs": []
+  },
+  "www.tac.com.tw": {
+    "A": [
+      "218.211.168.197"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 0,
+    "geo_first": {
+      "status": "success",
+      "country": "Taiwan",
+      "regionName": "Taipei City",
+      "city": "Taipei",
+      "org": "NCICNET",
+      "as": "AS9919 New Century InfoComm Tech Co., Ltd.",
+      "hosting": false
+    },
+    "guessed_subs": []
+  },
+  "www.he-jing.com.tw": {
+    "A": [
+      "20.205.178.86"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 0,
+    "geo_first": {
+      "status": "success",
+      "country": "Singapore",
+      "regionName": "Central Singapore",
+      "city": "Singapore",
+      "org": "Microsoft Azure Cloud (southeastasia)",
+      "as": "AS8075 Microsoft Corporation",
+      "hosting": true
+    },
+    "guessed_subs": []
+  },
+  "www.hfcfinance.com.tw": {
+    "A": [
+      "20.205.178.86"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 0,
+    "geo_first": {
+      "status": "success",
+      "country": "Singapore",
+      "regionName": "Central Singapore",
+      "city": "Singapore",
+      "org": "Microsoft Azure Cloud (southeastasia)",
+      "as": "AS8075 Microsoft Corporation",
+      "hosting": true
+    },
+    "guessed_subs": []
+  },
+  "www.megaholdings.com.tw": {
+    "A": [
+      "104.116.243.49",
+      "104.116.243.35"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 2,
+    "geo_first": {
+      "status": "success",
+      "country": "Taiwan",
+      "regionName": "Taiwan",
+      "city": "Taipei",
+      "org": "Akamai Technologies, Inc.",
+      "as": "AS20940 Akamai International B.V.",
+      "hosting": true
+    },
+    "guessed_subs": []
+  },
+  "www.easyauction.com.tw": {
+    "A": [
+      "104.116.243.81",
+      "104.116.243.187"
+    ],
+    "AAAA": [
+      "2600:1417:76::6874:f313",
+      "2600:1417:76::6874:f30a"
+    ],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 2,
+    "geo_first": {
+      "status": "success",
+      "country": "Taiwan",
+      "regionName": "Taiwan",
+      "city": "Taipei",
+      "org": "Akamai Technologies, Inc.",
+      "as": "AS20940 Akamai International B.V.",
+      "hosting": true
+    },
+    "guessed_subs": []
+  },
+  "www.hotains.com.tw": {
+    "A": [
+      "184.26.170.178"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 2,
+    "geo_first": {
+      "status": "success",
+      "country": "Taiwan",
+      "regionName": "Taiwan",
+      "city": "Taipei",
+      "org": "Akamai Technologies, Inc.",
+      "as": "AS16625 Akamai Technologies, Inc.",
+      "hosting": true
+    },
+    "guessed_subs": []
+  },
+  "www.hotaimotor.com.tw": {
+    "A": [
+      "150.171.110.70"
+    ],
+    "AAAA": [
+      "2603:1061:14:140::1"
+    ],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 2,
+    "geo_first": {
+      "status": "success",
+      "country": "United States",
+      "regionName": "Texas",
+      "city": "Dallas",
+      "org": "Microsoft Corporation",
+      "as": "AS8075 Microsoft Corporation",
+      "hosting": true
+    },
+    "guessed_subs": []
+  },
+  "www.hotaimember.com.tw": {
+    "A": [
+      "150.171.110.65"
+    ],
+    "AAAA": [
+      "2603:1061:14:141::1"
+    ],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 2,
+    "geo_first": {
+      "status": "success",
+      "country": "United States",
+      "regionName": "Texas",
+      "city": "Dallas",
+      "org": "Microsoft Corporation",
+      "as": "AS8075 Microsoft Corporation",
+      "hosting": true
+    },
+    "guessed_subs": []
+  },
+  "ec2.hotains.com.tw": {
+    "A": [
+      "184.26.170.178"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 2,
+    "geo_first": {
+      "status": "success",
+      "country": "Taiwan",
+      "regionName": "Taiwan",
+      "city": "Taipei",
+      "org": "Akamai Technologies, Inc.",
+      "as": "AS16625 Akamai Technologies, Inc.",
+      "hosting": true
+    },
+    "guessed_subs": []
+  },
+  "www.kuanzho.com.tw": {
+    "A": [
+      "203.66.204.54"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 1,
+    "geo_first": {
+      "status": "success",
+      "country": "Taiwan",
+      "regionName": "Taiwan",
+      "city": "Taipei",
+      "org": "Chunghwa Telecom Co. Ltd.",
+      "as": "AS3462 Data Communication Business Group",
+      "hosting": false
+    },
+    "guessed_subs": []
+  },
+  "www.tzuchi.org.tw": {
+    "A": [
+      "172.66.160.105",
+      "104.20.41.9"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "NS": [],
+    "TXT_count": 1,
+    "geo_first": {
+      "status": "success",
+      "country": "Canada",
+      "regionName": "Ontario",
+      "city": "Toronto",
+      "org": "Cloudflare, Inc.",
+      "as": "AS13335 Cloudflare, Inc.",
+      "hosting": true
+    },
+    "guessed_subs": []
+  },
+  "www.tzuchi.org.hk": {
+    "A": [
+      "34.92.181.36"
+    ],
+    "AAAA": [],
+    "MX": [
+      "1 aspmx.l.google.com.",
+      "10 alt4.aspmx.l.google.com.",
+      "5 alt1.aspmx.l.google.com.",
+      "10 alt3.aspmx.l.google.com.",
+      "5 alt2.aspmx.l.google.com."
+    ],
+    "NS": [
+      "phoenix.ns.cloudflare.com.",
+      "rene.ns.cloudflare.com."
+    ],
+    "TXT_count": 3,
+    "geo_first": {
+      "status": "success",
+      "country": "Hong Kong",
+      "regionName": "Central and Western District",
+      "city": "Hong Kong",
+      "org": "Google Cloud (asia-east2)",
+      "as": "AS396982 Google LLC",
+      "hosting": true
+    },
+    "guessed_subs": []
+  }
+}

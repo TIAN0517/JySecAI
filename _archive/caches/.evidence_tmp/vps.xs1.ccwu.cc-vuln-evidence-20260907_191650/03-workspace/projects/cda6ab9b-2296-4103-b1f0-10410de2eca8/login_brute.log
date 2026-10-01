@@ -1,0 +1,29 @@
+=== 3400 AuthServer /login 实战测试 ===
+
+[1] admin:admin captcha=tvau → 401/72B msg=帳號密碼不符
+[2] admin:admin123 captcha=snt → 429/78B msg=圖形驗證碼不符合
+[3] admin:Password1 captcha=yja → 429/78B msg=圖形驗證碼不符合
+[4] admin:Admin123 captcha=aryy → 401/72B msg=帳號密碼不符
+[5] admin:test captcha=xvfa → 401/72B msg=帳號密碼不符
+[6] admin:123456 captcha=qjx → 429/78B msg=圖形驗證碼不符合
+[7] test:admin captcha=ty → 429/78B msg=圖形驗證碼不符合
+[8] test:admin123 captcha=xfm → 429/78B msg=圖形驗證碼不符合
+[9] test:Password1 captcha=spu → 429/78B msg=圖形驗證碼不符合
+[10] test:Admin123 captcha=udhi → 429/78B msg=圖形驗證碼不符合
+[11] test:test captcha=lccq → 200/2165B msg=
+    *** HIT *** Body: {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50IjoidGVzdCIsInJvbGUiOiJNQU5BR0VSIiwidXNlciI6eyJuYW1lIjoidGVzdCIsImFjY291bnQiOiJ0ZXN0IiwiZXh0QWNjb3VudCI6bnVsbCwiaXNMb2NhbCI6dHJ1ZSwiY3VzdG9tRGF0YSI6bnVsbCwicm9sZSI6Ik1BTkFHRVIifSwicGVybWlzc2lvbnMiOlsiRVBDUl9TRVJWSUNFIiwiRVBDUl9QQUdFX0JVTExFVElOIiwiRVBDUl9QQUdFX1JFU09VUkNFTUFOQUdFTUVOVCIsIkVQQ1JfUEFHRV9NT05JVE9SIiwiRVBDUl9QQUdFX0NBU0VMSVNUIiwiRVBDUl9QQUdFX0NBU0VERVRBSUwiLCJFUENSX1BBR0VfQ0FTRURFVEFJTFBSSU5UIiwiRVBDUl9QQUdFX01DSUxJU1QiLCJFU
+[12] test:123456 captcha=uaha → 401/72B msg=帳號密碼不符
+[13] user1:admin captcha=xvfb → 401/72B msg=帳號密碼不符
+[14] user1:admin123 captcha=ywkp → 401/72B msg=帳號密碼不符
+[15] user1:Password1 captcha=dia → 429/78B msg=圖形驗證碼不符合
+[16] user1:Admin123 captcha=aid → 429/78B msg=圖形驗證碼不符合
+[17] user1:test captcha=dw → 429/78B msg=圖形驗證碼不符合
+[18] user1:123456 captcha=xh → 429/78B msg=圖形驗證碼不符合
+[19] kenny:admin captcha=9quh → 429/78B msg=圖形驗證碼不符合
+[20] kenny:admin123 captcha=rUaa → 429/78B msg=圖形驗證碼不符合
+[21] kenny:Password1 captcha=bky → 429/78B msg=圖形驗證碼不符合
+[22] kenny:Admin123 captcha=uwd → 429/78B msg=圖形驗證碼不符合
+[23] kenny:test captcha=ublc → 401/72B msg=帳號密碼不符
+[24] kenny:123456 captcha=kpu → 429/78B msg=圖形驗證碼不符合
+
+=== Summary: tried=24 hits=1 ===

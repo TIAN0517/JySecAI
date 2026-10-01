@@ -1,0 +1,73 @@
+{
+  "target": "https://peacoop.or.th",
+  "timestamp": "20251029_020231",
+  "extraction_method": "Comprehensive Extraction",
+  "success": true,
+  "total_records": 5,
+  "data": [
+    {
+      "table": "wp_users",
+      "record": {
+        "id": 12021,
+        "username": "%e0%b9%80%e0%b8%a3%e0%b8%b7%e0%b9%88%e0%b8%ad%e0%b8%87-%e0%b8%aa%e0%b8%ad%e0%b8%9a%e0%b8%a3%e0%b8%b2%e0%b8%84%e0%b8%b2%e0%b8%88%e0%b9%89%e0%b8%b2%e0%b8%87%e0%b8%9e%e0%b8%b4%e0%b8%a1%e0%b8%9e%e0%b9%8c",
+        "name": null,
+        "email": "@example.com",
+        "registered_date": "2025-10-28T23:49:46"
+      }
+    },
+    {
+      "table": "wp_users",
+      "record": {
+        "id": 12015,
+        "username": "loan-officer",
+        "name": null,
+        "email": "@example.com",
+        "registered_date": "2025-10-27T16:57:29"
+      }
+    },
+    {
+      "table": "wp_users",
+      "record": {
+        "id": 12003,
+        "username": "postfootball",
+        "name": null,
+        "email": "@example.com",
+        "registered_date": "2025-10-27T15:24:20"
+      }
+    },
+    {
+      "table": "wp_users",
+      "record": {
+        "id": 11992,
+        "username": "%e0%b8%aa%e0%b8%ad-%e0%b8%81%e0%b8%9f%e0%b8%a0-%e0%b8%a3%e0%b9%88%e0%b8%a7%e0%b8%a1%e0%b8%9e%e0%b8%b4%e0%b8%98%e0%b8%b5%e0%b8%a7%e0%b8%b2%e0%b8%87%e0%b8%9e%e0%b8%a7%e0%b8%87%e0%b8%a1%e0%b8%b2",
+        "name": null,
+        "email": "@example.com",
+        "registered_date": "2025-10-24T11:47:28"
+      }
+    },
+    {
+      "table": "wp_users",
+      "record": {
+        "id": 11987,
+        "username": "%e0%b8%81%e0%b8%b2%e0%b8%a3%e0%b9%80%e0%b8%95%e0%b8%b4%e0%b8%9a%e0%b9%82%e0%b8%95%e0%b8%82%e0%b8%ad%e0%b8%87%e0%b8%aa%e0%b8%ab%e0%b8%81%e0%b8%a3%e0%b8%93%e0%b9%8c%e0%b8%ad%e0%b8%ad%e0%b8%a1%e0%b8%97-4",
+        "name": null,
+        "email": "@example.com",
+        "registered_date": "2025-10-21T16:11:38"
+      }
+    }
+  ],
+  "extraction_summary": {
+    "tables_extracted": [
+      "wp_users"
+    ],
+    "sensitive_fields": [
+      "id",
+      "name",
+      "email",
+      "phone",
+      "amount",
+      "status"
+    ],
+    "data_risk_level": "HIGH"
+  }
+}

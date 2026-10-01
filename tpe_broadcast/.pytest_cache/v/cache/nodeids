@@ -1,0 +1,11 @@
+[
+  "test_scene_policy.py::AddressResolutionTests::test_correlated_coordinate_can_fill_address",
+  "test_scene_policy.py::AddressResolutionTests::test_far_or_institution_reverse_result_is_rejected",
+  "test_scene_policy.py::AddressResolutionTests::test_original_doorplate_is_never_replaced",
+  "test_scene_policy.py::AddressResolutionTests::test_reverse_address_floor_format_is_normalized",
+  "test_scene_policy.py::AddressResolutionTests::test_uncorrelated_coordinate_is_rejected",
+  "test_scene_policy.py::CoordinateCorrelationTests::test_authenticated_case_is_canonical_after_match",
+  "test_scene_policy.py::CoordinateCorrelationTests::test_coordinate_only_login_case_can_be_enriched",
+  "test_scene_policy.py::CoordinateCorrelationTests::test_institution_source_is_rejected",
+  "test_scene_policy.py::CoordinateCorrelationTests::test_mismatched_time_id_or_coordinate_is_rejected"
+]

@@ -1,0 +1,610 @@
+{
+  "epcr_port_4000_config": {
+    "port": "4000",
+    "hostname": "https://epcr.tpf.gov.tw",
+    "vitalSignVideoServer": "https://epcr.tpf.gov.tw:4001",
+    "historyVideoPath": "/videoData/getFile/",
+    "imagePath": "/imageData/getFile/",
+    "HospitalServer": "https://epcr.tpf.gov.tw:4002",
+    "VideoPath": "rtmp://mer2voip.tpf.gov.tw/rtmp/live",
+    "authServer": "https://epcr.tpf.gov.tw:4004",
+    "doctorServer": "https://epcr.tpf.gov.tw:4003",
+    "historyVoicePath": "/voiceData/getFile/",
+    "merBridge": "https://epcr.tpf.gov.tw:4006",
+    "merServer": "https://mer2.tpf.gov.tw:7000",
+    "printServer": "http://epcr.tpf.gov.tw:9000",
+    "statUrl": "https://epcr.tpf.gov.tw:4007/statIndex.html#/",
+    "mciServer": "http://epcr.tpf.gov.tw:4008/client/",
+    "monitorServer": "http://epcr.tpf.gov.tw:4005",
+    "epcrServer": "http://epcr.tpf.gov.tw:4000",
+    "ntpcCloud": "https://cloud2.ntpc.gov.tw/home",
+    "captcha": {
+      "enable": true,
+      "captchaImg": "/captcha"
+    },
+    "MAX_IDLE_DURATION": 900000,
+    "NO_IDLE_DETECTION_STATES": [
+      "login",
+      "caseDetailPrint"
+    ],
+    "RealTimeVideoPath": [
+      {
+        "path": "https://mer2voip.tpf.gov.tw:30080/live?app=rtmp&stream=live${dispatchRecordUuid}",
+        "type": "mse",
+        "isLive": true
+      }
+    ]
+  },
+  "epcr_port_4002_config": {
+    "SELF_URL": "https://epcr.tpf.gov.tw:4002",
+    "EPCRServer": "https://epcr.tpf.gov.tw:4000",
+    "authServer": "https://epcr.tpf.gov.tw:4004",
+    "vitalSignVideoServer": "https://epcr.tpf.gov.tw:4001",
+    "MerBridge": "https://epcr.tpf.gov.tw:4006",
+    "Redir": "https://mer2.tpf.gov.tw/Views/CreateSession.aspx",
+    "MerServer": "https://mer2.tpf.gov.tw",
+    "captcha": {
+      "enable": true,
+      "captchaImg": "/captcha"
+    }
+  },
+  "epcr_port_4003_config": {
+    "EPCRServer": "https://epcr.tpf.gov.tw:4000",
+    "authServer": "https://epcr.tpf.gov.tw:4004",
+    "hospitalServer": "https://epcr.tpf.gov.tw:4002",
+    "captcha": {
+      "enable": true,
+      "captchaImg": "/captcha"
+    }
+  },
+  "epcr_port_4005_config": {
+    "EPCRServer": "https://epcr.tpf.gov.tw:4000",
+    "authServer": "https://epcr.tpf.gov.tw:4004",
+    "hospitalServer": "https://epcr.tpf.gov.tw:4002",
+    "doctorServer": "https://epcr.tpf.gov.tw:4002",
+    "MerSocketio": "http://172.28.4.12:8080",
+    "ConnWatcher": "http://172.28.4.12:8188",
+    "captcha": {
+      "enable": true,
+      "captchaImg": "/captcha"
+    }
+  },
+  "epcr_port_4007_config": {
+    "port": "4000",
+    "hostname": "https://epcr.tpf.gov.tw",
+    "vitalSignVideoServer": "https://epcr.tpf.gov.tw:4001",
+    "historyVideoPath": "/videoData/getFile/",
+    "imagePath": "/imageData/getFile/",
+    "HospitalServer": "https://epcr.tpf.gov.tw:4002",
+    "VideoPath": "rtmp://mer2voip.tpf.gov.tw/rtmp/live",
+    "authServer": "https://epcr.tpf.gov.tw:4004",
+    "doctorServer": "https://epcr.tpf.gov.tw:4003",
+    "historyVoicePath": "/voiceData/getFile/",
+    "merBridge": "https://epcr.tpf.gov.tw:4006",
+    "merServer": "https://mer2.tpf.gov.tw:7000",
+    "printServer": "http://epcr.tpf.gov.tw:9000",
+    "statUrl": "https://epcr.tpf.gov.tw:4007/statIndex.html#/",
+    "mciServer": "http://epcr.tpf.gov.tw:4008/client/",
+    "monitorServer": "http://epcr.tpf.gov.tw:4005",
+    "epcrServer": "http://epcr.tpf.gov.tw:4000",
+    "captcha": {
+      "enable": true,
+      "captchaImg": "/captcha"
+    },
+    "MAX_IDLE_DURATION": 900000,
+    "NO_IDLE_DETECTION_STATES": [
+      "login",
+      "caseDetailPrint"
+    ]
+  },
+  "epcr_4000_/version": {
+    "status": 200,
+    "body": "1.6.26080"
+  },
+  "epcr_4000_/health": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>"
+  },
+  "epcr_4000_/healthz": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>"
+  },
+  "epcr_4000_/api/version": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>"
+  },
+  "epcr_4000_/api/health": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>"
+  },
+  "epcr_4000_/status": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>"
+  },
+  "epcr_4004_/version": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>"
+  },
+  "epcr_4004_/health": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>"
+  },
+  "epcr_4004_/healthz": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>"
+  },
+  "epcr_4004_/api/version": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>"
+  },
+  "epcr_4004_/api/health": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>"
+  },
+  "epcr_4004_/status": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>"
+  },
+  "epcr_4000_/config": {
+    "status": 200,
+    "body": "{\"port\":\"4000\",\"hostname\":\"https://epcr.tpf.gov.tw\",\"vitalSignVideoServer\":\"https://epcr.tpf.gov.tw:4001\",\"historyVideoPath\":\"/videoData/getFile/\",\"imagePath\":\"/imageData/getFile/\",\"HospitalServer\":\"https://epcr.tpf.gov.tw:4002\",\"VideoPath\":\"rtmp://mer2voip.tpf.gov.tw/rtmp/live\",\"authServer\":\"https://epcr.tpf.gov.tw:4004\",\"doctorServer\":\"https://epcr.tpf.gov.tw:4003\",\"historyVoicePath\":\"/voiceData/getFile/\",\"merBridge\":\"https://epcr.tpf.gov.tw:4006\",\"merServer\":\"https://mer2.tpf.gov.tw:7000\",\"printServer\":\"http://epcr.tpf.gov.tw:9000\",\"statUrl\":\"https://epcr.tpf.gov.tw:4007/statIndex.html#/\",\"mciServer\":\"http://epcr.tpf.gov.tw:4008/client/\",\"monitorServer\":\"http://epcr.tpf.gov.tw:4005\",\"epcrServer\":\"http://epcr.tpf.gov.tw:4000\",\"ntpcCloud\":\"https://cloud2.ntpc.gov.tw/home\",\"captcha\":{\"enable\":true,\"captchaImg\":\"/captcha\"},\"MAX_IDLE_DURATION\":900000,\"NO_IDLE_DETECTION_STATES\":[\"login\",\"caseDetailPrint\"],\"RealTimeVideoPath\":[{\"path\":\"https://mer2voip.tpf.gov.tw:30080/live?app=rtmp&stream=live${dispatchRecordUuid}\",\"type\":\"mse\",\"isLive\":true}]}"
+  },
+  "epcr_4000_/json/isSimulation.json": {
+    "status": 200,
+    "body": "[{\n    \"id\": 0,\n    \"name\":\"正式\"\n},{\n    \"id\": 1,\n    \"name\":\"測試\"\n}]"
+  },
+  "epcr_4000_/json/hasTP.json": {
+    "status": 200,
+    "body": "[{\n    \"id\": 0,\n    \"name\":\"否\"\n},{\n    \"id\": 1,\n    \"name\":\"是\"\n}]"
+  },
+  "auth_4004_/login": {
+    "status": 404,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>Not Found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "160",
+      "ETag": "W/\"a0-CBraZS/PW/Hah4Ng+NJooA\"",
+      "Set-Cookie": "connect.sid=s%3ALf5sQ3tAs3ZwIAUyvvFVr3crwL2dumTd.o9ws5MVCNnBaVMPWuR7ZngmE8UNfbPtk9%2B00JH77qb8; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:17 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/ssoLogin": {
+    "status": 404,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>Not Found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "160",
+      "ETag": "W/\"a0-CBraZS/PW/Hah4Ng+NJooA\"",
+      "Set-Cookie": "connect.sid=s%3AEO9ltwxShttG-UuzYocrkSfiQQ3jJFpE.QdC7rEYKUyi%2BlgGxoG7wk8bCYu7r9p1rpJ0%2FLWk1Sq4; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:18 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/captcha": {
+    "status": 200,
+    "body": "GIF89aх\u0000F\u0000┐\u0000\u0000\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011ЪЪЪ,\u0000\u0000\u0000\u0000х\u0000F\u0000\u0000\u0004ЗПа\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|ЗПа\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|ЗПа\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|ЗПа\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|ЗПа\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|ЗПа\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|ЗПа\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|ЗПа\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|ЗПа\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|ЗПа\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|ЗПа\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|ЗПа\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|Па\u0007\u001f|П",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "application/octet-stream",
+      "Content-Length": "17646",
+      "ETag": "W/\"44ee-YfG7F1UJ9DmaYMtLimmpuA\"",
+      "Set-Cookie": "connect.sid=s%3A-_PdCQ2WaYSDQnsTrGN0Pw4ocNw29f14.c1MEocGhjedIwoLHsDVythjiXApqECXGhpbVDfCBHZU; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:19 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/refreshToken": {
+    "status": 404,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>Not Found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "160",
+      "ETag": "W/\"a0-CBraZS/PW/Hah4Ng+NJooA\"",
+      "Set-Cookie": "connect.sid=s%3AkmE_spjE8FX7j00qUjgewE5O3dHeUBNK.MvJYmI2GIhk0w0x1dCyRI8BipctIO%2B6qje0k1PpRhiA; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:20 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/config": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183",
+      "ETag": "W/\"b7-kloRtePNJdI0rdqUwM/x3w\"",
+      "Set-Cookie": "connect.sid=s%3APD7hU6M1l4i8DX0trIEqbMg4fV8ibTQm.Ml2j%2FvhsPSUYcW8BbO2NI4Mld0ZxwTq1doxmV7TcWmo; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:21 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/version": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183",
+      "ETag": "W/\"b7-kloRtePNJdI0rdqUwM/x3w\"",
+      "Set-Cookie": "connect.sid=s%3AjigKO19D9sOqVhmm98Um-j-wEZm0QV-j.ZMZdO0ZThUfrkmgDJ9nwIKockdiZPFSKI00xwcdOCRk; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:22 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/logout": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183",
+      "ETag": "W/\"b7-kloRtePNJdI0rdqUwM/x3w\"",
+      "Set-Cookie": "connect.sid=s%3AWItPN7NCj24B3QQWNUuuebwywCQhLO_q.dyE3sh3%2BAWZaGa%2BbflFQhz7NLQwvrAMC%2Ffv%2FFzOW3uE; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:23 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/register": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183",
+      "ETag": "W/\"b7-kloRtePNJdI0rdqUwM/x3w\"",
+      "Set-Cookie": "connect.sid=s%3A0cAOgUhwjpdkae-5XzBKKNSwKRdErgxY.aLp6kxLS7qFoYgfdkPizRiN%2B1xy0JzZV5PEYD135ZWU; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:24 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/users": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183",
+      "ETag": "W/\"b7-kloRtePNJdI0rdqUwM/x3w\"",
+      "Set-Cookie": "connect.sid=s%3Av44naZ6GsdAPLdzJE78OeDBDunvXLbUf.rKJQ67R21dyzvsTDIs1zuGOa806okl6qwnM40FmYvLQ; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:25 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/oauth/token": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183",
+      "ETag": "W/\"b7-kloRtePNJdI0rdqUwM/x3w\"",
+      "Set-Cookie": "connect.sid=s%3Ae-hRajVCmCSXIw9yZktwFRGR_TapxyG2.BaWywbQZ0fzGav7rrO09AicEhXOszeygo9Sr8hqv5%2Fs; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:26 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/oauth2/authorize": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183",
+      "ETag": "W/\"b7-kloRtePNJdI0rdqUwM/x3w\"",
+      "Set-Cookie": "connect.sid=s%3AcgI3jE-QldKxrAg_q7e18eFXT_Hr7Zew.z6Zw1pIchNsyElD5rn3jWxumioaIYJO1Oh1NL9rwDVQ; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:27 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/swagger": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183",
+      "ETag": "W/\"b7-kloRtePNJdI0rdqUwM/x3w\"",
+      "Set-Cookie": "connect.sid=s%3AhpPFt12o11gFTg8rZb4YlFhEXXIhSnQV.5qkpCtxsaL2IGExiN4res5I4hmgX1B4pvHbFePZBjww; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:28 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/api-docs": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183",
+      "ETag": "W/\"b7-kloRtePNJdI0rdqUwM/x3w\"",
+      "Set-Cookie": "connect.sid=s%3Al4Ww700KuScsbOF1w8hE0ealduejiO4l.KEXkj3jktO16pRU1K%2FQ7l28d1irxcWuhJV7Z4GYzAnA; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:28 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/v1/api-docs": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183",
+      "ETag": "W/\"b7-kloRtePNJdI0rdqUwM/x3w\"",
+      "Set-Cookie": "connect.sid=s%3A-q5dr0LW7QRu6oQpfPkIwZh-CSl2z6uk.uUSaLqD0t%2BckcZxFV%2F%2FG3HNDZilYNU6HqwchgkidhqY; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:29 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/actuator/health": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183",
+      "ETag": "W/\"b7-kloRtePNJdI0rdqUwM/x3w\"",
+      "Set-Cookie": "connect.sid=s%3AcLp-wPyD8OuEZwpSnVXNClXYWuRjPCFh.6rkpTDNuvoHd2QQEa5fdlAE3ghybqqWRGwEv2U1QSJw; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:30 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/actuator/info": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183",
+      "ETag": "W/\"b7-kloRtePNJdI0rdqUwM/x3w\"",
+      "Set-Cookie": "connect.sid=s%3ApTYZ5ZOWY4OLBWEPnCne0lw5sv4o5NZf.qHlBQnaYKKAaPros6XNcn7LdPQeomBNh0u5V4YOU6WE; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:31 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/api/v1/users": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183",
+      "ETag": "W/\"b7-kloRtePNJdI0rdqUwM/x3w\"",
+      "Set-Cookie": "connect.sid=s%3AG1PSOmb57tayKv6FvbGqjExr6gx6mLpo.wqKq8%2FFS6CitVb6QVlSM3IJOmmG3k%2BEfGOrXooZCJAc; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:32 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  },
+  "auth_4004_/api/v1/config": {
+    "status": 401,
+    "body": "<!DOCTYPE html><html><head><title></title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>No authorization token was found</h1><h2></h2><pre></pre></body></html>",
+    "headers": {
+      "Vary": "Origin",
+      "Access-Control-Allow-Credentials": "true",
+      "Content-Security-Policy": "default-src 'self';style-src 'self' 'unsafe-inline';frame-ancestors 'none';script-src 'self' 'unsafe-inline';img-src 'self' data:",
+      "X-DNS-Prefetch-Control": "off",
+      "Expect-CT": "max-age=0",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Strict-Transport-Security": "max-age=15552000; includeSubDomains",
+      "X-Download-Options": "noopen",
+      "X-Content-Type-Options": "nosniff",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "Referrer-Policy": "no-referrer",
+      "X-XSS-Protection": "0",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183",
+      "ETag": "W/\"b7-kloRtePNJdI0rdqUwM/x3w\"",
+      "Set-Cookie": "connect.sid=s%3AKa67LS1T5ct2oMBNO6kvp8pEnMGn7_8K.KTBIYppg8u89CYKTEES4NaOhzrnDg7FEEhGUud60F%2BM; Path=/; HttpOnly",
+      "Date": "Thu, 24 Sep 2026 16:06:33 GMT",
+      "Connection": "keep-alive",
+      "Keep-Alive": "timeout=5"
+    }
+  }
+}

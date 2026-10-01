@@ -1,0 +1,18 @@
+--- www.newloan.com.tw ---
+www.newloan.com.tw/wp-admin -> HTTP 301
+www.newloan.com.tw/wp-login.php -> HTTP 200
+www.newloan.com.tw/xmlrpc.php -> HTTP 403
+www.newloan.com.tw/.git/config -> HTTP 403
+www.newloan.com.tw/readme.html -> HTTP 200
+www.newloan.com.tw/wp-content/debug.log -> HTTP 302
+www.newloan.com.tw/wp-config.php -> HTTP 302
+www.newloan.com.tw/sitemap.xml -> HTTP 301
+--- www.muchenloan.com ---
+www.muchenloan.com/wp-admin -> HTTP 301
+www.muchenloan.com/wp-login.php -> HTTP 200
+www.muchenloan.com/xmlrpc.php -> HTTP 000
+www.muchenloan.com/.git/config -> HTTP 403
+www.muchenloan.com/readme.html -> HTTP 200
+www.muchenloan.com/wp-content/debug.log -> HTTP 403
+www.muchenloan.com/wp-config.php -> HTTP 403
+www.muchenloan.com/sitemap.xml -> HTTP 404

@@ -1,0 +1,9 @@
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiNTMyOTdlODUtMTM2YS00OTA2LTkyMDItNTFkNGY4MzIyYTI4IiwiaWF0IjoxNzkwODYxOTE5LCJleHAiOjE3OTA4NzI3MTl9.d9mxnntVvcCiqKoSwije2SI8UcD81uNLOW1ZSzRAuN0",
+  "iat": 1790861919,
+  "exp": 1790872719,
+  "renewed_at": 1790861919,
+  "account": "R122937618",
+  "category": "01",
+  "jsessionid": "3AD06710EA48F4DCE58926126C9D7C73"
+}

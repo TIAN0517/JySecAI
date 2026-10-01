@@ -1,0 +1,119 @@
+{
+  "platform_info": {
+    "name": "Dragon-V Enterprise Security Platform",
+    "version": "2.0.0",
+    "test_session_id": "acceptance_test_20251027_045537",
+    "test_date": "2025-10-27T04:55:39.886919"
+  },
+  "test_summary": {
+    "total_tests": 17,
+    "passed_tests": 10,
+    "failed_tests": 6,
+    "warning_tests": 1
+  },
+  "test_results": [
+    {
+      "test_name": "数据库连接测试 - dragon_triple_bot_unified.db",
+      "status": "PASS",
+      "details": "发现 4 个数据表",
+      "timestamp": "2025-10-27T04:55:37.932072"
+    },
+    {
+      "test_name": "数据库连接测试 - dragon_triple_telegram_bot.db",
+      "status": "PASS",
+      "details": "发现 8 个数据表",
+      "timestamp": "2025-10-27T04:55:37.933072"
+    },
+    {
+      "test_name": "数据库连接测试 - dragon_triple_functional.db",
+      "status": "PASS",
+      "details": "发现 5 个数据表",
+      "timestamp": "2025-10-27T04:55:37.934073"
+    },
+    {
+      "test_name": "MCP渗透测试服务器测试 - 模块导入",
+      "status": "PASS",
+      "details": "MCP服务器模块导入成功",
+      "timestamp": "2025-10-27T04:55:37.936073"
+    },
+    {
+      "test_name": "MCP渗透测试服务器测试 - 漏洞搜索",
+      "status": "PASS",
+      "details": "找到 0 个相关漏洞",
+      "timestamp": "2025-10-27T04:55:37.938070"
+    },
+    {
+      "test_name": "MCP渗透测试服务器测试 - 端口扫描",
+      "status": "PASS",
+      "details": "扫描完成，发现 0 个开放端口",
+      "timestamp": "2025-10-27T04:55:37.956086"
+    },
+    {
+      "test_name": "泰国贷款漏洞扫描器测试",
+      "status": "FAIL",
+      "details": "cannot import name 'ThaiLoanPenetrationScanner' from 'thai_loan_penetration' (C:\\Users\\Administrator\\Desktop\\serverall\\thai_loan_penetration.py)",
+      "timestamp": "2025-10-27T04:55:37.962198"
+    },
+    {
+      "test_name": "企业扫描器集成测试",
+      "status": "FAIL",
+      "details": "'EnterpriseScannerIntegration' object has no attribute 'session_id'",
+      "timestamp": "2025-10-27T04:55:37.975085"
+    },
+    {
+      "test_name": "数据收集系统测试",
+      "status": "FAIL",
+      "details": "'EnhancedDataCollector' object has no attribute 'session_id'",
+      "timestamp": "2025-10-27T04:55:37.986087"
+    },
+    {
+      "test_name": "WAF绕过能力测试",
+      "status": "FAIL",
+      "details": "cannot import name 'AdvancedWAFBypass' from 'waf_bypass_advanced' (C:\\Users\\Administrator\\Desktop\\serverall\\waf_bypass_advanced.py)",
+      "timestamp": "2025-10-27T04:55:39.839919"
+    },
+    {
+      "test_name": "WebShell部署能力测试 - 初始化",
+      "status": "PASS",
+      "details": "WebShell扫描器初始化成功",
+      "timestamp": "2025-10-27T04:55:39.845919"
+    },
+    {
+      "test_name": "WebShell部署能力测试",
+      "status": "FAIL",
+      "details": "'ThaiUploadVulnerabilityScanner' object has no attribute 'generate_webshell_payloads'",
+      "timestamp": "2025-10-27T04:55:39.845919"
+    },
+    {
+      "test_name": "配置管理测试 - enterprise_platform_config_updated.json",
+      "status": "PASS",
+      "details": "配置文件格式正确",
+      "timestamp": "2025-10-27T04:55:39.845919"
+    },
+    {
+      "test_name": "配置管理测试 - enterprise_platform_config.json",
+      "status": "WARNING",
+      "details": "配置文件不存在",
+      "timestamp": "2025-10-27T04:55:39.845919"
+    },
+    {
+      "test_name": "配置管理测试 - config_unified.yaml",
+      "status": "PASS",
+      "details": "配置文件格式正确",
+      "timestamp": "2025-10-27T04:55:39.886919"
+    },
+    {
+      "test_name": "配置管理测试 - dragon_triple_telegram_config.json",
+      "status": "FAIL",
+      "details": "配置文件格式错误: Expecting property name enclosed in double quotes:",
+      "timestamp": "2025-10-27T04:55:39.886919"
+    },
+    {
+      "test_name": "配置管理测试 - 总结",
+      "status": "PASS",
+      "details": "有效配置文件: 2/4",
+      "timestamp": "2025-10-27T04:55:39.886919"
+    }
+  ],
+  "overall_status": "FAIL"
+}

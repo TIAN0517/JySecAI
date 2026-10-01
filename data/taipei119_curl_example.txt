@@ -1,0 +1,17 @@
+curl --url 'https://service119.tfd.gov.tw/service119/citizenCase/initUserCategory' \
+  -H 'accept: application/json, text/javascript, */*; q=0.01' \
+  -H 'accept-language: zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja;q=0.6' \
+  -H 'content-type: application/x-www-form-urlencoded; charset=UTF-8' \
+  -b 'JSESSIONID=5E7988C46E44135E756036FA889A1EC4' \
+  -H 'origin: https://service119.tfd.gov.tw' \
+  -H 'priority: u=1, i' \
+  -H 'referer: https://service119.tfd.gov.tw/service119/ews1821' \
+  -H 'sec-ch-ua: "Google Chrome";v="153", "Not_A Brand";v="8", "Chromium";v="153"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "Windows"' \
+  -H 'sec-fetch-dest: empty' \
+  -H 'sec-fetch-mode: cors' \
+  -H 'sec-fetch-site: same-origin' \
+  -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36' \
+  -H 'x-requested-with: XMLHttpRequest' \
+  --data-raw 'token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMDYzIiwianRpIjoiY2EyZjk1NmUtMjM2Yy00OTk0LTk5ZGYtNGJmZTc3MTA5ZTcxIiwiaWF0IjoxNzkwMjAwNTM2LCJleHAiOjE3OTAyMTEzMzZ9.XI4MRA5umUdXHX9diDCnpkk6HQ9ZTUZo0np1c6kQnNg'

@@ -1,0 +1,18 @@
+{
+  "target": "https://atcbrokers.com",
+  "timestamp": "2025-10-26 17:25:23",
+  "results": {
+    "/?id=1": {
+      "database_type": "Microsoft SQL Server",
+      "sensitive_tables": [],
+      "credentials": {},
+      "full_dump": {}
+    },
+    "/contact?id=1": {
+      "database_type": "MySQL",
+      "sensitive_tables": [],
+      "credentials": {},
+      "full_dump": {}
+    }
+  }
+}

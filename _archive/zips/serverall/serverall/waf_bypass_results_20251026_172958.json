@@ -1,0 +1,18 @@
+{
+  "target": "https://www.scb.co.th/th/personal-banking",
+  "timestamp": "2025-10-26 17:29:58",
+  "results": {
+    "/?id=1": {
+      "waf_type": "Imperva",
+      "effective_payloads": [],
+      "effective_headers": [],
+      "effective_methods": []
+    },
+    "/account?id=1": {
+      "waf_type": "Imperva",
+      "effective_payloads": [],
+      "effective_headers": [],
+      "effective_methods": []
+    }
+  }
+}

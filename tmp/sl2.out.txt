@@ -1,0 +1,110 @@
+150:		isEinoAgenticClaudeProvider(provider)
+151:}
+152:
+153:func isEinoAgenticClaudeProvider(provider string) bool {
+154:	return llm.IsClaudeProvider(provider)
+155:}
+156:
+157:func agenticModelGateFactory(factory einoAgenticModelConfigFactory, oa config.OpenAIConfig, mode einoModelMode) einoAgenticModelFactory {
+158:	if factory == nil {
+159:		return nil
+160:	}
+161:	return func(ctx context.Context) (model.AgenticModel, error) {
+162:		return factory(ctx, oa, mode)
+163:	}
+164:}
+165:
+166:func newEinoModelRetryConfig(
+167:	mw *config.MultiAgentEinoMiddlewareConfig,
+168:	logger *zap.Logger,
+169:	scope string,
+170:) *adk.ModelRetryConfig {
+171:	maxRetries := RunRetryMaxAttemptsFromConfig(mw)
+172:	maxBackoff := einoRunRetryMaxBackoffFromConfig(mw)
+173:	return &adk.ModelRetryConfig{
+174:		MaxRetries: maxRetries,
+175:		BackoffFunc: func(_ context.Context, attempt int) time.Duration {
+176:			return einoTransientRetryBackoff(attempt-1, maxBackoff)
+177:		},
+178:		ShouldRetry: func(ctx context.Context, retryCtx *adk.RetryContext) *adk.RetryDecision {
+179:			if retryCtx == nil || ctx.Err() != nil {
+180:				return &adk.RetryDecision{}
+181:			}
+182:			if retryCtx.Err != nil {
+183:				if !isEinoTransientRunError(retryCtx.Err) {
+184:					return &adk.RetryDecision{}
+185:				}
+186:				if logger != nil {
+187:					kind, summary := einoTransientRunErrorUserDetail(retryCtx.Err)
+188:					logger.Warn("eino native model retry",
+189:						zap.String("scope", scope),
+190:						zap.Int("attempt", retryCtx.RetryAttempt),
+191:						zap.Int("maxRetries", maxRetries),
+192:						zap.String("errorKind", kind),
+193:						zap.String("errorSummary", summary),
+194:					)
+195:				}
+196:				return &adk.RetryDecision{Retry: true, RejectReason: "transient_model_error"}
+197:			}
+198:			if isRetryableEmptyModelOutput(retryCtx.OutputMessage) {
+199:				if logger != nil {
+200:					logger.Warn("eino native model retry: empty model output",
+201:						zap.String("scope", scope),
+202:						zap.Int("attempt", retryCtx.RetryAttempt),
+203:						zap.Int("maxRetries", maxRetries),
+204:					)
+205:				}
+206:				return &adk.RetryDecision{Retry: true, RejectReason: "empty_model_output"}
+207:			}
+208:			return &adk.RetryDecision{}
+209:		},
+210:	}
+211:}
+212:
+213:func newEinoAgenticModelRetryConfig(
+214:	mw *config.MultiAgentEinoMiddlewareConfig,
+215:	logger *zap.Logger,
+216:	scope string,
+217:) *adk.TypedModelRetryConfig[*schema.AgenticMessage] {
+218:	maxRetries := RunRetryMaxAttemptsFromConfig(mw)
+219:	maxBackoff := einoRunRetryMaxBackoffFromConfig(mw)
+220:	return &adk.TypedModelRetryConfig[*schema.AgenticMessage]{
+221:		MaxRetries: maxRetries,
+222:		BackoffFunc: func(_ context.Context, attempt int) time.Duration {
+223:			return einoTransientRetryBackoff(attempt-1, maxBackoff)
+224:		},
+225:		ShouldRetry: func(ctx context.Context, retryCtx *adk.TypedRetryContext[*schema.AgenticMessage]) *adk.TypedRetryDecision[*schema.AgenticMessage] {
+226:			if retryCtx == nil || ctx.Err() != nil {
+227:				return &adk.TypedRetryDecision[*schema.AgenticMessage]{}
+228:			}
+229:			if retryCtx.Err != nil {
+230:				if !isEinoTransientRunError(retryCtx.Err) {
+231:					return &adk.TypedRetryDecision[*schema.AgenticMessage]{}
+232:				}
+233:				if logger != nil {
+234:					kind, summary := einoTransientRunErrorUserDetail(retryCtx.Err)
+235:					logger.Warn("eino native agentic model retry",
+236:						zap.String("scope", scope),
+237:						zap.Int("attempt", retryCtx.RetryAttempt),
+238:						zap.Int("maxRetries", maxRetries),
+239:						zap.String("errorKind", kind),
+240:						zap.String("errorSummary", summary),
+241:					)
+242:				}
+243:				return &adk.TypedRetryDecision[*schema.AgenticMessage]{Retry: true, RejectReason: "transient_model_error"}
+244:			}
+245:			if isRetryableEmptyAgenticModelOutput(retryCtx.OutputMessage) {
+246:				if logger != nil {
+247:					logger.Warn("eino native agentic model retry: empty model output",
+248:						zap.String("scope", scope),
+249:						zap.Int("attempt", retryCtx.RetryAttempt),
+250:						zap.Int("maxRetries", maxRetries),
+251:					)
+252:				}
+253:				return &adk.TypedRetryDecision[*schema.AgenticMessage]{Retry: true, RejectReason: "empty_model_output"}
+254:			}
+255:			return &adk.TypedRetryDecision[*schema.AgenticMessage]{}
+256:		},
+257:	}
+258:}
+259:

@@ -1,0 +1,34 @@
+{
+  "app.js": {
+    "error": "missing ), unterminated subpattern at position 2"
+  },
+  "services.js": {
+    "error": "missing ), unterminated subpattern at position 2"
+  },
+  "AuthService.js": {
+    "error": "missing ), unterminated subpattern at position 2"
+  },
+  "LoginCtrl.js": {
+    "error": "missing ), unterminated subpattern at position 2"
+  },
+  "permissionlist.js": {
+    "error": "missing ), unterminated subpattern at position 2"
+  },
+  "publicConfig.js": {
+    "error": "missing ), unterminated subpattern at position 2"
+  },
+  "app_js_analysis": {
+    "socket_io_calls": [],
+    "emit_events": [],
+    "on_events": [
+      "touchend",
+      "keyup"
+    ],
+    "dispatch_lines": [
+      {
+        "line": 289,
+        "text": "$rootScope.$emit('idleTimer.countDown',message)"
+      }
+    ]
+  }
+}

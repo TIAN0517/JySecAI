@@ -1,0 +1,546 @@
+{
+  "scan_info": {
+    "timestamp": "2025-10-29T04:16:58.406447",
+    "total_targets": 6,
+    "scanner": "Vietnam Security Scanner v1.0"
+  },
+  "summary": {
+    "total_targets": 6,
+    "risk_distribution": {
+      "Medium": 4,
+      "Critical": 2
+    },
+    "vulnerability_count": 20,
+    "api_endpoints_found": 0,
+    "admin_panels_found": 41,
+    "critical_issues": [
+      {
+        "target": "MoMo Wallet",
+        "vulnerability": {
+          "type": "Payment Bypass",
+          "severity": "Critical",
+          "url": "https://momo.vn/api/payment",
+          "payload": "amount=0&status=paid",
+          "evidence": "Potential payment bypass vulnerability"
+        }
+      },
+      {
+        "target": "ZaloPay",
+        "vulnerability": {
+          "type": "Payment Bypass",
+          "severity": "Critical",
+          "url": "https://zalopay.vn/api/payment",
+          "payload": "amount=0&status=paid",
+          "evidence": "Potential payment bypass vulnerability"
+        }
+      }
+    ],
+    "high_value_findings": [
+      {
+        "target": "Shopee Vietnam",
+        "api_count": 0,
+        "admin_count": 13,
+        "risk_level": "Medium"
+      },
+      {
+        "target": "Tiki",
+        "api_count": 0,
+        "admin_count": 1,
+        "risk_level": "Medium"
+      },
+      {
+        "target": "MoMo Wallet",
+        "api_count": 0,
+        "admin_count": 1,
+        "risk_level": "Critical"
+      },
+      {
+        "target": "Viettel Post",
+        "api_count": 0,
+        "admin_count": 13,
+        "risk_level": "Medium"
+      },
+      {
+        "target": "Giao Hang Nhanh",
+        "api_count": 0,
+        "admin_count": 13,
+        "risk_level": "Medium"
+      }
+    ]
+  },
+  "detailed_results": [
+    {
+      "target": {
+        "url": "https://shopee.vn",
+        "name": "Shopee Vietnam",
+        "category": "ecommerce"
+      },
+      "basic_info": {
+        "url": "https://shopee.vn",
+        "title": "No Title",
+        "status_code": 200,
+        "content_length": 75123,
+        "response_time": 1.085939,
+        "content": "<!doctype html>\n<html dir=\"ltr\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=1240,shrink-to-fit=no\">\n<meta name=\"shopee:git-sha\" content=\"39f7df6d7afe5b9f00eda8873c3ce87bccd9643c\">\n<meta name=\"shopee:version\" content=\"sw-WEBFE-MKP-2025.10.23.v2-PDP-2-emergency\">\n<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/icon_favicon_1_32.9cd61b2e90c0f104.png\">\n<link rel=\"icon\" type=\"image/png\" sizes=\"96x96\" href=\"https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/icon_favicon_1_96.1ce0e05fc18a86e5.png\">\n<link rel=\"preload\" href=\"https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/bundle.9ca4c2d12e2175da.2023.css\" as=\"style\" data-modern=\"true\">\n<link rel=\"modulepreload\" href=\"https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/webpack-runtime.1e80a4cc08daab95.2023.js\" data-modern=\"true\">\n<link rel=\"modulepreload\" href=\"https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/sfu-stable.82ed31a3d4b194f7.2023.js\" data-modern=\"true\">\n<link rel=\"modulepreload\" href=\"https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/sfu-latest.1e1db834fdc4f3ac.2023.js\" data-modern=\"true\">\n<link rel=\"modulepreload\" href=\"https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/entry-modules.b3e7397d0e617f2a.2023.js\" data-modern=\"true\">\n<link rel=\"modulepreload\" href=\"https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/bundle.6825c8e168e9300e.2023.js\" data-modern=\"true\">\n<script>let browserYear=2017;navigator.userAgent.includes(\"Firefox\")?Uint8Array.prototype.setFromBase64&&(browserYear=2023):Intl.DurationFormat&&(browserYear=2023),window.BROWSER_YEAR=browserYear</script>\n<script data-webfe=\"config\">\n/** actually app id */\n      window.__PAGE_ID__ = 1;\n      window.__APP_ID__ = 1;\n      window.__LOCALE__ = 'VN';\n      window.__ENV__ = 'live';\n      window.__META_APP_DETAILS__ = {\"apmsPromotionLiveKey\":\"a5d1f0ec50dfb01a8f66086733613696fe5dceeb8c440326ca3340240183c965\",\"apmsPromotionNonLiveKey\":\"a4d4f25de385e05a506e0b6dd6facfc10c0961935d9e447a5d6737d0997b6b49\",\"googleMapsApiKey_Live\":\"AIzaSyA1MgLuZuyqR_OGY3ob3M52N46TDBRI_9k\",\"googleMapsApiKey_NonLive\":\"AIzaSyA1MgLuZuyqR_OGY3ob3M52N46TDBRI_9k\",\"googleMapsBuyerApiKey_Live\":\"AIzaSyDgWFqI-lfuuUk8md8g8ZgCsvol72s5RuE\",\"googleMapsBuyerApiKey_NonLive\":\"AIzaSyApXSJ2O8u6ni_MCl4TMhxFGhlVFFynXGI\",\"googleMapsOrderOpsApiKey_Live\":\"AIzaSyDPHNQoGkV7vlj4wdfm_98yWvpK2m3uo9A\",\"googleMapsOrderOpsApiKey_NonLive\":\"AIzaSyCqFdAv5RRYV9cZG1zEII8v3td4_hIU1-4\"};\n      window.__ASSETS__ = {\"CHECKOUT_CONFIGS\":{\"live\":{\"display_fast_edt_opc_web\":{\"default\":\"hide_fast_edt\",\"id|tw|th|vn|ph|my|sg\":\"display_fast_edt\"},\"display_pc_shipping_recommendation\":{\"default\":false,\"id|tw|th|vn|ph|my|sg\":true},\"invalid_address_softblock_popup_limit\":{\"default\":{\"cooldown_days\":30,\"popup_limit\":5},\"vn\":{\"cooldown_days\":30,\"popup_limit\":3}},\"opc_revamp_web\":{\"tw|th|vn|ph|sg|br|mx|co|cl|my|ar\":{\"mode\":\"revamp\",\"revamp_newPaymentEntrance\":true}},\"scp_definition_phase_2_rw\":{\"default\":\"control\",\"id|vn|ph|my|sg|br|th\":\"treatment\"}}},\"DL_ENABLED_MALL_REGIONS\":[\"SG\",\"MY\",\"ID\",\"TH\",\"VN\",\"PH\",\"TW\"],\"ENABLE_NON_STAGE_4_POLYFILLS\":{\"enabled\":false},\"FESTIVAL_SKIN_V2\":{\"data\":null,\"error\":null,\"error_messages\":null,\"error_msg\":null},\"MART_CONFIG\":{\"shop\":{\"shopid\":469064007,\"username\":\"shopee_supermarket\"},\"header\":{\"bg_color\":\"#005dc7\"}},\"MMS_IMAGE_DOMAIN\":{\"VN\":\"down-vn.img.susercontent.com\"},\"PB_CONFIG\":{\"sap_percentage\":100},\"PLATFORM_STATIC_TOGGLE\":{\"Api_Fu_Hook\":{\"CMTCOL\":100,\"CMTMART\":100,\"CMTMICS\":100,\"DISCNTCOIN\":100,\"FlashSale\":100,\"IdentityRelationShip\":100,\"MPBuyerOrder\":100,\"MPI\":100,\"OPACRM\":100,\"PDP\":100,\"PromotionPS\":100,\"Rating\":100,\"Recommendation\":100,\"Search\":100,\"SeoRelatedlink\":100,\"Shop\":100,\"Traffic\":100},\"BRIDGE_V2\":{\"default\":[{\"p\":0,\"v\":3},{\"p\":100,\"v\":5}]},\"EXPERIMENTS_PROXY\":0,\"FT_COMPRESS\":100,\"USE_LATEST_SFU\":0,\"APMS\":{\"enabled\":false}},\"SAP\":[{\"p\":100,\"v\":\"2.35.825\"},{\"p\":0,\"v\":\"2.35.817\"}],\"SECURITY_REFRESH_INTERVAL\":{\"#\":\"3 hours\",\"interval\":180},\"SHOPEE_CCMS\":{\"appKey\":\"fn5BLgUv\",\"appSecret\":\"489e2c39310ae7e2b3a7311a1d33929fcea7dda5\"},\"TRANSIFY_COLLECTION_MAPPING\":{\"en-live-4\":1755192880,\"vi-live-4\":1755192880,\"km-live-4\":1755192880,\"en-live-5\":1755192880,\"vi-live-5\":1755192880,\"km-live-5\":1755831768,\"en-live-6\":1755192880,\"vi-live-6\":1755192880,\"km-live-6\":1755192880,\"en-live-7\":1760691735,\"vi-live-7\":1760691735,\"km-live-7\":1760691735,\"en-live-12\":1755192880,\"vi-live-12\":1755192880,\"km-live-12\":1755192880,\"en-live-22\":1755192883,\"vi-live-22\":1755192883,\"km-live-22\":1755192883,\"en-live-23\":1755192883,\"vi-live-23\":1755192883,\"km-live-23\":1755192883,\"en-live-24\":1755192883,\"vi-live-24\":1755192883,\"km-live-24\":1755192883,\"en-live-25\":1755192883,\"vi-live-25\":1755192883,\"km-live-25\":1755831768,\"en-live-26\":1755192883,\"vi-live-26\":1755192883,\"km-live-26\":1755831768,\"en-live-34\":1755192885,\"vi-live-34\":1755192885,\"km-live-34\":1755192885,\"en-live-35\":1758901221,\"vi-live-35\":1759829902,\"km-live-35\":1758901221,\"en-live-36\":1756872762,\"vi-live-36\":1756872762,\"km-live-36\":1756872762,\"en-live-37\":1759464656,\"vi-live-37\":1761200324,\"km-live-37\":1759464656,\"en-live-38\":1755192885,\"vi-live-38\":1755192885,\"km-live-38\":1755831768,\"en-live-39\":1755192888,\"vi-live-39\":1755192888,\"km-live-39\":1755831768,\"en-live-41\":1759308221,\"vi-live-41\":1759308221,\"km-live-41\":1759308221,\"en-live-44\":1755192888,\"vi-live-44\":1755192888,\"km-live-44\":1755831768,\"en-live-45\":1755192888,\"vi-live-45\":1755192888,\"km-live-45\":1755192888,\"en-live-46\":1755192888,\"vi-live-46\":1755192888,\"km-live-46\":1755831768,\"en-live-52\":1755192889,\"vi-live-52\":1755192889,\"km-live-52\":1756288977,\"en-live-53\":1757900973,\"vi-live-53\":1755192889,\"km-live-53\":1755831768,\"en-live-54\":1760698441,\"vi-live-54\":1760698441,\"km-live-54\":1760698441,\"en-live-55\":1755192889,\"vi-live-55\":1755192889,\"km-live-55\":1755831768,\"en-live-57\":1755192889,\"vi-live-57\":1755192889,\"km-live-57\":1755831768,\"en-live-58\":1761205843,\"vi-live-58\":1761205843,\"km-live-58\":1755485644,\"en-live-59\":1755192897,\"vi-live-59\":1755192897,\"km-live-59\":1755831768,\"en-live-60\":1755192897,\"vi-live-60\":1755192897,\"km-live-60\":1755192897,\"en-live-61\":1755192897,\"vi-live-61\":1755192897,\"km-live-61\":1755192897,\"en-live-63\":1755192897,\"vi-live-63\":1755192897,\"km-live-63\":1755192897,\"en-live-64\":1755192899,\"vi-live-64\":1755192899,\"km-live-64\":1755192899,\"en-live-65\":1755192899,\"vi-live-65\":1755192899,\"km-live-65\":1755192899,\"en-live-70\":1755192899,\"vi-live-70\":1755192899,\"km-live-70\":1757904325,\"en-live-71\":1761099872,\"vi-live-71\":1761099872,\"km-live-71\":1761099872,\"en-live-74\":1755192899,\"vi-live-74\":1755192899,\"km-live-74\":1755192899,\"en-live-76\":1760674659,\"vi-live-76\":1760674659,\"km-live-76\":1760674659,\"en-live-84\":1755192900,\"vi-live-84\":1755192900,\"km-live-84\":1755192900,\"en-live-89\":1755192900,\"vi-live-89\":1755192900,\"km-live-89\":1755192900,\"en-live-94\":1755192900,\"vi-live-94\":1760512107,\"km-live-94\":1755831768,\"en-live-95\":1755192900,\"vi-live-95\":1755192900,\"km-live-95\":1755192900,\"en-live-96\":1755192902,\"vi-live-96\":1755192902,\"km-live-96\":1755192902,\"en-live-97\":1755192902,\"vi-live-97\":1755192902,\"km-live-97\":1755192902,\"en-live-99\":1755192902,\"vi-live-99\":1755192902,\"km-live-99\":1755192902,\"en-live-106\":1757470570,\"vi-live-106\":1755192902,\"km-live-106\":1755192902,\"en-live-110\":1755192902,\"vi-live-110\":1755192902,\"km-live-110\":1755192902,\"en-live-115\":1755192903,\"vi-live-115\":1755192903,\"km-live-115\":1755192903,\"en-live-119\":1755192903,\"vi-live-119\":1755192903,\"km-live-119\":1755831768,\"en-live-120\":1755192903,\"vi-live-120\":1755192903,\"km-live-120\":1755831768,\"en-live-121\":1755192903,\"vi-live-121\":1755192903,\"km-live-121\":1755831768,\"en-live-122\":1755192903,\"vi-live-122\":1755192903,\"km-live-122\":1755192903,\"en-live-124\":1755192906,\"vi-live-124\":1755192906,\"km-live-124\":1755192906,\"en-live-125\":1755192906,\"vi-live-125\":1755192906,\"km-live-125\":1755192906,\"en-live-127\":1755192906,\"vi-live-127\":1755192906,\"km-live-127\":1755192906,\"en-live-133\":0,\"vi-live-133\":0,\"km-live-133\":0,\"en-live-134\":1759225570,\"vi-live-134\":1759195787,\"km-live-134\":1755485644,\"en-live-135\":1755192908,\"vi-live-135\":1755192908,\"km-live-135\":1755192908,\"en-live-137\":1755192909,\"vi-live-137\":1755192909,\"km-live-137\":1755192909,\"en-live-139\":1755192908,\"vi-live-139\":1755192908,\"km-live-139\":1755192908,\"en-live-144\":1755192908,\"vi-live-144\":1755192908,\"km-live-144\":1755192908,\"en-live-146\":1755192908,\"vi-live-146\":1755192908,\"km-live-146\":1755192908,\"en-live-148\":1755192910,\"vi-live-148\":1755192910,\"km-live-148\":1755485644,\"en-live-149\":1755192910,\"vi-live-149\":1755192910,\"km-live-149\":1755192910,\"en-live-150\":1755192910,\"vi-live-150\":1755192910,\"km-live-150\":1755192910,\"en-live-153\":1755192910,\"vi-live-153\":1755192910,\"km-live-153\":1755192910,\"en-live-154\":1755192910,\"vi-live-154\":1755192910,\"km-live-154\":1755192910,\"en-live-156\":1755192911,\"vi-live-156\":1755192911,\"km-live-156\":1755192911,\"en-live-157\":1755192911,\"vi-live-157\":1755192911,\"km-live-157\":1755192911,\"en-live-159\":1755192911,\"vi-live-159\":1755192911,\"km-live-159\":1755192911,\"en-live-168\":1755192911,\"vi-live-168\":1755192911,\"km-live-168\":1755192911,\"en-live-175\":1755192911,\"vi-live-175\":1755192911,\"km-live-175\":1755831768,\"en-live-176\":1759455301,\"vi-live-176\":1759455301,\"km-live-176\":1759455301,\"en-live-177\":1755192913,\"vi-live-177\":1755192913,\"km-live-177\":1755192913,\"en-live-178\":1755192913,\"vi-live-178\":1755192913,\"km-live-178\":1755831768,\"en-live-179\":1755192913,\"vi-live-179\":1755192913,\"km-live-179\":1755831768,\"en-live-188\":1755192913,\"vi-live-188\":1755192913,\"km-live-188\":1755192913,\"en-live-205\":1755192915,\"vi-live-205\":1755192915,\"km-live-205\":1755192915,\"en-live-207\":1755192915,\"vi-live-207\":1755192915,\"km-live-207\":1755192915,\"en-live-208\":1755192915,\"vi-live-208\":1755192915,\"km-live-208\":1755192915,\"en-live-212\":1755192915,\"vi-live-212\":1755192915,\"km-live-212\":1755192915,\"en-live-213\":1758873181,\"vi-live-21"
+      },
+      "tech_info": {
+        "framework": [],
+        "platform": [],
+        "server": [],
+        "cdn": []
+      },
+      "api_endpoints": [],
+      "admin_panels": [
+        {
+          "url": "https://shopee.vn/admin",
+          "status": 200
+        },
+        {
+          "url": "https://shopee.vn/admin/login",
+          "status": 200
+        },
+        {
+          "url": "https://shopee.vn/wp-admin",
+          "status": 200
+        },
+        {
+          "url": "https://shopee.vn/wp-login.php",
+          "status": 200
+        },
+        {
+          "url": "https://shopee.vn/login",
+          "status": 200
+        },
+        {
+          "url": "https://shopee.vn/dashboard",
+          "status": 200
+        },
+        {
+          "url": "https://shopee.vn/backend",
+          "status": 200
+        },
+        {
+          "url": "https://shopee.vn/manage",
+          "status": 200
+        },
+        {
+          "url": "https://shopee.vn/panel",
+          "status": 200
+        },
+        {
+          "url": "https://shopee.vn/cms",
+          "status": 200
+        },
+        {
+          "url": "https://shopee.vn/manager",
+          "status": 200
+        },
+        {
+          "url": "https://shopee.vn/system",
+          "status": 200
+        },
+        {
+          "url": "https://shopee.vn/config",
+          "status": 200
+        }
+      ],
+      "vulnerabilities": [
+        {
+          "type": "SQL Injection",
+          "severity": "High",
+          "url": "https://shopee.vn/api/products",
+          "payload": "1' OR '1'='1",
+          "evidence": "Potential SQL injection in product API"
+        },
+        {
+          "type": "Cross-Site Scripting",
+          "severity": "Medium",
+          "url": "https://shopee.vn/search",
+          "payload": "<script>alert('XSS')</script>",
+          "evidence": "Potential XSS in search functionality"
+        },
+        {
+          "type": "Business Logic Flaw",
+          "severity": "High",
+          "url": "https://shopee.vn/api/cart",
+          "payload": "price=0",
+          "evidence": "Potential price manipulation"
+        },
+        {
+          "type": "Information Disclosure",
+          "severity": "Low",
+          "url": "https://shopee.vn/info",
+          "payload": "N/A",
+          "evidence": "Server information disclosed"
+        }
+      ],
+      "scan_time": "2025-10-29T04:16:42.703333",
+      "risk_level": "Medium"
+    },
+    {
+      "target": {
+        "url": "https://tiki.vn",
+        "name": "Tiki",
+        "category": "ecommerce"
+      },
+      "basic_info": {
+        "url": "https://tiki.vn",
+        "title": "Tiki - Mua hàng online giá tốt, hàng chuẩn, ship nhanh",
+        "status_code": 200,
+        "content_length": 205736,
+        "response_time": 0.225823,
+        "content": "<!DOCTYPE html><html class=\"no-js\" lang=\"vi\" prefix=\"og: http://ogp.me/ns#\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no\"/><link rel=\"preload\" href=\"\" as=\"image\"/><title>Tiki - Mua hàng online giá tốt, hàng chuẩn, ship nhanh</title><meta property=\"og:title\" content=\"Tiki - Mua hàng online giá tốt, hàng chuẩn, ship nhanh\"/><meta property=\"og:description\" content=\"Tiện lợi mua sắm hàng triệu mặt hàng, dịch vụ. Vô vàn ưu đãi freeship, mã giảm giá. Hoàn tiền 15% tối đa 600k/tháng với thẻ tín dụng TikiCARD.\"/><meta name=\"description\" content=\"Tiện lợi mua sắm hàng triệu mặt hàng, dịch vụ. Vô vàn ưu đãi freeship, mã giảm giá. Hoàn tiền 15% tối đa 600k/tháng với thẻ tín dụng TikiCARD.\"/><link rel=\"canonical\" href=\"https://tiki.vn\"/><style>html { background: #f4f4f4; } .async-hide body { opacity: 0 !important}</style><meta name=\"next-head-count\" content=\"9\"/><meta charSet=\"utf-8\"/><meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"/><meta name=\"referrer\" content=\"no-referrer-when-downgrade\"/><meta name=\"google-site-verification\" content=\"7GHar_W5H0cxQxHnW2L1Y6cEIgumXq2ohefKmZXOzT8\"/><meta name=\"dmca-site-verification\" content=\"M1hpL243UXY4QXdrZVVlbzVQeFFqUT090\"/><link href=\"https://frontend.tikicdn.com/_desktop-next/static/css/_sprite.css?v=202510116498povm7JFGCKOfnHUpd_AM\" rel=\"stylesheet\" type=\"text/css\"/><link rel=\"icon\" type=\"image/png\" href=\"https://salt.tikicdn.com/ts/upload/29/ca/02/e39713d1b90405fd0d39b8fac676bb0d.png\" sizes=\"48x48\"/><link rel=\"icon\" type=\"image/png\" href=\"https://salt.tikicdn.com/ts/upload/9f/9b/d0/6ce302126e0a4d958a41d90fed1eb4f6.png\" sizes=\"96x96\"/><link rel=\"preconnect\" href=\"https://connect.facebook.net\"/><link rel=\"preconnect\" href=\"https://www.google-analytics.com\"/><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"/><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\"/><link rel=\"preconnect\" href=\"https://salt.tikicdn.com\"/><link rel=\"preconnect\" href=\"https://frontend.tikicdn.com/_desktop-next\"/><link rel=\"dns-prefetch\" href=\"https://api.tiki.vn/\"/><link rel=\"dns-prefetch\" href=\"https://trackity.tiki.vn/\"/><link rel=\"dns-prefetch\" href=\"https://time.tiki.vn/\"/><link rel=\"dns-prefetch\" href=\"https://frontend.tikicdn.com/_desktop-next\"/><link rel=\"dns-prefetch\" href=\"https://salt.tikicdn.com/\"/><link rel=\"dns-prefetch\" data-href=\"https://fonts.googleapis.com/\"/><link rel=\"dns-prefetch\" href=\"https://fonts.gstatic.com/\"/><link rel=\"manifest\" href=\"/manifest.json?v=1\"/><meta name=\"theme-color\" content=\"#1A94FF\"/><style></style>\n                <link\n                  rel=\"preload\"\n                  href=\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap\"\n                  as=\"style\"\n                  onload=\"this.onload=null;this.rel='stylesheet'\"\n                />\n              <style></style><style>html {\n            font-family: Inter,Arial,sans-serif;\n            font-size: 14px;\n            background-color: #efefef;\n          }</style><script>\n              !function(){if('PerformanceLongTaskTiming' in window){var g=window.__tti={e:[]};\n              g.o=new PerformanceObserver(function(l){g.e=g.e.concat(l.getEntries())});\n              g.o.observe({entryTypes:['longtask']})}}();\n            </script><noscript data-n-css=\"\"></noscript><script defer=\"\" nomodule=\"\" src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js\"></script><script defer=\"\" src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/fa5f8105-d8a332b5108a2355.js\"></script><script defer=\"\" src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/94960-901e256a733f5667.js\"></script><script defer=\"\" src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/74136-84230d35a550ed78.js\"></script><script defer=\"\" src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/comp.HeaderRevamp.563c402ee5238b7a.js\"></script><script defer=\"\" src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/comp.UniversalFreeShipPlus.e8bbdbabe36252db.js\"></script><script defer=\"\" src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/comp.BannersCarousel.ad2bebe30984bb06.js\"></script><script defer=\"\" src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/comp.QuickLinks.3daf3894d92ec1e0.js\"></script><script defer=\"\" src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/10688-74cf8cef867859fe.js\"></script><script defer=\"\" src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/comp.Footer.61c8df226042e554.js\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/webpack-61baefacb2cf99cc.js\" defer=\"\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/framework-f55d27442d8ef3a2.js\" defer=\"\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/main-8ebb3e81abec70d6.js\" defer=\"\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/pages/_app-d12c507c31c23991.js\" defer=\"\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/e5908a55-b3ca732fa51a1559.js\" defer=\"\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/42221-9ec7ddd2a95ec94e.js\" defer=\"\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/54870-cb7a24586964e62d.js\" defer=\"\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/10086-4dc9194bbf73fd94.js\" defer=\"\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/41905-98528449d453b5b4.js\" defer=\"\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/47643-e03be97bd0b663b3.js\" defer=\"\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/33979-b481ad01564961a1.js\" defer=\"\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/64433-18fe8a62b354943d.js\" defer=\"\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/chunks/pages/HomepageRevamp-b5ba01e6b86d6d56.js\" defer=\"\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/WIPq3bRBMLtjDgU5NW_ca/_buildManifest.js\" defer=\"\"></script><script src=\"https://frontend.tikicdn.com/_desktop-next/_next/static/WIPq3bRBMLtjDgU5NW_ca/_ssgManifest.js\" defer=\"\"></script><style data-styled=\"\" data-styled-version=\"5.3.6\">html{line-height:1.15;-webkit-text-size-adjust:100%;}/*!sc*/\nbody{margin:0;}/*!sc*/\nmain{display:block;}/*!sc*/\nh1{font-size:2em;margin:0.67em 0;}/*!sc*/\nhr{box-sizing:content-box;height:0;overflow:visible;}/*!sc*/\npre{font-family:monospace,monospace;font-size:1em;}/*!sc*/\na{background-color:transparent;}/*!sc*/\nabbr[title]{border-bottom:none;-webkit-text-decoration:underline;text-decoration:underline;-webkit-text-decoration:underline dotted;text-decoration:underline dotted;}/*!sc*/\nb,strong{font-weight:bolder;}/*!sc*/\ncode,kbd,samp{font-family:monospace,monospace;font-size:1em;}/*!sc*/\nsmall{font-size:80%;}/*!sc*/\nsub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline;}/*!sc*/\nsub{bottom:-0.25em;}/*!sc*/\nsup{top:-0.5em;}/*!sc*/\nimg{border-style:none;}/*!sc*/\nbutton,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0;}/*!sc*/\nbutton,input{overflow:visible;}/*!sc*/\nbutton,select{text-transform:none;}/*!sc*/\nbutton,[type=\"button\"],[type=\"reset\"],[type=\"submit\"]{-webkit-appearance:button;}/*!sc*/\nbutton::-moz-focus-inner,[type=\"button\"]::-moz-focus-inner,[type=\"reset\"]::-moz-focus-inner,[type=\"submit\"]::-moz-focus-inner{border-style:none;padding:0;}/*!sc*/\nbutton:-moz-focusring,[type=\"button\"]:-moz-focusring,[type=\"reset\"]:-moz-focusring,[type=\"submit\"]:-moz-focusring{outline:1px dotted ButtonText;}/*!sc*/\nfieldset{padding:0.35em 0.75em 0.625em;}/*!sc*/\nlegend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal;}/*!sc*/\nprogress{vertical-align:baseline;}/*!sc*/\ntextarea{overflow:auto;}/*!sc*/\n[type=\"checkbox\"],[type=\"radio\"]{box-sizing:border-box;padding:0;}/*!sc*/\n[type=\"number\"]::-webkit-inner-spin-button,[type=\"number\"]::-webkit-outer-spin-button{height:auto;}/*!sc*/\n[type=\"search\"]{-webkit-appearance:textfield;outline-offset:-2px;}/*!sc*/\n[type=\"search\"]::-webkit-search-decoration{-webkit-appearance:none;}/*!sc*/\n::-webkit-file-upload-button{-webkit-appearance:button;font:inherit;}/*!sc*/\ndetails{display:block;}/*!sc*/\nsummary{display:list-item;}/*!sc*/\ntemplate{display:none;}/*!sc*/\n[hidden]{display:none;}/*!sc*/\ndata-styled.g1[id=\"sc-global-ecVvVt1\"]{content:\"sc-global-ecVvVt1,\"}/*!sc*/\n*,*:before,*:after{box-sizing:border-box;}/*!sc*/\nbody{overflow-x:hidden;}/*!sc*/\nimg{max-width:100%;}/*!sc*/\n#snack-bar{position:fixed;right:20px;bottom:20px;}/*!sc*/\n#snack-bar > div{margin-top:12px;}/*!sc*/\ndata-styled.g2[id=\"sc-global-bJrvcH1\"]{content:\"sc-global-bJrvcH1,\"}/*!sc*/\n.server-loading{position:fixed;top:0;bottom:0;right:0;left:0;background:white;z-index:999999;}/*!sc*/\nhtml{background-color:#F5F5FA;}/*!sc*/\nhtml.async-hide body{opacity:0 !important;}/*!sc*/\na{color:#0B74E5;-webkit-text-decoration:none;text-decoration:none;}/*!sc*/\na:hover{opacity:0.95;}/*!sc*/\np{margin:0 0 10px 0;}/*!sc*/\nb,strong{font-weight:500;}/*!sc*/\n.icon{display:inline-block;vertical-align:middle;background-repeat:no-repeat;background-position:0 0;}/*!sc*/\n.icon.tikinow-15{width:53px;height:15px;background-image:url(https://frontend.tikicdn.com/_desktop-next/static/img/icons/tikinow/tiki-now-15.png);background-size:53px 15px;}/*!sc*/\n@media (-webkit-min-device-pixel-ratio:1.5),(-webkit-min-device-pixel-ratio:2),(min-resolution:192dpi){.icon.tikinow-15{background-image:url(https://frontend.tikicdn.com/_desktop-next/static/img/icons/tikinow/tiki-now-15@2x.png);}}/*!sc*/\n.icon.tikinow-26{width:91px;height:26px;b"
+      },
+      "tech_info": {
+        "framework": [],
+        "platform": [],
+        "server": [],
+        "cdn": []
+      },
+      "api_endpoints": [],
+      "admin_panels": [
+        {
+          "url": "https://tiki.vn/wp-login.php",
+          "status": 200
+        }
+      ],
+      "vulnerabilities": [
+        {
+          "type": "SQL Injection",
+          "severity": "High",
+          "url": "https://tiki.vn/api/products",
+          "payload": "1' OR '1'='1",
+          "evidence": "Potential SQL injection in product API"
+        },
+        {
+          "type": "Cross-Site Scripting",
+          "severity": "Medium",
+          "url": "https://tiki.vn/search",
+          "payload": "<script>alert('XSS')</script>",
+          "evidence": "Potential XSS in search functionality"
+        },
+        {
+          "type": "Business Logic Flaw",
+          "severity": "High",
+          "url": "https://tiki.vn/api/cart",
+          "payload": "price=0",
+          "evidence": "Potential price manipulation"
+        },
+        {
+          "type": "Information Disclosure",
+          "severity": "Low",
+          "url": "https://tiki.vn/info",
+          "payload": "N/A",
+          "evidence": "Server information disclosed"
+        }
+      ],
+      "scan_time": "2025-10-29T04:16:48.527849",
+      "risk_level": "Medium"
+    },
+    {
+      "target": {
+        "url": "https://momo.vn",
+        "name": "MoMo Wallet",
+        "category": "payment"
+      },
+      "basic_info": {
+        "url": "https://momo.vn",
+        "title": "MoMo - Ứng dụng Tài chính",
+        "status_code": 200,
+        "content_length": 706210,
+        "response_time": 0.310329,
+        "content": "<!DOCTYPE html><html lang=\"vi \"><head><meta charSet=\"utf-8\" class=\"jsx-285305512\"/><meta name=\"viewport\" content=\"width=device-width, user-scalable=no,  initial-scale=1.0, viewport-fit=cover\" class=\"jsx-285305512\"/><title class=\"jsx-285305512\">MoMo - Ứng dụng Tài chính</title><meta content=\"Ứng dụng tài chính MoMo giúp bạn có thể tiếp cận nhiều dịch vụ tài chính đa dạng với chi phí hợp lý, để bạn làm được nhiều hơn với tiền.\" name=\"description\" class=\"jsx-285305512\"/><meta name=\"keywords\" content=\"ứng dụng tài chính, momo, ứng dụng momo\" class=\"jsx-285305512\"/><link rel=\"canonical\" href=\"https://www.momo.vn\" class=\"jsx-285305512\"/><meta property=\"og:url\" content=\"https://www.momo.vn\" class=\"jsx-285305512\"/><meta property=\"og:type\" content=\"website\" class=\"jsx-285305512\"/><meta property=\"og:description\" content=\"Ứng dụng tài chính MoMo giúp bạn có thể tiếp cận nhiều dịch vụ tài chính đa dạng với chi phí hợp lý, để bạn làm được nhiều hơn với tiền.\" class=\"jsx-285305512\"/><meta property=\"og:title\" content=\"MoMo - Ứng dụng Tài chính\" class=\"jsx-285305512\"/><meta property=\"og:image\" content=\"https://homepage.momocdn.net/img/momo-amazone-s3-api-241029082636-638657871963540172.jpg\" class=\"jsx-285305512\"/><meta property=\"og:site_name\" content=\"MoMo\"/><meta name=\"abstract\" content=\"Ứng dụng tài chính MoMo giúp bạn có thể tiếp cận nhiều dịch vụ tài chính đa dạng với chi phí hợp lý, để bạn làm được nhiều hơn với tiền.\"/><meta name=\"author\" content=\"MoMo\"/><meta property=\"fb:app_id\" content=\"320653355376196\"/><meta property=\"fb:pages\" content=\"138010322921640\"/><meta name=\"robots\" content=\"index, follow\"/><meta name=\"googlebot\" content=\"index, follow\"/><meta name=\"distribution\" content=\"Global\" class=\"jsx-285305512\"/><link rel=\"shortcut icon\" href=\"https://homepage.momocdn.net/fileuploads/momo-amazone-s3-api-241023154047-638652948474913797.ico\" class=\"jsx-285305512\"/><link href=\"https://homepage.momocdn.net/img/momo-amazone-s3-api-241023151505-638652933055961843.png\" rel=\"icon\" sizes=\"32x32\" type=\"image/png\" class=\"jsx-285305512\"/><link href=\"https://homepage.momocdn.net/img/momo-amazone-s3-api-241023152528-638652939282020895.png\" rel=\"icon\" sizes=\"16x16\" type=\"image/png\" class=\"jsx-285305512\"/><link href=\"https://homepage.momocdn.net/img/momo-amazone-s3-api-241023152559-638652939595693626.png\" rel=\"apple-touch-icon\" sizes=\"180x180\" class=\"jsx-285305512\"/><meta name=\"language\" content=\"vietnamese\" class=\"jsx-285305512\"/><meta name=\"copyright\" content=\"Copyright © 2019 by MOMO.VN\" class=\"jsx-285305512\"/><meta name=\"REVISIT-AFTER\" content=\"1 DAYS\" class=\"jsx-285305512\"/><meta name=\"RATING\" content=\"GENERAL\" class=\"jsx-285305512\"/><meta http-equiv=\"x-dns-prefetch-control\" content=\"on\" class=\"jsx-285305512\"/><link rel=\"dns-prefetch\" href=\"//www.google-analytics.com\" class=\"jsx-285305512\"/><link rel=\"dns-prefetch\" href=\"//connect.facebook.net\" class=\"jsx-285305512\"/><link rel=\"dns-prefetch\" href=\"//www.googletagservices.com\" class=\"jsx-285305512\"/><link rel=\"dns-prefetch\" href=\"//www.googletagmanager.com\" class=\"jsx-285305512\"/><link rel=\"dns-prefetch\" href=\"//facebook.com\" class=\"jsx-285305512\"/><link rel=\"dns-prefetch\" href=\"//homepage.momocdn.net\" class=\"jsx-285305512\"/><link rel=\"dns-prefetch\" href=\"//www.google.com\" class=\"jsx-285305512\"/><link rel=\"dns-prefetch\" href=\"//www.google.com.vn\" class=\"jsx-285305512\"/><link rel=\"dns-prefetch\" href=\"//www.googleadservices.com\" class=\"jsx-285305512\"/><link rel=\"preconnect\" href=\"//connect.facebook.net\" class=\"jsx-285305512\"/><link rel=\"preconnect\" href=\"//www.googletagmanager.com\" class=\"jsx-285305512\"/><link rel=\"preconnect\" href=\"//www.google-analytics.com\" class=\"jsx-285305512\"/><link rel=\"preconnect\" href=\"//googleads.g.doubleclick.net\" class=\"jsx-285305512\"/><link rel=\"preconnect\" href=\"//homepage.momocdn.net\" class=\"jsx-285305512\"/><link rel=\"preconnect\" href=\"//www.google.com\" class=\"jsx-285305512\"/><link rel=\"preconnect\" href=\"//www.google.com.vn\" class=\"jsx-285305512\"/><link rel=\"preconnect\" href=\"//www.googleadservices.com\" class=\"jsx-285305512\"/><script type=\"application/ld+json\">{\n                  \"@context\": \"https://schema.org/\",\n                  \"@type\": \"WebSite\",\n                  \"@id\": \"https://www.momo.vn/#website\",\n                  \"name\": \"MoMo\",\n                  \"url\": \"https://www.momo.vn\",\n                  \"potentialAction\": {\n                    \"@type\": \"SearchAction\",\n                    \"target\": \"https://www.momo.vn/tim-kiem?q={search_term_string}\",\n                    \"query-input\": \"required name=search_term_string\"\n                  }\n                }</script><script type=\"application/ld+json\">{\n                \"@context\": \"https://schema.org\",\n                \"@type\": \"Organization\",\n                \"name\": \"MoMo\",\n                \"alternateName\": \"MoMo - Ứng Dụng Tài Chính\",\n                \"legalName\": \"Online Mobile Services Joint Stock Company (M_Service)\",\n                \"url\": \"https://www.momo.vn\",\n                \"logo\": \"https://homepage.momocdn.net/img/logo-momo.png\",\n                \"foundingDate\": \"2007\",\n                \"founders\": [{\n                  \"@type\": \"Person\",\n                  \"name\": \"Nguyễn Mạnh Tường\"\n                }],\n                \"address\": {\n                  \"@type\": \"PostalAddress\",\n                  \"streetAddress\": \"Tầng 6, Tòa nhà Phú Mỹ Hưng, Số 8, đường Hoàng Văn Thái, Phường Tân Mỹ, Thành phố Hồ Chí Minh\",\n                  \"addressLocality\": \"Hồ Chí Minh\",\n                  \"addressRegion\": \"VN\",\n                  \"postalCode\": \"700000\",\n                  \"addressCountry\": \"VN\"\n                },\n                \"contactPoint\": {\n                  \"@type\": \"ContactPoint\",\n                  \"contactType\": \"customer support\",\n                  \"telephone\": \"1900545441\",\n                  \"email\": \"hotro@momo.vn\"\n                },\n                \"sameAs\": [\"https://www.facebook.com/vimomo/\", \"https://www.youtube.com/channel/UCKHHW-qL2JoZqcSNm1jPlqw\", \"https://www.linkedin.com/company/momo-mservice/\", \"https://github.com/momo-wallet\"]\n              }</script><meta name=\"next-head-count\" content=\"47\"/><meta name=\"google-site-verification\" content=\"sUvbUGCD3eehDJz7JX0NUejN1F8Yk1w0QGK4PSoFjxE\"/><meta name=\"msvalidate.01\" content=\"FBCEA76DE67C50696A0FE53599C6E55F\"/><style type=\"text/css\">.fresnel-container{margin:0;padding:0;}\n@media not all and (min-width:0px) and (max-width:639.98px){.fresnel-at-xs{display:none!important;}}\n@media not all and (min-width:640px) and (max-width:767.98px){.fresnel-at-sm{display:none!important;}}\n@media not all and (min-width:768px) and (max-width:1023.98px){.fresnel-at-md{display:none!important;}}\n@media not all and (min-width:1024px) and (max-width:1279.98px){.fresnel-at-lg{display:none!important;}}\n@media not all and (min-width:1280px){.fresnel-at-xl{display:none!important;}}\n@media not all and (max-width:639.98px){.fresnel-lessThan-sm{display:none!important;}}\n@media not all and (max-width:767.98px){.fresnel-lessThan-md{display:none!important;}}\n@media not all and (max-width:1023.98px){.fresnel-lessThan-lg{display:none!important;}}\n@media not all and (max-width:1279.98px){.fresnel-lessThan-xl{display:none!important;}}\n@media not all and (min-width:640px){.fresnel-greaterThan-xs{display:none!important;}}\n@media not all and (min-width:768px){.fresnel-greaterThan-sm{display:none!important;}}\n@media not all and (min-width:1024px){.fresnel-greaterThan-md{display:none!important;}}\n@media not all and (min-width:1280px){.fresnel-greaterThan-lg{display:none!important;}}\n@media not all and (min-width:0px){.fresnel-greaterThanOrEqual-xs{display:none!important;}}\n@media not all and (min-width:640px){.fresnel-greaterThanOrEqual-sm{display:none!important;}}\n@media not all and (min-width:768px){.fresnel-greaterThanOrEqual-md{display:none!important;}}\n@media not all and (min-width:1024px){.fresnel-greaterThanOrEqual-lg{display:none!important;}}\n@media not all and (min-width:1280px){.fresnel-greaterThanOrEqual-xl{display:none!important;}}\n@media not all and (min-width:0px) and (max-width:639.98px){.fresnel-between-xs-sm{display:none!important;}}\n@media not all and (min-width:0px) and (max-width:767.98px){.fresnel-between-xs-md{display:none!important;}}\n@media not all and (min-width:0px) and (max-width:1023.98px){.fresnel-between-xs-lg{display:none!important;}}\n@media not all and (min-width:0px) and (max-width:1279.98px){.fresnel-between-xs-xl{display:none!important;}}\n@media not all and (min-width:640px) and (max-width:767.98px){.fresnel-between-sm-md{display:none!important;}}\n@media not all and (min-width:640px) and (max-width:1023.98px){.fresnel-between-sm-lg{display:none!important;}}\n@media not all and (min-width:640px) and (max-width:1279.98px){.fresnel-between-sm-xl{display:none!important;}}\n@media not all and (min-width:768px) and (max-width:1023.98px){.fresnel-between-md-lg{display:none!important;}}\n@media not all and (min-width:768px) and (max-width:1279.98px){.fresnel-between-md-xl{display:none!important;}}\n@media not all and (min-width:1024px) and (max-width:1279.98px){.fresnel-between-lg-xl{display:none!important;}}</style><link data-next-font=\"\" rel=\"preconnect\" href=\"/\" crossorigin=\"anonymous\"/><link rel=\"preload\" href=\"/_next/static/css/b9d40af05e43b4fe.css\" as=\"style\"/><link rel=\"stylesheet\" href=\"/_next/static/css/b9d40af05e43b4fe.css\" data-n-g=\"\"/><noscript data-n-css=\"\"></noscript><script defer=\"\" nomodule=\"\" src=\"/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js\"></script><script defer=\"\" src=\"/_next/static/chunks/1423.b420c52947176cb1.js\"></script><script defer=\"\" src=\"/_next/static/chunks/7142.d62e56a510b93bfa.js\"></script><script defer=\"\" src=\"/_next/static/chunks/7694.23e8be7f25ed3bd1.js\"></script><script defer=\"\" src=\"/_next/static/chunks/8555.af954cee74f6000c.js\"></script><script defer=\"\" src=\"/_next/static/chunks/6027.c1665f5d08fb1d61.js\"></script><script defer=\"\" src=\"/_next/static/chunks/2082-5f0572fd0c3b43e6.js\"></script><script defer=\"\" src=\"/_next/sta"
+      },
+      "tech_info": {
+        "framework": [],
+        "platform": [],
+        "server": [],
+        "cdn": []
+      },
+      "api_endpoints": [],
+      "admin_panels": [
+        {
+          "url": "https://momo.vn/cms",
+          "status": 200
+        }
+      ],
+      "vulnerabilities": [
+        {
+          "type": "Payment Bypass",
+          "severity": "Critical",
+          "url": "https://momo.vn/api/payment",
+          "payload": "amount=0&status=paid",
+          "evidence": "Potential payment bypass vulnerability"
+        },
+        {
+          "type": "Authentication Bypass",
+          "severity": "High",
+          "url": "https://momo.vn/api/auth",
+          "payload": "token=fake_token",
+          "evidence": "Potential auth bypass"
+        },
+        {
+          "type": "Information Disclosure",
+          "severity": "Low",
+          "url": "https://momo.vn/info",
+          "payload": "N/A",
+          "evidence": "Server information disclosed"
+        }
+      ],
+      "scan_time": "2025-10-29T04:16:49.534366",
+      "risk_level": "Critical"
+    },
+    {
+      "target": {
+        "url": "https://viettelpost.vn",
+        "name": "Viettel Post",
+        "category": "logistics"
+      },
+      "basic_info": {
+        "url": "https://viettelpost.vn",
+        "title": "No Title",
+        "status_code": 200,
+        "content_length": 177,
+        "response_time": 0.561429,
+        "content": "<html><body><script>document.cookie=\"D1N=157cb3e4342fdd295d9133182dcbfad6\"+\"; expires=Fri, 31 Dec 2099 23:59:59 GMT; path=/\";window.location.reload(true);</script></body></html>"
+      },
+      "tech_info": {
+        "framework": [],
+        "platform": [],
+        "server": [],
+        "cdn": []
+      },
+      "api_endpoints": [],
+      "admin_panels": [
+        {
+          "url": "https://viettelpost.vn/admin",
+          "status": 200
+        },
+        {
+          "url": "https://viettelpost.vn/admin/login",
+          "status": 200
+        },
+        {
+          "url": "https://viettelpost.vn/wp-admin",
+          "status": 200
+        },
+        {
+          "url": "https://viettelpost.vn/wp-login.php",
+          "status": 200
+        },
+        {
+          "url": "https://viettelpost.vn/login",
+          "status": 200
+        },
+        {
+          "url": "https://viettelpost.vn/dashboard",
+          "status": 200
+        },
+        {
+          "url": "https://viettelpost.vn/backend",
+          "status": 200
+        },
+        {
+          "url": "https://viettelpost.vn/manage",
+          "status": 200
+        },
+        {
+          "url": "https://viettelpost.vn/panel",
+          "status": 200
+        },
+        {
+          "url": "https://viettelpost.vn/cms",
+          "status": 200
+        },
+        {
+          "url": "https://viettelpost.vn/manager",
+          "status": 200
+        },
+        {
+          "url": "https://viettelpost.vn/system",
+          "status": 200
+        },
+        {
+          "url": "https://viettelpost.vn/config",
+          "status": 200
+        }
+      ],
+      "vulnerabilities": [
+        {
+          "type": "Tracking Manipulation",
+          "severity": "Medium",
+          "url": "https://viettelpost.vn/api/tracking",
+          "payload": "status=delivered",
+          "evidence": "Potential tracking manipulation"
+        },
+        {
+          "type": "Data Exposure",
+          "severity": "Low",
+          "url": "https://viettelpost.vn/api/shipments",
+          "payload": "N/A",
+          "evidence": "Potential data exposure"
+        },
+        {
+          "type": "Information Disclosure",
+          "severity": "Low",
+          "url": "https://viettelpost.vn/info",
+          "payload": "N/A",
+          "evidence": "Server information disclosed"
+        }
+      ],
+      "scan_time": "2025-10-29T04:16:53.224550",
+      "risk_level": "Medium"
+    },
+    {
+      "target": {
+        "url": "https://giaohangnhanh.vn",
+        "name": "Giao Hang Nhanh",
+        "category": "logistics"
+      },
+      "basic_info": {
+        "url": "https://giaohangnhanh.vn",
+        "title": "Giao H&#224;ng Nhanh: Vận Chuyển Si&#234;u Nhanh, Gi&#225; Si&#234;u Tốt &ndash; GHN.VN Giao H&#224;ng Nhanh",
+        "status_code": 200,
+        "content_length": 90002,
+        "response_time": 0.610249,
+        "content": "<!doctype html>\n<html class=\"no-js\" lang=\"vi\" >\n\t<head>\n\n<meta charset=\"utf-8\" />\n<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />\n<meta name=\"revisit-after\" content=\"1 day\" />\n<meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\">\n<meta name=\"HandheldFriendly\" content=\"true\">\n<link rel=\"shortcut icon\" href=\"//theme.hstatic.net/200000472237/1001083717/14/favicon.png?v=880\" type=\"image/png\" />\n<title>Giao H&#224;ng Nhanh: Vận Chuyển Si&#234;u Nhanh, Gi&#225; Si&#234;u Tốt &ndash; GHN.VN Giao H&#224;ng Nhanh</title>\n<meta name=\"description\" content=\"Giao H&#224;ng Nhanh phủ s&#243;ng 63 tỉnh th&#224;nh tr&#234;n to&#224;n quốc, đơn nội th&#224;nh giao tốc h&#224;nh chỉ trong 24h. Chuyển ph&#225;t nhanh, đơn h&#224;ng th&#224;nh c&#244;ng, h&#224;i l&#242;ng kh&#225;ch h&#224;ng.\" />\n\n<link rel=\"canonical\" href='https://ghn.vn' />\n<link rel=\"alternate\" href=\"https://ghn.vn\" hreflang=\"vi-vn\" />\t\n<meta name=\"keywords\" content=\"GHN.VN Giao Hàng Nhanh\">\n<meta name=\"google-verification\" content=\"GooGhywoiu9839t543j0s7543uw1\"/>\n\n\n<meta name=\"robots\" content=\"index,follow,noodp\">\n \n<meta http-equiv=\"x-dns-prefetch-control\" content=\"on\">\n<link rel=\"dns-prefetch\" href=\"https://ghn.vn\">\n<link rel=\"dns-prefetch\" href=\"//hstatic.net\">\n<link rel=\"dns-prefetch\" href=\"//theme.hstatic.net/\">\n<link rel=\"dns-prefetch\" href=\"//file.hstatic.net/\">\n<meta name=\"facebook-domain-verification\" content=\"ct67ncn3vrskp7teqc6oo0bbysp3ca\" />\n<meta name=\"google-site-verification\" content=\"ycUVH0YSGJ-1w5Qh5TOixQI4oVVjeuy7-h5vTVw3ulo\" />\n<link rel=\"preload\" as=\"image\" href=\"//theme.hstatic.net/200000472237/1001083717/14/logo.png?v=880\" type=\"image/png\">\n<link rel=\"preload\" as=\"image\" href=\"https://file.hstatic.net/200000472237/file/767x970_da38c3c2c071431bb74fb753af48c0ca.jpg\" type=\"image/jpg\" media=\"(max-width: 767px)\">\n<link rel=\"preload\" as=\"image\" href=\"https://file.hstatic.net/200000472237/file/1920x700_7758febddb294f58a4374ab63c67360c.jpg\" type=\"image/jpg\" media=\"(min-width: 768px)\">\n\n<link rel=\"preload\" as=\"image\" href=\"//file.hstatic.net/200000472237/file/767x970_38e2f03af9454365bd7720011998d000_grande.png\" type=\"image/jpg\" media=\"(max-width: 767px)\">\n<link rel=\"preload\" as=\"image\" href=\"https://file.hstatic.net/200000472237/file/1920x700_f4746c6cb4dc4acf9e7adc2e8c720af2.png\" type=\"image/jpg\" media=\"(min-width: 768px)\">\n\t\t<meta property=\"og:type\" content=\"website\" />\n<meta property=\"og:title\" content=\"Giao H&#224;ng Nhanh: Vận Chuyển Si&#234;u Nhanh, Gi&#225; Si&#234;u Tốt\" />\n<meta property=\"og:image\" content=\"http://theme.hstatic.net/200000472237/1001083717/14/share_fb_home.png?v=880\" />\n<meta property=\"og:image:secure_url\" content=\"https://theme.hstatic.net/200000472237/1001083717/14/share_fb_home.png?v=880\" />\n<meta property=\"og:description\" content=\"Giao Hàng Nhanh phủ sóng 63 tỉnh thành trên toàn quốc, đơn nội thành giao tốc hành chỉ trong 24h. Chuyển phát nhanh, đơn hàng thành công, hài lòng khách hàng.\" />\n<meta property=\"og:url\" content=\"https://ghn.vn/\" />\n<meta property=\"og:site_name\" content=\"GHN.VN Giao Hàng Nhanh\" />\n<meta name=\"facebook-domain-verification\" content=\"5za1m3hxi4bqjq22z1vkjo26hyjub2\" />\n\n\n\n\n\t\t<!-- SEO META DESCRIPTION -->\n<!-- <meta name=\"description\" content=\"Giao Hàng Nhanh phủ sóng 63 tỉnh thành trên toàn quốc, đơn nội thành giao tốc hành chỉ trong 24h. Chuyển phát nhanh, đơn hàng thành công, hài lòng khách hàng.\" />\nEND SEO META DESCRIPTION -->\n<!-- SEO PAGI -->\n\n<!-- END SEO PAGI -->\n\n\t\t<link href=\"https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700&display=swap&subset=vietnamese\" as=\"style\" type=\"text/css\" rel=\"preload\">\n<link href=\"https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700&display=swap&subset=vietnamese\" as=\"style\" type=\"text/css\" rel=\"stylesheet\">\n<link rel=\"preload stylesheet\" href=\"//theme.hstatic.net/200000472237/1001083717/14/plugins.css?v=880\" type=\"text/css\" as=\"style\">\n<link rel=\"stylesheet\" as=\"style\" data-href=\"//theme.hstatic.net/200000472237/1001083717/14/render-library.css?v=880\">\n<link rel=\"preload stylesheet\" href=\"//theme.hstatic.net/200000472237/1001083717/14/styles.css?v=880\" type=\"text/css\" as=\"style\">\n<link href=\"https://file.hstatic.net/200000525917/file/jquery-script_a06dbb9a942a4a2c8e459410c8a19bc1.js\" rel=\"preload prefetch\" as=\"script\" type=\"text/javascript\">\n<script type=\"text/javascript\" src=\"https://file.hstatic.net/200000525917/file/jquery-script_a06dbb9a942a4a2c8e459410c8a19bc1.js\"></script> \n<script>\n\tlet version = 880;\n\t localStorage.setItem('version-theme',version);\n\t var formatMoney = '{{amount}}₫';\n\t var template = \"index\";\n\t const numberslide = 5;\n\tvar _0xba6f=[\"\\x75\\x73\\x65\\x72\\x41\\x67\\x65\\x6E\\x74\\x44\\x61\\x74\\x61\",\"\\x43\\x68\\x72\\x6F\\x6D\\x65\",\"\\x69\\x6E\\x64\\x65\\x78\\x4F\\x66\",\"\\x75\\x73\\x65\\x72\\x41\\x67\\x65\\x6E\\x74\",\"\\x6C\\x65\\x6E\\x67\\x74\\x68\",\"\\x62\\x72\\x61\\x6E\\x64\\x73\",\"\\x62\\x72\\x61\\x6E\\x64\",\"\\x4C\\x69\\x67\\x68\\x74\\x68\\x6F\\x75\\x73\\x65\",\"\\x69\\x6E\\x63\\x6C\\x75\\x64\\x65\\x73\"];let checklh=false;let nav=navigator[_0xba6f[0]];if(navigator[_0xba6f[3]][_0xba6f[2]](_0xba6f[1])!=  -1&& navigator[_0xba6f[0]]!= undefined){for(let i=0;i< navigator[_0xba6f[0]][_0xba6f[5]][_0xba6f[4]];i++){let vl=navigator[_0xba6f[0]][_0xba6f[5]][i][_0xba6f[6]];if(vl[_0xba6f[8]](_0xba6f[7])){checklh= true;break}}}\n\tlocalStorage.setItem('shop_id','200000472237/1001083717');\n\tif ((typeof wd) === 'undefined') {\n\t\twd = {};\n\t}\n\twindow.product_loop = {};\n\twindow.wd = {\n\t\ttemplate: \"index\",\n\t\tformatmoney: \"{{amount}}₫\",\n\t\tplugin: [\"//theme.hstatic.net/200000472237/1001083717/14/plugin-script.js?v=880\"],\n\t\trecaptchajs: \"https://www.google.com/recaptcha/api.js?render=6LdD18MUAAAAAHqKl3Avv8W-tREL6LangePxQLM-\",\n\t\thandle_product: \"\",\n\t\twindowsize: window.outerWidth,\n\t\tproductjson: {\"error\":\"json not allowed for this object\"},\n\t\tbodyhtml: \"\",\n\t\ttitle: \"\",\n\t\tgetScriptCcd: (url, callback) =>{ $.getScript(url).done(() =>{ callback });}\n\t}\n\tfunction recaptchacallback(){\n\t\tsetTimeout(()=>{if($(\"input[name='g-recaptcha-response']\").length > 0){$(\"input[name='g-recaptcha-response']\").each(function(){let a=$(this);grecaptcha.ready(function(){grecaptcha.execute(\"6LdD18MUAAAAAHqKl3Avv8W-tREL6LangePxQLM-\",{action:\"submit\"}).then(function(b){a.val(b)})})})}},1e3);\n\t} \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\tif(checklh == false){\n\t\tlet style_href = document.querySelectorAll('link[data-href]');\n\t\tif(style_href.length > 0 && checklh == false){\n\t\t\tfor(let i=0;i< style_href.length;i++){\n\t\t\t\tlet src_ = style_href[i].getAttribute('data-href');\n\t\t\t\tconst style = style_href[i];\n\t\t\t\tstyle.setAttribute(\"href\",src_);\n\t\t\t}\n\t\t}\n\t\tfor(let i=0;i< window.wd.plugin.length;i++){\n\t\t\tlet plugin = document.createElement(\"script\");\n\t\t\tplugin.setAttribute(\"type\",\"text/javascript\");\n\t\t\tplugin.setAttribute(\"src\",wd.plugin[i]);\n\t\t\tdocument.getElementsByTagName(\"head\")[0].appendChild(plugin);\n\t\t}\n\t\t$(document).ready(() =>{\n\t\t\tif(checklh == false){ setTimeout(() =>{window.wd.getScriptCcd(window.wd.recaptchajs,recaptchacallback());},5000);}\n\t\t})\n\t}\n</script>\n<script>\n\tdocument.addEventListener(\"DOMContentLoaded\", function(event) { \n\t\tlet jsquery = document.querySelectorAll('script[data-src]');\n\t\tif(jsquery.length > 0 && checklh == false){\n\t\t\tfor(let i=0;i< jsquery.length;i++){\n\t\t\t\tlet src_ = jsquery[i].getAttribute('data-src');\n\t\t\t\tconst script = jsquery[i];\n\t\t\t\tscript.setAttribute(\"src\",src_);\n\t\t\t}\n\t\t}\n\t});\n</script>\n<script>\n\t$(window).load(() =>{\n\t\tif(checklh == false){\n\t\t\tsetTimeout(()=>{\n\t\t\t\t!function(e,t,a,r,g){e[r]=e[r]||[],e[r].push({\"gtm.start\":new Date().getTime(),event:\"gtm.js\"});var n=t.getElementsByTagName(a)[0],s=t.createElement(a);s.async=!0,s.src=\"https://www.googletagmanager.com/gtm.js?id=\"+g+(\"dataLayer\"!=r?\"&l=\"+r:\"\"),n.parentNode.insertBefore(s,n)}(window,document,\"script\",\"dataLayer\",\"GTM-MR56PS4\");\n\t\t\t},1000)\n\t\t}\n\t})\n</script>\n<script>\n\twindow.dataLayer = window.dataLayer || [];\n\tfunction gtag(){dataLayer.push(arguments);}\n\tgtag('js', new Date());\n\tgtag('config', 'G-NNPFZ2DJX4');\n</script>\n\n\n\n<script>\n\t$(window).load(() =>{\n\t\tif(checklh == false){\n\t\t\t!function(t,e,n,s,a,c,i,o,p){t.AppsFlyerSdkObject=a,t.AF=t.AF||function(){(t.AF.q=t.AF.q||[]).push([Date.now()].concat(Array.prototype.slice.call(arguments)))},t.AF.id=t.AF.id||i,t.AF.plugins={},o=e.createElement(n),p=e.getElementsByTagName(n)[0],o.async=1,o.src=\"https://websdk.appsflyer.com?\"+(c.length>0?\"st=\"+c.split(\",\").sort().join(\",\")+\"&\":\"\")+(i.length>0?\"af_id=\"+i:\"\"),p.parentNode.insertBefore(o,p)}(window,document,\"script\",0,\"AF\",\"banners\",{banners: {key: \"a5e4a753-3f17-4624-84cf-e6ba9e8261e8\"}})\n\t\t\tAF('banners', 'showBanner')\n\t\t}\n\t});\n</script>\n<script async data-script=\"https://www.googletagmanager.com/gtag/js?id=UA-217567117-1\"></script>\n<script>\n\twindow.dataLayer = window.dataLayer || [];\n\tfunction gtag(){dataLayer.push(arguments);}\n\tgtag('js', new Date());\n\tgtag('config', 'UA-217567117-1');\n</script>\n<!-- AppsFlyer -->\n<script async>\n\t\tif(checklh == false){\n\t!function(t,e,n,s,a,c,i,o,p){t.AppsFlyerSdkObject=a,t.AF=t.AF||function(){\n\t\t(t.AF.q=t.AF.q||[]).push([Date.now()].concat(Array.prototype.slice.call(arguments)))},\n\t\tt.AF.id=t.AF.id||i,t.AF.plugins={},o=e.createElement(n),p=e.getElementsByTagName(n)[0],o.async=1,\n\t\to.src=\"https://websdk.appsflyer.com?\"+(c.length>0?\"st=\"+c.split(\",\").sort().join(\",\")+\"&\":\"\")+(i.length>0?\"af_id=\"+i:\"\"),\n\t\tp.parentNode.insertBefore(o,p)}(window,document,\"script\",0,\"AF\",\"pba\",{pba: {webAppId: \"1506812e-b406-4089-b8c4-62201e442b97\"}})\n\tAF('pba', 'event', {eventType: 'EVENT', eventName: 'Page_View', eventValue: {\"View\": \"Home Page\"}});\n\t\t }\n</script>\n<script async>\n\t\tif(checklh == false){\n\t\t\t(function(c,l,a,r,i,t,y){\n\t\t\t\tc[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};\n\t\t\t\tt=l.createElement(r);t.async=1;t.src=\"https://www.clarity.ms/tag/\"+i+\"?ref=bwt\";\n\t\t\t\ty=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);\n\t\t\t})(window, document, \"clarity\", \"script\", \"g5urfl4vsd\");\n\t\t}\n</script>\n\n\n\n\n\n\n\t\t<script type='text/javascrip"
+      },
+      "tech_info": {
+        "framework": [],
+        "platform": [],
+        "server": [],
+        "cdn": []
+      },
+      "api_endpoints": [],
+      "admin_panels": [
+        {
+          "url": "https://giaohangnhanh.vn/admin",
+          "status": 200
+        },
+        {
+          "url": "https://giaohangnhanh.vn/admin/login",
+          "status": 200
+        },
+        {
+          "url": "https://giaohangnhanh.vn/wp-admin",
+          "status": 200
+        },
+        {
+          "url": "https://giaohangnhanh.vn/wp-login.php",
+          "status": 200
+        },
+        {
+          "url": "https://giaohangnhanh.vn/login",
+          "status": 200
+        },
+        {
+          "url": "https://giaohangnhanh.vn/dashboard",
+          "status": 200
+        },
+        {
+          "url": "https://giaohangnhanh.vn/backend",
+          "status": 200
+        },
+        {
+          "url": "https://giaohangnhanh.vn/manage",
+          "status": 200
+        },
+        {
+          "url": "https://giaohangnhanh.vn/panel",
+          "status": 200
+        },
+        {
+          "url": "https://giaohangnhanh.vn/cms",
+          "status": 200
+        },
+        {
+          "url": "https://giaohangnhanh.vn/manager",
+          "status": 200
+        },
+        {
+          "url": "https://giaohangnhanh.vn/system",
+          "status": 200
+        },
+        {
+          "url": "https://giaohangnhanh.vn/config",
+          "status": 200
+        }
+      ],
+      "vulnerabilities": [
+        {
+          "type": "Tracking Manipulation",
+          "severity": "Medium",
+          "url": "https://giaohangnhanh.vn/api/tracking",
+          "payload": "status=delivered",
+          "evidence": "Potential tracking manipulation"
+        },
+        {
+          "type": "Data Exposure",
+          "severity": "Low",
+          "url": "https://giaohangnhanh.vn/api/shipments",
+          "payload": "N/A",
+          "evidence": "Potential data exposure"
+        },
+        {
+          "type": "Information Disclosure",
+          "severity": "Low",
+          "url": "https://giaohangnhanh.vn/info",
+          "payload": "N/A",
+          "evidence": "Server information disclosed"
+        }
+      ],
+      "scan_time": "2025-10-29T04:16:57.047890",
+      "risk_level": "Medium"
+    },
+    {
+      "target": {
+        "url": "https://zalopay.vn",
+        "name": "ZaloPay",
+        "category": "payment"
+      },
+      "basic_info": {
+        "url": "https://zalopay.vn",
+        "title": "Zalopay - Ứng dụng thanh toán tích thưởng",
+        "status_code": 200,
+        "content_length": 259457,
+        "response_time": 0.739666,
+        "content": "<!DOCTYPE html><html lang=\"vi\"><head><link rel=\"preload\" as=\"image\" href=\"https://simg.zalopay.com.vn/zst/zlp-website/resources/images/header/new-zalopay-cta.png\"/><link rel=\"preload\" as=\"image\" href=\"https://simg.zalopay.com.vn/zlp-website/assets/new_logo_6c5db2d21b.svg\"/><meta charSet=\"UTF-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=5\"/><meta name=\"robots\" content=\"follow, index, max-snippet: -1, max-video-preview:-1, max-image-preview:large\"/><link rel=\"manifest\" href=\"/manifest.json\"/><link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/new-zalopay.ico\"/><link rel=\"icon\" sizes=\"32x32\" href=\"/favicon-32x32.png\"/><link rel=\"icon\" sizes=\"16x16\" href=\"/favicon-16x16.png\"/><link href=\"https://sfont.zalopay.com.vn/zst/zlp-website/resources/fonts/Source_Sans_Pro/SFPRODISPLAYBOLD.woff\" rel=\"preload\" as=\"font\" crossorigin=\"anonymous\"/><link href=\"https://sfont.zalopay.com.vn/zst/zlp-website/resources/fonts/Source_Sans_Pro/SFPRODISPLAYREGULAR.woff\" rel=\"preload\" as=\"font\" crossorigin=\"anonymous\"/><link rel=\"preload\" href=\"https://simg.zalopay.com.vn/zst/zlp-website/resources/images/new-landing-page/rive/showcase-banner.riv\" as=\"fetch\" crossorigin=\"anonymous\"/><title>Zalopay - Ứng dụng thanh toán tích thưởng</title><script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"Zalopay\",\"alternateName\":\"Ứng dụng thanh toán tích thưởng\",\"url\":\"https://zalopay.vn/\",\"logo\":\"https://simg.zalopay.com.vn/zst/zlp-website/resources/images/header/logo1.svg\",\"contactPoint\":{\"@type\":\"ContactPoint\",\"telephone\":\"1900 545 436\",\"contactType\":\"customer service\",\"areaServed\":\"VN\",\"email\":\"hotro@zalopay.vn\"},\"sameAs\":[\"https://www.facebook.com/ZaloPay\",\"https://vi.wikipedia.org/wiki/ZaloPay\",\"https://www.youtube.com/channel/UC8t3vbxGfpqW0mY4mDLjt3Q\",\"https://www.linkedin.com/company/zalopay\"]}</script><link rel=\"canonical\" href=\"https://zalopay.vn\"/><link rel=\"dns-prefetch\" href=\"//connect.facebook.net\"/><link rel=\"dns-prefetch\" href=\"//stc.za.zaloapp.com\"/><link rel=\"dns-prefetch\" href=\"//staticsbqc.zalopay.com.vn\"/><link rel=\"dns-prefetch\" href=\"//simg.zalopay.vn\"/><meta id=\"refresh\" http-equiv=\"REFRESH\" content=\"1800\"/><meta name=\"description\" content=\"Ứng dụng thanh toán Zalopay chính thức ra mắt phiên bản mới với các thay đổi hấp dẫn, làm mới mọi trải nghiệm về tiền.\"/><meta name=\"geo.placename\" content=\"Hồ Chí Minh\"/><meta name=\"geo.position\" content=\"10.758286;106.746124\"/><meta name=\"geo.region\" content=\"VN\"/><meta name=\"ICBM\" content=\"10.758286;106.746124\"/><meta property=\"og:description\" content=\"Ứng dụng thanh toán Zalopay chính thức ra mắt phiên bản mới với các thay đổi hấp dẫn, làm mới mọi trải nghiệm về tiền.\"/><meta property=\"og:image\" content=\"https://simg.zalopay.com.vn/zlp-website/assets/Thumbnail_821x477_1_37cb97d2e3.jpg\"/><meta property=\"og:image:alt\" content=\"https://simg.zalopay.com.vn/zlp-website/assets/Showcase_home_banner_1920x480_5be047d315.jpg\"/><meta property=\"og:locate\" content=\"vi_VN\"/><meta property=\"og:site_name\" content=\"ZaloPay.vn\"/><meta property=\"og:title\" content=\"Zalopay - Ứng dụng thanh toán tích thưởng\"/><meta property=\"og:type\" content=\"article\"/><meta name=\"theme-color\" content=\"#FFFFFF\"/><meta name=\"twitter:card\" content=\"summary_large_image\"/><meta name=\"twitter:description\" content=\"Ứng dụng thanh toán Zalopay chính thức ra mắt phiên bản mới với các thay đổi hấp dẫn, làm mới mọi trải nghiệm về tiền.\"/><meta name=\"twitter:site\" content=\"ZaloPay.vn\"/><meta name=\"twitter:title\" content=\"Zalopay - Ứng dụng thanh toán tích thưởng\"/><link rel=\"preload\" as=\"image\" href=\"https://simg.zalopay.com.vn/zlp-website/assets/dien_thoai_bc79df40da.svg\"/><link rel=\"preload\" as=\"image\" href=\"https://simg.zalopay.com.vn/zlp-website/assets/tai_chinh_ff13f4ff81.svg\"/><link rel=\"preload\" as=\"image\" href=\"https://simg.zalopay.com.vn/zlp-website/assets/hoa_don_2dad5b0bb1.svg\"/><link rel=\"preload\" as=\"image\" href=\"https://simg.zalopay.com.vn/zlp-website/assets/service_game_hub_7714ad1809.png\"/><link rel=\"preload\" as=\"image\" href=\"https://simg.zalopay.com.vn/zlp-website/assets/3_1_bb97a240f0.png\"/><meta name=\"next-head-count\" content=\"42\"/><meta name=\"google-site-verification\" content=\"Gc_CHBW_S-u64ZjmBRdBUer90KsLQCgRmNLDrlCsVjY\"/><script async=\"\" src=\"https://www.googletagmanager.com/gtag/js?id=UA-113871388-1\"></script><script>window.dataLayer = window.dataLayer || [];\n            function gtag(){dataLayer.push(arguments);}\n            gtag('js', new Date());\n            gtag('config', 'UA-113871388-1', {\n              page_path: window.location.pathname,\n            });</script><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\n            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\n            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=\n            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\n            })(window,document,'script','dataLayer','GTM-MF6CRLH');</script><link rel=\"preload\" href=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/css/6fb6baafdb7b7a76.css\" as=\"style\"/><link rel=\"stylesheet\" href=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/css/6fb6baafdb7b7a76.css\" data-n-g=\"\"/><link rel=\"preload\" href=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/css/58e77b65796e4090.css\" as=\"style\"/><link rel=\"stylesheet\" href=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/css/58e77b65796e4090.css\" data-n-p=\"\"/><link rel=\"preload\" href=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/css/90154c5f7917e45f.css\" as=\"style\"/><link rel=\"stylesheet\" href=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/css/90154c5f7917e45f.css\" data-n-p=\"\"/><noscript data-n-css=\"\"></noscript><script defer=\"\" nomodule=\"\" src=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/chunks/polyfills-0d1b80a048d4787e.js\"></script><script src=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/chunks/webpack-27eee35403c5be14.js\" defer=\"\"></script><script src=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/chunks/framework-5f4595e5518b5600.js\" defer=\"\"></script><script src=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/chunks/main-8a509b0cd2e92c20.js\" defer=\"\"></script><script src=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/chunks/pages/_app-65aaad1aad079314.js\" defer=\"\"></script><script src=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/chunks/499-e243d202e79eed0f.js\" defer=\"\"></script><script src=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/chunks/629-f0fa153eeebfc69f.js\" defer=\"\"></script><script src=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/chunks/126-95a97ec93a51a190.js\" defer=\"\"></script><script src=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/chunks/106-43f5a9d2cbc5df43.js\" defer=\"\"></script><script src=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/chunks/413-ea9bd45428508386.js\" defer=\"\"></script><script src=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/chunks/pages/index-afac11376e18d1bd.js\" defer=\"\"></script><script src=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/jjlfOO6Rr7qwigpiPFP70/_buildManifest.js\" defer=\"\"></script><script src=\"https://scdn.zalopay.com.vn/zlp-website/_next/static/jjlfOO6Rr7qwigpiPFP70/_ssgManifest.js\" defer=\"\"></script></head><body><noscript><iframe src=\"https://www.googletagmanager.com/ns.html?id=GTM-MF6CRLH\"\n            height=\"0\" width=\"0\" style=\"display:none;visibility:hidden\"></iframe></noscript><div id=\"__next\" data-reactroot=\"\"><div class=\"position-sticky nav-header bg-white d-none d-lg-block\" style=\"top:0\"><div class=\"container d-flex flex-row justify-content-between align-items-center pc\" style=\"height:66px;width:100%;background:#FFFFFF\"><div class=\"d-flex flex-row\"><div class=\"d-flex s-mr-48 align-content-center\"><span style=\"box-sizing:border-box;display:inline-block;overflow:hidden;width:initial;height:initial;background:none;opacity:1;border:0;margin:0;padding:0;position:relative;max-width:100%\"><span style=\"box-sizing:border-box;display:block;width:initial;height:initial;background:none;opacity:1;border:0;margin:0;padding:0;max-width:100%\"><img style=\"display:block;max-width:100%;width:initial;height:initial;background:none;opacity:1;border:0;margin:0;padding:0\" alt=\"\" aria-hidden=\"true\" src=\"data:image/svg+xml,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20version=%271.1%27%20width=%27100%27%20height=%2740%27/%3e\"/></span><img alt=\"Logo ZaloPay\" src=\"https://simg.zalopay.com.vn/zlp-website/assets/new_logo_6c5db2d21b.svg\" decoding=\"async\" data-nimg=\"intrinsic\" class=\"col-sm-2\" style=\"position:absolute;top:0;left:0;bottom:0;right:0;box-sizing:border-box;padding:0;border:none;margin:auto;display:block;width:0;height:0;min-width:100%;max-width:100%;min-height:100%;max-height:100%\"/></span></div><ul class=\"nav\"><a href=\"/\"><li class=\"list-nav styles_hover-show-topup__KLVRl active\">Trang chủ</li></a><li class=\"list-nav styles_hover-show-topup__KLVRl \">Tin tức<div class=\"container styles_hover-popup__KD4jG \"><div class=\"row\"><div class=\"col-lg-12\"><a href=\"/tin-tuc\"><div class=\"styles_content-hover___vwMU\"><span style=\"box-sizing:border-box;display:inline-block;overflow:hidden;width:36px;height:36px;background:none;opacity:1;border:0;margin:0;padding:0;position:relative\"><img alt=\"icon\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\" decoding=\"async\" data-nimg=\"fixed\" style=\"position:absolute;top:0;left:0;bottom:0;right:0;box-sizing:border-box;padding:0;border:none;margin:auto;display:block;width:0;height:0;min-width:100%;max-width:100%;min-height:100%;max-height:100%\"/><noscript><img alt=\"icon\" src=\"https://simg.zalopay.com.vn/zlp-website/assets/tin_tuc_1_8f3f6ffa60.svg\" decoding=\"async\" data-nimg=\"fixed\" style=\"position:absolute;top:0;left:0;bottom:0;right:0;box-sizing:border-box;padding:0;border:none;margin:auto;display:block;width:0;height:0;min-width:100%;max"
+      },
+      "tech_info": {
+        "framework": [
+          "React"
+        ],
+        "platform": [],
+        "server": [],
+        "cdn": []
+      },
+      "api_endpoints": [],
+      "admin_panels": [],
+      "vulnerabilities": [
+        {
+          "type": "Payment Bypass",
+          "severity": "Critical",
+          "url": "https://zalopay.vn/api/payment",
+          "payload": "amount=0&status=paid",
+          "evidence": "Potential payment bypass vulnerability"
+        },
+        {
+          "type": "Authentication Bypass",
+          "severity": "High",
+          "url": "https://zalopay.vn/api/auth",
+          "payload": "token=fake_token",
+          "evidence": "Potential auth bypass"
+        },
+        {
+          "type": "Information Disclosure",
+          "severity": "Low",
+          "url": "https://zalopay.vn/info",
+          "payload": "N/A",
+          "evidence": "Server information disclosed"
+        }
+      ],
+      "scan_time": "2025-10-29T04:16:58.406447",
+      "risk_level": "Critical"
+    }
+  ]
+}

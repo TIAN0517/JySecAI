@@ -1,0 +1,23 @@
+===== Warmup GETs =====
+  GET http://epcr.tpf.gov.tw:4002
+    ERR: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+  GET http://epcr.tpf.gov.tw:4002/
+    ERR: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+  GET http://epcr.tpf.gov.tw:4002/config
+    ERR: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+  GET https://epcr.tpf.gov.tw:4002
+    status=200 length=6174 cookies={}
+  GET https://epcr.tpf.gov.tw:4002/
+    status=200 length=6174 cookies={}
+
+===== Step 1: with Origin =====
+
+[Origin] GET http://epcr.tpf.gov.tw:4002/socket.io/?EIO=4&transport=polling
+  headers: {'Origin': 'https://epcr.tpf.gov.tw:4002', 'Referer': 'https://epcr.tpf.gov.tw:4002/', 'User-Agent': 'Mozilla/5.0'}
+  ERR: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+
+[HTTPS+Origin] GET https://epcr.tpf.gov.tw:4002/socket.io/?EIO=4&transport=polling
+  headers: {'Origin': 'https://epcr.tpf.gov.tw:4002', 'Referer': 'https://epcr.tpf.gov.tw:4002/', 'User-Agent': 'Mozilla/5.0'}
+  status=200 length=103
+  body[:200]: 96:0{"sid":"jYtCgFGbj7V3aC6HAAZs","upgrades":["websocket"],"pingInterval":25000,"pingTimeout":5000}2:40
+  *** HAND SHAKE OK sid=jYtCgFGbj7V3aC6HAAZs ***

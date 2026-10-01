@@ -1,0 +1,181 @@
+{
+  "detection_summary": {
+    "total_targets": 6,
+    "secure_targets": 4,
+    "vulnerable_targets": 2,
+    "failed_targets": 0,
+    "scan_time": "2025-10-25T10:10:09.615858",
+    "time_zone": "GMT+7",
+    "region": "vietnam"
+  },
+  "target_results": [
+    {
+      "name": "Giao Hàng Tiết Kiệm",
+      "url": "https://ghtk.net",
+      "status": "secure",
+      "response_time": 1.0574174393947087,
+      "vulnerabilities": [],
+      "technologies": [],
+      "sensitive_info": [],
+      "business_logic_issues": [],
+      "vietnamese_specific": [],
+      "scan_time": "2025-10-25T10:03:54.295131"
+    },
+    {
+      "name": "J&T Express Việt Nam",
+      "url": "https://j&t.vn",
+      "status": "secure",
+      "response_time": 0.36763139693256086,
+      "vulnerabilities": [],
+      "technologies": [],
+      "sensitive_info": [],
+      "business_logic_issues": [],
+      "vietnamese_specific": [],
+      "scan_time": "2025-10-25T10:03:54.386426"
+    },
+    {
+      "name": "Ninja Van Việt Nam",
+      "url": "https://ninja-van.com/vn",
+      "status": "secure",
+      "response_time": 1.8247121355691318,
+      "vulnerabilities": [],
+      "technologies": [],
+      "sensitive_info": [],
+      "business_logic_issues": [],
+      "vietnamese_specific": [],
+      "scan_time": "2025-10-25T10:03:54.452636"
+    },
+    {
+      "name": "Viettel Post",
+      "url": "https://viettel-post.vn",
+      "status": "secure",
+      "response_time": 1.6570956160541213,
+      "vulnerabilities": [],
+      "technologies": [],
+      "sensitive_info": [],
+      "business_logic_issues": [],
+      "vietnamese_specific": [],
+      "scan_time": "2025-10-25T10:04:40.032888"
+    },
+    {
+      "name": "越南邮政",
+      "url": "https://vnpost.vn",
+      "status": "vulnerable",
+      "response_time": 1.993833456878129,
+      "vulnerabilities": [
+        "敏感文件暴露 - 路径: /admin",
+        "敏感文件暴露 - 路径: /login"
+      ],
+      "technologies": [
+        "Web Server: ",
+        "Vietnamese Postal System Detected",
+        "Framework: Angular"
+      ],
+      "sensitive_info": [
+        "越南姓名: DOCTYPE html",
+        "越南姓名: html lang",
+        "越南姓名: meta charset",
+        "越南姓名: meta name",
+        "越南姓名: meta name"
+      ],
+      "business_logic_issues": [
+        "检测到管理界面，可能存在越权访问风险",
+        "检测到订单跟踪功能，可能存在信息泄露风险",
+        "检测到敏感操作: update",
+        "检测到敏感操作: remove",
+        "检测到敏感操作: cancel",
+        "检测到vnpost物流系统特征",
+        "检测到物流业务逻辑漏洞: order_injection",
+        "检测到越南货币价格信息"
+      ],
+      "vietnamese_specific": [
+        "检测到越南语关键词: bưu điện, theo dõi, vận chuyển, đăng nhập, thanh toán",
+        "检测到越南货币特征",
+        "检测到越南地址格式"
+      ],
+      "scan_time": "2025-10-25T10:03:54.294131"
+    },
+    {
+      "name": "Giao Hàng Nhanh",
+      "url": "https://ghn.vn",
+      "status": "vulnerable",
+      "response_time": 1.984497302294893,
+      "vulnerabilities": [
+        "SQL注入漏洞 - 延迟响应 - 参数: order_id",
+        "SQL注入漏洞 - 延迟响应 - 参数: tracking_id",
+        "SQL注入漏洞 - 延迟响应 - 参数: phone",
+        "SQL注入漏洞 - 延迟响应 - 参数: search",
+        "SQL注入漏洞 - 延迟响应 - 参数: customer_id",
+        "SQL注入漏洞 - 延迟响应 - 参数: invoice_id",
+        "SQL注入漏洞 - 延迟响应 - 参数: bill_id",
+        "SQL注入漏洞 - 延迟响应 - 参数: shipment_id",
+        "SQL注入漏洞 - 延迟响应 - 参数: ma_don_hang",
+        "SQL注入漏洞 - 延迟响应 - 参数: so_dien_thoai",
+        "SQL注入漏洞 - 延迟响应 - 参数: tim_kiem",
+        "SQL注入漏洞 - 延迟响应 - 参数: ma_van_don",
+        "SQL注入漏洞 - 延迟响应 - 参数: ma_khach_hang"
+      ],
+      "technologies": [],
+      "sensitive_info": [],
+      "business_logic_issues": [],
+      "vietnamese_specific": [],
+      "scan_time": "2025-10-25T10:03:54.294131"
+    }
+  ],
+  "vietnam_logistics_features": {
+    "supported_companies": [
+      "vnpost",
+      "ghn",
+      "ghtk",
+      "j&t",
+      "ninja_van",
+      "viettel_post"
+    ],
+    "order_patterns": {
+      "standard": [
+        "DH\\d{6}",
+        "DON\\d{4}",
+        "VL\\d{8}",
+        "SGN\\d{6}"
+      ],
+      "ghn": [
+        "GHN\\d{12}",
+        "GHN\\d{10}",
+        "GHN\\d{8}"
+      ],
+      "ghtk": [
+        "GHTK\\d{10}",
+        "GHTK\\d{8}",
+        "GHTK\\d{6}"
+      ],
+      "j&t": [
+        "JNT\\d{8}",
+        "JNT\\d{6}",
+        "JNT\\d{4}"
+      ]
+    },
+    "business_logic": {
+      "status_options": [
+        "đã xác nhận",
+        "đang giao hàng",
+        "đã giao",
+        "đã hủy",
+        "chờ xử lý",
+        "đang xử lý"
+      ],
+      "payment_status": [
+        "đã thanh toán",
+        "chờ thanh toán",
+        "thất bại",
+        "hoàn tiền",
+        "đang xử lý"
+      ],
+      "error_messages": [
+        "Không tìm thấy đơn hàng",
+        "Đơn hàng không tồn tại",
+        "Lỗi hệ thống",
+        "Mã không hợp lệ"
+      ]
+    }
+  }
+}

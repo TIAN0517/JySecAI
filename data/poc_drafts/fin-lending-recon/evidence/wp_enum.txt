@@ -1,0 +1,10 @@
+--- www.newloan.com.tw ---
+Plugins:
+  /wp-content/plugins/wordfence/ -> HTTP 403
+  /wp-content/plugins/contact-form-7/ -> HTTP 403
+  /wp-content/plugins/seo-by-rank-math/ -> HTTP 403
+Users:
+--- www.muchenloan.com ---
+Plugins:
+  /wp-content/plugins/seo-by-rank-math/ -> HTTP 403
+Users:

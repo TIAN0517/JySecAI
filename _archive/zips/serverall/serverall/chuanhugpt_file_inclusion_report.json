@@ -1,0 +1,370 @@
+{
+  "exploitation_summary": {
+    "target": "http://chuanhugpt.test",
+    "vulnerability": "CVE-2024-10707 Chuanhugpt本地文件包含",
+    "total_files_tested": 30,
+    "successful_reads": 0,
+    "execution_time": 60.20698261260986,
+    "fingerprint_confirmed": false
+  },
+  "exploitation_results": [
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/etc/passwd",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.0050008296966552734,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/etc/shadow",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.004999399185180664,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/etc/hosts",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.005000114440917969,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/etc/issue",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.007000446319580078,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/etc/os-release",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.0039997100830078125,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/proc/version",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.003990650177001953,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/proc/self/environ",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.006559610366821289,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/proc/self/cmdline",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.00555419921875,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/proc/self/mounts",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.004000425338745117,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/proc/net/arp",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.00700068473815918,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/proc/net/tcp",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.004973173141479492,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/proc/net/udp",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.0040013790130615234,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/etc/apache2/apache2.conf",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.005999088287353516,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/etc/nginx/nginx.conf",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.003983259201049805,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/etc/php/php.ini",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.005003213882446289,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/var/www/html/config.php",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.00699615478515625,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/var/www/html/.env",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.0044252872467041016,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/var/www/html/wp-config.php",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.0050013065338134766,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/app/config.py",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.005979299545288086,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/app/.env",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.004641532897949219,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/app/requirements.txt",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.0039997100830078125,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/app/docker-compose.yml",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.005537748336791992,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/var/lib/mysql/mysql/user.MYD",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.004000186920166016,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/etc/postgresql/*/main/pg_hba.conf",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.004565715789794922,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/root/.ssh/id_rsa",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.00499725341796875,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/home/*/.ssh/id_rsa",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.004000186920166016,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/etc/ssh/ssh_host_*_key",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.005000114440917969,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/var/log/auth.log",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.0049991607666015625,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/var/log/apache2/access.log",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.003999233245849609,
+      "file_size": 0
+    },
+    {
+      "target_url": "http://chuanhugpt.test",
+      "exploit_type": "文件包含",
+      "payload_path": "/var/log/nginx/access.log",
+      "success": false,
+      "confidence": 0.0,
+      "file_content": "",
+      "error_message": "",
+      "execution_time": 0.0040013790130615234,
+      "file_size": 0
+    }
+  ],
+  "successful_exploits": [],
+  "privilege_escalation": {
+    "attempted_files": [
+      "/etc/sudoers",
+      "/etc/crontab",
+      "/root/.bashrc",
+      "/root/.bash_history"
+    ],
+    "successful_reads": [],
+    "escalation_possible": false
+  },
+  "extracted_data": {
+    "system_info": {},
+    "user_accounts": [],
+    "network_config": [],
+    "application_config": [],
+    "credentials": []
+  },
+  "security_recommendations": [
+    "立即升级Chuanhugpt到最新版本以修复CVE-2024-10707",
+    "限制文件上传功能的使用权限",
+    "实施严格的输入验证和文件路径检查",
+    "禁用不必要的文件读取功能",
+    "定期进行安全审计和漏洞扫描",
+    "部署Web应用防火墙以检测和阻止恶意请求",
+    "加强对敏感文件和目录的访问控制",
+    "监控文件访问日志以检测异常行为"
+  ]
+}

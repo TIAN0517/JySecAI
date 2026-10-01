@@ -1,0 +1,10 @@
+{
+  "name": "Real-Target-Exploit-20251029010920",
+  "url": "http://localhost:8080/dragon_shell_20251029_005423.php",
+  "pwd": "dragon",
+  "type": "php",
+  "encoding": "base64",
+  "headers": {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  }
+}

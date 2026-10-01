@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/mnt/c/Users/Administrator/desktop/JySecAI/tpe119_evidence/zoomeye_results/multi_source_scan.py", line 90, in <module>
+    if name == "main":
+       ^^^^
+NameError: name 'name' is not defined

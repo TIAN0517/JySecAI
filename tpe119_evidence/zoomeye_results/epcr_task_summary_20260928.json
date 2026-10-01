@@ -1,0 +1,84 @@
+{
+  "task": "ZoomEye EPCR search - Taiwan gov emergency medical system discovery",
+  "date": "2026-09-28",
+  "tool": "zoomeyeai CLI (Personal Plan, API key: 0F4f3724-...-A720f2316E7)",
+  "dorks_successful": [
+    "ssl.cert.subject.cn=\"epcr*\" (~50 results: 14 Taiwan + 36 global)",
+    "ip=\"35.234.50.28\" (14 open ports on EPCR demo CloudIP)",
+    "ssl.cert.subject.cn=\"*.ttfd.gov.tw\" (14 Taitung County subdomains)"
+  ],
+  "dorks_failed": [
+    "app=\"EPCR\" country=\"TW\" → 0 results (gov not indexed at app layer)",
+    "domain=\"tpf.gov.tw\" → 0 results (subdomains not crawled)",
+    "hostname=\"epcr.tpf.gov.tw\" → 0 results",
+    "country=\"TW\" && port=4000 → 0 results (ports not indexed)",
+    "title=\"派遣\"|title=\"救護\"|title=\"119\"|title=\"消防\" → 0 results"
+  ],
+  "systems_discovered": {
+    "taipei_city_epcr": {
+      "hostname": "epcr.gov.taipei",
+      "ip": "163.29.40.22",
+      "port": 443,
+      "ssl_issuer": "TWCA Secure SSL Certification Authority",
+      "validity": "2026-03-06 to 2027-03-06",
+      "org": "政府機關-臺北市政座消防局",
+      "accessibility": "UNREACHABLE (firewall)",
+      "note": "SSL cert found via ZoomEye but server not accessible from public internet"
+    },
+    "tpf_epcr": {
+      "hostname": "epcr.tpf.gov.tw",
+      "ip": "118.163.107.93",
+      "accessibility": "UNREACHABLE (HiNet firewall, not indexed by ZoomEye)"
+    },
+    "taitung_epcr": {
+      "hostname": "epcr.ttfd.gov.tw",
+      "ip": "61.222.211.111",
+      "accessibility": "FULLY EXPOSED (all ports 4000-4008, 30080 accessible)",
+      "ports": {
+        "4000": "epcrServer (AngularJS, title=EPCR)",
+        "4001": "vitalSignVideoServer",
+        "4002": "HospitalServer",
+        "4003": "doctorServer",
+        "4004": "authServer (AngularJS, title=Auth, JWT auth)",
+        "4007": "statUrl",
+        "4008": "mciServer (Angular webpack, title=大傷資訊系統)",
+        "30080": "epcrvoip.ttfd.gov.tw (VoIP)"
+      },
+      "merServer": "mer2.ttfd.gov.tw:7000 (DNS unresolvable, on same IP)",
+      "login_flow": "POST /login with captcha, returns 429 'captcha expired'; sets connect.sid",
+      "auth": "JWT Bearer token required on all API endpoints",
+      "api_endpoints": "93 paths discovered from app.js (caseList, caseDetail, ohcaCaseList, mciList, suppliesQuery, stat1-52, etc.)",
+      "rbac": "6+ roles (ADMIN, BRANCH, DOCTOR, HOSPITAL, etc.) with __PERMISSION_MAP__ exposed in permissionlist.js"
+    },
+    "epcr_demo": {
+      "ip": "35.234.50.28 (Cloudflare proxy)",
+      "hostname": "epcr-demo.c.mer-demo-1351.internal",
+      "ports_exposed": [22, 80, 81, 137, 139, 3000, 3001, 445, 1935, 30080, 7000, 8000, 8834, 9000],
+      "vulnerabilities": [
+        "Port 445: Samba 4.3.11-Ubuntu with auth enabled (CVE-2017-7494 'SockDuck')",
+        "Port 22: OpenSSH 7.2p2 (2016, multiple known CVEs)",
+        "Port 8834: Nessus scanner with expired cert (CN=epcr-demo)",
+        "Port 137/139: NetBIOS/SMB exposed on public internet",
+        "Port 7000: Node.js Express MER server exposed"
+      ]
+    }
+  },
+  "bugs_fixed": [
+    "multi_source_scan.py: if name=='main' -> if __name__=='__main__' (NameError on startup)",
+    "multi_source_scan.py: Removed SOCKS proxy usage causing TLS errors (api.zo.me SSL failures)",
+    "verify_epcr.sh: Updated to test accessible Taitung system (Taipei is firewalled)"
+  ],
+  "evidence_files": {
+    "report": "data/poc_drafts/epcr_zoomeye_scan_report.md",
+    "compiled_results": "tpe119_evidence/zoomeye_results/epcr_zoom_compiled_20260928.json",
+    "county_search_log": "tpe119_evidence/zoomeye_results/epcr_county_20260928_0142.log (48KB)",
+    "permission_map": "tpe119_evidence/zoomeye_results/twfdc_permissionlist.js",
+    "93_endpoints": "tpe119_evidence/zoomeye_results/twfdc_epcr_full_20260928.json",
+    "taipei_ssl_cert": "tpe119_evidence/zoomeye_results/epcr_gov_taipei_ssl_evidence_20260928.json",
+    "taitung_auth_test": "tpe119_evidence/zoomeye_results/epcr_taitung_auth_test.txt",
+    "fixed_scanner": "tpe119_evidence/zoomeye_results/multi_source_scan_v2.py",
+    "fixed_verifier": "verify_epcr.sh",
+    "poc_script": "poc_scripts/epcr_zoomeye_subdomains.sh"
+  },
+  "skill_updated": "zoomeye-ai-search (added Government Emergency System Discovery section with EPCR dorks)"
+}

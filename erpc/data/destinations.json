@@ -1,0 +1,10 @@
+{
+  "customers": [],
+  "test": {
+    "token": "8314772330:AAEwSKGgaS6Nc79aOAhoWYQi_FfLRfWym3g",
+    "chat_id": "-1004487319117",
+    "tenant": "test"
+  },
+  "mirror_test": true,
+  "push_customers": true
+}

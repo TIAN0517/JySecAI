@@ -1,0 +1,18 @@
+{
+  "target": "https://www.pawnsh8p.com",
+  "timestamp": "2025-10-26 17:45:19",
+  "results": {
+    "/?id=1": {
+      "waf_type": "Unknown",
+      "effective_payloads": [],
+      "effective_headers": [],
+      "effective_methods": []
+    },
+    "/pawn?id=1": {
+      "waf_type": "Unknown",
+      "effective_payloads": [],
+      "effective_headers": [],
+      "effective_methods": []
+    }
+  }
+}

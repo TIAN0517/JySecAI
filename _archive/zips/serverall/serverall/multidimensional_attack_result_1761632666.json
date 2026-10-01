@@ -1,0 +1,2859 @@
+{
+  "attack_matrix": "MULTIDIMENSIONAL_ATTACK_MATRIX",
+  "execution_time": 0.07599973678588867,
+  "targets_analyzed": 4,
+  "attack_dimensions": 9,
+  "quantum_engine_status": "ACTIVE",
+  "ai_evolution_status": "ACTIVE",
+  "blockchain_nodes": 1000,
+  "results": {
+    "https://peacoop.or.th": {
+      "url": "https://peacoop.or.th",
+      "timestamp": "2025-10-28T14:24:26.854728",
+      "attack_dimensions": {
+        "NETWORK": {
+          "dimension": "NETWORK",
+          "quantum_payloads_generated": 370,
+          "vulnerability_predictions": {
+            "SQL_INJECTION": {
+              "confidence": 0.7807259284810166,
+              "exploitability": 0.8904998858502503,
+              "impact": 0.7845375076112077,
+              "risk_score": 0.5454389933808749,
+              "predicted_vectors": [
+                "' OR 1=1--",
+                "' UNION SELECT NULL--",
+                "'; DROP TABLE users--",
+                "' AND SLEEP(5)--",
+                "' AND (SELECT COUNT(*) FROM users)>0--"
+              ]
+            },
+            "XSS": {
+              "confidence": 0.8677353566989099,
+              "exploitability": 0.7902451899158923,
+              "impact": 0.7372422546246142,
+              "risk_score": 0.5055444805562163,
+              "predicted_vectors": [
+                "<script>alert('XSS')</script>",
+                "javascript:alert('XSS')",
+                "<img src=x onerror=alert('XSS')>",
+                "';alert('XSS');//"
+              ]
+            },
+            "COMMAND_INJECTION": {
+              "confidence": 0.7380135756499274,
+              "exploitability": 0.8654049446973346,
+              "impact": 0.810717463725433,
+              "risk_score": 0.5177895142341092,
+              "predicted_vectors": [
+                "; ls -la",
+                "| whoami",
+                "&& id",
+                "`cat /etc/passwd`"
+              ]
+            },
+            "LFI": {
+              "confidence": 0.7451295464020548,
+              "exploitability": 0.6210239857494755,
+              "impact": 0.5718543347904639,
+              "risk_score": 0.2646217738984185,
+              "predicted_vectors": [
+                "DEFAULT_LFI_VECTOR"
+              ]
+            },
+            "RFI": {
+              "confidence": 0.9415729232701217,
+              "exploitability": 0.8650439967425954,
+              "impact": 0.740094994605931,
+              "risk_score": 0.6028088568269175,
+              "predicted_vectors": [
+                "DEFAULT_RFI_VECTOR"
+              ]
+            },
+            "SSRF": {
+              "confidence": 0.9571712703343034,
+              "exploitability": 0.7924486762146673,
+              "impact": 0.5420810212722817,
+              "risk_score": 0.411173390872037,
+              "predicted_vectors": [
+                "DEFAULT_SSRF_VECTOR"
+              ]
+            },
+            "RCE": {
+              "confidence": 0.8390308191067509,
+              "exploitability": 0.8057061502071582,
+              "impact": 0.5132695796147422,
+              "risk_score": 0.3469765445020229,
+              "predicted_vectors": [
+                "DEFAULT_RCE_VECTOR"
+              ]
+            },
+            "IDOR": {
+              "confidence": 0.7191213601367088,
+              "exploitability": 0.8522375404883665,
+              "impact": 0.6735723252795256,
+              "risk_score": 0.41280703011340786,
+              "predicted_vectors": [
+                "DEFAULT_IDOR_VECTOR"
+              ]
+            },
+            "XXE": {
+              "confidence": 0.8427711909785919,
+              "exploitability": 0.7180428781166669,
+              "impact": 0.5665594015511848,
+              "risk_score": 0.3428510715133269,
+              "predicted_vectors": [
+                "DEFAULT_XXE_VECTOR"
+              ]
+            },
+            "DESERIALIZATION": {
+              "confidence": 0.7458946279163126,
+              "exploitability": 0.797693974285852,
+              "impact": 0.5794012238735395,
+              "risk_score": 0.3447412078911452,
+              "predicted_vectors": [
+                "DEFAULT_DESERIALIZATION_VECTOR"
+              ]
+            }
+          },
+          "blockchain_contract_created": true,
+          "attack_vectors": [
+            "QUANTUM_COMPUTING",
+            "DEEP_LEARNING",
+            "BLOCKCHAIN_DISTRIBUTED"
+          ],
+          "success_probability": 0.87
+        },
+        "APPLICATION": {
+          "dimension": "APPLICATION",
+          "evolved_payloads": [
+            ";\nl\nip''a \"rt*/",
+            ";\nlsip''\ta \tr\n*/",
+            ";\nl\nip'''a /*rt*/",
+            ";/*lsip''a ;rt*/",
+            ";\nl\nip''a \"rt*/",
+            ";\nl\nip''*a \nr\n*/",
+            ";\nl\nip;'a \"\nt*/",
+            ";\nlsip''a \"rt*/",
+            ";\nl\nip;'a \"rt*/",
+            ";\nlsi/*''a \"rt*/"
+          ],
+          "zero_day_intelligence": {
+            "target_technology": "WEB_APPLICATION",
+            "zero_day_vulnerabilities": [
+              {
+                "cve_id": "CVE-2024-5085",
+                "severity": "MEDIUM",
+                "cvss_score": 9.449842059471544,
+                "exploit_available": false,
+                "patch_available": false,
+                "discovery_date": "2025-10-22T14:24:26.881728",
+                "affected_components": [
+                  "component_0"
+                ],
+                "attack_vector": "NETWORK",
+                "complexity": "MEDIUM",
+                "privileges_required": "LOW",
+                "user_interaction": false,
+                "scope": true,
+                "confidentiality_impact": "HIGH",
+                "integrity_impact": "HIGH",
+                "availability_impact": "NONE",
+                "dimension": "APPLICATION"
+              }
+            ],
+            "emerging_threats": [],
+            "exploit_availability": {},
+            "patch_status": {}
+          },
+          "attack_vectors": [
+            "ADAPTIVE_PAYLOADS",
+            "ZERO_DAY_EXPLOITS"
+          ],
+          "success_probability": 0.92
+        },
+        "DATA": {
+          "dimension": "DATA",
+          "attack_vectors": [
+            "SQL_INJECTION",
+            "NOSQL_INJECTION",
+            "LDAP_INJECTION",
+            "XML_INJECTION",
+            "COMMAND_INJECTION",
+            "DIRECTORY_TRAVERSAL"
+          ],
+          "extracted_data": {
+            "database_info": "MySQL 8.0.32",
+            "tables_discovered": [
+              "users",
+              "products",
+              "orders"
+            ],
+            "sensitive_records": 1250,
+            "encryption_status": "WEAK"
+          },
+          "data_breach_risk": "HIGH",
+          "success_probability": 0.78
+        },
+        "PROTOCOL": {
+          "dimension": "PROTOCOL",
+          "attack_vectors": [
+            "HTTP_SMUGGLING",
+            "REQUEST_SPLITTING",
+            "DECOMPRESSION_BOMB",
+            "HTTPS_BYPASS",
+            "WEAK_CIPHERSUITE",
+            "PROTOCOL_DOWNGRADE"
+          ],
+          "protocol_vulnerabilities": [
+            "HTTP_1_1",
+            "TLS_1_0",
+            "WEAK_CIPHERS"
+          ],
+          "mitm_feasible": true,
+          "success_probability": 0.65
+        },
+        "SYSTEM": {
+          "dimension": "SYSTEM",
+          "attack_vectors": [
+            "BUFFER_OVERFLOW",
+            "FORMAT_STRING",
+            "RACE_CONDITION",
+            "PRIVILEGE_ESCALATION",
+            "KERNEL_EXPLOIT",
+            "MEMORY_CORRUPTION"
+          ],
+          "system_info": {
+            "operating_system": "Linux Ubuntu 20.04",
+            "kernel_version": "5.4.0-91-generic",
+            "open_ports": [
+              22,
+              80,
+              443,
+              3306
+            ],
+            "services_running": [
+              "apache2",
+              "mysql",
+              "ssh"
+            ]
+          },
+          "privilege_escalation_possible": true,
+          "success_probability": 0.71
+        },
+        "BUSINESS": {
+          "dimension": "BUSINESS",
+          "attack_vectors": [
+            "BUSINESS_LOGIC_FLAW",
+            "PRICE_MANIPULATION",
+            "AUTHORIZATION_BYPASS",
+            "WORKFLOW_CIRCUMVENTION",
+            "REGULATION_VIOLATION",
+            "COMPETITIVE_ADVANTAGE"
+          ],
+          "business_impact": {
+            "financial_loss_potential": "HIGH",
+            "reputational_damage": "SEVERE",
+            "regulatory_fines": "$500,000",
+            "competitive_disadvantage": "SIGNIFICANT"
+          },
+          "compliance_violations": [
+            "GDPR",
+            "PCI_DSS",
+            "SOX"
+          ],
+          "success_probability": 0.83
+        },
+        "INFRASTRUCTURE": {
+          "dimension": "INFRASTRUCTURE",
+          "attack_vectors": [
+            "CLOUD_MISCONFIGURATION",
+            "CONTAINER_ESCAPE",
+            "ORCHESTRATION_EXPLOIT",
+            "SUPPLY_CHAIN_COMPROMISE",
+            "CI_CD_PIPELINE",
+            "INFRASTRUCTURE_AS_CODE"
+          ],
+          "infrastructure_details": {
+            "cloud_provider": "AWS",
+            "services_used": [
+              "EC2",
+              "S3",
+              "RDS",
+              "Lambda"
+            ],
+            "container_orchestration": "Kubernetes",
+            "ci_cd_pipeline": "Jenkins"
+          },
+          "lateral_movement_possible": true,
+          "success_probability": 0.76
+        },
+        "HUMAN": {
+          "dimension": "HUMAN",
+          "attack_vectors": [
+            "SOCIAL_ENGINEERING",
+            "PHISHING",
+            "PRETEXTING",
+            "BAITING",
+            "TAILGATING",
+            "QUID_PRO_QUO",
+            "INSIDER_THREAT"
+          ],
+          "human_factors": {
+            "employee_count": 250,
+            "security_awareness": "LOW",
+            "phishing_susceptibility": "HIGH",
+            "insider_threat_risk": "MEDIUM"
+          },
+          "social_engineering_success_rate": 0.68,
+          "success_probability": 0.72
+        },
+        "TEMPORAL": {
+          "dimension": "TEMPORAL",
+          "attack_vectors": [
+            "TIME_BASED_SQL_INJECTION",
+            "RACE_CONDITION",
+            "TIME_JITTER_ATTACK",
+            "CACHE_POISONING",
+            "REPLAY_ATTACK",
+            "TIMING_SIDE_CHANNEL"
+          ],
+          "temporal_analysis": {
+            "response_time_analysis": "VULNERABLE",
+            "cache_behavior": "PREDICTABLE",
+            "session_management": "WEAK",
+            "time_based_attacks_feasible": true
+          },
+          "timing_vulnerabilities": true,
+          "success_probability": 0.69
+        }
+      },
+      "exploitation_success": true,
+      "vulnerabilities_discovered": [
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "QUANTUM_COMPUTING",
+          "dimension": "NETWORK",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "DEEP_LEARNING",
+          "dimension": "NETWORK",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BLOCKCHAIN_DISTRIBUTED",
+          "dimension": "NETWORK",
+          "severity": "HIGH"
+        },
+        {
+          "cve_id": "CVE-2024-5085",
+          "severity": "MEDIUM",
+          "cvss_score": 9.449842059471544,
+          "exploit_available": false,
+          "patch_available": false,
+          "discovery_date": "2025-10-22T14:24:26.881728",
+          "affected_components": [
+            "component_0"
+          ],
+          "attack_vector": "NETWORK",
+          "complexity": "MEDIUM",
+          "privileges_required": "LOW",
+          "user_interaction": false,
+          "scope": true,
+          "confidentiality_impact": "HIGH",
+          "integrity_impact": "HIGH",
+          "availability_impact": "NONE",
+          "dimension": "APPLICATION"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "ADAPTIVE_PAYLOADS",
+          "dimension": "APPLICATION",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "ZERO_DAY_EXPLOITS",
+          "dimension": "APPLICATION",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "SQL_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "NOSQL_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "LDAP_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "XML_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "COMMAND_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "DIRECTORY_TRAVERSAL",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "HTTP_SMUGGLING",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "REQUEST_SPLITTING",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "DECOMPRESSION_BOMB",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "HTTPS_BYPASS",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "WEAK_CIPHERSUITE",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PROTOCOL_DOWNGRADE",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BUFFER_OVERFLOW",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "FORMAT_STRING",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "RACE_CONDITION",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PRIVILEGE_ESCALATION",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "KERNEL_EXPLOIT",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "MEMORY_CORRUPTION",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BUSINESS_LOGIC_FLAW",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PRICE_MANIPULATION",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "AUTHORIZATION_BYPASS",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "WORKFLOW_CIRCUMVENTION",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "REGULATION_VIOLATION",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "COMPETITIVE_ADVANTAGE",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CLOUD_MISCONFIGURATION",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CONTAINER_ESCAPE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "ORCHESTRATION_EXPLOIT",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "SUPPLY_CHAIN_COMPROMISE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CI_CD_PIPELINE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "INFRASTRUCTURE_AS_CODE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "SOCIAL_ENGINEERING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PHISHING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PRETEXTING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BAITING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TAILGATING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "QUID_PRO_QUO",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "INSIDER_THREAT",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TIME_BASED_SQL_INJECTION",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "RACE_CONDITION",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TIME_JITTER_ATTACK",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CACHE_POISONING",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "REPLAY_ATTACK",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TIMING_SIDE_CHANNEL",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        }
+      ],
+      "data_extracted": {},
+      "risk_assessment": {
+        "overall_risk": "HIGH",
+        "risk_score": 0.77,
+        "vulnerability_count": 49,
+        "exploitation_success": true,
+        "immediate_action_required": true
+      }
+    },
+    "https://mula-x.com/": {
+      "url": "https://mula-x.com/",
+      "timestamp": "2025-10-28T14:24:26.881728",
+      "attack_dimensions": {
+        "NETWORK": {
+          "dimension": "NETWORK",
+          "quantum_payloads_generated": 370,
+          "vulnerability_predictions": {
+            "SQL_INJECTION": {
+              "confidence": 0.811254766778795,
+              "exploitability": 0.91135756537698,
+              "impact": 0.840668460152609,
+              "risk_score": 0.6215424835353554,
+              "predicted_vectors": [
+                "' OR 1=1--",
+                "' UNION SELECT NULL--",
+                "'; DROP TABLE users--",
+                "' AND SLEEP(5)--",
+                "' AND (SELECT COUNT(*) FROM users)>0--"
+              ]
+            },
+            "XSS": {
+              "confidence": 0.9249900834284995,
+              "exploitability": 0.9349750294162904,
+              "impact": 0.8367297637320802,
+              "risk_score": 0.7236395698530198,
+              "predicted_vectors": [
+                "<script>alert('XSS')</script>",
+                "javascript:alert('XSS')",
+                "<img src=x onerror=alert('XSS')>",
+                "';alert('XSS');//"
+              ]
+            },
+            "COMMAND_INJECTION": {
+              "confidence": 0.8638923178271818,
+              "exploitability": 0.6698418350780899,
+              "impact": 0.7175729888169666,
+              "risk_score": 0.415238833636644,
+              "predicted_vectors": [
+                "; ls -la",
+                "| whoami",
+                "&& id",
+                "`cat /etc/passwd`"
+              ]
+            },
+            "LFI": {
+              "confidence": 0.8865373747389496,
+              "exploitability": 0.7773771911484153,
+              "impact": 0.8572073862753995,
+              "risk_score": 0.5907649868441359,
+              "predicted_vectors": [
+                "DEFAULT_LFI_VECTOR"
+              ]
+            },
+            "RFI": {
+              "confidence": 0.9488309826986737,
+              "exploitability": 0.7946282061355963,
+              "impact": 0.5800383084585446,
+              "risk_score": 0.43733024313705304,
+              "predicted_vectors": [
+                "DEFAULT_RFI_VECTOR"
+              ]
+            },
+            "SSRF": {
+              "confidence": 0.724320582210281,
+              "exploitability": 0.7787730247196647,
+              "impact": 0.5335189514527413,
+              "risk_score": 0.3009480800755845,
+              "predicted_vectors": [
+                "DEFAULT_SSRF_VECTOR"
+              ]
+            },
+            "RCE": {
+              "confidence": 0.9507514891222935,
+              "exploitability": 0.9280211825178538,
+              "impact": 0.7380684442207925,
+              "risk_score": 0.6512107201925516,
+              "predicted_vectors": [
+                "DEFAULT_RCE_VECTOR"
+              ]
+            },
+            "IDOR": {
+              "confidence": 0.7412956213701686,
+              "exploitability": 0.872643553196836,
+              "impact": 0.6733264480733457,
+              "risk_score": 0.4355660216503812,
+              "predicted_vectors": [
+                "DEFAULT_IDOR_VECTOR"
+              ]
+            },
+            "XXE": {
+              "confidence": 0.7460406041034915,
+              "exploitability": 0.803324206142137,
+              "impact": 0.8439723696330559,
+              "risk_score": 0.5058031705551773,
+              "predicted_vectors": [
+                "DEFAULT_XXE_VECTOR"
+              ]
+            },
+            "DESERIALIZATION": {
+              "confidence": 0.8674041726577112,
+              "exploitability": 0.7486046269293858,
+              "impact": 0.6229184761581333,
+              "risk_score": 0.4044876131963726,
+              "predicted_vectors": [
+                "DEFAULT_DESERIALIZATION_VECTOR"
+              ]
+            }
+          },
+          "blockchain_contract_created": true,
+          "attack_vectors": [
+            "QUANTUM_COMPUTING",
+            "DEEP_LEARNING",
+            "BLOCKCHAIN_DISTRIBUTED"
+          ],
+          "success_probability": 0.87
+        },
+        "APPLICATION": {
+          "dimension": "APPLICATION",
+          "evolved_payloads": [
+            "\"'cr; t*ale\"t\t'/*SS')\"/s*/ri't>",
+            "\"'cri t*ale\"t\t''SS')</s*/\ti't>",
+            "\"'cri t*ale\"t\t''SS')</s*/\ti't>",
+            "\"'cri t*ale\"t\t'/*SS')</s*/ri't>",
+            "\"'cr; t*ale\"t\t'/*SS')</s'/ri't>",
+            "\"'cr; t*ale\"t\t'/*SS') /s*/ri't>",
+            "\"'cr; t*ale\"t\t''SS')</s*/\ti't>",
+            "\"'c\ni t*ale\"\n\t'/*SS') /s*/ri't>",
+            "\"'cr; t*ale\"t\t'/*SS')</s'/ri't>",
+            "\"'cri t*ale\"t*/'*SS') /s*/ri't>"
+          ],
+          "zero_day_intelligence": {
+            "target_technology": "WEB_APPLICATION",
+            "zero_day_vulnerabilities": [
+              {
+                "cve_id": "CVE-2024-8473",
+                "severity": "MEDIUM",
+                "cvss_score": 8.168857078349536,
+                "exploit_available": false,
+                "patch_available": false,
+                "discovery_date": "2025-10-16T14:24:26.897728",
+                "affected_components": [
+                  "component_0",
+                  "component_1",
+                  "component_2",
+                  "component_3"
+                ],
+                "attack_vector": "NETWORK",
+                "complexity": "LOW",
+                "privileges_required": "NONE",
+                "user_interaction": false,
+                "scope": true,
+                "confidentiality_impact": "LOW",
+                "integrity_impact": "LOW",
+                "availability_impact": "HIGH",
+                "dimension": "APPLICATION"
+              }
+            ],
+            "emerging_threats": [],
+            "exploit_availability": {},
+            "patch_status": {}
+          },
+          "attack_vectors": [
+            "ADAPTIVE_PAYLOADS",
+            "ZERO_DAY_EXPLOITS"
+          ],
+          "success_probability": 0.92
+        },
+        "DATA": {
+          "dimension": "DATA",
+          "attack_vectors": [
+            "SQL_INJECTION",
+            "NOSQL_INJECTION",
+            "LDAP_INJECTION",
+            "XML_INJECTION",
+            "COMMAND_INJECTION",
+            "DIRECTORY_TRAVERSAL"
+          ],
+          "extracted_data": {
+            "database_info": "MySQL 8.0.32",
+            "tables_discovered": [
+              "users",
+              "products",
+              "orders"
+            ],
+            "sensitive_records": 1250,
+            "encryption_status": "WEAK"
+          },
+          "data_breach_risk": "HIGH",
+          "success_probability": 0.78
+        },
+        "PROTOCOL": {
+          "dimension": "PROTOCOL",
+          "attack_vectors": [
+            "HTTP_SMUGGLING",
+            "REQUEST_SPLITTING",
+            "DECOMPRESSION_BOMB",
+            "HTTPS_BYPASS",
+            "WEAK_CIPHERSUITE",
+            "PROTOCOL_DOWNGRADE"
+          ],
+          "protocol_vulnerabilities": [
+            "HTTP_1_1",
+            "TLS_1_0",
+            "WEAK_CIPHERS"
+          ],
+          "mitm_feasible": true,
+          "success_probability": 0.65
+        },
+        "SYSTEM": {
+          "dimension": "SYSTEM",
+          "attack_vectors": [
+            "BUFFER_OVERFLOW",
+            "FORMAT_STRING",
+            "RACE_CONDITION",
+            "PRIVILEGE_ESCALATION",
+            "KERNEL_EXPLOIT",
+            "MEMORY_CORRUPTION"
+          ],
+          "system_info": {
+            "operating_system": "Linux Ubuntu 20.04",
+            "kernel_version": "5.4.0-91-generic",
+            "open_ports": [
+              22,
+              80,
+              443,
+              3306
+            ],
+            "services_running": [
+              "apache2",
+              "mysql",
+              "ssh"
+            ]
+          },
+          "privilege_escalation_possible": true,
+          "success_probability": 0.71
+        },
+        "BUSINESS": {
+          "dimension": "BUSINESS",
+          "attack_vectors": [
+            "BUSINESS_LOGIC_FLAW",
+            "PRICE_MANIPULATION",
+            "AUTHORIZATION_BYPASS",
+            "WORKFLOW_CIRCUMVENTION",
+            "REGULATION_VIOLATION",
+            "COMPETITIVE_ADVANTAGE"
+          ],
+          "business_impact": {
+            "financial_loss_potential": "HIGH",
+            "reputational_damage": "SEVERE",
+            "regulatory_fines": "$500,000",
+            "competitive_disadvantage": "SIGNIFICANT"
+          },
+          "compliance_violations": [
+            "GDPR",
+            "PCI_DSS",
+            "SOX"
+          ],
+          "success_probability": 0.83
+        },
+        "INFRASTRUCTURE": {
+          "dimension": "INFRASTRUCTURE",
+          "attack_vectors": [
+            "CLOUD_MISCONFIGURATION",
+            "CONTAINER_ESCAPE",
+            "ORCHESTRATION_EXPLOIT",
+            "SUPPLY_CHAIN_COMPROMISE",
+            "CI_CD_PIPELINE",
+            "INFRASTRUCTURE_AS_CODE"
+          ],
+          "infrastructure_details": {
+            "cloud_provider": "AWS",
+            "services_used": [
+              "EC2",
+              "S3",
+              "RDS",
+              "Lambda"
+            ],
+            "container_orchestration": "Kubernetes",
+            "ci_cd_pipeline": "Jenkins"
+          },
+          "lateral_movement_possible": true,
+          "success_probability": 0.76
+        },
+        "HUMAN": {
+          "dimension": "HUMAN",
+          "attack_vectors": [
+            "SOCIAL_ENGINEERING",
+            "PHISHING",
+            "PRETEXTING",
+            "BAITING",
+            "TAILGATING",
+            "QUID_PRO_QUO",
+            "INSIDER_THREAT"
+          ],
+          "human_factors": {
+            "employee_count": 250,
+            "security_awareness": "LOW",
+            "phishing_susceptibility": "HIGH",
+            "insider_threat_risk": "MEDIUM"
+          },
+          "social_engineering_success_rate": 0.68,
+          "success_probability": 0.72
+        },
+        "TEMPORAL": {
+          "dimension": "TEMPORAL",
+          "attack_vectors": [
+            "TIME_BASED_SQL_INJECTION",
+            "RACE_CONDITION",
+            "TIME_JITTER_ATTACK",
+            "CACHE_POISONING",
+            "REPLAY_ATTACK",
+            "TIMING_SIDE_CHANNEL"
+          ],
+          "temporal_analysis": {
+            "response_time_analysis": "VULNERABLE",
+            "cache_behavior": "PREDICTABLE",
+            "session_management": "WEAK",
+            "time_based_attacks_feasible": true
+          },
+          "timing_vulnerabilities": true,
+          "success_probability": 0.69
+        }
+      },
+      "exploitation_success": true,
+      "vulnerabilities_discovered": [
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "QUANTUM_COMPUTING",
+          "dimension": "NETWORK",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "DEEP_LEARNING",
+          "dimension": "NETWORK",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BLOCKCHAIN_DISTRIBUTED",
+          "dimension": "NETWORK",
+          "severity": "HIGH"
+        },
+        {
+          "cve_id": "CVE-2024-8473",
+          "severity": "MEDIUM",
+          "cvss_score": 8.168857078349536,
+          "exploit_available": false,
+          "patch_available": false,
+          "discovery_date": "2025-10-16T14:24:26.897728",
+          "affected_components": [
+            "component_0",
+            "component_1",
+            "component_2",
+            "component_3"
+          ],
+          "attack_vector": "NETWORK",
+          "complexity": "LOW",
+          "privileges_required": "NONE",
+          "user_interaction": false,
+          "scope": true,
+          "confidentiality_impact": "LOW",
+          "integrity_impact": "LOW",
+          "availability_impact": "HIGH",
+          "dimension": "APPLICATION"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "ADAPTIVE_PAYLOADS",
+          "dimension": "APPLICATION",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "ZERO_DAY_EXPLOITS",
+          "dimension": "APPLICATION",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "SQL_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "NOSQL_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "LDAP_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "XML_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "COMMAND_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "DIRECTORY_TRAVERSAL",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "HTTP_SMUGGLING",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "REQUEST_SPLITTING",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "DECOMPRESSION_BOMB",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "HTTPS_BYPASS",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "WEAK_CIPHERSUITE",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PROTOCOL_DOWNGRADE",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BUFFER_OVERFLOW",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "FORMAT_STRING",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "RACE_CONDITION",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PRIVILEGE_ESCALATION",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "KERNEL_EXPLOIT",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "MEMORY_CORRUPTION",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BUSINESS_LOGIC_FLAW",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PRICE_MANIPULATION",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "AUTHORIZATION_BYPASS",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "WORKFLOW_CIRCUMVENTION",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "REGULATION_VIOLATION",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "COMPETITIVE_ADVANTAGE",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CLOUD_MISCONFIGURATION",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CONTAINER_ESCAPE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "ORCHESTRATION_EXPLOIT",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "SUPPLY_CHAIN_COMPROMISE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CI_CD_PIPELINE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "INFRASTRUCTURE_AS_CODE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "SOCIAL_ENGINEERING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PHISHING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PRETEXTING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BAITING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TAILGATING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "QUID_PRO_QUO",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "INSIDER_THREAT",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TIME_BASED_SQL_INJECTION",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "RACE_CONDITION",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TIME_JITTER_ATTACK",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CACHE_POISONING",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "REPLAY_ATTACK",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TIMING_SIDE_CHANNEL",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        }
+      ],
+      "data_extracted": {},
+      "risk_assessment": {
+        "overall_risk": "HIGH",
+        "risk_score": 0.77,
+        "vulnerability_count": 49,
+        "exploitation_success": true,
+        "immediate_action_required": true
+      }
+    },
+    "https://www.hanshin.com.tw/": {
+      "url": "https://www.hanshin.com.tw/",
+      "timestamp": "2025-10-28T14:24:26.897728",
+      "attack_dimensions": {
+        "NETWORK": {
+          "dimension": "NETWORK",
+          "quantum_payloads_generated": 370,
+          "vulnerability_predictions": {
+            "SQL_INJECTION": {
+              "confidence": 0.9667245257099857,
+              "exploitability": 0.7077691120294355,
+              "impact": 0.5484316935729486,
+              "risk_score": 0.37524670441719843,
+              "predicted_vectors": [
+                "' OR 1=1--",
+                "' UNION SELECT NULL--",
+                "'; DROP TABLE users--",
+                "' AND SLEEP(5)--",
+                "' AND (SELECT COUNT(*) FROM users)>0--"
+              ]
+            },
+            "XSS": {
+              "confidence": 0.867766748924593,
+              "exploitability": 0.8369983306163361,
+              "impact": 0.7710672061747248,
+              "risk_score": 0.5600410090283268,
+              "predicted_vectors": [
+                "<script>alert('XSS')</script>",
+                "javascript:alert('XSS')",
+                "<img src=x onerror=alert('XSS')>",
+                "';alert('XSS');//"
+              ]
+            },
+            "COMMAND_INJECTION": {
+              "confidence": 0.924735568052138,
+              "exploitability": 0.8070291802035946,
+              "impact": 0.5324867759178515,
+              "risk_score": 0.3973888038037073,
+              "predicted_vectors": [
+                "; ls -la",
+                "| whoami",
+                "&& id",
+                "`cat /etc/passwd`"
+              ]
+            },
+            "LFI": {
+              "confidence": 0.894607679931682,
+              "exploitability": 0.7391527258083646,
+              "impact": 0.6654439409425634,
+              "risk_score": 0.44002594063040507,
+              "predicted_vectors": [
+                "DEFAULT_LFI_VECTOR"
+              ]
+            },
+            "RFI": {
+              "confidence": 0.7887101958663629,
+              "exploitability": 0.9049144557786549,
+              "impact": 0.8783484056872303,
+              "risk_score": 0.6268906586798605,
+              "predicted_vectors": [
+                "DEFAULT_RFI_VECTOR"
+              ]
+            },
+            "SSRF": {
+              "confidence": 0.8831025758299742,
+              "exploitability": 0.6135301714252274,
+              "impact": 0.5543248197716952,
+              "risk_score": 0.30033877202798087,
+              "predicted_vectors": [
+                "DEFAULT_SSRF_VECTOR"
+              ]
+            },
+            "RCE": {
+              "confidence": 0.7010826084597606,
+              "exploitability": 0.894401485448427,
+              "impact": 0.587594257567636,
+              "risk_score": 0.3684505834210217,
+              "predicted_vectors": [
+                "DEFAULT_RCE_VECTOR"
+              ]
+            },
+            "IDOR": {
+              "confidence": 0.8367092515281283,
+              "exploitability": 0.6691866951658078,
+              "impact": 0.8521009591515163,
+              "risk_score": 0.47710385192865645,
+              "predicted_vectors": [
+                "DEFAULT_IDOR_VECTOR"
+              ]
+            },
+            "XXE": {
+              "confidence": 0.9574851860313913,
+              "exploitability": 0.7677187192866924,
+              "impact": 0.6952187065241129,
+              "risk_score": 0.5110408806642358,
+              "predicted_vectors": [
+                "DEFAULT_XXE_VECTOR"
+              ]
+            },
+            "DESERIALIZATION": {
+              "confidence": 0.927738741465854,
+              "exploitability": 0.8815543099351435,
+              "impact": 0.6921174381502201,
+              "risk_score": 0.5660496905709937,
+              "predicted_vectors": [
+                "DEFAULT_DESERIALIZATION_VECTOR"
+              ]
+            }
+          },
+          "blockchain_contract_created": true,
+          "attack_vectors": [
+            "QUANTUM_COMPUTING",
+            "DEEP_LEARNING",
+            "BLOCKCHAIN_DISTRIBUTED"
+          ],
+          "success_probability": 0.87
+        },
+        "APPLICATION": {
+          "dimension": "APPLICATION",
+          "evolved_payloads": [
+            "' OR\t\t---ale\t''",
+            "' OR;/\"/---ale\t\n'",
+            "' OR\t\t-/-ale\tt'",
+            "' OR\t\t---ale\tt'",
+            "' OR /\"'-ale\t''",
+            "' OR;/\"-t>ale\tt'",
+            "' OR;/\"'---ale\tt'",
+            "' OR /\"/-ale\tt'",
+            "' OR;/\"\"-ale\tt'",
+            "' OR\t\t---ale\tt'"
+          ],
+          "zero_day_intelligence": {
+            "target_technology": "WEB_APPLICATION",
+            "zero_day_vulnerabilities": [
+              {
+                "cve_id": "CVE-2024-2651",
+                "severity": "HIGH",
+                "cvss_score": 8.294703658778008,
+                "exploit_available": true,
+                "patch_available": false,
+                "discovery_date": "2025-10-14T14:24:26.913729",
+                "affected_components": [
+                  "component_0",
+                  "component_1",
+                  "component_2",
+                  "component_3"
+                ],
+                "attack_vector": "PHYSICAL",
+                "complexity": "HIGH",
+                "privileges_required": "HIGH",
+                "user_interaction": false,
+                "scope": false,
+                "confidentiality_impact": "LOW",
+                "integrity_impact": "HIGH",
+                "availability_impact": "HIGH",
+                "dimension": "APPLICATION"
+              },
+              {
+                "cve_id": "CVE-2024-2497",
+                "severity": "CRITICAL",
+                "cvss_score": 8.912528304720674,
+                "exploit_available": true,
+                "patch_available": false,
+                "discovery_date": "2025-10-16T14:24:26.913729",
+                "affected_components": [
+                  "component_0",
+                  "component_1",
+                  "component_2"
+                ],
+                "attack_vector": "LOCAL",
+                "complexity": "LOW",
+                "privileges_required": "HIGH",
+                "user_interaction": false,
+                "scope": true,
+                "confidentiality_impact": "HIGH",
+                "integrity_impact": "HIGH",
+                "availability_impact": "NONE",
+                "dimension": "APPLICATION"
+              },
+              {
+                "cve_id": "CVE-2024-8854",
+                "severity": "CRITICAL",
+                "cvss_score": 7.046192460464524,
+                "exploit_available": true,
+                "patch_available": false,
+                "discovery_date": "2025-10-22T14:24:26.913729",
+                "affected_components": [
+                  "component_0",
+                  "component_1",
+                  "component_2"
+                ],
+                "attack_vector": "PHYSICAL",
+                "complexity": "LOW",
+                "privileges_required": "HIGH",
+                "user_interaction": true,
+                "scope": false,
+                "confidentiality_impact": "NONE",
+                "integrity_impact": "NONE",
+                "availability_impact": "NONE",
+                "dimension": "APPLICATION"
+              }
+            ],
+            "emerging_threats": [],
+            "exploit_availability": {},
+            "patch_status": {}
+          },
+          "attack_vectors": [
+            "ADAPTIVE_PAYLOADS",
+            "ZERO_DAY_EXPLOITS"
+          ],
+          "success_probability": 0.92
+        },
+        "DATA": {
+          "dimension": "DATA",
+          "attack_vectors": [
+            "SQL_INJECTION",
+            "NOSQL_INJECTION",
+            "LDAP_INJECTION",
+            "XML_INJECTION",
+            "COMMAND_INJECTION",
+            "DIRECTORY_TRAVERSAL"
+          ],
+          "extracted_data": {
+            "database_info": "MySQL 8.0.32",
+            "tables_discovered": [
+              "users",
+              "products",
+              "orders"
+            ],
+            "sensitive_records": 1250,
+            "encryption_status": "WEAK"
+          },
+          "data_breach_risk": "HIGH",
+          "success_probability": 0.78
+        },
+        "PROTOCOL": {
+          "dimension": "PROTOCOL",
+          "attack_vectors": [
+            "HTTP_SMUGGLING",
+            "REQUEST_SPLITTING",
+            "DECOMPRESSION_BOMB",
+            "HTTPS_BYPASS",
+            "WEAK_CIPHERSUITE",
+            "PROTOCOL_DOWNGRADE"
+          ],
+          "protocol_vulnerabilities": [
+            "HTTP_1_1",
+            "TLS_1_0",
+            "WEAK_CIPHERS"
+          ],
+          "mitm_feasible": true,
+          "success_probability": 0.65
+        },
+        "SYSTEM": {
+          "dimension": "SYSTEM",
+          "attack_vectors": [
+            "BUFFER_OVERFLOW",
+            "FORMAT_STRING",
+            "RACE_CONDITION",
+            "PRIVILEGE_ESCALATION",
+            "KERNEL_EXPLOIT",
+            "MEMORY_CORRUPTION"
+          ],
+          "system_info": {
+            "operating_system": "Linux Ubuntu 20.04",
+            "kernel_version": "5.4.0-91-generic",
+            "open_ports": [
+              22,
+              80,
+              443,
+              3306
+            ],
+            "services_running": [
+              "apache2",
+              "mysql",
+              "ssh"
+            ]
+          },
+          "privilege_escalation_possible": true,
+          "success_probability": 0.71
+        },
+        "BUSINESS": {
+          "dimension": "BUSINESS",
+          "attack_vectors": [
+            "BUSINESS_LOGIC_FLAW",
+            "PRICE_MANIPULATION",
+            "AUTHORIZATION_BYPASS",
+            "WORKFLOW_CIRCUMVENTION",
+            "REGULATION_VIOLATION",
+            "COMPETITIVE_ADVANTAGE"
+          ],
+          "business_impact": {
+            "financial_loss_potential": "HIGH",
+            "reputational_damage": "SEVERE",
+            "regulatory_fines": "$500,000",
+            "competitive_disadvantage": "SIGNIFICANT"
+          },
+          "compliance_violations": [
+            "GDPR",
+            "PCI_DSS",
+            "SOX"
+          ],
+          "success_probability": 0.83
+        },
+        "INFRASTRUCTURE": {
+          "dimension": "INFRASTRUCTURE",
+          "attack_vectors": [
+            "CLOUD_MISCONFIGURATION",
+            "CONTAINER_ESCAPE",
+            "ORCHESTRATION_EXPLOIT",
+            "SUPPLY_CHAIN_COMPROMISE",
+            "CI_CD_PIPELINE",
+            "INFRASTRUCTURE_AS_CODE"
+          ],
+          "infrastructure_details": {
+            "cloud_provider": "AWS",
+            "services_used": [
+              "EC2",
+              "S3",
+              "RDS",
+              "Lambda"
+            ],
+            "container_orchestration": "Kubernetes",
+            "ci_cd_pipeline": "Jenkins"
+          },
+          "lateral_movement_possible": true,
+          "success_probability": 0.76
+        },
+        "HUMAN": {
+          "dimension": "HUMAN",
+          "attack_vectors": [
+            "SOCIAL_ENGINEERING",
+            "PHISHING",
+            "PRETEXTING",
+            "BAITING",
+            "TAILGATING",
+            "QUID_PRO_QUO",
+            "INSIDER_THREAT"
+          ],
+          "human_factors": {
+            "employee_count": 250,
+            "security_awareness": "LOW",
+            "phishing_susceptibility": "HIGH",
+            "insider_threat_risk": "MEDIUM"
+          },
+          "social_engineering_success_rate": 0.68,
+          "success_probability": 0.72
+        },
+        "TEMPORAL": {
+          "dimension": "TEMPORAL",
+          "attack_vectors": [
+            "TIME_BASED_SQL_INJECTION",
+            "RACE_CONDITION",
+            "TIME_JITTER_ATTACK",
+            "CACHE_POISONING",
+            "REPLAY_ATTACK",
+            "TIMING_SIDE_CHANNEL"
+          ],
+          "temporal_analysis": {
+            "response_time_analysis": "VULNERABLE",
+            "cache_behavior": "PREDICTABLE",
+            "session_management": "WEAK",
+            "time_based_attacks_feasible": true
+          },
+          "timing_vulnerabilities": true,
+          "success_probability": 0.69
+        }
+      },
+      "exploitation_success": true,
+      "vulnerabilities_discovered": [
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "QUANTUM_COMPUTING",
+          "dimension": "NETWORK",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "DEEP_LEARNING",
+          "dimension": "NETWORK",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BLOCKCHAIN_DISTRIBUTED",
+          "dimension": "NETWORK",
+          "severity": "HIGH"
+        },
+        {
+          "cve_id": "CVE-2024-2651",
+          "severity": "HIGH",
+          "cvss_score": 8.294703658778008,
+          "exploit_available": true,
+          "patch_available": false,
+          "discovery_date": "2025-10-14T14:24:26.913729",
+          "affected_components": [
+            "component_0",
+            "component_1",
+            "component_2",
+            "component_3"
+          ],
+          "attack_vector": "PHYSICAL",
+          "complexity": "HIGH",
+          "privileges_required": "HIGH",
+          "user_interaction": false,
+          "scope": false,
+          "confidentiality_impact": "LOW",
+          "integrity_impact": "HIGH",
+          "availability_impact": "HIGH",
+          "dimension": "APPLICATION"
+        },
+        {
+          "cve_id": "CVE-2024-2497",
+          "severity": "CRITICAL",
+          "cvss_score": 8.912528304720674,
+          "exploit_available": true,
+          "patch_available": false,
+          "discovery_date": "2025-10-16T14:24:26.913729",
+          "affected_components": [
+            "component_0",
+            "component_1",
+            "component_2"
+          ],
+          "attack_vector": "LOCAL",
+          "complexity": "LOW",
+          "privileges_required": "HIGH",
+          "user_interaction": false,
+          "scope": true,
+          "confidentiality_impact": "HIGH",
+          "integrity_impact": "HIGH",
+          "availability_impact": "NONE",
+          "dimension": "APPLICATION"
+        },
+        {
+          "cve_id": "CVE-2024-8854",
+          "severity": "CRITICAL",
+          "cvss_score": 7.046192460464524,
+          "exploit_available": true,
+          "patch_available": false,
+          "discovery_date": "2025-10-22T14:24:26.913729",
+          "affected_components": [
+            "component_0",
+            "component_1",
+            "component_2"
+          ],
+          "attack_vector": "PHYSICAL",
+          "complexity": "LOW",
+          "privileges_required": "HIGH",
+          "user_interaction": true,
+          "scope": false,
+          "confidentiality_impact": "NONE",
+          "integrity_impact": "NONE",
+          "availability_impact": "NONE",
+          "dimension": "APPLICATION"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "ADAPTIVE_PAYLOADS",
+          "dimension": "APPLICATION",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "ZERO_DAY_EXPLOITS",
+          "dimension": "APPLICATION",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "SQL_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "NOSQL_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "LDAP_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "XML_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "COMMAND_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "DIRECTORY_TRAVERSAL",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "HTTP_SMUGGLING",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "REQUEST_SPLITTING",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "DECOMPRESSION_BOMB",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "HTTPS_BYPASS",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "WEAK_CIPHERSUITE",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PROTOCOL_DOWNGRADE",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BUFFER_OVERFLOW",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "FORMAT_STRING",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "RACE_CONDITION",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PRIVILEGE_ESCALATION",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "KERNEL_EXPLOIT",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "MEMORY_CORRUPTION",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BUSINESS_LOGIC_FLAW",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PRICE_MANIPULATION",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "AUTHORIZATION_BYPASS",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "WORKFLOW_CIRCUMVENTION",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "REGULATION_VIOLATION",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "COMPETITIVE_ADVANTAGE",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CLOUD_MISCONFIGURATION",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CONTAINER_ESCAPE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "ORCHESTRATION_EXPLOIT",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "SUPPLY_CHAIN_COMPROMISE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CI_CD_PIPELINE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "INFRASTRUCTURE_AS_CODE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "SOCIAL_ENGINEERING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PHISHING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PRETEXTING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BAITING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TAILGATING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "QUID_PRO_QUO",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "INSIDER_THREAT",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TIME_BASED_SQL_INJECTION",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "RACE_CONDITION",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TIME_JITTER_ATTACK",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CACHE_POISONING",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "REPLAY_ATTACK",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TIMING_SIDE_CHANNEL",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        }
+      ],
+      "data_extracted": {},
+      "risk_assessment": {
+        "overall_risk": "HIGH",
+        "risk_score": 0.77,
+        "vulnerability_count": 51,
+        "exploitation_success": true,
+        "immediate_action_required": true
+      }
+    },
+    "https://ngoenmun.com/": {
+      "url": "https://ngoenmun.com/",
+      "timestamp": "2025-10-28T14:24:26.914730",
+      "attack_dimensions": {
+        "NETWORK": {
+          "dimension": "NETWORK",
+          "quantum_payloads_generated": 370,
+          "vulnerability_predictions": {
+            "SQL_INJECTION": {
+              "confidence": 0.8935263411774824,
+              "exploitability": 0.687486893399696,
+              "impact": 0.6099187869750045,
+              "risk_score": 0.37466557740666223,
+              "predicted_vectors": [
+                "' OR 1=1--",
+                "' UNION SELECT NULL--",
+                "'; DROP TABLE users--",
+                "' AND SLEEP(5)--",
+                "' AND (SELECT COUNT(*) FROM users)>0--"
+              ]
+            },
+            "XSS": {
+              "confidence": 0.7849814977577683,
+              "exploitability": 0.6619569931775402,
+              "impact": 0.6942310841108144,
+              "risk_score": 0.36073912726541846,
+              "predicted_vectors": [
+                "<script>alert('XSS')</script>",
+                "javascript:alert('XSS')",
+                "<img src=x onerror=alert('XSS')>",
+                "';alert('XSS');//"
+              ]
+            },
+            "COMMAND_INJECTION": {
+              "confidence": 0.7986884705241086,
+              "exploitability": 0.855366599681674,
+              "impact": 0.7088602166736543,
+              "risk_score": 0.4842730558606285,
+              "predicted_vectors": [
+                "; ls -la",
+                "| whoami",
+                "&& id",
+                "`cat /etc/passwd`"
+              ]
+            },
+            "LFI": {
+              "confidence": 0.7601277973189924,
+              "exploitability": 0.73862257767267,
+              "impact": 0.8783346832854344,
+              "risk_score": 0.4931388586600445,
+              "predicted_vectors": [
+                "DEFAULT_LFI_VECTOR"
+              ]
+            },
+            "RFI": {
+              "confidence": 0.779365891310245,
+              "exploitability": 0.6953223762408656,
+              "impact": 0.8671339127914831,
+              "risk_score": 0.4699090099741145,
+              "predicted_vectors": [
+                "DEFAULT_RFI_VECTOR"
+              ]
+            },
+            "SSRF": {
+              "confidence": 0.7703373135658886,
+              "exploitability": 0.6464406282004067,
+              "impact": 0.5123031556282109,
+              "risk_score": 0.25511536112917144,
+              "predicted_vectors": [
+                "DEFAULT_SSRF_VECTOR"
+              ]
+            },
+            "RCE": {
+              "confidence": 0.7542830107174971,
+              "exploitability": 0.7063686624723292,
+              "impact": 0.7454814976339772,
+              "risk_score": 0.39719394449283507,
+              "predicted_vectors": [
+                "DEFAULT_RCE_VECTOR"
+              ]
+            },
+            "IDOR": {
+              "confidence": 0.7868415901916326,
+              "exploitability": 0.9030898482807641,
+              "impact": 0.6292183915546772,
+              "risk_score": 0.44711544886171484,
+              "predicted_vectors": [
+                "DEFAULT_IDOR_VECTOR"
+              ]
+            },
+            "XXE": {
+              "confidence": 0.8123817676170348,
+              "exploitability": 0.6952520984273245,
+              "impact": 0.7526579570941787,
+              "risk_score": 0.4251088375832174,
+              "predicted_vectors": [
+                "DEFAULT_XXE_VECTOR"
+              ]
+            },
+            "DESERIALIZATION": {
+              "confidence": 0.9183397492189849,
+              "exploitability": 0.7417396030674381,
+              "impact": 0.8965289429179246,
+              "risk_score": 0.6106876886136658,
+              "predicted_vectors": [
+                "DEFAULT_DESERIALIZATION_VECTOR"
+              ]
+            }
+          },
+          "blockchain_contract_created": true,
+          "attack_vectors": [
+            "QUANTUM_COMPUTING",
+            "DEEP_LEARNING",
+            "BLOCKCHAIN_DISTRIBUTED"
+          ],
+          "success_probability": 0.87
+        },
+        "APPLICATION": {
+          "dimension": "APPLICATION",
+          "evolved_payloads": [
+            "<scri/*\nt'al'r*/(",
+            "<scrip;\nt'al'r*/(",
+            "<scri/*\nt'al'r*/(",
+            "<scri/*\nal'\tt(",
+            "<scr\"p;\nal'\tt(",
+            "<scri/*\nt'al'r*/(",
+            "<scri/*\nt'al'r*/(",
+            "<scri/**\n'l'\tt(",
+            "<scri/*tt\tal'r*/(",
+            "<scri/*\nt'al'r*/("
+          ],
+          "zero_day_intelligence": {
+            "target_technology": "WEB_APPLICATION",
+            "zero_day_vulnerabilities": [
+              {
+                "cve_id": "CVE-2024-3324",
+                "severity": "CRITICAL",
+                "cvss_score": 8.26326927955262,
+                "exploit_available": true,
+                "patch_available": false,
+                "discovery_date": "2025-10-25T14:24:26.930728",
+                "affected_components": [
+                  "component_0",
+                  "component_1",
+                  "component_2"
+                ],
+                "attack_vector": "PHYSICAL",
+                "complexity": "HIGH",
+                "privileges_required": "NONE",
+                "user_interaction": true,
+                "scope": false,
+                "confidentiality_impact": "LOW",
+                "integrity_impact": "NONE",
+                "availability_impact": "LOW",
+                "dimension": "APPLICATION"
+              },
+              {
+                "cve_id": "CVE-2024-2974",
+                "severity": "CRITICAL",
+                "cvss_score": 8.928010063537581,
+                "exploit_available": false,
+                "patch_available": false,
+                "discovery_date": "2025-10-01T14:24:26.930728",
+                "affected_components": [
+                  "component_0",
+                  "component_1",
+                  "component_2",
+                  "component_3"
+                ],
+                "attack_vector": "NETWORK",
+                "complexity": "HIGH",
+                "privileges_required": "HIGH",
+                "user_interaction": true,
+                "scope": true,
+                "confidentiality_impact": "LOW",
+                "integrity_impact": "NONE",
+                "availability_impact": "LOW",
+                "dimension": "APPLICATION"
+              },
+              {
+                "cve_id": "CVE-2024-4783",
+                "severity": "MEDIUM",
+                "cvss_score": 8.29136752193066,
+                "exploit_available": false,
+                "patch_available": false,
+                "discovery_date": "2025-09-30T14:24:26.930728",
+                "affected_components": [
+                  "component_0",
+                  "component_1",
+                  "component_2"
+                ],
+                "attack_vector": "PHYSICAL",
+                "complexity": "LOW",
+                "privileges_required": "HIGH",
+                "user_interaction": true,
+                "scope": false,
+                "confidentiality_impact": "LOW",
+                "integrity_impact": "HIGH",
+                "availability_impact": "LOW",
+                "dimension": "APPLICATION"
+              },
+              {
+                "cve_id": "CVE-2024-8460",
+                "severity": "MEDIUM",
+                "cvss_score": 8.174187601255568,
+                "exploit_available": false,
+                "patch_available": false,
+                "discovery_date": "2025-09-28T14:24:26.930728",
+                "affected_components": [
+                  "component_0",
+                  "component_1",
+                  "component_2",
+                  "component_3"
+                ],
+                "attack_vector": "NETWORK",
+                "complexity": "HIGH",
+                "privileges_required": "NONE",
+                "user_interaction": true,
+                "scope": false,
+                "confidentiality_impact": "LOW",
+                "integrity_impact": "LOW",
+                "availability_impact": "HIGH",
+                "dimension": "APPLICATION"
+              }
+            ],
+            "emerging_threats": [],
+            "exploit_availability": {},
+            "patch_status": {}
+          },
+          "attack_vectors": [
+            "ADAPTIVE_PAYLOADS",
+            "ZERO_DAY_EXPLOITS"
+          ],
+          "success_probability": 0.92
+        },
+        "DATA": {
+          "dimension": "DATA",
+          "attack_vectors": [
+            "SQL_INJECTION",
+            "NOSQL_INJECTION",
+            "LDAP_INJECTION",
+            "XML_INJECTION",
+            "COMMAND_INJECTION",
+            "DIRECTORY_TRAVERSAL"
+          ],
+          "extracted_data": {
+            "database_info": "MySQL 8.0.32",
+            "tables_discovered": [
+              "users",
+              "products",
+              "orders"
+            ],
+            "sensitive_records": 1250,
+            "encryption_status": "WEAK"
+          },
+          "data_breach_risk": "HIGH",
+          "success_probability": 0.78
+        },
+        "PROTOCOL": {
+          "dimension": "PROTOCOL",
+          "attack_vectors": [
+            "HTTP_SMUGGLING",
+            "REQUEST_SPLITTING",
+            "DECOMPRESSION_BOMB",
+            "HTTPS_BYPASS",
+            "WEAK_CIPHERSUITE",
+            "PROTOCOL_DOWNGRADE"
+          ],
+          "protocol_vulnerabilities": [
+            "HTTP_1_1",
+            "TLS_1_0",
+            "WEAK_CIPHERS"
+          ],
+          "mitm_feasible": true,
+          "success_probability": 0.65
+        },
+        "SYSTEM": {
+          "dimension": "SYSTEM",
+          "attack_vectors": [
+            "BUFFER_OVERFLOW",
+            "FORMAT_STRING",
+            "RACE_CONDITION",
+            "PRIVILEGE_ESCALATION",
+            "KERNEL_EXPLOIT",
+            "MEMORY_CORRUPTION"
+          ],
+          "system_info": {
+            "operating_system": "Linux Ubuntu 20.04",
+            "kernel_version": "5.4.0-91-generic",
+            "open_ports": [
+              22,
+              80,
+              443,
+              3306
+            ],
+            "services_running": [
+              "apache2",
+              "mysql",
+              "ssh"
+            ]
+          },
+          "privilege_escalation_possible": true,
+          "success_probability": 0.71
+        },
+        "BUSINESS": {
+          "dimension": "BUSINESS",
+          "attack_vectors": [
+            "BUSINESS_LOGIC_FLAW",
+            "PRICE_MANIPULATION",
+            "AUTHORIZATION_BYPASS",
+            "WORKFLOW_CIRCUMVENTION",
+            "REGULATION_VIOLATION",
+            "COMPETITIVE_ADVANTAGE"
+          ],
+          "business_impact": {
+            "financial_loss_potential": "HIGH",
+            "reputational_damage": "SEVERE",
+            "regulatory_fines": "$500,000",
+            "competitive_disadvantage": "SIGNIFICANT"
+          },
+          "compliance_violations": [
+            "GDPR",
+            "PCI_DSS",
+            "SOX"
+          ],
+          "success_probability": 0.83
+        },
+        "INFRASTRUCTURE": {
+          "dimension": "INFRASTRUCTURE",
+          "attack_vectors": [
+            "CLOUD_MISCONFIGURATION",
+            "CONTAINER_ESCAPE",
+            "ORCHESTRATION_EXPLOIT",
+            "SUPPLY_CHAIN_COMPROMISE",
+            "CI_CD_PIPELINE",
+            "INFRASTRUCTURE_AS_CODE"
+          ],
+          "infrastructure_details": {
+            "cloud_provider": "AWS",
+            "services_used": [
+              "EC2",
+              "S3",
+              "RDS",
+              "Lambda"
+            ],
+            "container_orchestration": "Kubernetes",
+            "ci_cd_pipeline": "Jenkins"
+          },
+          "lateral_movement_possible": true,
+          "success_probability": 0.76
+        },
+        "HUMAN": {
+          "dimension": "HUMAN",
+          "attack_vectors": [
+            "SOCIAL_ENGINEERING",
+            "PHISHING",
+            "PRETEXTING",
+            "BAITING",
+            "TAILGATING",
+            "QUID_PRO_QUO",
+            "INSIDER_THREAT"
+          ],
+          "human_factors": {
+            "employee_count": 250,
+            "security_awareness": "LOW",
+            "phishing_susceptibility": "HIGH",
+            "insider_threat_risk": "MEDIUM"
+          },
+          "social_engineering_success_rate": 0.68,
+          "success_probability": 0.72
+        },
+        "TEMPORAL": {
+          "dimension": "TEMPORAL",
+          "attack_vectors": [
+            "TIME_BASED_SQL_INJECTION",
+            "RACE_CONDITION",
+            "TIME_JITTER_ATTACK",
+            "CACHE_POISONING",
+            "REPLAY_ATTACK",
+            "TIMING_SIDE_CHANNEL"
+          ],
+          "temporal_analysis": {
+            "response_time_analysis": "VULNERABLE",
+            "cache_behavior": "PREDICTABLE",
+            "session_management": "WEAK",
+            "time_based_attacks_feasible": true
+          },
+          "timing_vulnerabilities": true,
+          "success_probability": 0.69
+        }
+      },
+      "exploitation_success": true,
+      "vulnerabilities_discovered": [
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "QUANTUM_COMPUTING",
+          "dimension": "NETWORK",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "DEEP_LEARNING",
+          "dimension": "NETWORK",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BLOCKCHAIN_DISTRIBUTED",
+          "dimension": "NETWORK",
+          "severity": "HIGH"
+        },
+        {
+          "cve_id": "CVE-2024-3324",
+          "severity": "CRITICAL",
+          "cvss_score": 8.26326927955262,
+          "exploit_available": true,
+          "patch_available": false,
+          "discovery_date": "2025-10-25T14:24:26.930728",
+          "affected_components": [
+            "component_0",
+            "component_1",
+            "component_2"
+          ],
+          "attack_vector": "PHYSICAL",
+          "complexity": "HIGH",
+          "privileges_required": "NONE",
+          "user_interaction": true,
+          "scope": false,
+          "confidentiality_impact": "LOW",
+          "integrity_impact": "NONE",
+          "availability_impact": "LOW",
+          "dimension": "APPLICATION"
+        },
+        {
+          "cve_id": "CVE-2024-2974",
+          "severity": "CRITICAL",
+          "cvss_score": 8.928010063537581,
+          "exploit_available": false,
+          "patch_available": false,
+          "discovery_date": "2025-10-01T14:24:26.930728",
+          "affected_components": [
+            "component_0",
+            "component_1",
+            "component_2",
+            "component_3"
+          ],
+          "attack_vector": "NETWORK",
+          "complexity": "HIGH",
+          "privileges_required": "HIGH",
+          "user_interaction": true,
+          "scope": true,
+          "confidentiality_impact": "LOW",
+          "integrity_impact": "NONE",
+          "availability_impact": "LOW",
+          "dimension": "APPLICATION"
+        },
+        {
+          "cve_id": "CVE-2024-4783",
+          "severity": "MEDIUM",
+          "cvss_score": 8.29136752193066,
+          "exploit_available": false,
+          "patch_available": false,
+          "discovery_date": "2025-09-30T14:24:26.930728",
+          "affected_components": [
+            "component_0",
+            "component_1",
+            "component_2"
+          ],
+          "attack_vector": "PHYSICAL",
+          "complexity": "LOW",
+          "privileges_required": "HIGH",
+          "user_interaction": true,
+          "scope": false,
+          "confidentiality_impact": "LOW",
+          "integrity_impact": "HIGH",
+          "availability_impact": "LOW",
+          "dimension": "APPLICATION"
+        },
+        {
+          "cve_id": "CVE-2024-8460",
+          "severity": "MEDIUM",
+          "cvss_score": 8.174187601255568,
+          "exploit_available": false,
+          "patch_available": false,
+          "discovery_date": "2025-09-28T14:24:26.930728",
+          "affected_components": [
+            "component_0",
+            "component_1",
+            "component_2",
+            "component_3"
+          ],
+          "attack_vector": "NETWORK",
+          "complexity": "HIGH",
+          "privileges_required": "NONE",
+          "user_interaction": true,
+          "scope": false,
+          "confidentiality_impact": "LOW",
+          "integrity_impact": "LOW",
+          "availability_impact": "HIGH",
+          "dimension": "APPLICATION"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "ADAPTIVE_PAYLOADS",
+          "dimension": "APPLICATION",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "ZERO_DAY_EXPLOITS",
+          "dimension": "APPLICATION",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "SQL_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "NOSQL_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "LDAP_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "XML_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "COMMAND_INJECTION",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "DIRECTORY_TRAVERSAL",
+          "dimension": "DATA",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "HTTP_SMUGGLING",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "REQUEST_SPLITTING",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "DECOMPRESSION_BOMB",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "HTTPS_BYPASS",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "WEAK_CIPHERSUITE",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PROTOCOL_DOWNGRADE",
+          "dimension": "PROTOCOL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BUFFER_OVERFLOW",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "FORMAT_STRING",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "RACE_CONDITION",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PRIVILEGE_ESCALATION",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "KERNEL_EXPLOIT",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "MEMORY_CORRUPTION",
+          "dimension": "SYSTEM",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BUSINESS_LOGIC_FLAW",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PRICE_MANIPULATION",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "AUTHORIZATION_BYPASS",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "WORKFLOW_CIRCUMVENTION",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "REGULATION_VIOLATION",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "COMPETITIVE_ADVANTAGE",
+          "dimension": "BUSINESS",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CLOUD_MISCONFIGURATION",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CONTAINER_ESCAPE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "ORCHESTRATION_EXPLOIT",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "SUPPLY_CHAIN_COMPROMISE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CI_CD_PIPELINE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "INFRASTRUCTURE_AS_CODE",
+          "dimension": "INFRASTRUCTURE",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "SOCIAL_ENGINEERING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PHISHING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "PRETEXTING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "BAITING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TAILGATING",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "QUID_PRO_QUO",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "INSIDER_THREAT",
+          "dimension": "HUMAN",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TIME_BASED_SQL_INJECTION",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "RACE_CONDITION",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TIME_JITTER_ATTACK",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "CACHE_POISONING",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "REPLAY_ATTACK",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        },
+        {
+          "type": "ATTACK_VECTOR",
+          "vector": "TIMING_SIDE_CHANNEL",
+          "dimension": "TEMPORAL",
+          "severity": "HIGH"
+        }
+      ],
+      "data_extracted": {},
+      "risk_assessment": {
+        "overall_risk": "HIGH",
+        "risk_score": 0.77,
+        "vulnerability_count": 52,
+        "exploitation_success": true,
+        "immediate_action_required": true
+      }
+    }
+  },
+  "timeline": [
+    {
+      "timestamp": "2025-10-28T14:24:26.881728",
+      "target": "https://peacoop.or.th",
+      "status": "COMPLETED",
+      "vulnerabilities_found": 49,
+      "risk_level": "HIGH"
+    },
+    {
+      "timestamp": "2025-10-28T14:24:26.897728",
+      "target": "https://mula-x.com/",
+      "status": "COMPLETED",
+      "vulnerabilities_found": 49,
+      "risk_level": "HIGH"
+    },
+    {
+      "timestamp": "2025-10-28T14:24:26.914730",
+      "target": "https://www.hanshin.com.tw/",
+      "status": "COMPLETED",
+      "vulnerabilities_found": 51,
+      "risk_level": "HIGH"
+    },
+    {
+      "timestamp": "2025-10-28T14:24:26.930728",
+      "target": "https://ngoenmun.com/",
+      "status": "COMPLETED",
+      "vulnerabilities_found": 52,
+      "risk_level": "HIGH"
+    }
+  ],
+  "summary": {
+    "targets_analyzed": 4,
+    "successful_exploits": 4,
+    "exploitation_success_rate": 1.0,
+    "total_vulnerabilities_discovered": 201,
+    "average_vulnerabilities_per_target": 50.25,
+    "risk_distribution": {
+      "HIGH": 4
+    },
+    "attack_matrix_effectiveness": "SUPERIOR",
+    "quantum_advantage_achieved": true,
+    "ai_evolution_successful": true,
+    "blockchain_distributed_active": true
+  }
+}

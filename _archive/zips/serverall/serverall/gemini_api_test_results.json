@@ -1,0 +1,122 @@
+{
+  "timestamp": "2025-10-29T12:11:02.439260",
+  "summary": {
+    "total_tests": 15,
+    "success_count": 8,
+    "success_rate": 53.333333333333336
+  },
+  "model_stats": {
+    "gemini-2.5-flash-lite": {
+      "success": 3,
+      "total": 5
+    },
+    "gemini-2.0-flash-exp": {
+      "success": 5,
+      "total": 5
+    },
+    "gemini-1.5-flash": {
+      "success": 0,
+      "total": 5
+    }
+  },
+  "detailed_results": [
+    {
+      "status": "success",
+      "response_time": "1.05s",
+      "response_text": "您好！\n\n请提供您想要我确认的 API 密钥。我需要您提供密钥才能进行测试。\n\n一旦您提供了密钥，我会尝试使用它来调用模型，并告知您：\n\n*   **API 密钥是否",
+      "model": "gemini-2.5-flash-lite",
+      "api_key": "AIzaSyDS5cBxLD5n1hFL..."
+    },
+    {
+      "status": "success",
+      "response_time": "0.87s",
+      "response_text": "我无法直接验证API密钥是否有效或模型是否可用。你需要使用该密钥通过API调用来测试。\n",
+      "model": "gemini-2.0-flash-exp",
+      "api_key": "AIzaSyDS5cBxLD5n1hFL..."
+    },
+    {
+      "status": "error",
+      "error": "HTTP 404: {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version",
+      "model": "gemini-1.5-flash",
+      "api_key": "AIzaSyDS5cBxLD5n1hFL..."
+    },
+    {
+      "status": "error",
+      "error": "HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your p",
+      "model": "gemini-2.5-flash-lite",
+      "api_key": "AIzaSyCaxwg8pSTK5yAb..."
+    },
+    {
+      "status": "success",
+      "response_time": "0.99s",
+      "response_text": "我无法直接验证API密钥是否有效，也无法确认特定模型是否可用。\n\n你需要自行测试你的API密钥，并查看API文档或状态页面来确认模型是否可用。\n",
+      "model": "gemini-2.0-flash-exp",
+      "api_key": "AIzaSyCaxwg8pSTK5yAb..."
+    },
+    {
+      "status": "error",
+      "error": "HTTP 404: {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version",
+      "model": "gemini-1.5-flash",
+      "api_key": "AIzaSyCaxwg8pSTK5yAb..."
+    },
+    {
+      "status": "success",
+      "response_time": "1.04s",
+      "response_text": "您好！\n\n请提供您想要我确认的API密钥。我需要您提供密钥才能进行测试。\n\n一旦您提供了密钥，我会尝试使用它来调用模型，并告知您：\n\n*   **API密钥是否工作正常",
+      "model": "gemini-2.5-flash-lite",
+      "api_key": "AIzaSyAQjL9lJebTyHF_..."
+    },
+    {
+      "status": "success",
+      "response_time": "1.11s",
+      "response_text": "我无法直接验证API密钥是否有效或模型是否可用。你需要自行测试你的API密钥。\n\n通常，你可以通过以下方式测试：\n\n*   **发送一个简单的API请求：** 使用你的API密钥向模型发送一个简单的请...",
+      "model": "gemini-2.0-flash-exp",
+      "api_key": "AIzaSyAQjL9lJebTyHF_..."
+    },
+    {
+      "status": "error",
+      "error": "HTTP 404: {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version",
+      "model": "gemini-1.5-flash",
+      "api_key": "AIzaSyAQjL9lJebTyHF_..."
+    },
+    {
+      "status": "error",
+      "error": "HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your p",
+      "model": "gemini-2.5-flash-lite",
+      "api_key": "AIzaSyAvk38IBPodmvBR..."
+    },
+    {
+      "status": "success",
+      "response_time": "1.28s",
+      "response_text": "我无法直接验证API密钥是否有效或模型是否可用。你需要自行测试你的API密钥。\n\n通常，你可以通过以下方式测试：\n\n*   **查看API提供商的文档：** 查找专门的测试或验证API密钥",
+      "model": "gemini-2.0-flash-exp",
+      "api_key": "AIzaSyAvk38IBPodmvBR..."
+    },
+    {
+      "status": "error",
+      "error": "HTTP 404: {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version",
+      "model": "gemini-1.5-flash",
+      "api_key": "AIzaSyAvk38IBPodmvBR..."
+    },
+    {
+      "status": "success",
+      "response_time": "1.17s",
+      "response_text": "您好！\n\n请提供您想要我确认的API密钥。我需要您提供密钥才能进行测试。\n\n一旦您提供了密钥，我会尝试使用它来调用模型，并告知您：\n\n*   **API密钥是否工作正常",
+      "model": "gemini-2.5-flash-lite",
+      "api_key": "AIzaSyCZOxGMnBZVEcWG..."
+    },
+    {
+      "status": "success",
+      "response_time": "1.08s",
+      "response_text": "我无法直接验证API密钥是否有效或模型是否可用。你需要自行测试你的API密钥。\n\n通常，你可以通过以下方式测试：\n\n*   **查看API提供商的文档：** 查找专门的测试或验证API密钥",
+      "model": "gemini-2.0-flash-exp",
+      "api_key": "AIzaSyCZOxGMnBZVEcWG..."
+    },
+    {
+      "status": "error",
+      "error": "HTTP 404: {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version",
+      "model": "gemini-1.5-flash",
+      "api_key": "AIzaSyCZOxGMnBZVEcWG..."
+    }
+  ]
+}

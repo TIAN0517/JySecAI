@@ -1,0 +1,230 @@
+2025-10-29 14:30:46,467 - __main__ - INFO - Vietnam快递扫描数据库初始化完成
+2025-10-29 14:30:46,467 - __main__ - INFO - Gemini 2.0 Flash-Exp AI初始化成功 (API Key: AIzaSyDkVv...)
+2025-10-29 14:30:46,467 - __main__ - INFO - 开始Vietnam快递系统综合安全扫描
+2025-10-29 14:30:46,468 - __main__ - INFO - 获取到 32 个扫描目标
+2025-10-29 14:30:46,469 - __main__ - INFO - 开始扫描: Giao Hàng Nhanh_Target_1 - https://ghn.vn
+2025-10-29 14:30:46,470 - __main__ - INFO - 开始扫描: Giao Hàng Nhanh_Target_2 - https://don.ghn.vn
+2025-10-29 14:30:46,484 - __main__ - ERROR - 扫描失败 Giao Hàng Nhanh_Target_2: HTTPSConnectionPool(host='don.ghn.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BAB89D0>: Failed to resolve 'don.ghn.vn' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:30:46,485 - __main__ - INFO - 开始扫描: Giao Hàng Nhanh_Target_3 - https://shop.ghn.vn
+2025-10-29 14:30:47,374 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:30:49,929 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:30:49,932 - __main__ - INFO - 扫描完成: Giao Hàng Nhanh_Target_1 - 发现 0 个漏洞，风险评分: 5.0
+2025-10-29 14:30:49,932 - __main__ - INFO - 开始扫描: Giao Hàng Nhanh_Target_4 - https://api.ghn.vn
+2025-10-29 14:30:50,650 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:30:52,142 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:30:52,145 - __main__ - INFO - 扫描完成: Giao Hàng Nhanh_Target_4 - 发现 0 个漏洞，风险评分: 5.0
+2025-10-29 14:30:52,145 - __main__ - INFO - 开始扫描: Giao Hàng Tiết Kiệm_Target_1 - https://giaohangtietkiem.vn
+2025-10-29 14:30:53,933 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:30:59,235 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:30:59,239 - __main__ - INFO - 扫描完成: Giao Hàng Tiết Kiệm_Target_1 - 发现 0 个漏洞，风险评分: 5.0
+2025-10-29 14:30:59,240 - __main__ - INFO - 开始扫描: Giao Hàng Tiết Kiệm_Target_2 - https://khachhang.giaohangtietkiem.vn
+2025-10-29 14:31:00,198 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:31:01,530 - __main__ - ERROR - 扫描失败 Giao Hàng Nhanh_Target_3: HTTPSConnectionPool(host='shop.ghn.vn', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x000002703BABA190>, 'Connection to shop.ghn.vn timed out. (connect timeout=15)'))
+2025-10-29 14:31:01,530 - __main__ - INFO - 开始扫描: Giao Hàng Tiết Kiệm_Target_3 - https://api.giaohangtietkiem.vn
+2025-10-29 14:31:01,543 - __main__ - ERROR - 扫描失败 Giao Hàng Tiết Kiệm_Target_3: HTTPSConnectionPool(host='api.giaohangtietkiem.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BB28D10>: Failed to resolve 'api.giaohangtietkiem.vn' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:31:01,543 - __main__ - INFO - 开始扫描: Giao Hàng Tiết Kiệm_Target_4 - https://seller.giaohangtietkiem.vn
+2025-10-29 14:31:01,557 - __main__ - ERROR - 扫描失败 Giao Hàng Tiết Kiệm_Target_4: HTTPSConnectionPool(host='seller.giaohangtietkiem.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BB24810>: Failed to resolve 'seller.giaohangtietkiem.vn' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:31:01,557 - __main__ - INFO - 开始扫描: Viettel Post_Target_1 - https://viettelpost.vn
+2025-10-29 14:31:01,713 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:31:01,715 - __main__ - INFO - 扫描完成: Giao Hàng Tiết Kiệm_Target_2 - 发现 0 个漏洞，风险评分: 5.0
+2025-10-29 14:31:01,716 - __main__ - INFO - 开始扫描: Viettel Post_Target_2 - https://tracking.viettelpost.vn
+2025-10-29 14:31:02,054 - __main__ - ERROR - 扫描失败 Viettel Post_Target_2: HTTPSConnectionPool(host='tracking.viettelpost.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BB29810>: Failed to resolve 'tracking.viettelpost.vn' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:31:02,055 - __main__ - INFO - 开始扫描: Viettel Post_Target_3 - https://api.viettelpost.vn
+2025-10-29 14:31:02,321 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:31:02,854 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:31:03,799 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:31:03,805 - __main__ - INFO - 扫描完成: Viettel Post_Target_1 - 发现 0 个漏洞，风险评分: 6.5
+2025-10-29 14:31:03,806 - __main__ - INFO - 开始扫描: Viettel Post_Target_4 - https://employee.viettelpost.vn
+2025-10-29 14:31:04,028 - __main__ - ERROR - 扫描失败 Viettel Post_Target_4: HTTPSConnectionPool(host='employee.viettelpost.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BB46090>: Failed to resolve 'employee.viettelpost.vn' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:31:04,029 - __main__ - INFO - 开始扫描: VNPost_Target_1 - https://vnpost.vn
+2025-10-29 14:31:07,699 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:31:07,710 - __main__ - INFO - 扫描完成: Viettel Post_Target_3 - 发现 0 个漏洞，风险评分: 5.0
+2025-10-29 14:31:07,711 - __main__ - INFO - 开始扫描: VNPost_Target_2 - https://www.vnpost.vn
+2025-10-29 14:31:10,944 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:31:12,285 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:31:14,606 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:31:14,615 - __main__ - INFO - 扫描完成: VNPost_Target_1 - 发现 0 个漏洞，风险评分: 5.0
+2025-10-29 14:31:14,616 - __main__ - INFO - 开始扫描: VNPost_Target_3 - https://tracking.vnpost.vn
+2025-10-29 14:31:14,952 - __main__ - ERROR - 扫描失败 VNPost_Target_3: HTTPSConnectionPool(host='tracking.vnpost.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BB7C150>: Failed to resolve 'tracking.vnpost.vn' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:31:14,953 - __main__ - INFO - 开始扫描: VNPost_Target_4 - https://buudien.vnpost.vn
+2025-10-29 14:31:15,138 - __main__ - ERROR - 扫描失败 VNPost_Target_4: HTTPSConnectionPool(host='buudien.vnpost.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BB2DA50>: Failed to resolve 'buudien.vnpost.vn' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:31:15,138 - __main__ - INFO - 开始扫描: J&T Express Vietnam_Target_1 - https://jtexpress.vn
+2025-10-29 14:31:16,399 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:31:16,708 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:31:16,711 - __main__ - INFO - 扫描完成: VNPost_Target_2 - 发现 0 个漏洞，风险评分: 5.0
+2025-10-29 14:31:16,712 - __main__ - INFO - 开始扫描: J&T Express Vietnam_Target_2 - https://tracking.jtexpress.vn
+2025-10-29 14:31:16,726 - __main__ - ERROR - 扫描失败 J&T Express Vietnam_Target_2: HTTPSConnectionPool(host='tracking.jtexpress.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BB667D0>: Failed to resolve 'tracking.jtexpress.vn' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:31:16,727 - __main__ - INFO - 开始扫描: J&T Express Vietnam_Target_3 - https://myjt.jtexpress.vn
+2025-10-29 14:31:16,740 - __main__ - ERROR - 扫描失败 J&T Express Vietnam_Target_3: HTTPSConnectionPool(host='myjt.jtexpress.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BB28CD0>: Failed to resolve 'myjt.jtexpress.vn' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:31:16,740 - __main__ - INFO - 开始扫描: J&T Express Vietnam_Target_4 - https://seller.jtexpress.vn
+2025-10-29 14:31:16,755 - __main__ - ERROR - 扫描失败 J&T Express Vietnam_Target_4: HTTPSConnectionPool(host='seller.jtexpress.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BB67750>: Failed to resolve 'seller.jtexpress.vn' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:31:16,755 - __main__ - INFO - 开始扫描: Best Express_Target_1 - https://best-inc.vn
+2025-10-29 14:31:17,704 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:31:19,298 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:31:19,303 - __main__ - INFO - 扫描完成: Best Express_Target_1 - 发现 0 个漏洞，风险评分: 5.0
+2025-10-29 14:31:19,303 - __main__ - INFO - 开始扫描: Best Express_Target_2 - https://tracking.best-inc.vn
+2025-10-29 14:31:19,480 - __main__ - ERROR - 扫描失败 Best Express_Target_2: HTTPSConnectionPool(host='tracking.best-inc.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BB72210>: Failed to resolve 'tracking.best-inc.vn' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:31:19,480 - __main__ - INFO - 开始扫描: Best Express_Target_3 - https://customer.best-inc.vn
+2025-10-29 14:31:19,660 - __main__ - ERROR - 扫描失败 Best Express_Target_3: HTTPSConnectionPool(host='customer.best-inc.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BB2ABD0>: Failed to resolve 'customer.best-inc.vn' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:31:19,660 - __main__ - INFO - 开始扫描: Best Express_Target_4 - https://partner.best-inc.vn
+2025-10-29 14:31:19,730 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:31:19,734 - __main__ - INFO - 扫描完成: J&T Express Vietnam_Target_1 - 发现 0 个漏洞，风险评分: 5.0
+2025-10-29 14:31:19,734 - __main__ - INFO - 开始扫描: Shopee Express_Target_1 - https://shopee.vn
+2025-10-29 14:31:19,848 - __main__ - ERROR - 扫描失败 Best Express_Target_4: HTTPSConnectionPool(host='partner.best-inc.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BB73190>: Failed to resolve 'partner.best-inc.vn' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:31:19,849 - __main__ - INFO - 开始扫描: Shopee Express_Target_2 - https://seller.shopee.vn
+2025-10-29 14:31:21,024 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:31:21,171 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:31:23,330 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:31:23,334 - __main__ - INFO - 扫描完成: Shopee Express_Target_1 - 发现 0 个漏洞，风险评分: 5.0
+2025-10-29 14:31:23,334 - __main__ - INFO - 开始扫描: Shopee Express_Target_3 - https://affiliate.shopee.vn
+2025-10-29 14:31:24,266 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:31:24,489 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:31:24,493 - __main__ - INFO - 扫描完成: Shopee Express_Target_2 - 发现 0 个漏洞，风险评分: 6.5
+2025-10-29 14:31:24,493 - __main__ - INFO - 开始扫描: Shopee Express_Target_4 - https://help.shopee.vn
+2025-10-29 14:31:25,788 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:31:26,202 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:31:26,205 - __main__ - INFO - 扫描完成: Shopee Express_Target_3 - 发现 0 个漏洞，风险评分: 6.5
+2025-10-29 14:31:26,205 - __main__ - INFO - 开始扫描: Lazada Logistics_Target_1 - https://lazada.vn
+2025-10-29 14:31:28,531 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:31:29,316 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:31:29,321 - __main__ - INFO - 扫描完成: Shopee Express_Target_4 - 发现 0 个漏洞，风险评分: 6.5
+2025-10-29 14:31:29,321 - __main__ - INFO - 开始扫描: Lazada Logistics_Target_2 - https://sellercenter.lazada.vn
+2025-10-29 14:31:32,025 - __main__ - ERROR - AI分析失败: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-29 14:31:33,766 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:31:33,769 - __main__ - INFO - 扫描完成: Lazada Logistics_Target_1 - 发现 0 个漏洞，风险评分: 6.5
+2025-10-29 14:31:33,769 - __main__ - INFO - 开始扫描: Lazada Logistics_Target_3 - https://lazada-logistics.com
+2025-10-29 14:31:33,777 - __main__ - ERROR - 扫描失败 Lazada Logistics_Target_3: HTTPSConnectionPool(host='lazada-logistics.com', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BCA13D0>: Failed to resolve 'lazada-logistics.com' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:31:33,777 - __main__ - INFO - 开始扫描: Lazada Logistics_Target_4 - https://fms.lazada.vn
+2025-10-29 14:31:33,795 - __main__ - ERROR - 扫描失败 Lazada Logistics_Target_4: HTTPSConnectionPool(host='fms.lazada.vn', port=443): Max retries exceeded with url: / (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x000002703BCA6C10>: Failed to resolve 'fms.lazada.vn' ([Errno 11001] getaddrinfo failed)"))
+2025-10-29 14:31:34,617 - __main__ - ERROR - Nuclei扫描失败: [WinError 2] 系统找不到指定的文件。
+2025-10-29 14:31:34,620 - __main__ - INFO - 扫描完成: Lazada Logistics_Target_2 - 发现 0 个漏洞，风险评分: 6.5
+2025-10-29 14:31:34,624 - __main__ - INFO - 扫描完成！报告已保存: vietnam_express_security_report_20251029_143134.md
+2025-10-29 14:31:34,625 - __main__ - INFO - 详细数据已保存: vietnam_express_scan_data_20251029_143134.json

@@ -1,0 +1,12 @@
+{
+  "target": "https://sumzero.com",
+  "timestamp": "2025-10-26 17:24:34",
+  "results": {
+    "/?id=1": {
+      "database_type": "MySQL",
+      "sensitive_tables": [],
+      "credentials": {},
+      "full_dump": {}
+    }
+  }
+}

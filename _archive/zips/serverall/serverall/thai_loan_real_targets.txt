@@ -1,0 +1,68 @@
+# 泰国私人贷款网站真实目标URL
+# 这些是实际的网站地址，不是Google Play商店页面
+
+# 泰国知名私人贷款平台
+https://www.darm.co.th
+https://www.cashea.co.th  
+https://www.uob.co.th
+https://www.scb.co.th
+https://www.krungsri.com
+https://www.bangkokbank.com
+https://www.kasikornbank.com
+https://www.ktb.co.th
+
+# 泰国金融科技贷款平台
+https://www.finnomena.com
+https://www.moneyguru.co.th
+https://www.truemoney.co.th
+https://www.promptpay.co.th
+https://www.rabbitfinance.com
+
+# 泰国小额贷款和网贷平台
+https://www.scb-easy.net
+https://www.moneyconnect.co.th
+https://www.lendasia.co.th
+https://www.thaipawn.com
+https://www.quickloan.co.th
+
+# 泰国P2P贷款平台
+https://www.finnomena.com
+https://www.moneymax.co.th
+https://www.financethai.com
+https://www.lendingclub.co.th
+
+# 泰国信用卡和消费贷款
+https://www.citibank.co.th
+https://www.hsbc.co.th
+https://www.americanexpress.com/th
+https://www.mastercard.co.th
+
+# 泰国保险和金融公司
+https://www.aia.co.th
+https://www.muangthai.co.th
+https://www.bangkoklife.com
+https://www.chubb.com/th
+
+# 泰国数字银行
+https://www.scbeasy.com
+https://www.kplus.co.th
+https://www.krungsri.com
+https://www.cimb.co.th
+
+# 泰国支付平台
+https://www.promptpay.co.th
+https://www.omise.co
+https://www.2c2p.com
+https://www.airpay.co.th
+
+# 泰国投资和财富管理
+https://www.finnomena.com
+https://www.moneyguru.co.th
+https://www.rabbitfinance.com
+https://www.dailyfin.co.th
+
+# 泰国金融科技初创公司
+https://www.moneyguru.co.th
+https://www.finnomena.com
+https://www.rabbitfinance.com
+https://www.scb-easy.net

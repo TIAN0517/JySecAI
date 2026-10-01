@@ -1,0 +1,9 @@
+{
+  "backup_name": "shutdown_backup",
+  "timestamp": "2025-10-26T15:00:35.957245",
+  "files": [
+    "security_events.json",
+    "security_enhancer.log"
+  ],
+  "total_files": 2
+}

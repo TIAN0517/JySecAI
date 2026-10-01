@@ -1,0 +1,18 @@
+{
+  "target": "https://quantiacs.com",
+  "timestamp": "2025-10-26 17:13:54",
+  "results": {
+    "/?id=1": {
+      "database_type": "Microsoft SQL Server",
+      "sensitive_tables": [],
+      "credentials": {},
+      "full_dump": {}
+    },
+    "/strategy?id=1": {
+      "database_type": "Microsoft SQL Server",
+      "sensitive_tables": [],
+      "credentials": {},
+      "full_dump": {}
+    }
+  }
+}

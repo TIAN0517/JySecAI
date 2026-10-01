@@ -1,0 +1,82 @@
+
+=== fb.tycg.gov.tw (61.67.75.72) ===
+  Port 80: OPEN
+  Port 443: OPEN
+  HTTP 80: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Subject Key Identifier (_ssl.c:1082)>
+  HTTPS 443: The read operation timed out
+  GET :443/epcr -> 404
+  GET :443/EPCR -> 404
+
+=== 119.tainan.gov.tw (103.124.75.64) ===
+  Port 443: OPEN
+  HTTPS 443: 200 | Size: 112062
+  -> CCMS CMS website (not EPCR dispatch)
+  GET :443/epcr -> 410
+  GET :443/EPCR -> 410
+  GET :443/119 -> 410
+  GET :443/mobile -> 410
+  GET :443/api -> 410
+
+=== fd.gov.taipei (163.29.207.130) ===
+  Port 80: OPEN
+  Port 443: OPEN
+  Port 8080: OPEN
+  HTTP 80: [Errno 104] Connection reset by peer
+  HTTPS 443: The read operation timed out
+
+=== appservice119.tfd.gov.tw (210.69.43.112) ===
+  Port 80: OPEN
+  Port 443: OPEN
+  HTTP 80: 200 | Size: 46
+  -> Default Apache page (not deployed app)
+  HTTPS 443: 200 | Size: 46
+  -> Custom page: <html><body><h1>It works!</h1></body></html>
+
+  GET :80/epcr -> 404
+  GET :80/EPCR -> 404
+  GET :80/119 -> 404
+  GET :443/epcr -> 404
+  GET :443/EPCR -> 404
+  GET :443/119 -> 404
+
+=== service119.tfd.gov.tw:8080 (210.69.43.103) ===
+  Port 80: OPEN
+  Port 443: OPEN
+  Port 8080: OPEN
+  HTTP 80: 200 | Size: 896
+  -> Default nginx page (not EPCR)
+  HTTPS 443: 200 | Size: 896
+  -> Default page (not EPCR)
+  GET :80/epcr -> 404
+  GET :80/EPCR -> 404
+  GET :80/119 -> 404
+  GET :443/epcr -> 404
+  GET :443/EPCR -> 404
+  GET :443/119 -> 404
+  GET :8080/epcr -> 404
+  GET :8080/EPCR -> 404
+  GET :8080/119 -> 404
+
+=== epcr.taichung.gov.tw (117.56.224.247) ===
+
+=== epcr.tfd.gov.tw (210.69.42.20) ===
+
+=== DNS resolution checks ===
+  epcr.kcg.gov.tw -> NXDOMAIN
+  epcr.kfaa.gov.tw -> NXDOMAIN
+  epcr.kfd.gov.tw -> NXDOMAIN
+  epcr.kcgfd.gov.tw -> NXDOMAIN
+  epcr.tycg.gov.tw -> NXDOMAIN
+  epcr.tfda.gov.tw -> NXDOMAIN
+  epcr.fb.tycg.gov.tw -> NXDOMAIN
+  epcr.fd.kcg.gov.tw -> NXDOMAIN
+  fd.kcg.gov.tw -> NXDOMAIN
+  fb.kcg.gov.tw -> NXDOMAIN
+  epcr.kaohsiung.gov.tw -> NXDOMAIN
+  epcr.taoyuan.gov.tw -> NXDOMAIN
+  epcr.tainan.gov.tw -> NXDOMAIN
+  119.tainan.gov.tw -> 103.124.75.64
+  119.kaohsiung.gov.tw -> NXDOMAIN
+  119.taoyuan.gov.tw -> NXDOMAIN
+  epcr.taichung.gov.tw -> 117.56.224.247
+  epcr.tfd.gov.tw -> 210.69.42.20

@@ -1,0 +1,2395 @@
+{
+  "https://fsm.119.gov.taipei": [
+    {
+      "url": "https://fsm.119.gov.taipei",
+      "status": 302,
+      "length": 132,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/w/fsm119/index",
+      "body_preview": "<html><head><title>Object moved</title></head><body> <h2>Object moved to <a href=\"/w/fsm119/index\">here</a>.</h2> </body></html> "
+    },
+    {
+      "path": "/",
+      "url": "https://fsm.119.gov.taipei/",
+      "status": 302,
+      "length": 132,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/w/fsm119/index"
+    },
+    {
+      "path": "/index",
+      "url": "https://fsm.119.gov.taipei/index",
+      "status": 302,
+      "length": 152,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/index"
+    },
+    {
+      "path": "/login",
+      "url": "https://fsm.119.gov.taipei/login",
+      "status": 302,
+      "length": 152,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/login"
+    },
+    {
+      "path": "/admin/login",
+      "url": "https://fsm.119.gov.taipei/admin/login",
+      "status": 302,
+      "length": 158,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/admin/login"
+    },
+    {
+      "path": "/auth/login",
+      "url": "https://fsm.119.gov.taipei/auth/login",
+      "status": 302,
+      "length": 157,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/auth/login"
+    },
+    {
+      "path": "/citizen/auth/genToken",
+      "url": "https://fsm.119.gov.taipei/citizen/auth/genToken",
+      "status": 302,
+      "length": 168,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/citizen/auth/genToken"
+    },
+    {
+      "path": "/auth/genToken",
+      "url": "https://fsm.119.gov.taipei/auth/genToken",
+      "status": 302,
+      "length": 160,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/auth/genToken"
+    },
+    {
+      "path": "/auth/fetchServerData",
+      "url": "https://fsm.119.gov.taipei/auth/fetchServerData",
+      "status": 302,
+      "length": 167,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/auth/fetchServerData"
+    },
+    {
+      "path": "/user/login",
+      "url": "https://fsm.119.gov.taipei/user/login",
+      "status": 302,
+      "length": 157,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/user/login"
+    },
+    {
+      "path": "/oauth/token",
+      "url": "https://fsm.119.gov.taipei/oauth/token",
+      "status": 302,
+      "length": 158,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/oauth/token"
+    },
+    {
+      "path": "/sso/login",
+      "url": "https://fsm.119.gov.taipei/sso/login",
+      "status": 302,
+      "length": 156,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/sso/login"
+    },
+    {
+      "path": "/cas/login",
+      "url": "https://fsm.119.gov.taipei/cas/login",
+      "status": 302,
+      "length": 156,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/cas/login"
+    },
+    {
+      "path": "/admin",
+      "url": "https://fsm.119.gov.taipei/admin",
+      "status": 302,
+      "length": 152,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/admin"
+    },
+    {
+      "path": "/console",
+      "url": "https://fsm.119.gov.taipei/console",
+      "status": 302,
+      "length": 154,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/console"
+    },
+    {
+      "path": "/dashboard",
+      "url": "https://fsm.119.gov.taipei/dashboard",
+      "status": 302,
+      "length": 156,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/dashboard"
+    },
+    {
+      "path": "/api-docs",
+      "url": "https://fsm.119.gov.taipei/api-docs",
+      "status": 302,
+      "length": 155,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/api-docs"
+    },
+    {
+      "path": "/config",
+      "url": "https://fsm.119.gov.taipei/config",
+      "status": 302,
+      "length": 153,
+      "server": "Microsoft-IIS/10.0",
+      "location": "/WorkPage.html?aspxerrorpath=/config"
+    },
+    {
+      "path": "/.env",
+      "url": "https://fsm.119.gov.taipei/.env",
+      "status": 200,
+      "length": 745,
+      "server": "",
+      "location": ""
+    }
+  ],
+  "https://taipeiciiis.119.gov.taipei": [
+    {
+      "url": "https://taipeiciiis.119.gov.taipei",
+      "status": 404,
+      "length": 109,
+      "server": "",
+      "location": "",
+      "body_preview": "<html lang=\"en\">  <head>   <title>404 Page</title>  </head>  <body>   <p>404 Page</p>  </body> </html>"
+    }
+  ],
+  "https://taipeiciiis-dashboard.119.gov.taipei": [
+    {
+      "url": "https://taipeiciiis-dashboard.119.gov.taipei",
+      "status": 403,
+      "length": 146,
+      "server": "nginx",
+      "location": "",
+      "body_preview": "<html> <head><title>403 Forbidden</title></head> <body> <center><h1>403 Forbidden</h1></center> <hr><center>nginx</center> </body> </html> "
+    },
+    {
+      "path": "/",
+      "url": "https://taipeiciiis-dashboard.119.gov.taipei/",
+      "status": 403,
+      "length": 146,
+      "server": "nginx",
+      "location": ""
+    },
+    {
+      "path": "/.well-known/",
+      "url": "https://taipeiciiis-dashboard.119.gov.taipei/.well-known/",
+      "status": 403,
+      "length": 146,
+      "server": "nginx",
+      "location": ""
+    }
+  ],
+  "https://taipeiciiis-dt.119.gov.taipei": [
+    {
+      "url": "https://taipeiciiis-dt.119.gov.taipei",
+      "error": "unreachable",
+      "detail": "SOCKSHTTPSConnectionPool(host='taipeiciiis-dt.119.gov.taipei', port=443): Max retries exceeded with "
+    }
+  ],
+  "https://epcr.tpf.gov.tw": [
+    {
+      "url": "https://epcr.tpf.gov.tw",
+      "error": "unreachable",
+      "detail": "SOCKSHTTPSConnectionPool(host='epcr.tpf.gov.tw', port=443): Max retries exceeded with url: / (Caused"
+    }
+  ],
+  "https://mer2.tpf.gov.tw": [
+    {
+      "url": "https://mer2.tpf.gov.tw",
+      "error": "unreachable",
+      "detail": "SOCKSHTTPSConnectionPool(host='mer2.tpf.gov.tw', port=443): Max retries exceeded with url: / (Caused"
+    }
+  ],
+  "https://119api.tpf.gov.tw": [
+    {
+      "url": "https://119api.tpf.gov.tw",
+      "error": "unreachable",
+      "detail": "SOCKSHTTPSConnectionPool(host='119api.tpf.gov.tw', port=443): Max retries exceeded with url: / (Caus"
+    }
+  ],
+  "https://119appapi.tpf.gov.tw": [
+    {
+      "url": "https://119appapi.tpf.gov.tw",
+      "error": "unreachable",
+      "detail": "SOCKSHTTPSConnectionPool(host='119appapi.tpf.gov.tw', port=443): Max retries exceeded with url: / (C"
+    }
+  ],
+  "https://119appcaseapi.tpf.gov.tw": [
+    {
+      "url": "https://119appcaseapi.tpf.gov.tw",
+      "error": "unreachable",
+      "detail": "SOCKSHTTPSConnectionPool(host='119appcaseapi.tpf.gov.tw', port=443): Max retries exceeded with url: "
+    }
+  ],
+  "https://119epcrapi.tpf.gov.tw": [
+    {
+      "url": "https://119epcrapi.tpf.gov.tw",
+      "error": "unreachable",
+      "detail": "SOCKSHTTPSConnectionPool(host='119epcrapi.tpf.gov.tw', port=443): Max retries exceeded with url: / ("
+    }
+  ],
+  "https://epcr.tpf.gov.tw:4000": [
+    {
+      "url": "https://epcr.tpf.gov.tw:4000",
+      "status": 200,
+      "length": 13961,
+      "server": "",
+      "location": "",
+      "body_preview": "<!DOCTYPE html> <html ng-app=\"EPCRServer\"> <head>   <meta charset=\"utf-8\">   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">   <title>EPCR</title>    <link href=\"bower_components/"
+    },
+    {
+      "path": "/",
+      "url": "https://epcr.tpf.gov.tw:4000/",
+      "status": 200,
+      "length": 13961,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/index",
+      "url": "https://epcr.tpf.gov.tw:4000/index",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin/login",
+      "url": "https://epcr.tpf.gov.tw:4000/admin/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/login",
+      "url": "https://epcr.tpf.gov.tw:4000/api/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/login",
+      "url": "https://epcr.tpf.gov.tw:4000/auth/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/citizen/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4000/citizen/auth/genToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4000/auth/genToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/fetchServerData",
+      "url": "https://epcr.tpf.gov.tw:4000/auth/fetchServerData",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/getUserToken",
+      "url": "https://epcr.tpf.gov.tw:4000/api/getUserToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/user/login",
+      "url": "https://epcr.tpf.gov.tw:4000/user/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/oauth/token",
+      "url": "https://epcr.tpf.gov.tw:4000/oauth/token",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/sso/login",
+      "url": "https://epcr.tpf.gov.tw:4000/sso/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/cas/login",
+      "url": "https://epcr.tpf.gov.tw:4000/cas/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin",
+      "url": "https://epcr.tpf.gov.tw:4000/admin",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/console",
+      "url": "https://epcr.tpf.gov.tw:4000/console",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/dashboard",
+      "url": "https://epcr.tpf.gov.tw:4000/dashboard",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/swagger-ui.html",
+      "url": "https://epcr.tpf.gov.tw:4000/swagger-ui.html",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api-docs",
+      "url": "https://epcr.tpf.gov.tw:4000/api-docs",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config",
+      "url": "https://epcr.tpf.gov.tw:4000/config",
+      "status": 200,
+      "length": 1057,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config.json",
+      "url": "https://epcr.tpf.gov.tw:4000/config.json",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/robots.txt",
+      "url": "https://epcr.tpf.gov.tw:4000/robots.txt",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.env",
+      "url": "https://epcr.tpf.gov.tw:4000/.env",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.well-known/",
+      "url": "https://epcr.tpf.gov.tw:4000/.well-known/",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/account.php",
+      "url": "https://epcr.tpf.gov.tw:4000/rtc/account.php",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/",
+      "url": "https://epcr.tpf.gov.tw:4000/rtc/",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/account.php",
+      "url": "https://epcr.tpf.gov.tw:4000/account.php",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/epcr",
+      "url": "https://epcr.tpf.gov.tw:4000/epcr",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/mer",
+      "url": "https://epcr.tpf.gov.tw:4000/mer",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/merBridge",
+      "url": "https://epcr.tpf.gov.tw:4000/merBridge",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsign",
+      "url": "https://epcr.tpf.gov.tw:4000/vitalsign",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsignvideoserver",
+      "url": "https://epcr.tpf.gov.tw:4000/vitalsignvideoserver",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/Socket.io",
+      "url": "https://epcr.tpf.gov.tw:4000/Socket.io",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    }
+  ],
+  "https://epcr.tpf.gov.tw:4001": [
+    {
+      "url": "https://epcr.tpf.gov.tw:4001",
+      "status": 200,
+      "length": 170,
+      "server": "",
+      "location": "",
+      "body_preview": "<!DOCTYPE html><html><head><title>Express</title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><h1>Express</h1><p>Welcome to Express</p></body></html>"
+    },
+    {
+      "path": "/",
+      "url": "https://epcr.tpf.gov.tw:4001/",
+      "status": 200,
+      "length": 170,
+      "server": "",
+      "location": ""
+    }
+  ],
+  "https://epcr.tpf.gov.tw:4002": [
+    {
+      "url": "https://epcr.tpf.gov.tw:4002",
+      "status": 200,
+      "length": 6174,
+      "server": "",
+      "location": "",
+      "body_preview": "<!DOCTYPE html> <html ng-app=\"HospitalServer\"> <head>   <meta charset=\"utf-8\">   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">   <title>Hospital Server</title>    <link href=\"bo"
+    },
+    {
+      "path": "/",
+      "url": "https://epcr.tpf.gov.tw:4002/",
+      "status": 200,
+      "length": 6174,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/index",
+      "url": "https://epcr.tpf.gov.tw:4002/index",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin/login",
+      "url": "https://epcr.tpf.gov.tw:4002/admin/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/login",
+      "url": "https://epcr.tpf.gov.tw:4002/api/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/login",
+      "url": "https://epcr.tpf.gov.tw:4002/auth/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/citizen/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4002/citizen/auth/genToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4002/auth/genToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/fetchServerData",
+      "url": "https://epcr.tpf.gov.tw:4002/auth/fetchServerData",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/getUserToken",
+      "url": "https://epcr.tpf.gov.tw:4002/api/getUserToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/user/login",
+      "url": "https://epcr.tpf.gov.tw:4002/user/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/oauth/token",
+      "url": "https://epcr.tpf.gov.tw:4002/oauth/token",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/sso/login",
+      "url": "https://epcr.tpf.gov.tw:4002/sso/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/cas/login",
+      "url": "https://epcr.tpf.gov.tw:4002/cas/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin",
+      "url": "https://epcr.tpf.gov.tw:4002/admin",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/console",
+      "url": "https://epcr.tpf.gov.tw:4002/console",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/dashboard",
+      "url": "https://epcr.tpf.gov.tw:4002/dashboard",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/swagger-ui.html",
+      "url": "https://epcr.tpf.gov.tw:4002/swagger-ui.html",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api-docs",
+      "url": "https://epcr.tpf.gov.tw:4002/api-docs",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config",
+      "url": "https://epcr.tpf.gov.tw:4002/config",
+      "status": 200,
+      "length": 375,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config.json",
+      "url": "https://epcr.tpf.gov.tw:4002/config.json",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/robots.txt",
+      "url": "https://epcr.tpf.gov.tw:4002/robots.txt",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.env",
+      "url": "https://epcr.tpf.gov.tw:4002/.env",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.well-known/",
+      "url": "https://epcr.tpf.gov.tw:4002/.well-known/",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/account.php",
+      "url": "https://epcr.tpf.gov.tw:4002/rtc/account.php",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/",
+      "url": "https://epcr.tpf.gov.tw:4002/rtc/",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/account.php",
+      "url": "https://epcr.tpf.gov.tw:4002/account.php",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/epcr",
+      "url": "https://epcr.tpf.gov.tw:4002/epcr",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/mer",
+      "url": "https://epcr.tpf.gov.tw:4002/mer",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/merBridge",
+      "url": "https://epcr.tpf.gov.tw:4002/merBridge",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsign",
+      "url": "https://epcr.tpf.gov.tw:4002/vitalsign",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsignvideoserver",
+      "url": "https://epcr.tpf.gov.tw:4002/vitalsignvideoserver",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/Socket.io",
+      "url": "https://epcr.tpf.gov.tw:4002/Socket.io",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    }
+  ],
+  "https://epcr.tpf.gov.tw:4003": [
+    {
+      "url": "https://epcr.tpf.gov.tw:4003",
+      "status": 200,
+      "length": 4379,
+      "server": "",
+      "location": "",
+      "body_preview": "<!DOCTYPE html> <html ng-app=\"DoctorServer\"> <head>   <meta charset=\"utf-8\">   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">   <title>Doctor Server</title>    <link href=\"bower_"
+    },
+    {
+      "path": "/",
+      "url": "https://epcr.tpf.gov.tw:4003/",
+      "status": 200,
+      "length": 4379,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/index",
+      "url": "https://epcr.tpf.gov.tw:4003/index",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin/login",
+      "url": "https://epcr.tpf.gov.tw:4003/admin/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/login",
+      "url": "https://epcr.tpf.gov.tw:4003/api/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/login",
+      "url": "https://epcr.tpf.gov.tw:4003/auth/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/citizen/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4003/citizen/auth/genToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4003/auth/genToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/fetchServerData",
+      "url": "https://epcr.tpf.gov.tw:4003/auth/fetchServerData",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/getUserToken",
+      "url": "https://epcr.tpf.gov.tw:4003/api/getUserToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/user/login",
+      "url": "https://epcr.tpf.gov.tw:4003/user/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/oauth/token",
+      "url": "https://epcr.tpf.gov.tw:4003/oauth/token",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/sso/login",
+      "url": "https://epcr.tpf.gov.tw:4003/sso/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/cas/login",
+      "url": "https://epcr.tpf.gov.tw:4003/cas/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin",
+      "url": "https://epcr.tpf.gov.tw:4003/admin",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/console",
+      "url": "https://epcr.tpf.gov.tw:4003/console",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/dashboard",
+      "url": "https://epcr.tpf.gov.tw:4003/dashboard",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/swagger-ui.html",
+      "url": "https://epcr.tpf.gov.tw:4003/swagger-ui.html",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api-docs",
+      "url": "https://epcr.tpf.gov.tw:4003/api-docs",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config",
+      "url": "https://epcr.tpf.gov.tw:4003/config",
+      "status": 200,
+      "length": 187,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config.json",
+      "url": "https://epcr.tpf.gov.tw:4003/config.json",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/robots.txt",
+      "url": "https://epcr.tpf.gov.tw:4003/robots.txt",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.env",
+      "url": "https://epcr.tpf.gov.tw:4003/.env",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.well-known/",
+      "url": "https://epcr.tpf.gov.tw:4003/.well-known/",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/account.php",
+      "url": "https://epcr.tpf.gov.tw:4003/rtc/account.php",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/",
+      "url": "https://epcr.tpf.gov.tw:4003/rtc/",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/account.php",
+      "url": "https://epcr.tpf.gov.tw:4003/account.php",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/epcr",
+      "url": "https://epcr.tpf.gov.tw:4003/epcr",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/mer",
+      "url": "https://epcr.tpf.gov.tw:4003/mer",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/merBridge",
+      "url": "https://epcr.tpf.gov.tw:4003/merBridge",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsign",
+      "url": "https://epcr.tpf.gov.tw:4003/vitalsign",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsignvideoserver",
+      "url": "https://epcr.tpf.gov.tw:4003/vitalsignvideoserver",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/Socket.io",
+      "url": "https://epcr.tpf.gov.tw:4003/Socket.io",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    }
+  ],
+  "https://epcr.tpf.gov.tw:4004": [
+    {
+      "url": "https://epcr.tpf.gov.tw:4004",
+      "status": 200,
+      "length": 3959,
+      "server": "",
+      "location": "",
+      "body_preview": "<!DOCTYPE html> <html ng-app=\"AuthServer\"> <head>   <meta charset=\"utf-8\">   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">   <title>Auth</title>    <link href=\"bower_components/"
+    },
+    {
+      "path": "/",
+      "url": "https://epcr.tpf.gov.tw:4004/",
+      "status": 200,
+      "length": 3959,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/index",
+      "url": "https://epcr.tpf.gov.tw:4004/index",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin/login",
+      "url": "https://epcr.tpf.gov.tw:4004/admin/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/login",
+      "url": "https://epcr.tpf.gov.tw:4004/api/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/login",
+      "url": "https://epcr.tpf.gov.tw:4004/auth/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/citizen/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4004/citizen/auth/genToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4004/auth/genToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/fetchServerData",
+      "url": "https://epcr.tpf.gov.tw:4004/auth/fetchServerData",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/getUserToken",
+      "url": "https://epcr.tpf.gov.tw:4004/api/getUserToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/user/login",
+      "url": "https://epcr.tpf.gov.tw:4004/user/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/oauth/token",
+      "url": "https://epcr.tpf.gov.tw:4004/oauth/token",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/sso/login",
+      "url": "https://epcr.tpf.gov.tw:4004/sso/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/cas/login",
+      "url": "https://epcr.tpf.gov.tw:4004/cas/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin",
+      "url": "https://epcr.tpf.gov.tw:4004/admin",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/console",
+      "url": "https://epcr.tpf.gov.tw:4004/console",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/dashboard",
+      "url": "https://epcr.tpf.gov.tw:4004/dashboard",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/swagger-ui.html",
+      "url": "https://epcr.tpf.gov.tw:4004/swagger-ui.html",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api-docs",
+      "url": "https://epcr.tpf.gov.tw:4004/api-docs",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config",
+      "url": "https://epcr.tpf.gov.tw:4004/config",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config.json",
+      "url": "https://epcr.tpf.gov.tw:4004/config.json",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/robots.txt",
+      "url": "https://epcr.tpf.gov.tw:4004/robots.txt",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.env",
+      "url": "https://epcr.tpf.gov.tw:4004/.env",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.well-known/",
+      "url": "https://epcr.tpf.gov.tw:4004/.well-known/",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/account.php",
+      "url": "https://epcr.tpf.gov.tw:4004/rtc/account.php",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/",
+      "url": "https://epcr.tpf.gov.tw:4004/rtc/",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/account.php",
+      "url": "https://epcr.tpf.gov.tw:4004/account.php",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/epcr",
+      "url": "https://epcr.tpf.gov.tw:4004/epcr",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/mer",
+      "url": "https://epcr.tpf.gov.tw:4004/mer",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/merBridge",
+      "url": "https://epcr.tpf.gov.tw:4004/merBridge",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsign",
+      "url": "https://epcr.tpf.gov.tw:4004/vitalsign",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsignvideoserver",
+      "url": "https://epcr.tpf.gov.tw:4004/vitalsignvideoserver",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/Socket.io",
+      "url": "https://epcr.tpf.gov.tw:4004/Socket.io",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    }
+  ],
+  "https://epcr.tpf.gov.tw:4005": [
+    {
+      "url": "https://epcr.tpf.gov.tw:4005",
+      "status": 200,
+      "length": 3967,
+      "server": "",
+      "location": "",
+      "body_preview": "<!DOCTYPE html> <html ng-app=\"MonitorServer\"> <head>   <meta charset=\"utf-8\">   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">   <title>Monitor Server</title>    <link href=\"bowe"
+    },
+    {
+      "path": "/",
+      "url": "https://epcr.tpf.gov.tw:4005/",
+      "status": 200,
+      "length": 3967,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/index",
+      "url": "https://epcr.tpf.gov.tw:4005/index",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin/login",
+      "url": "https://epcr.tpf.gov.tw:4005/admin/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/login",
+      "url": "https://epcr.tpf.gov.tw:4005/api/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/login",
+      "url": "https://epcr.tpf.gov.tw:4005/auth/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/citizen/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4005/citizen/auth/genToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4005/auth/genToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/fetchServerData",
+      "url": "https://epcr.tpf.gov.tw:4005/auth/fetchServerData",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/getUserToken",
+      "url": "https://epcr.tpf.gov.tw:4005/api/getUserToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/user/login",
+      "url": "https://epcr.tpf.gov.tw:4005/user/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/oauth/token",
+      "url": "https://epcr.tpf.gov.tw:4005/oauth/token",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/sso/login",
+      "url": "https://epcr.tpf.gov.tw:4005/sso/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/cas/login",
+      "url": "https://epcr.tpf.gov.tw:4005/cas/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin",
+      "url": "https://epcr.tpf.gov.tw:4005/admin",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/console",
+      "url": "https://epcr.tpf.gov.tw:4005/console",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/dashboard",
+      "url": "https://epcr.tpf.gov.tw:4005/dashboard",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/swagger-ui.html",
+      "url": "https://epcr.tpf.gov.tw:4005/swagger-ui.html",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api-docs",
+      "url": "https://epcr.tpf.gov.tw:4005/api-docs",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config",
+      "url": "https://epcr.tpf.gov.tw:4005/config",
+      "status": 200,
+      "length": 313,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config.json",
+      "url": "https://epcr.tpf.gov.tw:4005/config.json",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/robots.txt",
+      "url": "https://epcr.tpf.gov.tw:4005/robots.txt",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.env",
+      "url": "https://epcr.tpf.gov.tw:4005/.env",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.well-known/",
+      "url": "https://epcr.tpf.gov.tw:4005/.well-known/",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/account.php",
+      "url": "https://epcr.tpf.gov.tw:4005/rtc/account.php",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/",
+      "url": "https://epcr.tpf.gov.tw:4005/rtc/",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/account.php",
+      "url": "https://epcr.tpf.gov.tw:4005/account.php",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/epcr",
+      "url": "https://epcr.tpf.gov.tw:4005/epcr",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/mer",
+      "url": "https://epcr.tpf.gov.tw:4005/mer",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/merBridge",
+      "url": "https://epcr.tpf.gov.tw:4005/merBridge",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsign",
+      "url": "https://epcr.tpf.gov.tw:4005/vitalsign",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsignvideoserver",
+      "url": "https://epcr.tpf.gov.tw:4005/vitalsignvideoserver",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/Socket.io",
+      "url": "https://epcr.tpf.gov.tw:4005/Socket.io",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    }
+  ],
+  "https://epcr.tpf.gov.tw:4006": [
+    {
+      "url": "https://epcr.tpf.gov.tw:4006",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": "",
+      "body_preview": "Access denined"
+    },
+    {
+      "path": "/",
+      "url": "https://epcr.tpf.gov.tw:4006/",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/index",
+      "url": "https://epcr.tpf.gov.tw:4006/index",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/login",
+      "url": "https://epcr.tpf.gov.tw:4006/login",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin/login",
+      "url": "https://epcr.tpf.gov.tw:4006/admin/login",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/login",
+      "url": "https://epcr.tpf.gov.tw:4006/api/login",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/login",
+      "url": "https://epcr.tpf.gov.tw:4006/auth/login",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/citizen/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4006/citizen/auth/genToken",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4006/auth/genToken",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/fetchServerData",
+      "url": "https://epcr.tpf.gov.tw:4006/auth/fetchServerData",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/getUserToken",
+      "url": "https://epcr.tpf.gov.tw:4006/api/getUserToken",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/user/login",
+      "url": "https://epcr.tpf.gov.tw:4006/user/login",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/oauth/token",
+      "url": "https://epcr.tpf.gov.tw:4006/oauth/token",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/sso/login",
+      "url": "https://epcr.tpf.gov.tw:4006/sso/login",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/cas/login",
+      "url": "https://epcr.tpf.gov.tw:4006/cas/login",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin",
+      "url": "https://epcr.tpf.gov.tw:4006/admin",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/console",
+      "url": "https://epcr.tpf.gov.tw:4006/console",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/dashboard",
+      "url": "https://epcr.tpf.gov.tw:4006/dashboard",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/swagger-ui.html",
+      "url": "https://epcr.tpf.gov.tw:4006/swagger-ui.html",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api-docs",
+      "url": "https://epcr.tpf.gov.tw:4006/api-docs",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config",
+      "url": "https://epcr.tpf.gov.tw:4006/config",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config.json",
+      "url": "https://epcr.tpf.gov.tw:4006/config.json",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/robots.txt",
+      "url": "https://epcr.tpf.gov.tw:4006/robots.txt",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.env",
+      "url": "https://epcr.tpf.gov.tw:4006/.env",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.well-known/",
+      "url": "https://epcr.tpf.gov.tw:4006/.well-known/",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/account.php",
+      "url": "https://epcr.tpf.gov.tw:4006/rtc/account.php",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/",
+      "url": "https://epcr.tpf.gov.tw:4006/rtc/",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/account.php",
+      "url": "https://epcr.tpf.gov.tw:4006/account.php",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/epcr",
+      "url": "https://epcr.tpf.gov.tw:4006/epcr",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/mer",
+      "url": "https://epcr.tpf.gov.tw:4006/mer",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/merBridge",
+      "url": "https://epcr.tpf.gov.tw:4006/merBridge",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsign",
+      "url": "https://epcr.tpf.gov.tw:4006/vitalsign",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsignvideoserver",
+      "url": "https://epcr.tpf.gov.tw:4006/vitalsignvideoserver",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/Socket.io",
+      "url": "https://epcr.tpf.gov.tw:4006/Socket.io",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/socket.io/",
+      "url": "https://epcr.tpf.gov.tw:4006/socket.io/",
+      "status": 403,
+      "length": 14,
+      "server": "",
+      "location": ""
+    }
+  ],
+  "https://epcr.tpf.gov.tw:4007": [
+    {
+      "url": "https://epcr.tpf.gov.tw:4007",
+      "status": 200,
+      "length": 11356,
+      "server": "",
+      "location": "",
+      "body_preview": "<!DOCTYPE html> <html ng-app=\"EPCRServer\"> <head>   <meta charset=\"utf-8\">   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">   <title>EPCR</title>    <link href=\"bower_components/"
+    },
+    {
+      "path": "/",
+      "url": "https://epcr.tpf.gov.tw:4007/",
+      "status": 200,
+      "length": 11356,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/index",
+      "url": "https://epcr.tpf.gov.tw:4007/index",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin/login",
+      "url": "https://epcr.tpf.gov.tw:4007/admin/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/login",
+      "url": "https://epcr.tpf.gov.tw:4007/api/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/login",
+      "url": "https://epcr.tpf.gov.tw:4007/auth/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/citizen/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4007/citizen/auth/genToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4007/auth/genToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/fetchServerData",
+      "url": "https://epcr.tpf.gov.tw:4007/auth/fetchServerData",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/getUserToken",
+      "url": "https://epcr.tpf.gov.tw:4007/api/getUserToken",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/user/login",
+      "url": "https://epcr.tpf.gov.tw:4007/user/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/oauth/token",
+      "url": "https://epcr.tpf.gov.tw:4007/oauth/token",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/sso/login",
+      "url": "https://epcr.tpf.gov.tw:4007/sso/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/cas/login",
+      "url": "https://epcr.tpf.gov.tw:4007/cas/login",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin",
+      "url": "https://epcr.tpf.gov.tw:4007/admin",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/console",
+      "url": "https://epcr.tpf.gov.tw:4007/console",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/dashboard",
+      "url": "https://epcr.tpf.gov.tw:4007/dashboard",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/swagger-ui.html",
+      "url": "https://epcr.tpf.gov.tw:4007/swagger-ui.html",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api-docs",
+      "url": "https://epcr.tpf.gov.tw:4007/api-docs",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config",
+      "url": "https://epcr.tpf.gov.tw:4007/config",
+      "status": 200,
+      "length": 870,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config.json",
+      "url": "https://epcr.tpf.gov.tw:4007/config.json",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/robots.txt",
+      "url": "https://epcr.tpf.gov.tw:4007/robots.txt",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.env",
+      "url": "https://epcr.tpf.gov.tw:4007/.env",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.well-known/",
+      "url": "https://epcr.tpf.gov.tw:4007/.well-known/",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/account.php",
+      "url": "https://epcr.tpf.gov.tw:4007/rtc/account.php",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/",
+      "url": "https://epcr.tpf.gov.tw:4007/rtc/",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/account.php",
+      "url": "https://epcr.tpf.gov.tw:4007/account.php",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/epcr",
+      "url": "https://epcr.tpf.gov.tw:4007/epcr",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/mer",
+      "url": "https://epcr.tpf.gov.tw:4007/mer",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/merBridge",
+      "url": "https://epcr.tpf.gov.tw:4007/merBridge",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsign",
+      "url": "https://epcr.tpf.gov.tw:4007/vitalsign",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsignvideoserver",
+      "url": "https://epcr.tpf.gov.tw:4007/vitalsignvideoserver",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/Socket.io",
+      "url": "https://epcr.tpf.gov.tw:4007/Socket.io",
+      "status": 401,
+      "length": 183,
+      "server": "",
+      "location": ""
+    }
+  ],
+  "https://epcr.tpf.gov.tw:4008": [
+    {
+      "url": "https://epcr.tpf.gov.tw:4008",
+      "status": 302,
+      "length": 60,
+      "server": "",
+      "location": "/client/",
+      "body_preview": "<p>Found. Redirecting to <a href=\"/client/\">/client/</a></p>"
+    },
+    {
+      "path": "/",
+      "url": "https://epcr.tpf.gov.tw:4008/",
+      "status": 302,
+      "length": 60,
+      "server": "",
+      "location": "/client/"
+    },
+    {
+      "path": "/index",
+      "url": "https://epcr.tpf.gov.tw:4008/index",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin/login",
+      "url": "https://epcr.tpf.gov.tw:4008/admin/login",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/login",
+      "url": "https://epcr.tpf.gov.tw:4008/api/login",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/login",
+      "url": "https://epcr.tpf.gov.tw:4008/auth/login",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/citizen/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4008/citizen/auth/genToken",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/genToken",
+      "url": "https://epcr.tpf.gov.tw:4008/auth/genToken",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/auth/fetchServerData",
+      "url": "https://epcr.tpf.gov.tw:4008/auth/fetchServerData",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api/getUserToken",
+      "url": "https://epcr.tpf.gov.tw:4008/api/getUserToken",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/user/login",
+      "url": "https://epcr.tpf.gov.tw:4008/user/login",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/oauth/token",
+      "url": "https://epcr.tpf.gov.tw:4008/oauth/token",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/sso/login",
+      "url": "https://epcr.tpf.gov.tw:4008/sso/login",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/cas/login",
+      "url": "https://epcr.tpf.gov.tw:4008/cas/login",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/admin",
+      "url": "https://epcr.tpf.gov.tw:4008/admin",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/console",
+      "url": "https://epcr.tpf.gov.tw:4008/console",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/dashboard",
+      "url": "https://epcr.tpf.gov.tw:4008/dashboard",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/swagger-ui.html",
+      "url": "https://epcr.tpf.gov.tw:4008/swagger-ui.html",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/api-docs",
+      "url": "https://epcr.tpf.gov.tw:4008/api-docs",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/config.json",
+      "url": "https://epcr.tpf.gov.tw:4008/config.json",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/robots.txt",
+      "url": "https://epcr.tpf.gov.tw:4008/robots.txt",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.env",
+      "url": "https://epcr.tpf.gov.tw:4008/.env",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/.well-known/",
+      "url": "https://epcr.tpf.gov.tw:4008/.well-known/",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/account.php",
+      "url": "https://epcr.tpf.gov.tw:4008/rtc/account.php",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/rtc/",
+      "url": "https://epcr.tpf.gov.tw:4008/rtc/",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/account.php",
+      "url": "https://epcr.tpf.gov.tw:4008/account.php",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/epcr",
+      "url": "https://epcr.tpf.gov.tw:4008/epcr",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/mer",
+      "url": "https://epcr.tpf.gov.tw:4008/mer",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/merBridge",
+      "url": "https://epcr.tpf.gov.tw:4008/merBridge",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsign",
+      "url": "https://epcr.tpf.gov.tw:4008/vitalsign",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/vitalsignvideoserver",
+      "url": "https://epcr.tpf.gov.tw:4008/vitalsignvideoserver",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    },
+    {
+      "path": "/Socket.io",
+      "url": "https://epcr.tpf.gov.tw:4008/Socket.io",
+      "status": 401,
+      "length": 64,
+      "server": "",
+      "location": ""
+    }
+  ]
+}

@@ -1,0 +1,263 @@
+# RVOP 靶场控制器配置文件
+
+# 靶场全局配置
+range:
+  name: "Dragon-V Training Range"
+  description: "专业红队训练靶场环境"
+  network_mode: "bridged"
+  network_segment: "192.168.100.0/24"
+  max_concurrent_environments: 10
+  auto_cleanup: true
+  cleanup_interval: 3600  # 1小时自动清理
+
+# Docker配置
+docker:
+  host: "unix:///var/run/docker.sock"
+  api_version: "1.40"
+  timeout: 300
+  cert_path: "/etc/docker/certs"
+
+# 靶场环境模板
+environment_templates:
+  # Web应用环境
+  web_app:
+    name: "Web Application Environment"
+    description: "包含常见Web漏洞的应用环境"
+    image: "dvwa/dvwa:latest"
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      DVWA_SECURITY: "low"
+    volumes:
+      - "dvwa_data:/var/lib/mysql"
+      - "dvwa_config:/var/www/html/config"
+    network: "web_network"
+    privileged: false
+    auto_start: true
+
+  # SQL注入靶场
+  sql_injection:
+    name: "SQL Injection Range"
+    description: "SQL注入漏洞训练环境"
+    image: "webpwnized/sqli-labs:latest"
+    ports:
+      - "80:80"
+    volumes:
+      - "sqli_data:/var/www/html"
+    network: "sqli_network"
+    privileged: false
+    auto_start: true
+
+  # XSS靶场
+  xss_range:
+    name: "XSS Training Range"
+    description: "跨站脚本攻击训练环境"
+    image: "snoopysecurity/xss-challenge:latest"
+    ports:
+      - "80:80"
+    volumes:
+      - "xss_data:/var/www/html"
+    network: "xss_network"
+    privileged: false
+    auto_start: true
+
+  # 任意文件上传靶场
+  file_upload:
+    name: "File Upload Vulnerability Range"
+    description: "文件上传漏洞训练环境"
+    image: "appsec-challenge/web-security-challenge:upload"
+    ports:
+      - "80:80"
+    volumes:
+      - "upload_data:/var/www/html/uploads"
+    network: "upload_network"
+    privileged: false
+    auto_start: true
+
+  # 服务器端模板注入靶场
+  ssti_range:
+    name: "SSTI Training Range"
+    description: "服务器端模板注入训练环境"
+    image: "appsec-challenge/web-security-challenge:ssti"
+    ports:
+      - "80:80"
+    volumes:
+      - "ssti_data:/var/www/html"
+    network: "ssti_network"
+    privileged: false
+    auto_start: true
+
+  # 命令注入靶场
+  command_injection:
+    name: "Command Injection Range"
+    description: "命令注入漏洞训练环境"
+    image: "appsec-challenge/web-security-challenge:command-injection"
+    ports:
+      - "80:80"
+    volumes:
+      - "cmd_data:/var/www/html"
+    network: "cmd_network"
+    privileged: false
+    auto_start: true
+
+  # 反序列化靶场
+  deserialization:
+    name: "Deserialization Range"
+    description: "反序列化漏洞训练环境"
+    image: "appsec-challenge/web-security-challenge:deserialization"
+    ports:
+      - "80:80"
+    volumes:
+      - "deserial_data:/var/www/html"
+    network: "deserial_network"
+    privileged: false
+    auto_start: true
+
+  # XXE靶场
+  xxe_range:
+    name: "XXE Training Range"
+    description: "XML外部实体注入训练环境"
+    image: "appsec-challenge/web-security-challenge:xxe"
+    ports:
+      - "80:80"
+    volumes:
+      - "xxe_data:/var/www/html"
+    network: "xxe_network"
+    privileged: false
+    auto_start: true
+
+  # CSRF靶场
+  csrf_range:
+    name: "CSRF Training Range"
+    description: "跨站请求伪造训练环境"
+    image: "appsec-challenge/web-security-challenge:csrf"
+    ports:
+      - "80:80"
+    volumes:
+      - "csrf_data:/var/www/html"
+    network: "csrf_network"
+    privileged: false
+    auto_start: true
+
+  # SSRF靶场
+  ssrf_range:
+    name: "SSRF Training Range"
+    description: "服务器端请求伪造训练环境"
+    image: "appsec-challenge/web-security-challenge:ssrf"
+    ports:
+      - "80:80"
+    volumes:
+      - "ssrf_data:/var/www/html"
+    network: "ssrf_network"
+    privileged: false
+    auto_start: true
+
+# 网络配置
+networks:
+  isolated_network:
+    name: "isolated_network"
+    driver: "bridge"
+    ipam:
+      config:
+        - subnet: "192.168.101.0/24"
+
+  routed_network:
+    name: "routed_network"
+    driver: "bridge"
+    ipam:
+      config:
+        - subnet: "192.168.102.0/24"
+
+  public_network:
+    name: "public_network"
+    driver: "bridge"
+    external: true
+
+# 监控和日志配置
+monitoring:
+  enabled: true
+  metrics:
+    - cpu_usage
+    - memory_usage
+    - network_io
+    - disk_io
+  log_level: "INFO"
+  log_file: "/var/log/range_controller.log"
+  metrics_file: "/var/log/range_metrics.log"
+  retention_days: 30
+
+# 安全配置
+security:
+  enable_security_scan: true
+  scan_interval: 300  # 5分钟扫描一次
+  security_rules:
+    - name: "deny_all"
+      action: "deny"
+      source: "0.0.0.0/0"
+      destination: "0.0.0.0/0"
+      ports: "all"
+
+  allowed_ports:
+    - "22"   # SSH
+    - "80"   # HTTP
+    - "443"  # HTTPS
+    - "3306" # MySQL
+    - "5432" # PostgreSQL
+    - "6379" # Redis
+    - "27017" # MongoDB
+
+  resource_limits:
+    memory: "2G"
+    cpu: "1.0"
+    max_containers: 50
+    max_volumes: 100
+
+# 备份配置
+backup:
+  enabled: true
+  schedule: "0 2 * * *"  # 每天凌晨2点
+  retention_days: 7
+  backup_location: "/backup/range"
+  include_logs: true
+  include_configs: true
+
+# 集成配置
+integrations:
+  # 日志收集
+  logging:
+    driver: "json-file"
+    opts:
+      max-size: "10m"
+      max-file: "3"
+
+  # 监控系统
+  monitoring:
+    prometheus:
+      enabled: false
+      port: 9090
+      scrape_interval: "30s"
+
+  # 告警系统
+  alerting:
+    enabled: false
+    webhook_url: ""
+    alert_rules:
+      - name: "high_cpu_usage"
+        condition: "cpu_usage > 80"
+        duration: "5m"
+        severity: "warning"
+
+      - name: "high_memory_usage"
+        condition: "memory_usage > 85"
+        duration: "10m"
+        severity: "critical"
+
+# 调试配置
+debug:
+  enabled: false
+  log_level: "DEBUG"
+  trace_requests: false
+  dump_docker_commands: false
+  enable_profiling: false

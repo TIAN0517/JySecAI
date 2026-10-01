@@ -1,0 +1,310 @@
+# Dragon-V Triple Bot 统一配置文件
+# 版本: 3.2.0
+# 生成时间: 2025-10-29
+# 更新内容: 新增nuclei v3.4.10集成、完善AI模块、优化性能配置
+
+# 系统配置
+system:
+  name: "Dragon-V Triple Bot"
+  version: "3.2.0"
+  description: "企业级渗透测试框架 - AI驱动的自动化漏洞扫描系统"
+  author: "Dragon-V Security Team"
+  build_date: "2025-10-29"
+  nuclei_version: "3.4.10"
+
+  # 日志配置
+  logging:
+    level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    file: "dragon_v_system.log"
+    max_size: "10MB"
+    backup_count: 5
+
+# 数据库配置
+database:
+  # 主数据库
+  main:
+    path: "dragon_triple_bot_unified.db"
+    timeout: 30.0
+
+  # Telegram Bot数据库
+  telegram:
+    path: "dragon_triple_telegram_bot.db"
+    timeout: 30.0
+
+  # 功能数据库
+  functional:
+    path: "dragon_triple_functional.db"
+    timeout: 30.0
+
+# Telegram Bot配置
+telegram:
+  # Bot实例配置
+  bots:
+    enterprise:
+      token: "YOUR_ENTERPRISE_BOT_TOKEN"
+      name: "Dragon-V Enterprise Bot"
+      description: "企业级安全扫描和管理"
+
+    professional:
+      token: "YOUR_PROFESSIONAL_BOT_TOKEN"
+      name: "Dragon-V Professional Bot"
+      description: "专业级渗透测试工具"
+
+    security:
+      token: "YOUR_SECURITY_BOT_TOKEN"
+      name: "Dragon-V Security Bot"
+      description: "安全工具和漏洞检测"
+
+  # 用户权限配置
+  permissions:
+    admin_users:
+      - 123456789  # 管理员用户ID
+      - 987654321  # 备用管理员
+
+    roles:
+      admin:
+        permissions:
+          - "system_management"
+          - "user_management"
+          - "bot_management"
+          - "task_management"
+          - "report_view"
+          - "config_edit"
+
+      user:
+        permissions:
+          - "task_creation"
+          - "report_view"
+          - "status_check"
+
+# 扫描引擎配置
+scanning:
+  # 通用扫描配置
+  general:
+    timeout: 30
+    max_retries: 3
+    user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+
+  # SQL注入扫描
+  sqli:
+    enabled: true
+    payload_file: "payloads/sqli_payloads.txt"
+    detection_patterns:
+      - "mysql_fetch_array"
+      - "You have an error in your SQL syntax"
+      - "Warning: mysql"
+      - "Microsoft OLE DB Provider"
+      - "ORA-"
+
+  # XSS扫描
+  xss:
+    enabled: true
+    payload_file: "payloads/xss_payloads.txt"
+    detection_method: "reflection_check"
+
+  # 命令注入扫描
+  command_injection:
+    enabled: true
+    payload_file: "payloads/command_payloads.txt"
+
+  # 端口扫描
+  port_scan:
+    enabled: true
+    common_ports: [21, 22, 23, 25, 53, 80, 110, 443, 993, 995, 3306, 3389, 5432, 6379, 27017]
+    timeout: 2.0
+
+# WAF绕过配置
+waf_bypass:
+  # 编码技术
+  encoding:
+    url_encoding: true
+    base64_encoding: true
+    hex_encoding: true
+    unicode_encoding: true
+
+  # 混淆技术
+  obfuscation:
+    case_variation: true
+    whitespace_manipulation: true
+    comment_injection: true
+    null_byte_injection: true
+
+  # 特定WAF策略
+  waf_specific:
+    cloudflare: true
+    akamai: true
+    modsecurity: true
+    imperva: true
+
+# AI配置 - 轻量级模式 (优化服务器资源)
+ai:
+  # AI功能开关 (为节省服务器资源，建议关闭外部API调用)
+  enabled: false  # 禁用外部AI API调用
+  
+  # 本地AI处理 (轻量级)
+  local_processing:
+    enabled: true  # 使用本地模式识别和规则引擎
+    max_memory_usage: "128MB"
+    max_processing_time: 5  # 秒
+    
+  # 功能配置 (本地模式)
+  features:
+    payload_generation: true  # 使用本地规则生成载荷
+    waf_bypass_strategy: true  # 使用本地WAF检测规则
+    vulnerability_analysis: false  # 禁用复杂分析以节省资源
+    report_generation: false  # 禁用AI报告生成
+
+# 安全配置
+security:
+  # 加密配置
+  encryption:
+    algorithm: "AES-256"
+    key_file: "encryption_key.key"
+
+  # 输入验证
+  input_validation:
+    max_length: 1000
+    dangerous_patterns:
+      - "<script"
+      - "javascript:"
+      - "vbscript:"
+      - "on\\w+\\s*="
+      - "\\b(union|select|insert|update|delete|drop|create|alter)\\b"
+
+  # 速率限制
+  rate_limiting:
+    enabled: true
+    max_requests_per_hour: 100
+    window_seconds: 3600
+
+# 性能配置 - 优化服务器资源
+performance:
+  # 并发控制 (降低并发以减少服务器负载)
+  concurrency:
+    max_workers: 3  # 减少工作线程数
+    max_connections: 10  # 减少连接数
+    thread_pool_size: 2  # 线程池大小
+
+  # 内存管理 (限制内存使用)
+  memory:
+    max_memory_usage: "256MB"  # 限制内存使用
+    cleanup_interval: 60  # 更频繁的清理
+    gc_threshold: 0.8  # 内存使用阈值
+
+  # 缓存配置 (减少缓存大小)
+  cache:
+    enabled: true
+    ttl: 1800  # 缩短缓存时间
+    max_size: "50MB"  # 减少缓存大小
+    
+  # 请求限制
+  request_limits:
+    max_request_size: "1MB"
+    timeout: 30  # 秒
+    retry_count: 1  # 减少重试次数
+
+# 报告配置
+reporting:
+  # 输出格式
+  formats:
+    - "html"
+    - "json"
+    - "markdown"
+    - "csv"
+
+  # 模板配置
+  templates:
+    html:
+      template_file: "templates/report_template.html"
+      include_charts: true
+
+    markdown:
+      template_file: "templates/report_template.md"
+
+  # 自动报告
+  auto_report:
+    enabled: true
+    format: "html"
+    save_path: "reports/"
+
+# 监控配置
+monitoring:
+  # 系统监控
+  system:
+    enabled: true
+    interval: 10
+    metrics:
+      - "cpu_usage"
+      - "memory_usage"
+      - "disk_usage"
+      - "network_io"
+
+  # 任务监控
+  tasks:
+    enabled: true
+    timeout: 3600
+    alert_threshold: 80
+
+# 备份配置
+backup:
+  # 自动备份
+  auto_backup:
+    enabled: true
+    interval: 86400  # 24小时
+    keep_count: 7
+
+  # 备份文件
+  files:
+    - "dragon_triple_bot_unified.db"
+    - "dragon_triple_telegram_bot.db"
+    - "dragon_triple_config.json"
+    - "dragon_triple_telegram_config.json"
+    - "security_events.json"
+
+# 区域化配置
+regional:
+  # 语言支持
+  languages:
+    - "zh-CN"  # 简体中文
+    - "vi-VN"  # 越南语
+    - "th-TH"  # 泰语
+
+  # 时区配置
+  timezone: "Asia/Ho_Chi_Minh"
+
+  # 字符编码
+  encoding: "UTF-8"
+
+# 开发配置
+development:
+  # 调试模式
+  debug:
+    enabled: false
+    log_level: "DEBUG"
+
+  # 测试配置
+  testing:
+    test_targets:
+      - "http://testphp.vulnweb.com"
+      - "http://demo.testfire.net"
+
+  # 文档生成
+  documentation:
+    auto_generate: true
+    output_dir: "docs/"
+
+# 环境变量配置（示例）
+environment:
+  # 数据库路径
+  DATABASE_PATH: "dragon_triple_bot_unified.db"
+
+  # API密钥
+  GEMINI_API_KEY: "${GEMINI_API_KEY}"
+  TELEGRAM_TOKEN: "${TELEGRAM_TOKEN}"
+
+  # 日志级别
+  LOG_LEVEL: "INFO"
+
+  # 调试模式
+  DEBUG: "false"

@@ -1,0 +1,13 @@
+127.0.0.1 - - [30/Aug/2026 19:01:28] "GET /svg_xss_test.html HTTP/1.1" 200 -
+127.0.0.1 - - [30/Aug/2026 19:02:05] "GET /svg_xss_test.html HTTP/1.1" 200 -
+127.0.0.1 - - [30/Aug/2026 19:04:34] "GET /svg_xss_payload_test.html HTTP/1.1" 200 -
+127.0.0.1 - - [30/Aug/2026 19:04:34] "GET /svg_payload.svg HTTP/1.1" 200 -
+127.0.0.1 - - [30/Aug/2026 19:04:34] "GET /svg_payload.svg HTTP/1.1" 200 -
+127.0.0.1 - - [30/Aug/2026 19:04:34] code 404, message File not found
+127.0.0.1 - - [30/Aug/2026 19:04:34] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [30/Aug/2026 19:07:37] "GET /csws_poc.html HTTP/1.1" 200 -
+127.0.0.1 - - [30/Aug/2026 19:07:37] code 404, message File not found
+127.0.0.1 - - [30/Aug/2026 19:07:37] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [30/Aug/2026 19:11:52] "GET /csws_poc_v2.html HTTP/1.1" 200 -
+127.0.0.1 - - [30/Aug/2026 19:11:52] code 404, message File not found
+127.0.0.1 - - [30/Aug/2026 19:11:52] "GET /favicon.ico HTTP/1.1" 404 -

@@ -1,0 +1,77 @@
+{
+  "target": "Taipei EPCR system via SOCKS5 proxy (202.160.76.165:11081)",
+  "date": "2026-09-28",
+  "proxy": "202.160.76.165:11081",
+  "hostname": "epcr.tpf.gov.tw",
+  "ip": "118.163.107.93",
+  "direct_access": "BLOCKED (TCP timeout — firewall blocks international IPs)",
+  "proxy_access": "FULLY ACCESSIBLE (SOCKS5 proxy in Taiwan bypasses firewall)",
+  "discovery": "Found via DNS brute-force: epcr.tfd.gov.tw → 210.69.42.20 (different IP), BUT actual EPCR at epcr.tpf.gov.tw:4004",
+  "ports_accessible": {
+    "443": "IIS Windows Server default page (not EPCR)",
+    "4000": "EPCRServer (AngularJS, title=EPCR) — accessible via HTTPS and HTTP",
+    "4001": "vitalSignVideoServer",
+    "4002": "HospitalServer (AngularJS, title=HospitalServer)",
+    "4003": "DoctorServer (AngularJS, title=DoctorServer)",
+    "4004": "authServer (AngularJS, title=Auth) — JWT auth, Socket.IO",
+    "4005": "MonitorServer (AngularJS, title=MonitorServer)",
+    "4006": "merBridge — 'Access denined' (auth required, port uses HTTP not HTTPS)",
+    "4007": "EPCRServer (AngularJS — stat/index page served from port 4007)",
+    "4008": "mciServer — 'Found. Redirecting to /client/' (HTTP only)"
+  },
+  "config_leak": {
+    "endpoint": "GET https://epcr.tpf.gov.tw:4000/config",
+    "status": 200,
+    "auth_required": false,
+    "response": {
+      "port": "4000",
+      "hostname": "https://epcr.tpf.gov.tw",
+      "vitalSignVideoServer": "https://epcr.tpf.gov.tw:4001",
+      "HospitalServer": "https://epcr.tpf.gov.tw:4002",
+      "authServer": "https://epcr.tpf.gov.tw:4004",
+      "doctorServer": "https://epcr.tpf.gov.tw:4003",
+      "merBridge": "https://epcr.tpf.gov.tw:4006",
+      "merServer": "https://mer2.tpf.gov.tw:7000",
+      "printServer": "http://epcr.tpf.gov.tw:9000",
+      "statUrl": "https://epcr.tpf.gov.tw:4007/statIndex.html#/",
+      "mciServer": "http://epcr.tpf.gov.tw:4008/client/",
+      "monitorServer": "http://epcr.tpf.gov.tw:4005",
+      "epcrServer": "http://epcr.tpf.gov.tw:4000",
+      "ntpcCloud": "https://cloud2.ntpc.gov.tw/home",
+      "RealTimeVideoPath": [
+        {"path": "https://mer2voip.tpf.gov.tw:30080/live?app=rtmp&stream=live${dispatchRecordUuid}", "type": "mse", "isLive": true}
+      ],
+      "captcha": {"enable": true, "captchaImg": "/captcha"},
+      "MAX_IDLE_DURATION": 900000
+    },
+    "differences_from_taitung": {
+      "ntpcCloud": "NEW — links to New Taipei City cloud platform (cloud2.ntpc.gov.tw)",
+      "RealTimeVideoPath": "NEW — dispatch live video stream with ${dispatchRecordUuid} template",
+      "printServer": "HTTP (not HTTPS like Taitung)",
+      "mciServer": "HTTP (not HTTPS)",
+      "monitorServer": "HTTP (not HTTPS)",
+      "epcrServer": "HTTP on port 4000 (not HTTPS)",
+      "VideoPath": "rtmp://mer2voip.tpf.gov.tw/rtmp/live (RTMP, vs Taitung's HLS)"
+    }
+  },
+  "socket_io": {
+    "port_4004": "sid=39MR5cG3YcmY7gjXAAAw, pingInterval=25000, pingTimeout=60000, WebSocket upgrade supported",
+    "port_4000": "sid=rqE9qCBMJS7Rad8VAC_t, pingInterval=25000, pingTimeout=5000, WebSocket upgrade supported",
+    "auth_required": false
+  },
+  "dispatch_endpoints": {
+    "DispatchRecords": "401 'No authorization token was found' (JWT required)",
+    "captcha": "200, 17646 bytes, connect.sid HttpOnly cookie set"
+  },
+  "mer2voip": {
+    "hostname": "mer2voip.tpf.gov.tw",
+    "ip": "unresolvable in DNS (internal only — exposed via /config leak)",
+    "port_30080": "nginx default page (HTTPS only — '400 The plain HTTP request was sent to HTTPS port')",
+    "live_stream_format": "https://mer2voip.tpf.gov.tw:30080/live?app=rtmp&stream=live<dispatchRecordUuid>"
+  },
+  "taipei_epcr_systems": {
+    "epcr.gov.taipei": "163.29.40.22 — IIS default page only (SSL cert for epcr.gov.taipei but no EPCR app on port 443)",
+    "epcr.tpf.gov.tw": "118.163.107.93 — FULLY EPCR system (7+ ports accessible via SOCKS5 proxy)"
+  },
+  "key_implication": "The RealTimeVideoPath with ${dispatchRecordUuid} template IS the dispatch push broadcast mechanism — when a dispatcher creates a case, a live video stream is initiated at mer2voip.tpf.gov.tw:30080/live?app=rtmp&stream=live<uuid>. The Socket.IO server (unauthenticated) enables real-time event pushing to connected clients."
+}

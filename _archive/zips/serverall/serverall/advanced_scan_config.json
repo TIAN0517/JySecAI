@@ -1,0 +1,27 @@
+{
+  "target_urls": [
+    "https://www.finnomena.com",
+    "https://mula-x.com"
+  ],
+  "scan_types": [
+    "sql_injection",
+    "xss",
+    "file_upload",
+    "rce",
+    "exploitation",
+    "attack_chain"
+  ],
+  "attack_chain_type": "comprehensive_penetration",
+  "payload_types": [
+    "sql_injection",
+    "xss",
+    "file_upload",
+    "rce"
+  ],
+  "max_concurrent": 5,
+  "delay_between_requests": 2.0,
+  "enable_waf_detection": true,
+  "enable_payload_ai": true,
+  "output_format": "json",
+  "session_name": "thai_financial_scan"
+}

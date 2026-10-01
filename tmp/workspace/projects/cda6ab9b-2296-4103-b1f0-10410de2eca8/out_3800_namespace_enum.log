@@ -1,0 +1,43 @@
+
+===== Step 1: Namespace enumeration on default SID =====
+  ns='<default>': status=200, sid=NONE..., connect_ack=True, ns_ack=False, set_cookie=True
+  ns='/admin': status=200, sid=NONE..., connect_ack=True, ns_ack=False, set_cookie=True
+  ns='/mci': status=200, sid=NONE..., connect_ack=True, ns_ack=False, set_cookie=True
+  ns='/case': status=200, sid=NONE..., connect_ack=True, ns_ack=False, set_cookie=True
+  ns='/dispatch': status=200, sid=NONE..., connect_ack=True, ns_ack=False, set_cookie=True
+  ns='/internal': status=200, sid=NONE..., connect_ack=True, ns_ack=False, set_cookie=True
+  ns='/auth': status=200, sid=NONE..., connect_ack=True, ns_ack=False, set_cookie=True
+  ns='/socket.io': status=200, sid=NONE..., connect_ack=True, ns_ack=False, set_cookie=True
+  ns='/api': status=200, sid=NONE..., connect_ack=True, ns_ack=False, set_cookie=True
+  ns='/private': status=200, sid=NONE..., connect_ack=True, ns_ack=False, set_cookie=True
+  ns='/public': status=200, sid=NONE..., connect_ack=True, ns_ack=False, set_cookie=True
+  ns='/io': status=200, sid=NONE..., connect_ack=True, ns_ack=False, set_cookie=True
+
+===== Step 2: Business event emit on default namespace =====
+  opened sid=None
+  MciCaseRecords before: count=47
+    first.id=04fc0eed-d72c-49f0-b08c-57247af9f58f first.updatedAt=2021-05-05T12:02:21.000Z
+  emit(new-mci): resp='{"code":1,"message":"Session ID unknown"}'  ok=False
+  emit(update-mci): resp='{"code":1,"message":"Session ID unknown"}'  ok=False
+  emit(delete-mci): resp='{"code":1,"message":"Session ID unknown"}'  ok=False
+  emit(new-case): resp='{"code":1,"message":"Session ID unknown"}'  ok=False
+  emit(update-case): resp='{"code":1,"message":"Session ID unknown"}'  ok=False
+  emit(delete-case): resp='{"code":1,"message":"Session ID unknown"}'  ok=False
+  emit(new-ambulance-record): resp='{"code":1,"message":"Session ID unknown"}'  ok=False
+  emit(ping): resp='{"code":1,"message":"Session ID unknown"}'  ok=False
+  emit(client.subscribe): resp='{"code":1,"message":"Session ID unknown"}'  ok=False
+  emit(client.unsubscribe): resp='{"code":1,"message":"Session ID unknown"}'  ok=False
+  emit(subscribe): resp='{"code":1,"message":"Session ID unknown"}'  ok=False
+  emit(join): resp='{"code":1,"message":"Session ID unknown"}'  ok=False
+  emit(hello): resp='{"code":1,"message":"Session ID unknown"}'  ok=False
+  emit(ready): resp='{"code":1,"message":"Session ID unknown"}'  ok=False
+
+  Polling for ACK responses (8s)...
+  drained body='{"code":1,"message":"Session ID unknown"}'
+
+  MciCaseRecords after: count=47
+  MciTypes after: count=17
+
+  MciTypes id range: 1 ~ 100001
+
+===== Step 3: Try business events on protected namespaces =====

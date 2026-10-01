@@ -1,0 +1,75 @@
+[2026-08-30T10:52:18.063712Z] Stage 7 - socket.io EIO=4 CSWSH 完整 PoC
+[2026-08-30T10:52:18.064308Z] 目标: http://35.234.50.28:3100
+[2026-08-30T10:52:18.064448Z] 日志: /opt/CyberStrikeAI/tmp/workspace/projects/cda6ab9b-2296-4103-b1f0-10410de2eca8/stage7_sio_ws.log
+
+[2026-08-30T10:52:18.064560Z] ======================================================================
+[2026-08-30T10:52:18.064661Z] Step 1: Polling 握手（EIO=4）
+[2026-08-30T10:52:18.064758Z] ======================================================================
+[2026-08-30T10:52:18.152456Z] 无 Origin: status=200, body[:200]=97:0{"sid":"GE_tARaeOOu3E2oAAAAZ","upgrades":["websocket"],"pingInterval":25000,"pingTimeout":60000}2:40
+[2026-08-30T10:52:18.153261Z]   ✓ sid = GE_tARaeOOu3E2oAAAAZ
+[2026-08-30T10:52:18.154055Z]   ✓ pingInterval = 25000
+[2026-08-30T10:52:18.154237Z]   ✓ pingTimeout = 60000
+[2026-08-30T10:52:18.154460Z] 
+  恶意 Origin 测试：
+[2026-08-30T10:52:18.201815Z]   Origin='https://attacker.example'               → ACAO='https://attacker.example'               ACAC='true'     sid_ok=True
+[2026-08-30T10:52:18.220497Z]   Origin='https://evil.example.com'               → ACAO='https://evil.example.com'               ACAC='true'     sid_ok=True
+[2026-08-30T10:52:18.231896Z]   Origin='http://localhost'                       → ACAO='http://localhost'                       ACAC='true'     sid_ok=True
+[2026-08-30T10:52:18.242934Z]   Origin='http://35.234.50.28'                    → ACAO='http://35.234.50.28'                    ACAC='true'     sid_ok=True
+[2026-08-30T10:52:18.254620Z]   Origin='https://epcr.tpf.gov.tw'                → ACAO='https://epcr.tpf.gov.tw'                ACAC='true'     sid_ok=True
+[2026-08-30T10:52:18.264896Z]   Origin='null'                                   → ACAO='null'                                   ACAC='true'     sid_ok=True
+[2026-08-30T10:52:18.275413Z]   Origin=''                                       → ACAO='*'                                      ACAC=None       sid_ok=True
+[2026-08-30T10:52:18.275626Z] 
+CORS 反射汇总：
+[2026-08-30T10:52:18.275978Z] {
+  "https://attacker.example": {
+    "cors_origin": "https://attacker.example",
+    "cors_credentials": "true",
+    "sid_match": true
+  },
+  "https://evil.example.com": {
+    "cors_origin": "https://evil.example.com",
+    "cors_credentials": "true",
+    "sid_match": true
+  },
+  "http://localhost": {
+    "cors_origin": "http://localhost",
+    "cors_credentials": "true",
+    "sid_match": true
+  },
+  "http://35.234.50.28": {
+    "cors_origin": "http://35.234.50.28",
+    "cors_credentials": "true",
+    "sid_match": true
+  },
+  "https://epcr.tpf.gov.tw": {
+    "cors_origin": "https://epcr.tpf.gov.tw",
+    "cors_credentials": "true",
+    "sid_match": true
+  },
+  "null": {
+    "cors_origin": "null",
+    "cors_credentials": "true",
+    "sid_match": true
+  },
+  "": {
+    "cors_origin": "*",
+    "cors_credentials": null,
+    "sid_match": true
+  }
+}
+[2026-08-30T10:52:18.276157Z] 
+======================================================================
+[2026-08-30T10:52:18.276271Z] Step 2: WebSocket 升级（sid=GE_tARaeOOu3E2oAAAAZ）
+[2026-08-30T10:52:18.276376Z] ======================================================================
+[2026-08-30T10:52:18.287372Z]   WebSocket handshake 响应头:
+HTTP/1.1 101 Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: Wn8+W50v9L5KndaR/uJmBVv6Ipo=
+[2026-08-30T10:52:18.287746Z]   ✓ WebSocket handshake 成功
+[2026-08-30T10:52:18.288045Z]   → 发送 '40' (EngineIO message + socket.io CONNECT)
+[2026-08-30T10:52:18.292698Z]   ← 收到 frame: kind=unknown payload='CLOSE'
+[2026-08-30T10:52:18.293335Z] 
+✗ WS upgrade 失败
+[2026-08-30T10:52:18.293566Z] 
+日志已保存

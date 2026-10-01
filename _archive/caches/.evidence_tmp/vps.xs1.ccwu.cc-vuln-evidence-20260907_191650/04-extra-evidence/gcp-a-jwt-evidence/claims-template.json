@@ -1,0 +1,15 @@
+{
+  "alg": "HS256",
+  "stack": "gcp-35.234.50.28",
+  "not": "epcr.tpf.gov.tw-RS256",
+  "shadow_account": "admin2",
+  "payload_fields": [
+    "account",
+    "role",
+    "user",
+    "permissions",
+    "iat",
+    "exp"
+  ],
+  "note": "iat/exp 过期后用同一密钥重签，不必登录。密钥只放本机密钥文件，不写进 git。"
+}

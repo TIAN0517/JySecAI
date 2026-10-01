@@ -1,0 +1,162 @@
+{
+  "target_info": {
+    "name": "Peacoop Thai Credit",
+    "url": "https://peacoop.or.th",
+    "type": "cooperative_loan"
+  },
+  "timestamp": "20251029_020915",
+  "data_type": "Thai Loan Data",
+  "total_records": 8,
+  "data": [
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 8720,
+        "thai_full_name": "ธนาธร ศรีทอง มีเกียรติ",
+        "thai_first_name": "ธนาธร ศรีทอง",
+        "thai_last_name": "มีเกียรติ",
+        "id_card_number": "3688105696367",
+        "phone_number": "0824480424",
+        "email_address": "customer8720@gmail.com",
+        "thai_address": "กรุงเทพมหานคร เขตดุสิต",
+        "monthly_income_baht": 48817,
+        "employment_type": "พนักงานบริษัท",
+        "credit_rating": "B+",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:13"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 7247,
+        "thai_full_name": "สมชาย ใจดี มีเกียรติ",
+        "thai_first_name": "สมชาย ใจดี",
+        "thai_last_name": "มีเกียรติ",
+        "id_card_number": "2388063913635",
+        "phone_number": "0850908487",
+        "email_address": "customer7247@gmail.com",
+        "thai_address": "สมุทรปราการ เมืองเมือง",
+        "monthly_income_baht": 47114,
+        "employment_type": "ค้าขาย",
+        "credit_rating": "A",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:13"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 3158,
+        "thai_full_name": "สมศรี มั่นคง สุขใจ",
+        "thai_first_name": "สมศรี มั่นคง",
+        "thai_last_name": "สุขใจ",
+        "id_card_number": "7725562687947",
+        "phone_number": "0891934567",
+        "email_address": "customer3158@gmail.com",
+        "thai_address": "กรุงเทพมหานคร เขตพระนคร",
+        "monthly_income_baht": 72190,
+        "employment_type": "เจ้าของกิจการ",
+        "credit_rating": "C+",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:13"
+      }
+    },
+    {
+      "table": "thai_loan_applications",
+      "record": {
+        "application_id": 5289,
+        "customer_id": 6818,
+        "loan_type_thai": "สินเชื่อส่วนบุคคล",
+        "loan_category": "cooperative_loan",
+        "amount_requested_baht": 125873,
+        "amount_approved_baht": 147155,
+        "interest_rate_percent": 22.18,
+        "term_months": 24,
+        "purpose_thai": "การศึกษา",
+        "monthly_installment_baht": 8611,
+        "approval_status": "ต้องพิจารณาเพิ่ม",
+        "application_date": "2025-10-29",
+        "approval_date": null,
+        "disbursement_date": null,
+        "loan_officer": "พนักงาน964",
+        "branch_name": "สาขาสีลม"
+      }
+    },
+    {
+      "table": "thai_loan_applications",
+      "record": {
+        "application_id": 9169,
+        "customer_id": 4111,
+        "loan_type_thai": "สินเชื่อส่วนบุคคล",
+        "loan_category": "cooperative_loan",
+        "amount_requested_baht": 231207,
+        "amount_approved_baht": 88654,
+        "interest_rate_percent": 21.68,
+        "term_months": 6,
+        "purpose_thai": "ค่ารักษาพยาบาล",
+        "monthly_installment_baht": 5771,
+        "approval_status": "ต้องพิจารณาเพิ่ม",
+        "application_date": "2025-10-29",
+        "approval_date": "2025-10-29",
+        "disbursement_date": "2025-10-29",
+        "loan_officer": "พนักงาน960",
+        "branch_name": "สาขาอโศก"
+      }
+    },
+    {
+      "table": "thai_loan_applications",
+      "record": {
+        "application_id": 9601,
+        "customer_id": 3212,
+        "loan_type_thai": "สินเชื่อส่วนบุคคล",
+        "loan_category": "cooperative_loan",
+        "amount_requested_baht": 57144,
+        "amount_approved_baht": 102072,
+        "interest_rate_percent": 23.73,
+        "term_months": 24,
+        "purpose_thai": "ซื้อสินค้า",
+        "monthly_installment_baht": 8636,
+        "approval_status": "รอพิจารณา",
+        "application_date": "2025-10-29",
+        "approval_date": "2025-10-29",
+        "disbursement_date": null,
+        "loan_officer": "พนักงาน301",
+        "branch_name": "สาขาอโศก"
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 9176,
+        "loan_id": 8248,
+        "payment_amount_baht": 8243,
+        "payment_date": "2025-10-29",
+        "payment_method": "บัตรเครดิต",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 79774,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 68
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 8767,
+        "loan_id": 2144,
+        "payment_amount_baht": 15813,
+        "payment_date": "2025-10-29",
+        "payment_method": "โอนเงิน",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 101745,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 0
+      }
+    }
+  ],
+  "extraction_summary": {
+    "customer_records": 3,
+    "loan_applications": 3,
+    "payment_records": 2
+  }
+}

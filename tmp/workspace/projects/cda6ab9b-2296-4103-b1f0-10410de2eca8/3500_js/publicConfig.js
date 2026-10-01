@@ -1,0 +1,1 @@
+app.constant('PUBLIC_CONFIG',{"EPCRServer":"http://35.234.50.28:4000","authServer":"http://35.234.50.28:3400","hospitalServer":"http://35.234.50.28:3200","doctorServer":"http://35.234.50.28:3200","MerSocketio":"http://104.155.235.229:8091","ConnWatcher":"http://35.234.50.28:8188","captcha":{"enable":true,"captchaImg":"/captcha"}})

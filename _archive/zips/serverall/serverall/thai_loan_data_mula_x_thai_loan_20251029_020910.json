@@ -1,0 +1,162 @@
+{
+  "target_info": {
+    "name": "Mula-X Thai Loan",
+    "url": "https://mula-x.com",
+    "type": "private_loan"
+  },
+  "timestamp": "20251029_020910",
+  "data_type": "Thai Loan Data",
+  "total_records": 8,
+  "data": [
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 5971,
+        "thai_full_name": "ธนาธร ศรีทอง แจ่มใส",
+        "thai_first_name": "ธนาธร ศรีทอง",
+        "thai_last_name": "แจ่มใส",
+        "id_card_number": "7949399396338",
+        "phone_number": "0867906596",
+        "email_address": "customer5971@gmail.com",
+        "thai_address": "กรุงเทพมหานคร เขตพระนคร",
+        "monthly_income_baht": 74603,
+        "employment_type": "ค้าขาย",
+        "credit_rating": "A",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:10"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 7006,
+        "thai_full_name": "มานี มีสุข แจ่มใส",
+        "thai_first_name": "มานี มีสุข",
+        "thai_last_name": "แจ่มใส",
+        "id_card_number": "6575871337551",
+        "phone_number": "0822626145",
+        "email_address": "customer7006@gmail.com",
+        "thai_address": "สมุทรปราการ เมืองเมือง",
+        "monthly_income_baht": 55769,
+        "employment_type": "ค้าขาย",
+        "credit_rating": "A",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:10"
+      }
+    },
+    {
+      "table": "thai_customers",
+      "record": {
+        "customer_id": 7160,
+        "thai_full_name": "สมชาย ใจดี สกุลดี",
+        "thai_first_name": "สมชาย ใจดี",
+        "thai_last_name": "สกุลดี",
+        "id_card_number": "2453316159116",
+        "phone_number": "0867673184",
+        "email_address": "customer7160@gmail.com",
+        "thai_address": "ปทุมธานี เมืองปทุมธานี",
+        "monthly_income_baht": 46265,
+        "employment_type": "รับจ้าง",
+        "credit_rating": "B",
+        "registration_date": "2025-10-29",
+        "last_login": "2025-10-29 02:09:10"
+      }
+    },
+    {
+      "table": "thai_loan_applications",
+      "record": {
+        "application_id": 7531,
+        "customer_id": 8542,
+        "loan_type_thai": "สินเชื่อส่วนบุคคล",
+        "loan_category": "private_loan",
+        "amount_requested_baht": 37453,
+        "amount_approved_baht": 187384,
+        "interest_rate_percent": 19.53,
+        "term_months": 6,
+        "purpose_thai": "ทุนร้านค้า",
+        "monthly_installment_baht": 5975,
+        "approval_status": "ต้องพิจารณาเพิ่ม",
+        "application_date": "2025-10-29",
+        "approval_date": "2025-10-29",
+        "disbursement_date": null,
+        "loan_officer": "พนักงาน568",
+        "branch_name": "สาขาสุขุมวิท"
+      }
+    },
+    {
+      "table": "thai_loan_applications",
+      "record": {
+        "application_id": 6269,
+        "customer_id": 3659,
+        "loan_type_thai": "สินเชื่อส่วนบุคคล",
+        "loan_category": "private_loan",
+        "amount_requested_baht": 208825,
+        "amount_approved_baht": 141285,
+        "interest_rate_percent": 24.71,
+        "term_months": 6,
+        "purpose_thai": "ท่องเที่ยว",
+        "monthly_installment_baht": 5933,
+        "approval_status": "รอพิจารณา",
+        "application_date": "2025-10-29",
+        "approval_date": "2025-10-29",
+        "disbursement_date": null,
+        "loan_officer": "พนักงาน816",
+        "branch_name": "สาขาสีลม"
+      }
+    },
+    {
+      "table": "thai_loan_applications",
+      "record": {
+        "application_id": 6782,
+        "customer_id": 6750,
+        "loan_type_thai": "สินเชื่อส่วนบุคคล",
+        "loan_category": "private_loan",
+        "amount_requested_baht": 243840,
+        "amount_approved_baht": 243152,
+        "interest_rate_percent": 19.21,
+        "term_months": 36,
+        "purpose_thai": "ค่าใช้จ่ายฉุกเฉิน",
+        "monthly_installment_baht": 2258,
+        "approval_status": "รอพิจารณา",
+        "application_date": "2025-10-29",
+        "approval_date": "2025-10-29",
+        "disbursement_date": null,
+        "loan_officer": "พนักงาน972",
+        "branch_name": "สาขาสีลม"
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 4399,
+        "loan_id": 4423,
+        "payment_amount_baht": 7187,
+        "payment_date": "2025-10-29",
+        "payment_method": "ชำระที่เคาน์เตอร์",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 72801,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 0
+      }
+    },
+    {
+      "table": "thai_payment_records",
+      "record": {
+        "payment_id": 9138,
+        "loan_id": 8974,
+        "payment_amount_baht": 9814,
+        "payment_date": "2025-10-29",
+        "payment_method": "บัตรเครดิต",
+        "payment_status": "ชำระแล้ว",
+        "remaining_balance_baht": 141926,
+        "due_date": "2025-10-29",
+        "late_fee_baht": 269
+      }
+    }
+  ],
+  "extraction_summary": {
+    "customer_records": 3,
+    "loan_applications": 3,
+    "payment_records": 2
+  }
+}

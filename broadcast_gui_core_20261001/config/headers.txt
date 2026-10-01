@@ -1,0 +1,23 @@
+HTTP/2 200 
+content-type: text/html; charset=utf-8
+content-length: 19931
+date: Wed, 30 Sep 2026 16:36:11 GMT
+set-cookie: AWSALB=A8k8JG/tzIRirJPLo6DNzbD9Bob9UUBkVVDxksry6KVOJLngW6hZoT1oF5FZ0JFLtbZ78TC2u9G8nd4gQwxjiUXIGobu3jNF6qD3tDB28T31THquJO72azqkMOOx; Expires=Wed, 07 Oct 2026 16:36:11 GMT; Path=/
+set-cookie: AWSALBCORS=A8k8JG/tzIRirJPLo6DNzbD9Bob9UUBkVVDxksry6KVOJLngW6hZoT1oF5FZ0JFLtbZ78TC2u9G8nd4gQwxjiUXIGobu3jNF6qD3tDB28T31THquJO72azqkMOOx; Expires=Wed, 07 Oct 2026 16:36:11 GMT; Path=/; SameSite=None; Secure
+set-cookie: PHPSESSID=e590fdef76ccb5d9ddce11f547b743be; path=/
+server: Microsoft-IIS/10.0
+cache-control: no-cache
+pragma: no-cache
+expires: -1
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+access-control-allow-origin: cetcpa568bb
+access-control-allow-headers: Content-Type, Authorization
+access-control-allow-credentials: true
+via: 1.1 sydney.edu.au, 1.1 9c91a845d991763b8755f1a1b899ad52.cloudfront.net (CloudFront)
+vary: Accept-Encoding
+x-cache: Miss from cloudfront
+x-amz-cf-pop: HKG54-P1
+alt-svc: h3=":443"; ma=86400
+x-amz-cf-id: wnxIgaYlCys6hHhcTNqbaGIBGTs1P-zFIpa78XQMJazRNV6oLp-MyQ==
+

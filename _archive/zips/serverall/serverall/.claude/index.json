@@ -1,0 +1,247 @@
+{
+  "project_info": {
+    "name": "Dragon-V Triple Bot",
+    "version": "2.0.0",
+    "description": "企业级渗透测试框架 - 专为亚洲地区物流系统设计",
+    "scan_date": "2025-10-29T10:00:00Z",
+    "scanner": "Claude Code Architect",
+    "language": "zh-CN"
+  },
+  "scan_summary": {
+    "total_files_scanned": 200,
+    "total_directories": 15,
+    "python_files": 85,
+    "configuration_files": 12,
+    "database_files": 5,
+    "documentation_files": 8,
+    "coverage_percentage": 75
+  },
+  "architecture": {
+    "type": "三层微服务架构",
+    "layers": [
+      "用户层 (Telegram Bot)",
+      "功能层 (统一管理器)",
+      "执行层 (渗透测试引擎)"
+    ],
+    "databases": [
+      "dragon_triple_bot_unified.db",
+      "dragon_triple_telegram_bot.db",
+      "dragon_triple_functional.db"
+    ]
+  },
+  "modules": [
+    {
+      "path": "dragon_triple_bot_unified_manager.py",
+      "name": "统一管理器",
+      "type": "core",
+      "responsibilities": ["Bot实例管理", "任务调度", "负载均衡"],
+      "dependencies": ["asyncio", "sqlite3", "python-telegram-bot"],
+      "entry_points": ["main()"],
+      "interfaces": ["Telegram API"],
+      "test_coverage": true,
+      "config_files": ["config_unified.yaml"]
+    },
+    {
+      "path": "dragon_triple_bot_functional_module.py",
+      "name": "功能模块",
+      "type": "core",
+      "responsibilities": ["企业级管理", "专业扫描", "安全工具"],
+      "dependencies": ["asyncio", "sqlite3", "penetration modules"],
+      "entry_points": ["DragonTripleBotFunctionalModule()"],
+      "interfaces": ["内部API"],
+      "test_coverage": true,
+      "config_files": ["dragon_triple_functional_config.json"]
+    },
+    {
+      "path": "dragon_triple_telegram_bot.py",
+      "name": "Telegram Bot接口",
+      "type": "interface",
+      "responsibilities": ["用户交互", "权限控制", "菜单系统"],
+      "dependencies": ["python-telegram-bot", "asyncio"],
+      "entry_points": ["DragonTripleTelegramBot()"],
+      "interfaces": ["Telegram Bot API"],
+      "test_coverage": true,
+      "config_files": ["dragon_triple_telegram_config.json"]
+    },
+    {
+      "path": "dragon_v_hunter/",
+      "name": "Dragon-V Hunter核心引擎",
+      "type": "engine",
+      "responsibilities": ["越南化渗透测试", "业务逻辑漏洞", "攻击链生成"],
+      "dependencies": ["asyncio", "requests", "fingerprints"],
+      "entry_points": ["main.py"],
+      "interfaces": ["HTTP API", "命令行"],
+      "test_coverage": true,
+      "config_files": ["config.yaml"]
+    },
+    {
+      "path": "mcp_penetration_server.py",
+      "name": "MCP渗透测试服务器",
+      "type": "service",
+      "responsibilities": ["工具集成", "载荷生成", "漏洞扫描"],
+      "dependencies": ["subprocess", "sqlmap", "nuclei"],
+      "entry_points": ["PenetrationMCPServer()"],
+      "interfaces": ["MCP Protocol"],
+      "test_coverage": false,
+      "config_files": ["mcp/*.yaml"]
+    },
+    {
+      "path": "exploitation_module.py",
+      "name": "漏洞利用引擎",
+      "type": "engine",
+      "responsibilities": ["SQL注入", "XSS", "文件上传漏洞"],
+      "dependencies": ["requests", "asyncio", "base64"],
+      "entry_points": ["ExploitationEngine()"],
+      "interfaces": ["HTTP API"],
+      "test_coverage": true,
+      "config_files": ["config.json"]
+    },
+    {
+      "path": "waf_bypass_advanced.py",
+      "name": "WAF绕过工具",
+      "type": "tool",
+      "responsibilities": ["阿里云绕过", "Cloudflare绕过", "编码技术"],
+      "dependencies": ["requests", "base64", "urllib"],
+      "entry_points": ["AliYunDunBypass()"],
+      "interfaces": ["命令行"],
+      "test_coverage": true,
+      "config_files": []
+    }
+  ],
+  "security_resources": {
+    "vulnerability_database": {
+      "path": "vuln/ & vuln_en/",
+      "count": 414,
+      "format": "YAML",
+      "languages": ["中文", "英文"],
+      "coverage": ["AI应用", "数据库", "Web框架", "MCP协议"]
+    },
+    "fingerprint_library": {
+      "path": "fingerprints/",
+      "count": 42,
+      "format": "YAML",
+      "applications": ["Chuanhugpt", "ComfyUI", "AnythingLLM", "ClickHouse", "FastAPI"]
+    },
+    "mcp_modules": {
+      "path": "mcp/",
+      "count": 21,
+      "format": "YAML",
+      "categories": ["渗透测试", "漏洞利用", "载荷生成", "安全评估"]
+    },
+    "evaluation_datasets": {
+      "path": "eval/",
+      "count": 5,
+      "format": "JSON",
+      "types": ["越狱测试", "安全底线", "综合评估"]
+    }
+  },
+  "testing_resources": {
+    "unit_tests": [
+      "simple_test.py",
+      "bot_1_working.py",
+      "direct_sql_injection.py"
+    ],
+    "integration_tests": [
+      "advanced_quad_target_pentest.py",
+      "advanced_zero_day_test.py"
+    ],
+    "performance_tests": [
+      "waf_bypass_test.py"
+    ],
+    "test_environments": [
+      "Docker容器",
+      "XSS测试平台",
+      "合法测试站点"
+    ]
+  },
+  "configuration": {
+    "main_config": "config_unified.yaml",
+    "telegram_config": "dragon_triple_telegram_config.json",
+    "functional_config": "dragon_triple_functional_config.json",
+    "docker_config": "docker-compose.yml",
+    "key_settings": {
+      "max_concurrent_tasks": 3,
+      "memory_limit": "256MB",
+      "cache_ttl": 1800,
+      "rate_limit": 60,
+      "ai_enabled": false
+    }
+  },
+  "deployment": {
+    "methods": ["直接运行", "Docker容器"],
+    "entry_points": [
+      "🚀_一键启动.py",
+      "dragon_triple_bot_unified_manager.py"
+    ],
+    "requirements": [
+      "Python 3.11+",
+      "python-telegram-bot",
+      "requests",
+      "asyncio"
+    ],
+    "optional_tools": [
+      "sqlmap",
+      "nuclei",
+      "nmap",
+      "metasploit"
+    ]
+  },
+  "scan_coverage": {
+    "scanned_areas": [
+      "核心Python模块",
+      "配置文件",
+      "数据库结构",
+      "安全资源库",
+      "启动脚本"
+    ],
+    "gaps": [
+      "详细的日志文件分析",
+      "完整的数据流追踪",
+      "性能基准测试",
+      "错误处理机制验证"
+    ],
+    "recommendations": [
+      "添加更详细的API文档",
+      "完善单元测试覆盖率",
+      "优化数据库查询性能",
+      "增强错误恢复机制"
+    ]
+  },
+  "ignored_items": {
+    "directories": [
+      ".git/",
+      "__pycache__/",
+      "node_modules/"
+    ],
+    "files": [
+      "*.log",
+      "*.tmp",
+      ".DS_Store"
+    ],
+    "large_files": [
+      "数据库文件 (*.db)",
+      "报告文件 (*.html)",
+      "日志文件"
+    ]
+  },
+  "security_notes": {
+    "compliance": "仅用于授权的安全测试",
+    "data_protection": "敏感数据处理注意事项",
+    "legal_requirements": "遵守当地网络安全法律法规",
+    "ethical_considerations": "负责任的安全研究实践"
+  },
+  "next_steps": [
+    "完善Dragon-V Hunter模块的CLAUDE.md文档",
+    "为MCP服务器创建独立的模块文档",
+    "添加指纹库的详细说明文档",
+    "创建漏洞数据库的使用指南",
+    "补充性能优化和监控文档"
+  ],
+  "quality_metrics": {
+    "code_complexity": "中等",
+    "modularity": "高",
+    "documentation": "良好",
+    "test_coverage": "中等",
+    "security_practices": "良好"
+  }
+}

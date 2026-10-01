@@ -1,0 +1,18 @@
+{
+  "target": "https://www.pawnsh8p.com",
+  "timestamp": "2025-10-26 17:38:29",
+  "results": {
+    "/?id=1": {
+      "database_type": "MySQL",
+      "sensitive_tables": [],
+      "credentials": {},
+      "full_dump": {}
+    },
+    "/pawn?id=1": {
+      "database_type": "MySQL",
+      "sensitive_tables": [],
+      "credentials": {},
+      "full_dump": {}
+    }
+  }
+}

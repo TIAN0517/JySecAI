@@ -1,0 +1,203 @@
+[
+  {
+    "target": {
+      "url": "https://ghtk.net",
+      "name": "Giao Hàng Tiết Kiệm",
+      "type": "private_logistics",
+      "priority": "medium",
+      "region": "vietnam"
+    },
+    "timestamp": "2025-10-25T09:30:14.344585",
+    "status": "completed",
+    "vulnerabilities": [],
+    "technologies": [],
+    "business_features": [],
+    "localization": {
+      "vietnamese_detected": false,
+      "business_logic_found": false,
+      "order_system_detected": false
+    }
+  },
+  {
+    "target": {
+      "url": "https://j&t.vn",
+      "name": "J&T Express Việt Nam",
+      "type": "private_logistics",
+      "priority": "medium",
+      "region": "vietnam"
+    },
+    "timestamp": "2025-10-25T09:30:14.374755",
+    "status": "completed",
+    "vulnerabilities": [],
+    "technologies": [],
+    "business_features": [],
+    "localization": {
+      "vietnamese_detected": false,
+      "business_logic_found": false,
+      "order_system_detected": false
+    }
+  },
+  {
+    "target": {
+      "url": "https://ninja-van.com/vn",
+      "name": "Ninja Van Việt Nam",
+      "type": "private_logistics",
+      "priority": "medium",
+      "region": "vietnam"
+    },
+    "timestamp": "2025-10-25T09:30:14.392212",
+    "status": "completed",
+    "vulnerabilities": [
+      {
+        "name": "订单ID预测",
+        "type": "business_logic",
+        "severity": "medium",
+        "description": "订单ID可能存在可预测模式"
+      },
+      {
+        "name": "价格篡改",
+        "type": "business_logic",
+        "severity": "medium",
+        "description": "运费或价格参数可能被篡改"
+      },
+      {
+        "name": "越权访问",
+        "type": "access_control",
+        "severity": "medium",
+        "description": "可能存在越权访问漏洞"
+      }
+    ],
+    "technologies": [
+      "jsp",
+      "asp"
+    ],
+    "business_features": [
+      "/don-hang",
+      "/tracking",
+      "/lich-su-mua-hang",
+      "/order",
+      "/track",
+      "/history",
+      "/order-tracking",
+      "/lich-su-giao-hang"
+    ],
+    "localization": {
+      "vietnamese_detected": false,
+      "business_logic_found": true,
+      "order_system_detected": true,
+      "vietnamese_ratio": 0.043478260869565216,
+      "detected_keywords": [
+        "Ninja Van"
+      ]
+    },
+    "basic_info": {
+      "status_code": 200,
+      "server": "UploadServer",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length": 605108,
+      "response_time": 0.368446
+    },
+    "detected_keywords": [
+      "Ninja Van"
+    ]
+  },
+  {
+    "target": {
+      "url": "https://viettel-post.vn",
+      "name": "Viettel Post",
+      "type": "private_logistics",
+      "priority": "medium",
+      "region": "vietnam"
+    },
+    "timestamp": "2025-10-25T09:30:23.126866",
+    "status": "completed",
+    "vulnerabilities": [],
+    "technologies": [],
+    "business_features": [],
+    "localization": {
+      "vietnamese_detected": false,
+      "business_logic_found": false,
+      "order_system_detected": false
+    }
+  },
+  {
+    "target": {
+      "url": "https://vnpost.vn",
+      "name": "越南邮政",
+      "type": "government_logistics",
+      "priority": "high",
+      "region": "vietnam"
+    },
+    "timestamp": "2025-10-25T09:30:14.343619",
+    "status": "completed",
+    "vulnerabilities": [
+      {
+        "name": "订单ID预测",
+        "type": "business_logic",
+        "severity": "medium",
+        "description": "订单ID可能存在可预测模式"
+      },
+      {
+        "name": "越权访问",
+        "type": "access_control",
+        "severity": "medium",
+        "description": "可能存在越权访问漏洞"
+      }
+    ],
+    "technologies": [
+      "jsp",
+      "node.js"
+    ],
+    "business_features": [],
+    "localization": {
+      "vietnamese_detected": true,
+      "business_logic_found": true,
+      "order_system_detected": false,
+      "vietnamese_ratio": 0.30434782608695654,
+      "detected_keywords": [
+        "bưu điện",
+        "vận chuyển",
+        "theo dõi",
+        "khách hàng",
+        "địa chỉ",
+        "thanh toán",
+        "VNPost"
+      ]
+    },
+    "basic_info": {
+      "status_code": 200,
+      "server": "",
+      "content_type": "text/html; charset=UTF-8",
+      "content_length": 719582,
+      "response_time": 0.368357
+    },
+    "detected_keywords": [
+      "bưu điện",
+      "vận chuyển",
+      "theo dõi",
+      "khách hàng",
+      "địa chỉ",
+      "thanh toán",
+      "VNPost"
+    ]
+  },
+  {
+    "target": {
+      "url": "https://ghn.vn",
+      "name": "Giao Hàng Nhanh",
+      "type": "private_logistics",
+      "priority": "high",
+      "region": "vietnam"
+    },
+    "timestamp": "2025-10-25T09:30:14.344168",
+    "status": "completed",
+    "vulnerabilities": [],
+    "technologies": [],
+    "business_features": [],
+    "localization": {
+      "vietnamese_detected": false,
+      "business_logic_found": false,
+      "order_system_detected": false
+    }
+  }
+]

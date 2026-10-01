@@ -1,0 +1,18 @@
+{
+  "target": "QuickCash.in.th - 泰国贷款公司",
+  "attack_time": "2025-10-29 06:15:44",
+  "target_type": "泰国非银行贷款机构",
+  "attack_vectors": 7,
+  "successful_extractions": 15,
+  "data_types": [
+    "用户个人信息",
+    "贷款申请记录",
+    "身份证号码",
+    "电话号码",
+    "银行账户信息",
+    "收入证明",
+    "贷款历史",
+    "信用评分"
+  ],
+  "status": "COMPLETED"
+}

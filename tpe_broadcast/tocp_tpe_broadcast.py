@@ -1,3 +1,31 @@
+
+import urllib3, requests
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+_orig_request = requests.Session.request
+def _insecure_request(self, method, url, *args, **kwargs):
+    kwargs["verify"] = False
+    return _orig_request(self, method, url, *args, **kwargs)
+requests.Session.request = _insecure_request
+
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+# === [AUTO-PATCH] 多 Bot 輪詢分流模組 ===
+import itertools, os
+
+def get_tg_token_pool(primary_token=None):
+    tokens = []
+    if primary_token:
+        tokens.extend([t.strip() for t in primary_token.split(',') if t.strip()])
+    env_tokens = os.environ.get('TG_BOT_TOKENS', '')
+    if env_tokens:
+        tokens.extend([t.strip() for t in env_tokens.split(',') if t.strip()])
+    # 去重並保持順序
+    seen = set()
+    uniq = [t for t in tokens if not (t in seen or seen.add(t))]
+    return itertools.cycle(uniq) if uniq else None
+# ========================================
+
 #!/usr/bin/env python3
 """
 Taipei/TOCP Dual Broadcast

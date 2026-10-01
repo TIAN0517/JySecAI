@@ -1,0 +1,529 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><meta http-equiv="Cache-Control" content="no-store" /><meta http-equiv="Pragma" content="no-cache" /><meta name="viewport" content="width=device-width, initial-scale=1" /><meta name="description" content="救災資訊系統" /><title>
+	救災資訊系統-登入頁面
+</title>
+
+    <!-- Bootstrap Css -->
+    <link rel="stylesheet" type="text/css" href="_comp/bootstrap/css/bootstrap.min.css" /><link rel="stylesheet" type="text/css" href="_comp/bootstrap/css/bootstrap-theme.min.css" />
+
+    <!-- Fonts Css -->
+    <link rel="stylesheet" type="text/css" href="_fonts/fontawesome/css/all.min.css" />
+
+    <!-- JqueryUI Css -->
+    <link rel="stylesheet" type="text/css" href="_comp/jquery-ui/jquery-ui.min.css" />
+
+
+    <!-- Customize Js -->
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            var s = document.getElementById("showPassword");
+            s.onclick = function () {
+                var x = document.getElementById("Txt_Pw");
+                var icon = document.getElementById("iconPassword");
+                if (x.type === "password") {
+                    x.type = "text";
+                    icon.classList.remove("fas", "fa-eye");
+                    icon.classList.add("fas", "fa-eye-slash");
+                } else {
+                    x.type = "password";
+                    icon.classList.remove("fas", "fa-eye-slash");
+                    icon.classList.add("fas", "fa-eye");
+                }
+            }
+
+            var b = document.getElementById("btn_Login");
+            b.onclick = function (e) {
+                e.target.value = "載入中...";
+            }
+
+            var c = document.getElementById("CodeRefresh");
+            c.onclick = function () {
+                var img = document.getElementById("imgCode");
+                img.setAttribute('src', 'Common/VCode.ashx?t=' + new Date().valueOf());
+            }
+
+            document.getElementsByTagName('body')[0].addEventListener('click', function (e) {
+                if (e.target.id === 'imgCode') {
+                    e.target.setAttribute('src', 'Common/VCode.ashx?t=' + new Date().valueOf());
+                }
+
+            });
+        });
+    </script>
+
+
+    <style type="text/css">
+        body {
+            /*background: inherit;*/
+            /*background: rgb(30, 74, 128);*/
+            background-image: linear-gradient(white 0px, transparent 0), linear-gradient(60deg, hsla(0,0%,100%,.5) 1px, transparent 0);
+            background-size: 0px 0px, 30px 30px;
+            background: #e1e2e7;
+        }
+
+        .navbar {
+            margin-bottom: 0px;
+        }
+
+        .navbar-header {
+            padding: 5px;
+            color: #fff;
+            font-size: 1.8em;
+            text-shadow: 1px 1px 1px #333;
+            -webkit-filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+            filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+            float: none;
+            text-align: center;
+            white-space: nowrap;
+            margin-top: 80px;
+            z-index: 1;
+            position: relative;
+        }
+
+            .navbar-header .brand-logo {
+                max-height: 100px;
+            }
+
+            .navbar-header h1 {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+                .navbar-header h1 > .title b {
+                    white-space: normal;
+                }
+
+                .navbar-header h1 small {
+                    display: block;
+                    color: #fff;
+                    font-size: .4em;
+                    text-align: center;
+                    text-shadow: 1px 1px 1px #6c6c6c;
+                    -webkit-filter: drop-shadow(1px 1px 2px rgba(222, 222, 222, 0.5));
+                    filter: drop-shadow(1px 1px 2px rgba(222, 222, 222, 0.5));
+                    margin-top: 3px;
+                }
+
+            .navbar-header h2 {
+                text-shadow: 1px 1px 1px #333;
+                -webkit-filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+                filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+            }
+
+            .navbar-header img {
+                display: inline-block;
+            }
+
+        #imgCode {
+            height: 35px;
+            cursor: pointer;
+        }
+
+        .jumbotron {
+            background: inherit;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            margin-bottom: 0px;
+        }
+
+            .jumbotron .modal-content {
+                background-color: rgba(255, 255, 255, 0.8);
+                border-radius: 3px;
+                z-index: 1;
+                border: 0;
+            }
+
+        .navbar-brand {
+            height: 50px;
+        }
+
+
+        .input-group-addon {
+            background-color: transparent;
+            color: #fff;
+            border: 0;
+            filter: drop-shadow(1px 1px 3px #000);
+        }
+
+        @media (min-width: 1200px) {
+            .modal-content {
+                margin-left: 20%;
+                margin-right: 20%;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .jumbotron {
+                height: 900px;
+                background: url(_images/bk1.jpg) center center;
+                /*background-size: contain;*/
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+
+            .night {
+                background: url(_images/bk1.jpg) center 0;
+            }
+
+            .modal-content {
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .jumbotron {
+                padding-top: 20px;
+                padding-bottom: 20px;
+            }
+
+            .navbar-header {
+                margin-top: 0;
+            }
+
+                .navbar-header h1 {
+                    flex-direction: row;
+                    justify-content: center;
+                    margin-top:0px;
+                }
+
+                .navbar-header .brand-logo {
+                    max-height: 60px;
+                    margin-right:10px;
+                }
+
+                .navbar-header h1 > .title {
+                    font-size: 2.6rem;
+                    margin-top: 10px;
+                }
+
+                .navbar-header h2 {
+                    font-size: 1em;
+                }
+        }
+
+        .navbar-default {
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+        }
+
+            .navbar-default .navbar-text {
+                color: #fff;
+                display: flex;
+                width: 100%;
+            }
+
+                .navbar-default .navbar-text::before {
+                    content: "";
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.60);
+                    flex-grow: 1;
+                    align-self: center;
+                    margin-right: 10px;
+                }
+        /*3/19改圖片*/
+        /*.video-wrapper{
+            position: absolute;
+            width: 100%;
+            height: 100vh;
+            top: 0;
+            left: 0;
+        }*/
+
+
+        /*更之前註解的*/
+        /*.video-wrapper::before {
+            font-family: "Font Awesome 5 Free";
+            content: '\f04c';
+            font-weight: 900;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 3em;
+            color: rgba(255, 255, 255, 0.30);
+            z-index:1031;
+        }
+        .video-wrapper.paused::before {
+            content: '\f04b';
+        }*/
+
+        video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            object-fit: cover;
+            width: 100%;
+            height: 100vh;
+            opacity: .6;
+        }
+
+        .modal-body {
+            padding: 30px 15px 50px;
+        }
+
+        input.form-control {
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: #fff;
+            font-size: 1.2em;
+            height: 40px;
+        }
+
+        .input-group .input-group-addon + .form-control {
+            border-bottom-left-radius: 4px !important;
+            border-top-left-radius: 4px !important;
+        }
+
+        .input-group .form-control + .input-group-btn > label {
+            height: 40px;
+            border-bottom-left-radius: 0px !important;
+            border-top-left-radius: 0px !important;
+            margin-left: 0 !important;
+        }
+
+        input.form-control::-webkit-input-placeholder { /* Edge */
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        input.form-control:-ms-input-placeholder { /* Internet Explorer 10-11 */
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        input.form-control::placeholder {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        input.form-control:focus {
+            border-color: #fff;
+            outline: 0;
+            /*-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(255, 255, 255, 0.6);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(255, 255, 255, 0.6);*/
+        }
+
+        .btn-primary {
+            color: #ffffff;
+            background: #0B2239;
+            border-color: #0B2239;
+            text-shadow: none;
+            box-shadow: none;
+        }
+
+            .btn-primary:focus,
+            .btn-primary.focus {
+                color: #ffffff;
+                background-color: #000000;
+                border-color: #000000;
+            }
+
+            .btn-primary:hover {
+                color: #ffffff;
+                background-color: #000000;
+                border-color: #000000;
+            }
+
+            .btn-primary:active,
+            .btn-primary.active,
+            .open > .dropdown-toggle.btn-primary {
+                color: #ffffff;
+                background-color: #000000;
+                border-color: #000000;
+            }
+
+            .btn-primary.disabled, .btn-primary[disabled], fieldset[disabled] .btn-primary, .btn-primary.disabled:hover, .btn-primary[disabled]:hover, fieldset[disabled] .btn-primary:hover, .btn-primary.disabled:focus, .btn-primary[disabled]:focus, fieldset[disabled] .btn-primary:focus, .btn-primary.disabled.focus, .btn-primary[disabled].focus, fieldset[disabled] .btn-primary.focus, .btn-primary.disabled:active, .btn-primary[disabled]:active, fieldset[disabled] .btn-primary:active, .btn-primary.disabled.active, .btn-primary[disabled].active, fieldset[disabled] .btn-primary.active {
+                color: #fff;
+                background: #000000;
+                background-image: none;
+            }
+
+            .btn-primary:active:hover, .btn-primary.active:hover, .open > .dropdown-toggle.btn-primary:hover, .btn-primary:active:focus, .btn-primary.active:focus, .open > .dropdown-toggle.btn-primary:focus, .btn-primary:active.focus, .btn-primary.active.focus, .open > .dropdown-toggle.btn-primary.focus {
+                color: #fff;
+                background-color: #000000;
+                border-color: #000000;
+            }
+
+        .btn-sub {
+            color: #fff;
+            background: #2F4760;
+            border-color: #2F4760;
+            text-shadow: none;
+            box-shadow: none;
+        }
+
+            .btn-sub:hover, .btn-sub:focus {
+                color: #fff;
+                background: #000;
+                border-color: #000;
+            }
+
+            .btn-sub:active, .btn-sub.active {
+                color: #fff;
+                background: #000;
+                border-color: #000;
+            }
+
+            .btn-sub.disabled, .btn-sub[disabled], fieldset[disabled] .btn-sub, .btn-sub.disabled:hover, .btn-sub[disabled]:hover, fieldset[disabled] .btn-sub:hover, .btn-sub.disabled:focus, .btn-sub[disabled]:focus, fieldset[disabled] .btn-sub:focus, .btn-sub.disabled.focus, .btn-sub[disabled].focus, fieldset[disabled] .btn-sub.focus, .btn-sub.disabled:active, .btn-sub[disabled]:active, fieldset[disabled] .btn-sub:active, .btn-sub.disabled.active, .btn-sub[disabled].active, fieldset[disabled] .btn-sub.active {
+                color: #fff;
+                background: #000;
+                background-image: none;
+            }
+
+            .btn-sub:active:hover, .btn-sub.active:hover, .open > .dropdown-toggle.btn-sub:hover, .btn-sub:active:focus, .btn-sub.active:focus, .open > .dropdown-toggle.btn-sub:focus, .btn-sub:active.focus, .btn-sub.active.focus, .open > .dropdown-toggle.btn-sub.focus {
+                color: #fff;
+                background-color: #000;
+                border-color: #000;
+            }
+
+        .btn-gray {
+            background: #333333;
+            border-color: #333333;
+            color: #fff;
+            text-shadow: none;
+            box-shadow: none;
+        }
+
+            .btn-gray:hover, .btn-gray:focus {
+                background: #222222;
+                border-color: #222222;
+                color: #fff;
+            }
+
+            .btn-gray:active, .btn-gray.active {
+                background: #222222;
+                border-color: #222222;
+                color: #fff;
+            }
+
+            .btn-gray.disabled, .btn-gray[disabled], fieldset[disabled] .btn-gray, .btn-gray.disabled:hover, .btn-gray[disabled]:hover, fieldset[disabled] .btn-gray:hover, .btn-gray.disabled:focus, .btn-gray[disabled]:focus, fieldset[disabled] .btn-gray:focus, .btn-gray.disabled.focus, .btn-gray[disabled].focus, fieldset[disabled] .btn-gray.focus, .btn-gray.disabled:active, .btn-gray[disabled]:active, fieldset[disabled] .btn-gray:active, .btn-gray.disabled.active, .btn-gray[disabled].active, fieldset[disabled] .btn-gray.active {
+                background: #222222;
+                background-image: none;
+                color: #fff;
+            }
+
+            .btn-gray:active:hover, .btn-gray.active:hover, .open > .dropdown-toggle.btn-gray:hover, .btn-gray:active:focus, .btn-gray.active:focus, .open > .dropdown-toggle.btn-gray:focus, .btn-gray:active.focus, .btn-gray.active.focus, .open > .dropdown-toggle.btn-gray.focus {
+                color: #fff;
+                background-color: #222222;
+                border-color: #222222;
+            }
+
+        #btn_Login {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            border-radius: 0;
+        }
+
+        .tooltip-inner {
+            max-width: 90px;
+            /* If max-width does not work, try using width instead */
+            width: 90px;
+        }
+
+        #CodeRefresh{
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="jumbotron">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4">
+                    <div class="navbar-header">
+                        <h1>
+                            <img class="brand-logo" alt="臺北市消防局標誌" src='/_images/logo-s.png' class="img-responsive" />
+                            <span class="title">
+                                <span>臺北市消防局</span>
+                                <small>Taipei City Fire Department</small>
+                            </span>
+                        </h1>
+                        <h2>救災資訊系統</h2>
+                    </div>
+                    <div class="modal-content">
+                        <div class="panel-heading hidden">
+                            <h3 class="panel-title">&nbsp;
+                                <span class="pull-left glyphicon glyphicon-leaf" aria-hidden="true"></span>
+                                <b class="pull-left">登入帳號</b></h3>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" action="./Login" id="form1" role="form">
+<div class="aspNetHidden">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="j6AS582+Az/bAA2BU78fpn1UZl1e0rGMG8bO4ZQ9hj6alIN2R9bPqFy1LATXtHQm+QNkMWhaSiHXlKaP6gipDSNg536i/VHsPL1FWY+2pWQ=" />
+</div>
+
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="C2EE9ABB" />
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="+Pf3tLddY3iNephsFrIbntgYpG1wV7ME5GNCsB0QGEH5yjYGCK9JsVDrZqMyPXrAOwq8qNP2aV75zekGrLjgTDDHOb38Rhgo+b8bd8YDNF0fO+dA2m6nJSGTCcp9cqjn0nkryk8du8kYTgzxTcTRn7uZweeyS6I6V3W5SQiLEM+0TJ8Lb4eXLA07hpdFRa4u" />
+</div>
+                                <div id="Pl_Login">
+	
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon"><i class="fas fa-user"></i></div>
+                                            <input name="Txt_Acc" type="text" maxlength="50" id="Txt_Acc" class="form-control " placeholder="輸入帳號" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <div class="input-group">
+                                            <div class="input-group-addon"><i class="fas fa-key"></i></div>
+                                            <input name="Txt_Pw" type="password" maxlength="16" id="Txt_Pw" class="form-control" autocomplete="off" placeholder="輸入密碼" />
+                                            <span class="input-group-btn" title="顯示密碼" id="showPassword">
+                                                <label class="btn btn-gray" style="margin-top: 0px;">
+                                                    <span class="fas fa-eye" id="iconPassword"></span>
+                                                </label>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <i style="margin-top: 10px;" class="fas fa-redo col-xs-1 col-sm-1 col-md-1 col-lg-1" id="CodeRefresh" title="刷新驗證碼"></i>
+                                            <img class="col-xs-3 col-sm-3 col-md-5 col-lg-4 img-responsive" id="imgCode"
+                                                src="Common/VCode.ashx" title="點擊刷新" alt="點擊刷新" />
+                                            <div class="col-xs-8 col-sm-8 col-md-6 col-lg-6">
+                                                <input name="Txt_Code" type="text" maxlength="4" id="Txt_Code" class="form-control" placeholder="輸入驗證碼" AutoComplete="Off" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <span id="LB_">建議瀏覽器:chrome、Edge</span><br />
+                                    <span id="Label1">建議解析度:1920X1080</span>
+
+                                    <div class=" ">
+                                        <input type="submit" name="btn_Login" value="登入" id="btn_Login" class="btn btn-primary btn-loading-text btn-block" />
+                                        <input type="reset" class="btn btn-warning hide" value="清除" />
+                                    </div>
+                                
+</div>
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar navbar-default  visible-xs" role="navigation">
+        <div class="container">
+            <div class="row">
+                <div></div>
+            </div>
+            <p class="navbar-text navbar-right">Copyright &copy; 2026. 臺北市消防局 All rights reserved.</p>
+        </div>
+    </nav>
+    <nav class="navbar navbar-default navbar-fixed-bottom hidden-xs" role="navigation">
+        <div class="container">
+            <div class="row">
+                <p class="navbar-text navbar-right">Copyright &copy; 2026. 臺北市消防局 All rights reserved.</p>
+            </div>
+        </div>
+    </nav>
+
+</body>
+</html>
+

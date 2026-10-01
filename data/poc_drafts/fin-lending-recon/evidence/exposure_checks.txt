@@ -1,0 +1,69 @@
+--- www.imoney.com.tw ---
+  www.imoney.com.tw/phpinfo.php -> HTTP 403
+  www.imoney.com.tw/.env -> HTTP 403
+  www.imoney.com.tw/admin/ -> HTTP 301
+  www.imoney.com.tw/.ssh/id_rsa -> HTTP 403
+--- henmoney.com.tw ---
+--- www.newloan.com.tw ---
+  www.newloan.com.tw/phpinfo.php -> HTTP 302
+  www.newloan.com.tw/.env -> HTTP 302
+  www.newloan.com.tw/database.php -> HTTP 302
+  www.newloan.com.tw/backup.sql -> HTTP 302
+  www.newloan.com.tw/backup.zip -> HTTP 302
+  www.newloan.com.tw/admin/ -> HTTP 302
+  www.newloan.com.tw/.aws/credentials -> HTTP 403
+  www.newloan.com.tw/.ssh/id_rsa -> HTTP 403
+  www.newloan.com.tw/test.php -> HTTP 302
+  www.newloan.com.tw/dev/test -> HTTP 301
+--- www.muchenloan.com ---
+  www.muchenloan.com/.env -> HTTP 403
+  www.muchenloan.com/backup.sql -> HTTP 403
+  www.muchenloan.com/db.sql -> HTTP 403
+  www.muchenloan.com/admin/ -> HTTP 302
+  www.muchenloan.com/.aws/credentials -> HTTP 403
+  www.muchenloan.com/.ssh/id_rsa -> HTTP 403
+--- www.okbank.com ---
+  www.okbank.com/phpinfo.php -> HTTP 302
+  www.okbank.com/.env -> HTTP 302
+  www.okbank.com/env -> HTTP 302
+  www.okbank.com/config.php -> HTTP 302
+  www.okbank.com/db.php -> HTTP 302
+  www.okbank.com/database.php -> HTTP 302
+  www.okbank.com/backup.sql -> HTTP 302
+  www.okbank.com/backup.zip -> HTTP 302
+  www.okbank.com/db.sql -> HTTP 302
+  www.okbank.com/admin/ -> HTTP 302
+  www.okbank.com/.aws/credentials -> HTTP 302
+  www.okbank.com/.ssh/id_rsa -> HTTP 302
+  www.okbank.com/install.php -> HTTP 302
+  www.okbank.com/setup.php -> HTTP 302
+  www.okbank.com/test.php -> HTTP 302
+  www.okbank.com/dev/test -> HTTP 302
+  www.okbank.com/_profiler -> HTTP 302
+  www.okbank.com/api/v1/users -> HTTP 302
+  www.okbank.com/api/v1/auth -> HTTP 302
+  www.okbank.com/api/login -> HTTP 302
+  www.okbank.com/api/auth -> HTTP 302
+--- www.hotaimotor.com.tw ---
+  www.hotaimotor.com.tw/phpinfo.php -> HTTP 302
+  www.hotaimotor.com.tw/.env -> HTTP 403
+  www.hotaimotor.com.tw/env -> HTTP 302
+  www.hotaimotor.com.tw/config.php -> HTTP 302
+  www.hotaimotor.com.tw/db.php -> HTTP 302
+  www.hotaimotor.com.tw/database.php -> HTTP 302
+  www.hotaimotor.com.tw/backup.sql -> HTTP 403
+  www.hotaimotor.com.tw/backup.zip -> HTTP 302
+  www.hotaimotor.com.tw/db.sql -> HTTP 403
+  www.hotaimotor.com.tw/admin/ -> HTTP 302
+  www.hotaimotor.com.tw/.aws/credentials -> HTTP 403
+  www.hotaimotor.com.tw/.ssh/id_rsa -> HTTP 403
+  www.hotaimotor.com.tw/install.php -> HTTP 302
+  www.hotaimotor.com.tw/setup.php -> HTTP 302
+  www.hotaimotor.com.tw/test.php -> HTTP 302
+  www.hotaimotor.com.tw/dev/test -> HTTP 302
+  www.hotaimotor.com.tw/_profiler -> HTTP 302
+  www.hotaimotor.com.tw/api/v1/users -> HTTP 302
+  www.hotaimotor.com.tw/api/v1/auth -> HTTP 302
+  www.hotaimotor.com.tw/api/login -> HTTP 302
+  www.hotaimotor.com.tw/api/auth -> HTTP 302
+--- www.hotaimember.com.tw ---

