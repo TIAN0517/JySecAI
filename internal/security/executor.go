@@ -16,6 +16,7 @@ import (
 
 	"jysecai/internal/config"
 	"jysecai/internal/mcp"
+	"jysecai/internal/secretstore"
 	"jysecai/internal/tooloutput"
 
 	"github.com/creack/pty"
@@ -1367,9 +1368,9 @@ func applyDefaultTerminalEnv(cmd *exec.Cmd) {
 	if cmd == nil {
 		return
 	}
-	// 仅在未显式设置 Env 时，继承当前进程环境
+	// 仅在未显式设置 Env 时，继承当前进程环境（主密钥除外，见 secretstore.ChildEnv）
 	if cmd.Env == nil {
-		cmd.Env = os.Environ()
+		cmd.Env = secretstore.ChildEnv()
 	}
 	cmd.Env = ApplyNonInteractivePagerEnv(cmd.Env)
 	// 如果用户已设置 TERM/COLUMNS/LINES，则不覆盖

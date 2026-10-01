@@ -11,6 +11,8 @@ import (
 	"strings"
 	"text/template"
 
+	"jysecai/internal/secretstore"
+
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
@@ -197,7 +199,7 @@ func (b *PayloadBuilder) BuildBeacon(in PayloadBuilderInput) (*BuildResult, erro
 		ldflags += " -H windowsgui"
 	}
 	cmd := exec.Command("go", "build", "-ldflags", ldflags, "-trimpath", "-o", absBinPath, ".")
-	cmd.Env = append(os.Environ(),
+	cmd.Env = secretstore.ChildEnv(
 		"GOOS="+goos,
 		"GOARCH="+goarch,
 		"CGO_ENABLED=0",

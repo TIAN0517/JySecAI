@@ -108,6 +108,7 @@ C2 listener `encryption_key` / `implant_token` and WebShell `password` are store
 - back the key up **separately** from the database — a database backup without the key cannot be decrypted, and a key without the database is worthless;
 - a fresh install with no stored secrets starts without the key. Once any secret exists, a missing, malformed, or mismatched key makes startup **fail** rather than fall back to plaintext;
 - a wrong key does not corrupt data: reads of affected rows error out instead of returning garbage;
+- the key never reaches a child process. Every subprocess environment — external MCP, interactive shell, tool execution, C2 payload build — is filtered before launch, so a compromised third-party process cannot decrypt the database. No legitimate child needs it, and an MCP server configured with it explicitly still does not receive it;
 - legacy plaintext values are migrated in place at startup and marked with a `v1:` prefix; the migration is idempotent and re-verifies every row it rewrites.
 
 There is no automated key rotation. Changing `JY_SECMASTER_KEY` while encrypted values exist will block startup by design; rotating requires re-encrypting those rows out of band (export with the old key, restart with the new key, re-import).
