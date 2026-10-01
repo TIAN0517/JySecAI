@@ -305,10 +305,76 @@ func TestHTTPBeaconListener_HandleResultRejectsPlaintextJSON(t *testing.T) {
 
 	l.handleResult(rr, req)
 
-	if rr.Code != http.StatusNotFound {
+	if rr.Code != http.StatusBadRequest {
 		t.Fatalf("status=%d body=%q", rr.Code, rr.Body.String())
 	}
-	if !strings.Contains(rr.Body.String(), "404 Not Found") {
-		t.Fatalf("expected disguised 404 body, got %q", rr.Body.String())
+	if !strings.Contains(rr.Body.String(), "invalid encrypted result") {
+		t.Fatalf("expected an encrypted-result error, got %q", rr.Body.String())
+	}
+}
+
+func TestHTTPBeaconListener_HandleEncryptedResult(t *testing.T) {
+	tmp := t.TempDir()
+	db, err := database.NewDB(filepath.Join(tmp, "c2.sqlite"), zap.NewNop())
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = db.Close() })
+
+	const listenerID = "l_result_test"
+	const sessionID = "s_result_test"
+	const taskID = "t_result_test"
+	if err := db.CreateC2Listener(&database.C2Listener{ID: listenerID, Name: "test", Type: string(ListenerTypeHTTPBeacon)}); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.UpsertC2Session(&database.C2Session{
+		ID: sessionID, ListenerID: listenerID, ImplantUUID: "implant_result_test", OS: "linux",
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.CreateC2Task(&database.C2Task{
+		ID: taskID, SessionID: sessionID, TaskType: string(TaskTypeScreenshot), Status: string(TaskSent),
+	}); err != nil {
+		t.Fatal(err)
+	}
+	keyB64, err := GenerateAESKey()
+	if err != nil {
+		t.Fatal(err)
+	}
+	l := &HTTPBeaconListener{
+		rec: &database.C2Listener{
+			ID: listenerID, EncryptionKey: keyB64, ImplantToken: "test-implant-token-result",
+		},
+		manager: NewManager(db, zap.NewNop(), filepath.Join(tmp, "c2store")),
+		logger:  zap.NewNop(),
+	}
+	plain, err := json.Marshal(TaskResultReport{
+		TaskID: taskID, Success: true, Output: "result ok", BlobBase64: base64.StdEncoding.EncodeToString([]byte("image")), BlobSuffix: ".png",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	encrypted, err := EncryptAESGCM(keyB64, plain)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req := httptest.NewRequest(http.MethodPost, "/result", strings.NewReader(encrypted))
+	req.Header.Set("X-Implant-Token", "test-implant-token-result")
+	rr := httptest.NewRecorder()
+
+	l.handleResult(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Fatalf("status=%d body=%q", rr.Code, rr.Body.String())
+	}
+	task, err := db.GetC2Task(taskID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if task.Status != string(TaskSuccess) || task.ResultText != "result ok" {
+		t.Fatalf("task result was not ingested: %+v", task)
+	}
+	if got, err := os.ReadFile(filepath.Join(tmp, "c2store", "results", taskID+".png")); err != nil || string(got) != "image" {
+		t.Fatalf("blob was not saved: data=%q err=%v", got, err)
 	}
 }

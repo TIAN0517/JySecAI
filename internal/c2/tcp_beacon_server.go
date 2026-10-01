@@ -188,7 +188,7 @@ func (l *TCPReverseListener) handleTCPBeaconSession(conn net.Conn, br *bufio.Rea
 			if err := json.Unmarshal(raw, &report); err != nil {
 				return
 			}
-			if err := l.manager.IngestTaskResult(report); err != nil {
+			if err := l.manager.IngestTaskResultForListener(report, l.rec.ID); err != nil {
 				return
 			}
 			resp = map[string]string{"ok": "1"}
