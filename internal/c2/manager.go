@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -43,8 +44,7 @@ type Manager struct {
 const MCPToolC2Task = "c2_task"
 
 var (
-	resultBlobSuffixPattern = regexp.MustCompile(`^\.[A-Za-z0-9][A-Za-z0-9_-]{0,31}$`)
-	uploadTaskIDPattern     = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$`)
+	uploadTaskIDPattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$`)
 )
 
 // HITLBridge 把"危险任务"桥到现有 internal/handler/hitl 审批流的接口。
@@ -658,8 +658,27 @@ func (m *Manager) PopTasksForBeacon(sessionID string, limit int) ([]TaskEnvelope
 	return out, nil
 }
 
-// IngestTaskResult beacon 回传任务结果的统一入口
-func (m *Manager) IngestTaskResult(report TaskResultReport) error {
+// IngestTaskResultForSession rejects results for tasks owned by another session.
+func (m *Manager) IngestTaskResultForSession(report TaskResultReport, sessionID string) error {
+	if strings.TrimSpace(sessionID) == "" {
+		return ErrInvalidInput
+	}
+	return m.ingestTaskResult(report, sessionID, "")
+}
+
+// IngestTaskResultForListener confines listener-scoped reports to sessions on that listener.
+// Protocols without a session ID in the result can only be bound to the authenticated listener.
+func (m *Manager) IngestTaskResultForListener(report TaskResultReport, listenerID string) error {
+	if strings.TrimSpace(listenerID) == "" {
+		return ErrInvalidInput
+	}
+	return m.ingestTaskResult(report, "", listenerID)
+}
+
+func (m *Manager) ingestTaskResult(report TaskResultReport, expectedSessionID, expectedListenerID string) error {
+	if expectedSessionID == "" && expectedListenerID == "" {
+		return ErrInvalidInput
+	}
 	if strings.TrimSpace(report.TaskID) == "" {
 		return ErrInvalidInput
 	}
@@ -669,6 +688,22 @@ func (m *Manager) IngestTaskResult(report TaskResultReport) error {
 	}
 	if t == nil {
 		return ErrTaskNotFound
+	}
+	if expectedSessionID != "" && t.SessionID != expectedSessionID {
+		return ErrTaskNotFound
+	}
+	sess, err := m.db.GetC2Session(t.SessionID)
+	if err != nil {
+		return err
+	}
+	if sess == nil {
+		return ErrSessionNotFound
+	}
+	if expectedListenerID != "" && sess.ListenerID != expectedListenerID {
+		return ErrTaskNotFound
+	}
+	if t.Status != string(TaskSent) && t.Status != string(TaskRunning) {
+		return &CommonError{Code: "task_not_running", Message: "任务尚未发送或已完成", HTTP: 409}
 	}
 
 	startedAt := time.Unix(0, report.StartedAt*int64(time.Millisecond))
@@ -686,12 +721,8 @@ func (m *Manager) IngestTaskResult(report TaskResultReport) error {
 	}
 	duration := endedAt.Sub(startedAt).Milliseconds()
 
-	sessionOS := ""
-	if sess, serr := m.db.GetC2Session(t.SessionID); serr == nil && sess != nil {
-		sessionOS = sess.OS
-	}
-	resultText := ResolveTaskResultText(report.Output, report.OutputB64, sessionOS)
-	errText := ResolveTaskResultText(report.Error, report.ErrorB64, sessionOS)
+	resultText := ResolveTaskResultText(report.Output, report.OutputB64, sess.OS)
+	errText := ResolveTaskResultText(report.Error, report.ErrorB64, sess.OS)
 
 	upd := database.C2TaskUpdate{
 		Status:      &status,
@@ -705,11 +736,14 @@ func (m *Manager) IngestTaskResult(report TaskResultReport) error {
 	// blob（如截图）落盘
 	if len(report.BlobBase64) > 0 {
 		blobPath, err := m.saveResultBlob(t.ID, report.BlobBase64, report.BlobSuffix)
-		if err == nil {
-			upd.ResultBlobPath = &blobPath
-		} else {
-			m.logger.Warn("结果 blob 落盘失败", zap.Error(err), zap.String("task_id", t.ID))
+		if err != nil {
+			var commonErr *CommonError
+			if errors.As(err, &commonErr) {
+				return err
+			}
+			return fmt.Errorf("save result blob: %w", err)
 		}
+		upd.ResultBlobPath = &blobPath
 	}
 
 	if err := m.db.UpdateC2Task(t.ID, upd); err != nil {
@@ -741,29 +775,69 @@ func (m *Manager) IngestTaskResult(report TaskResultReport) error {
 }
 
 func (m *Manager) saveResultBlob(taskID, b64Content, suffix string) (string, error) {
-	taskID = strings.TrimSpace(taskID)
-	if taskID == "" || taskID == "." || taskID == ".." ||
-		strings.ContainsAny(taskID, `/\`) {
+	if taskID != strings.TrimSpace(taskID) || !uploadTaskIDPattern.MatchString(taskID) {
 		return "", fmt.Errorf("invalid task_id")
 	}
 
 	suffix, err := normalizeResultBlobSuffix(suffix)
 	if err != nil {
+		return "", &CommonError{Code: "invalid_blob_suffix", Message: err.Error(), HTTP: 400}
+	}
+	storageDir, err := filepath.Abs(m.storageDir)
+	if err != nil {
 		return "", err
 	}
-	dir := filepath.Join(m.storageDir, "results")
-	if err := osMkdirAll(dir, 0o755); err != nil {
+	if err := osMkdirAll(storageDir, 0o755); err != nil {
 		return "", err
 	}
-	path := filepath.Join(dir, taskID+suffix)
-	if err := ensurePathInDir(dir, path); err != nil {
+	storageDir, err = filepath.EvalSymlinks(storageDir)
+	if err != nil {
+		return "", err
+	}
+	resultsDir := filepath.Join(storageDir, "results")
+	if err := os.Mkdir(resultsDir, 0o755); err != nil && !os.IsExist(err) {
+		return "", err
+	}
+	info, err := os.Lstat(resultsDir)
+	if err != nil {
+		return "", err
+	}
+	if !info.IsDir() || info.Mode()&os.ModeSymlink != 0 {
+		return "", fmt.Errorf("results path is not a directory")
+	}
+	resultsDir, err = filepath.EvalSymlinks(resultsDir)
+	if err != nil {
+		return "", err
+	}
+	if err := ensurePathInDir(storageDir, resultsDir); err != nil {
+		return "", err
+	}
+	path := filepath.Join(resultsDir, taskID+suffix)
+	if err := ensurePathInDir(resultsDir, path); err != nil {
 		return "", err
 	}
 	data, err := base64Decode(b64Content)
 	if err != nil {
+		return "", &CommonError{Code: "invalid_blob", Message: "invalid blob content", HTTP: 400}
+	}
+	tmp, err := os.CreateTemp(resultsDir, ".result-*")
+	if err != nil {
 		return "", err
 	}
-	if err := osWriteFile(path, data, 0o644); err != nil {
+	tmpPath := tmp.Name()
+	defer os.Remove(tmpPath)
+	if _, err := tmp.Write(data); err != nil {
+		_ = tmp.Close()
+		return "", err
+	}
+	if err := tmp.Chmod(0o644); err != nil {
+		_ = tmp.Close()
+		return "", err
+	}
+	if err := tmp.Close(); err != nil {
+		return "", err
+	}
+	if err := os.Rename(tmpPath, path); err != nil {
 		return "", err
 	}
 	return path, nil
@@ -783,14 +857,18 @@ func uploadPathForTask(storageDir, taskID string) (dir, path string, err error) 
 }
 
 func normalizeResultBlobSuffix(suffix string) (string, error) {
-	suffix = strings.TrimSpace(suffix)
 	if suffix == "" {
 		return ".bin", nil
+	}
+	if strings.TrimSpace(suffix) != suffix {
+		return "", fmt.Errorf("invalid blob suffix")
 	}
 	if !strings.HasPrefix(suffix, ".") {
 		suffix = "." + suffix
 	}
-	if !resultBlobSuffixPattern.MatchString(suffix) {
+	switch suffix {
+	case ".bin", ".png", ".jpg", ".jpeg":
+	default:
 		return "", fmt.Errorf("invalid blob suffix")
 	}
 	return suffix, nil

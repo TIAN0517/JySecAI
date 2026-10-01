@@ -2791,7 +2791,7 @@
             payload: { path: path }
         }).then(data => {
             if (data.error) {
-                if (container) container.innerHTML = `<div class="c2-error">${data.error}</div>`;
+                if (container) container.innerHTML = `<div class="c2-error">${escapeHtml(data.error)}</div>`;
                 return;
             }
             C2.waitForFileList(data.task?.id || data.task_id, sessionId, path);

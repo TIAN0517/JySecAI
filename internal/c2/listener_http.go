@@ -292,14 +292,20 @@ func (l *HTTPBeaconListener) handleResult(w http.ResponseWriter, r *http.Request
 	var report TaskResultReport
 	plaintext, decErr := DecryptAESGCM(l.rec.EncryptionKey, string(body))
 	if decErr != nil {
-		l.disguisedReject(w)
+		http.Error(w, "invalid encrypted result", http.StatusBadRequest)
 		return
 	}
 	if err := json.Unmarshal(plaintext, &report); err != nil {
-		l.disguisedReject(w)
+		http.Error(w, "invalid result payload", http.StatusBadRequest)
 		return
 	}
-	if err := l.manager.IngestTaskResult(report); err != nil {
+	if err := l.manager.IngestTaskResultForListener(report, l.rec.ID); err != nil {
+		var commonErr *CommonError
+		if errors.As(err, &commonErr) {
+			http.Error(w, commonErr.Message, commonErr.HTTP)
+			return
+		}
+		l.logger.Warn("ingest result failed", zap.Error(err))
 		http.Error(w, "ingest result failed", http.StatusInternalServerError)
 		return
 	}

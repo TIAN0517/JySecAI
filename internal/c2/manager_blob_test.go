@@ -14,11 +14,11 @@ func TestManagerSaveResultBlobConfinesPath(t *testing.T) {
 	mgr := NewManager(nil, zap.NewNop(), filepath.Join(tmp, "c2store"))
 	content := base64.StdEncoding.EncodeToString([]byte("result bytes"))
 
-	got, err := mgr.saveResultBlob("t_safe123", content, "txt")
+	got, err := mgr.saveResultBlob("t_safe123", content, ".bin")
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := filepath.Join(tmp, "c2store", "results", "t_safe123.txt")
+	want := filepath.Join(tmp, "c2store", "results", "t_safe123.bin")
 	if got != want {
 		t.Fatalf("path=%q want %q", got, want)
 	}
@@ -62,14 +62,81 @@ func TestUploadPathForTaskConfinesPath(t *testing.T) {
 }
 
 func TestNormalizeResultBlobSuffix(t *testing.T) {
-	for _, suffix := range []string{"", "png", ".jpg", ".7z", ".safe_name-1"} {
+	for _, suffix := range []string{"", "bin", ".bin", "png", ".png", ".jpg", ".jpeg"} {
 		if _, err := normalizeResultBlobSuffix(suffix); err != nil {
 			t.Fatalf("suffix %q rejected: %v", suffix, err)
 		}
 	}
-	for _, suffix := range []string{".", "..", "../x", "./../../x", "/tmp/x", `..\x`, ".name.with.dot", ".toolong012345678901234567890123456789"} {
+	for _, suffix := range []string{
+		".", "..", "../", "../x", "x/y", "./../../x", "/tmp/x", `..\x`, `x\y`,
+		".name.with.dot", ".7z", ".txt", ".PNG", ".bad\n", ".bad\x00", " .png", ".png ",
+	} {
 		if _, err := normalizeResultBlobSuffix(suffix); err == nil {
 			t.Fatalf("suffix %q unexpectedly accepted", suffix)
 		}
+	}
+}
+
+func TestManagerSaveResultBlobRejectsResultsSymlink(t *testing.T) {
+	tmp := t.TempDir()
+	store := filepath.Join(tmp, "c2store")
+	outside := filepath.Join(tmp, "outside")
+	if err := os.MkdirAll(outside, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll(store, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(outside, filepath.Join(store, "results")); err != nil {
+		t.Skipf("symlinks are unavailable: %v", err)
+	}
+
+	mgr := NewManager(nil, zap.NewNop(), store)
+	content := base64.StdEncoding.EncodeToString([]byte("result bytes"))
+	if _, err := mgr.saveResultBlob("t_safe123", content, ".png"); err == nil {
+		t.Fatal("expected a symlinked results directory to be rejected")
+	}
+	if _, err := os.Stat(filepath.Join(outside, "t_safe123.png")); !os.IsNotExist(err) {
+		t.Fatalf("result escaped the results directory: %v", err)
+	}
+}
+
+func TestManagerSaveResultBlobReplacesSymlinkWithoutFollowingIt(t *testing.T) {
+	tmp := t.TempDir()
+	store := filepath.Join(tmp, "c2store")
+	results := filepath.Join(store, "results")
+	outside := filepath.Join(tmp, "outside")
+	if err := os.MkdirAll(results, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	outsideFile := filepath.Join(outside, "victim.png")
+	if err := os.MkdirAll(outside, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(outsideFile, []byte("untouched"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(outsideFile, filepath.Join(results, "t_safe123.png")); err != nil {
+		t.Skipf("symlinks are unavailable: %v", err)
+	}
+
+	mgr := NewManager(nil, zap.NewNop(), store)
+	content := base64.StdEncoding.EncodeToString([]byte("safe result"))
+	if _, err := mgr.saveResultBlob("t_safe123", content, ".png"); err != nil {
+		t.Fatal(err)
+	}
+	raw, err := os.ReadFile(outsideFile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(raw) != "untouched" {
+		t.Fatalf("symlink target was modified: %q", raw)
+	}
+	raw, err = os.ReadFile(filepath.Join(results, "t_safe123.png"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(raw) != "safe result" {
+		t.Fatalf("saved result=%q", raw)
 	}
 }
