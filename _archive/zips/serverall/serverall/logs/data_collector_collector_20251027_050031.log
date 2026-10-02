@@ -1,6 +1,0 @@
-2025-10-27 05:00:32,547 - enhanced_data_collector - INFO - ✅ test數據已發送到Webhook
-2025-10-27 05:00:32,563 - mcp_penetration_server - INFO - 初始化渗透测试MCP服务器...
-2025-10-27 05:00:32,564 - mcp_penetration_server - INFO - 漏洞数据库已加载: 3 个分类
-2025-10-27 05:00:32,564 - mcp_penetration_server - INFO - 载荷数据库已加载: 17 个载荷
-2025-10-27 05:00:32,564 - mcp_penetration_server - INFO - 搜索漏洞: test
-2025-10-27 05:00:32,564 - mcp_penetration_server - INFO - 端口扫描: 127.0.0.1, 端口: 1-100

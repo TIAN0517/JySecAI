@@ -1,8 +1,0 @@
-﻿target_site,data_source,loan_products_count,financial_info_count,user_data_count,admin_access_count,api_endpoints_count,loan_pages_count,timestamp
-extraction_info,FAST_LOAN_DATA_20251029_034030.json,0,0,0,0,0,0,20251029_034030
-https://peacoop.or.th,ENHANCED_LOAN_DATA_20251029_040142.json,9,10,0,8,8,0,2025-10-29T04:00:33.167121
-https://mula-x.com,ENHANCED_LOAN_DATA_20251029_040142.json,0,0,1,8,10,0,2025-10-29T04:01:11.892362
-https://ngoenmun.com,ENHANCED_LOAN_DATA_20251029_040142.json,0,0,1,8,10,0,2025-10-29T04:01:35.389558
-https://peacoop.or.th,QUICK_LOAN_DATA_20251029_041255.json,0,0,0,4,0,6,2025-10-29T04:11:54.251161
-https://mula-x.com,QUICK_LOAN_DATA_20251029_041255.json,0,0,0,4,0,6,2025-10-29T04:12:30.250274
-https://ngoenmun.com,QUICK_LOAN_DATA_20251029_041255.json,0,0,0,4,0,6,2025-10-29T04:12:49.619857

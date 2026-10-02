@@ -1,6 +1,0 @@
-﻿logs_id,logs_ip,inv_id,cus_id,logs_type,logs_phone,logs_text,logs_create_time
-1,127.0.0.1,1,4,audience,0916582066,&lt;script&gt;alert('test'); swal('test');&lt;/script&gt;,2020-02-20 16:08:52
-2,127.0.0.1,1,5,audience,0916582065,&lt;script&gt;alert('test'); swal('test');&lt;/script&gt;,2020-02-20 16:08:52
-3,127.0.0.1,1,6,audience,0916582068,&lt;script&gt;alert('test'); swal('test');&lt;/script&gt;,2020-02-20 16:08:52
-5,127.0.0.1,1,4,audience,0916582066,&lt;script&gt;alert('test'); swal('test');&lt;/script&gt;,2020-02-20 16:10:36
-6,127.0.0.1,1,4,audience,0916582066,&lt;script&gt;alert('test'); swal('test');&lt;/script&gt;,2020-02-20 16:11:45

@@ -1,7 +1,0 @@
-[*] Phase 1: Port scanning (top 20000 TCP)
-[+] Open ports: [80, 443, 18888, 18999]
-
-[*] Phase 2: HTTP/HTTPS probing on open ports
-Traceback (most recent call last):
-  File "/mnt/c/Users/Administrator/desktop/JySecAI/tpe119_carpet_search.py", line 100, in <module>
-NameError: name 'proto' is not defined

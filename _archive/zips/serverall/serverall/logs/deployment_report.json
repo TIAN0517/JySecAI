@@ -1,8 +1,0 @@
-{
-  "environment": "0/5",
-  "directories": "5/5",
-  "modules": "3/3",
-  "mcp_functionality": "OK",
-  "success_rate": "64.3%",
-  "timestamp": "nt.times_result(user=0.125, system=0.046875, children_user=0.0, children_system=0.0, elapsed=0.0)"
-}

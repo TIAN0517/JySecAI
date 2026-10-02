@@ -1,3 +1,0 @@
-{"kind": "open", "data": {"sid": "ZN4FV78JmDmkls5gAFwG", "upgrades": ["websocket"], "pingInterval": 25000, "pingTimeout": 5000}, "via": "poll-hs", "ts": 1789364284.323818, "raw": "0{\"sid\":\"ZN4FV78JmDmkls5gAFwG\",\"upgrades\":[\"websocket\"],\"pingInterval\":25000,\"pingTimeout\":5000}"}
-{"kind": "ns_connect", "ns": "/", "data": "", "via": "poll-hs", "ts": 1789364284.3246565, "raw": "40"}
-{"kind": "close", "via": "poll", "ts": 1789364314.317623, "raw": "1"}

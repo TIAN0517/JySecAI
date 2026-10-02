@@ -1,6 +1,0 @@
-=== extracted 0 API path patterns ===
-
-=== socket.io references (file -> [io() arg / .on / .emit]) ===
-
-=== unauth test on http://35.234.50.28:8000 (no JWT) ===
-done

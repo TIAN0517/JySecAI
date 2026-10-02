@@ -1,9 +1,0 @@
-{
-  "target": "https://peacoop.or.th",
-  "total_exploits": 0,
-  "sql_exploits": 0,
-  "xss_exploits": 0,
-  "command_exploits": 0,
-  "risk_level": "✅🛡️ 量子安全",
-  "exploits": []
-}

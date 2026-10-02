@@ -1,2 +1,0 @@
-[console_scripts]
-weevely = weevely.main:cli

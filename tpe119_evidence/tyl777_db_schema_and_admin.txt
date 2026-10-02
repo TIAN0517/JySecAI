@@ -1,4 +1,0 @@
-ALL_TABLES: account,ads,article,article_tag,card,card_comment,card_top_log,card_top_setting,custom,investor,log_forget_password,log_sms,log_system,log_verification,sms,sms_setting,wish,wish_comment,wp_posts
-=== ACCOUNT TABLE ===
-{"acc_id":"1","acc_username":"dacn","acc_password":"a21ab4402da8fbacf524bf4d92910682","acc_name":"系統管理員"}
-=== SETTING TABLE ===

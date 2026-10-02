@@ -1,1 +1,0 @@
-app.constant('PUBLIC_CONFIG',{"EPCRServer":"https://epcr.tpf.gov.tw:4000","authServer":"https://epcr.tpf.gov.tw:4004","hospitalServer":"https://epcr.tpf.gov.tw:4002","doctorServer":"https://epcr.tpf.gov.tw:4002","MerSocketio":"http://172.28.4.12:8080","ConnWatcher":"http://172.28.4.12:8188","captcha":{"enable":true,"captchaImg":"/captcha"}})

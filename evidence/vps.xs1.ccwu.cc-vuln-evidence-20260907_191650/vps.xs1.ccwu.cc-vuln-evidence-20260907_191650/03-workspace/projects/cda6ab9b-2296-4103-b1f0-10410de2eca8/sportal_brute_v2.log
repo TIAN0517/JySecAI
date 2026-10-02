@@ -1,6 +1,0 @@
-[*] brute_v2 → target=https://sportal.emic.gov.tw
-[*] users=56 pwds=682 combos=38192
-[*] tried=50 hits=0 elapsed=10.5s rate=4.8/s eta=7974.7s
-[*] tried=100 hits=0 elapsed=20.5s rate=4.9/s eta=7822.3s
-[*] tried=150 hits=0 elapsed=31.9s rate=4.7/s eta=8082.6s
-[*] tried=200 hits=0 elapsed=42.2s rate=4.7/s eta=8019.4s

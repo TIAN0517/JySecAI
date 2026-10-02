@@ -1,7 +1,0 @@
-{
-  "common_patterns": "URL参数、搜索功能、登录表单等",
-  "test_cases": "基础测试、进阶测试、WAF绕过",
-  "risk_assessment": "高危、中危、低危评估标准",
-  "workflow": "7步验证流程",
-  "tools": "自动化工具、手动测试工具、辅助工具"
-}

@@ -1,9 +1,0 @@
-[
-  {
-    "type": "CVE",
-    "cve": "CVE-2023-46808",
-    "description": "Next.js SSRF vulnerability",
-    "path": "/_next/image?url=http://localhost:3000",
-    "status_code": 400
-  }
-]

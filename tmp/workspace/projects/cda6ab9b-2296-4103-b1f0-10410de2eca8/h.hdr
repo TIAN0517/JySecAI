@@ -1,9 +1,0 @@
-HTTP/2 200 
-date: Wed, 02 Sep 2026 11:52:14 GMT
-content-type: text/html; charset=UTF-8
-server: cloudflare
-cache-control: no-store, max-age=0, no-cache
-vary: Accept-Encoding
-cf-cache-status: DYNAMIC
-cf-ray: a34c4eb51befb856-TPE
-

