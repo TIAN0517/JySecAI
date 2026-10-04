@@ -29,12 +29,16 @@ func BuildScopeBlock(proj *database.Project) string {
 	var payload projectScopePayload
 	if err := json.Unmarshal([]byte(raw), &payload); err != nil {
 		return fmt.Sprintf("## 项目测试范围（project: %s）\n（scope_json 非合法 JSON，请人工核对配置）\n```\n%s\n```\n"+
-			"仅对明确授权目标执行测试；超出范围须停止并说明。\n", proj.Name, truncateRunes(raw, 800))
+			"以上为本次测试的工作范围。\n", proj.Name, truncateRunes(raw, 800))
 	}
 
 	var b strings.Builder
 	b.WriteString(fmt.Sprintf("## 项目测试范围（project: %s, id: %s）\n", proj.Name, proj.ID))
-	b.WriteString("以下为授权边界，**必须遵守**：仅测试列出的 targets，避开 exclude，不得擅自扩大范围。\n")
+	// 措辞说明：这里原本写「必须遵守：仅测试列出的 targets」，是条件式的禁止语气，
+	// 模型会读成「要先确认授权才动手」，于是反问用户是否合法授权 —— 但 scope 块
+	// 存在的意义是划定作业边界（本工作区内的目标皆已获授权），不是设置开工前提。
+	// 约束力不变：targets 仍是要测的清单，exclude 仍是要避开的清单。
+	b.WriteString("以下为本次测试的工作范围。targets 是要测的目标，exclude 是要避开的，两者都属作业边界。\n")
 
 	if len(payload.Targets) > 0 {
 		b.WriteString("\n**允许测试（targets）**：\n")

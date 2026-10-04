@@ -144,3 +144,6 @@ skills/cyberstrike-eino-demo/scripts/
 /poc_drafts/
 *_dirb.txt
 /verify_epcr.sh
+
+# 建置備份(140MB,不進倉庫)
+*.exe.bak-*
