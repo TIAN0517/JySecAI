@@ -170,7 +170,13 @@ tcp_reverse 默认仅接受 CSB1 加密 Beacon（AES-GCM + ImplantToken）才登
 				listener.Name = v
 			}
 			if v := getString(params, "bind_host"); v != "" {
-				listener.BindHost = v
+				// 与 handler 的 UpdateListener 同一套校验：这两个字段会流进
+				// beacon 模板的 Go 源码与 oneliner 的 shell 字符串。
+				bindHost := strings.TrimSpace(v)
+				if err := c2.ValidateBeaconHost(bindHost); err != nil {
+					return makeC2Result(nil, fmt.Errorf("非法的 bind_host %q: %w", v, err))
+				}
+				listener.BindHost = bindHost
 			}
 			if v := int(getFloat64(params, "bind_port")); v > 0 {
 				listener.BindPort = v
@@ -186,13 +192,19 @@ tcp_reverse 默认仅接受 CSB1 加密 Beacon（AES-GCM + ImplantToken）才登
 				listener.ConfigJSON = string(cfgBytes)
 			}
 			if _, ok := params["callback_host"]; ok {
+				callbackHost := strings.TrimSpace(getString(params, "callback_host"))
+				if callbackHost != "" {
+					if err := c2.ValidateBeaconHost(callbackHost); err != nil {
+						return makeC2Result(nil, fmt.Errorf("非法的 callback_host %q: %w", callbackHost, err))
+					}
+				}
 				pcfg := &c2.ListenerConfig{}
 				raw := strings.TrimSpace(listener.ConfigJSON)
 				if raw == "" {
 					raw = "{}"
 				}
 				_ = json.Unmarshal([]byte(raw), pcfg)
-				pcfg.CallbackHost = strings.TrimSpace(getString(params, "callback_host"))
+				pcfg.CallbackHost = callbackHost
 				pcfg.ApplyDefaults()
 				cfgBytes, err := json.Marshal(pcfg)
 				if err != nil {
@@ -355,8 +367,9 @@ func registerC2TaskTool(s *mcp.Server, m *c2.Manager, l *zap.Logger) {
 - kill_proc: 需 pid
 - upload: 需 remote_path + file_id
 - download: 需 remote_path
-- port_fwd: 需 action(start/stop) + local_port + remote_host + remote_port
-- socks_start: 需 port（默认 1080）
+- port_fwd: 需 action(start/stop) + local_port + remote_host + remote_port，可选 bind（默认 127.0.0.1）
+- socks_start: 需 port（默认 1080），可选 bind（默认 127.0.0.1）
+- cred_dump: 凭证访问（Windows）：保存 SAM/SYSTEM/SECURITY hive + LSASS MiniDump + NTDS.dit（域控尽力而为）；产物路径见输出，用 download 拉取；走 HITL 审批
 - load_assembly: 需 data(base64) 或 file_id，可选 args
 - persist: 可选 method(auto/cron/bashrc/launchagent/registry/schtasks)
 返回 task_id，用 c2_task_manage 的 wait/get_result 获取结果。`,
@@ -364,7 +377,7 @@ func registerC2TaskTool(s *mcp.Server, m *c2.Manager, l *zap.Logger) {
 			"type": "object",
 			"properties": map[string]interface{}{
 				"session_id":      map[string]interface{}{"type": "string", "description": "C2 会话 ID（s_xxx）"},
-				"task_type":       map[string]interface{}{"type": "string", "description": "任务类型", "enum": []string{"exec", "shell", "pwd", "cd", "ls", "ps", "kill_proc", "upload", "download", "screenshot", "port_fwd", "socks_start", "socks_stop", "load_assembly", "persist"}},
+				"task_type":       map[string]interface{}{"type": "string", "description": "任务类型", "enum": []string{"exec", "shell", "pwd", "cd", "ls", "ps", "kill_proc", "upload", "download", "screenshot", "port_fwd", "socks_start", "socks_stop", "load_assembly", "persist", "cred_dump"}},
 				"command":         map[string]interface{}{"type": "string", "description": "命令（exec/shell）"},
 				"path":            map[string]interface{}{"type": "string", "description": "路径（cd/ls）"},
 				"pid":             map[string]interface{}{"type": "integer", "description": "进程 ID（kill_proc）"},
@@ -377,6 +390,7 @@ func registerC2TaskTool(s *mcp.Server, m *c2.Manager, l *zap.Logger) {
 				"remote_host":     map[string]interface{}{"type": "string", "description": "远程主机（port_fwd）"},
 				"remote_port":     map[string]interface{}{"type": "integer", "description": "远程端口（port_fwd）"},
 				"port":            map[string]interface{}{"type": "integer", "description": "SOCKS5 端口（socks_start），默认 1080"},
+				"bind":            map[string]interface{}{"type": "string", "description": "监听绑定地址（port_fwd/socks_start），默认 127.0.0.1"},
 				"method":          map[string]interface{}{"type": "string", "description": "持久化方法（persist）: auto/cron/bashrc/launchagent/registry/schtasks"},
 				"timeout_seconds": map[string]interface{}{"type": "integer", "description": "超时秒数，默认 60"},
 			},
@@ -407,8 +421,16 @@ func registerC2TaskTool(s *mcp.Server, m *c2.Manager, l *zap.Logger) {
 			payload["local_port"] = params["local_port"]
 			payload["remote_host"] = getString(params, "remote_host")
 			payload["remote_port"] = params["remote_port"]
+			if v := getString(params, "bind"); v != "" {
+				payload["bind"] = v
+			}
 		case c2.TaskTypeSocksStart:
 			payload["port"] = params["port"]
+			if v := getString(params, "bind"); v != "" {
+				payload["bind"] = v
+			}
+		case c2.TaskTypeCredDump:
+			// no extra params
 		case c2.TaskTypeLoadAssembly:
 			payload["data"] = getString(params, "data")
 			payload["file_id"] = getString(params, "file_id")
@@ -580,6 +602,12 @@ func registerC2PayloadTool(s *mcp.Server, m *c2.Manager, l *zap.Logger, webListe
 				names := make([]string, len(compatible))
 				for i, k := range compatible {
 					names[i] = string(k)
+				}
+				// 空清单时别再说「兼容类型: []」—— 模型会当成还有别的选项去试。
+				if len(names) == 0 {
+					return makeC2Result(nil, fmt.Errorf(
+						"监听器类型 %s 不支持任何 oneliner 类型（%s 需要 WebSocket 传输，oneliner 只能走 tcp/HTTP）；"+
+							"请改用交叉编译 beacon（payload_build），它支持该类型", listener.Type, kind))
 				}
 				return makeC2Result(nil, fmt.Errorf("监听器类型 %s 不支持 %s，兼容类型: %v", listener.Type, kind, names))
 			}

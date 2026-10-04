@@ -195,7 +195,13 @@ func (h *C2Handler) UpdateListener(c *gin.Context) {
 
 	listener.Name = req.Name
 	listener.ProjectID = strings.TrimSpace(req.ProjectID)
-	listener.BindHost = req.BindHost
+	// bind_host 与 callback_host 都会流进 beacon 模板的 Go 源码与 oneliner 的
+	// shell 字符串，UpdateListener 原本连 TrimSpace 都没有，更没有校验。
+	if err := c2.ValidateBeaconHost(strings.TrimSpace(req.BindHost)); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("非法的 bind_host %q: %v", req.BindHost, err)})
+		return
+	}
+	listener.BindHost = strings.TrimSpace(req.BindHost)
 	listener.BindPort = req.BindPort
 	listener.ProfileID = req.ProfileID
 	listener.Remark = req.Remark
@@ -208,13 +214,21 @@ func (h *C2Handler) UpdateListener(c *gin.Context) {
 		return
 	}
 	if req.CallbackHost != nil {
+		callbackHost := strings.TrimSpace(*req.CallbackHost)
+		// 允许留空（表示「回落到 bind_host」），但非空时必须合法。
+		if callbackHost != "" {
+			if err := c2.ValidateBeaconHost(callbackHost); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("非法的 callback_host %q: %v", callbackHost, err)})
+				return
+			}
+		}
 		cfg := &c2.ListenerConfig{}
 		raw := strings.TrimSpace(listener.ConfigJSON)
 		if raw == "" {
 			raw = "{}"
 		}
 		_ = json.Unmarshal([]byte(raw), cfg)
-		cfg.CallbackHost = strings.TrimSpace(*req.CallbackHost)
+		cfg.CallbackHost = callbackHost
 		cfg.ApplyDefaults()
 		cfgJSON, err := json.Marshal(cfg)
 		if err != nil {
@@ -772,18 +786,36 @@ func (h *C2Handler) PayloadOneliner(c *gin.Context) {
 		for i, k := range compatible {
 			names[i] = string(k)
 		}
+		// 兼容清單是空的時候，原先那句「请选择兼容的类型」是骗人的 —— 根本没有
+		// 类型可选，调用方只会反复重试同一条路。这种监听器要走交叉编译 beacon，
+		// 不是 oneliner 能表达的协议。
+		msg := fmt.Sprintf("监听器类型 %s 不支持 %s 类型的 oneliner，请选择兼容的类型", listener.Type, req.Kind)
+		if len(names) == 0 {
+			msg = fmt.Sprintf("监听器类型 %s 不支持任何 oneliner 类型（%s 需要 WebSocket 传输，oneliner 只能走 tcp/HTTP）"+
+				"；请改用交叉编译 beacon（payload_build），它支持该类型", listener.Type, req.Kind)
+		}
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":            fmt.Sprintf("监听器类型 %s 不支持 %s 类型的 oneliner，请选择兼容的类型", listener.Type, req.Kind),
+			"error":            msg,
 			"compatible_kinds": names,
 		})
 		return
+	}
+
+	if err := c2.ValidateOnelinerForListener(listener, kind); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	scheme := "http"
+	if c2.ListenerType(listener.Type) == c2.ListenerTypeHTTPSBeacon {
+		scheme = "https"
 	}
 
 	input := c2.OnelinerInput{
 		Kind:         kind,
 		Host:         host,
 		Port:         listener.BindPort,
-		HTTPBaseURL:  fmt.Sprintf("http://%s:%d", host, listener.BindPort),
+		HTTPBaseURL:  fmt.Sprintf("%s://%s:%d", scheme, host, listener.BindPort),
 		ImplantToken: listener.ImplantToken,
 	}
 

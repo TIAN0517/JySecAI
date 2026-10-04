@@ -25,6 +25,8 @@ config.yaml.backup
 *token*.json
 *cookie*.json
 *credential*
+# Documentation contains metadata only, never credential values.
+!/CREDENTIAL_ROTATION_CHECKLIST.md
 *password*
 # 根目錄暫存金鑰（歷史上曾誤提交 .tmp-ds.key）
 /.tmp-*.key
@@ -82,6 +84,9 @@ desktop.ini
 # Local tool state / credentials (never commit)
 .codex/
 
+# 本機 MCP 設定：含絕對路徑與本機執行環境，禁止進版控
+.mcp.json
+
 # Pentest evidence dumps / local scratch workspaces (local only)
 evidence/
 tpe119_evidence/
@@ -109,7 +114,7 @@ skills/cyberstrike-eino-demo/scripts/
 /fofa_*.py
 /login_*.py
 /tpe119_carpet*.py
-/ocp_tpe_broadcast.py
+/tocp_tpe_broadcast.py
 # 下載取得之第三方資料樣本
 **/samples/*.png
 
@@ -122,3 +127,20 @@ skills/cyberstrike-eino-demo/scripts/
 # Scratch scripts at repo root
 /_*.py
 /.tmp-*
+
+# 2026-10 盘点补漏：env 通配、产物压缩包、pyc、codex sandbox
+*.env
+!*.env.example
+!*.env.sample
+*.zip
+*.tar.gz
+*.pyc
+/.codex/
+/tmp/
+/_archive/
+/PDF/
+
+# 掃描產物與驗證腳本：含真實目標的漏洞細節，不進公開倉庫
+/poc_drafts/
+*_dirb.txt
+/verify_epcr.sh
