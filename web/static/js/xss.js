@@ -306,15 +306,18 @@ var XSS = (function () {
 
 	// 語言切換時重繪兩段含 <code> 的提示句（全站慣例：監聽 languagechange，
 	// 由 i18n.js 在 changeLanguage 後派發）。其餘文案由 applyTranslations 處理。
-	document.addEventListener("languagechange", function () {
-		try {
-			apiObject.applyStaticTranslations();
-			apiObject.loadPayloads();
-			apiObject.loadCaptures();
-		} catch (_) {
-			/* 語言切換失敗不得中斷頁面 */
-		}
-	});
+	// Node 測試環境無 DOM：包在存在性檢查裡，xss-safety.test.cjs 才能 require 本檔。
+	if (typeof document !== "undefined" && typeof document.addEventListener === "function") {
+		document.addEventListener("languagechange", function () {
+			try {
+				apiObject.applyStaticTranslations();
+				apiObject.loadPayloads();
+				apiObject.loadCaptures();
+			} catch (_) {
+				/* 語言切換失敗不得中斷頁面 */
+			}
+		});
+	}
 
 	return apiObject;
 })();

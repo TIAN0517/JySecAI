@@ -124,3 +124,20 @@ jobs:
 
       - name: Run authorization boundary tests
         run: go test -v -run 'TestResolveWithinPromptBase|TestMaskProviderSecrets|TestMergeProviderSecrets|TestGetConfigResponseCarries|TestBeaconTemplate|TestQuoteTemplateData|TestValidateBeaconHost|TestResolveBeaconDialHost|TestRedactMCP|TestMergeExternalMCP|TestExternalMCPConfigForResponse|TestEscapeCSVCell|TestMaskTerminalCommand|TestIsBlockedIP|TestValidateOutboundURL|TestWebshell.*|TestOperator|TestRBAC' ./internal/...
+
+  # 前端安全回歸測試（node --test）。C2 控制台 XSS、XSS 採集 UI 注入面等
+  # 斷言目前只存在於 web/static/js/*.test.cjs；此前沒有任何 CI 執行它們。
+  # 只納入安全相關檔案並設為 blocking——UI 行為測試另欠修補，不在此攔。
+  frontend-security-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run frontend security tests
+        run: node --test web/static/js/c2-security.test.cjs web/static/js/xss-safety.test.cjs
