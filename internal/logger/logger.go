@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"io"
 	"os"
 
 	"go.uber.org/zap"
@@ -9,6 +10,24 @@ import (
 
 type Logger struct {
 	*zap.Logger
+	// closer 非 nil 代表 New 自己開了日誌檔案，Close 才需要（也才可以）關它。
+	// stdout/stderr 不歸這個 Logger 所有，關掉會影響同行程的其他寫入者。
+	closer io.Closer
+}
+
+// Close 關閉由 New 開啟的日誌檔案。
+//
+// zap.Logger.Sync() 只做 flush 不做 close，檔案句會一直開著。Linux 允許刪除
+// 開啟中的檔案所以看不出問題，但 Windows 不允許，測試用 t.TempDir() 清理時
+// 會直接失敗；服務關機時也會留下句柄。輸出到 stdout/stderr 或開檔失敗
+// （此時已退回 stdout）時為 no-op。可重複呼叫。
+func (l *Logger) Close() error {
+	if l == nil || l.closer == nil {
+		return nil
+	}
+	err := l.closer.Close()
+	l.closer = nil
+	return err
 }
 
 func New(level, output string, diagnostics ...DiagnosticOptions) *Logger {
@@ -32,6 +51,7 @@ func New(level, output string, diagnostics ...DiagnosticOptions) *Logger {
 	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 
 	var writeSyncer zapcore.WriteSyncer
+	var closer io.Closer
 	if output == "stdout" {
 		writeSyncer = zapcore.AddSync(os.Stdout)
 	} else if output == "stderr" {
@@ -42,6 +62,7 @@ func New(level, output string, diagnostics ...DiagnosticOptions) *Logger {
 			writeSyncer = zapcore.AddSync(os.Stdout)
 		} else {
 			writeSyncer = zapcore.AddSync(file)
+			closer = file
 		}
 	}
 
@@ -65,7 +86,7 @@ func New(level, output string, diagnostics ...DiagnosticOptions) *Logger {
 
 	logger := zap.New(core, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel))
 
-	return &Logger{Logger: logger}
+	return &Logger{Logger: logger, closer: closer}
 }
 
 func (l *Logger) Fatal(msg string, fields ...interface{}) {

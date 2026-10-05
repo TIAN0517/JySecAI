@@ -87,7 +87,11 @@ func (h *ProjectHandler) GetDashboardSummary(c *gin.Context) {
 	if limit > 50 {
 		limit = 50
 	}
-	session, _ := security.CurrentSession(c)
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return
+	}
 	summary, err := h.db.GetProjectDashboardSummaryForAccess(limit, session.UserID, session.Scope)
 	if err != nil {
 		h.logger.Error("获取项目仪表盘摘要失败", zap.Error(err))
@@ -112,7 +116,11 @@ func (h *ProjectHandler) ListProjects(c *gin.Context) {
 	if limit > 500 {
 		limit = 500
 	}
-	session, _ := security.CurrentSession(c)
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return
+	}
 	list, err := h.db.ListProjectsForAccess(status, search, limit, offset, session.UserID, session.Scope)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

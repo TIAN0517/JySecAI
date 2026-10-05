@@ -284,8 +284,15 @@ func assetDedupKey(a *Asset) string {
 }
 
 func appendAssetAccess(query string, args []interface{}, access RBACListAccess, alias string) (string, []interface{}) {
-	if strings.TrimSpace(access.UserID) == "" || access.Scope == RBACScopeAll {
+	// 注意：filter 只在能解析出呼叫者时才允许下发。空 UserID 走
+	// appendAssetAccess 之前会退化成「无限制」，而这个 helper 不只服务
+	// 列表查询——DELETE/UPDATE assets 也经过它，所以「没有身份」一旦被
+	// 当成「有全部权限」，代价是跨租户删除与修改，而不只是资料外泄。
+	if access.Scope == RBACScopeAll {
 		return query, args
+	}
+	if strings.TrimSpace(access.UserID) == "" {
+		return query + " AND 1=0", args
 	}
 	prefix := ""
 	if alias != "" {
@@ -578,6 +585,9 @@ const assetVulnerabilityCountExpr = `(SELECT COUNT(DISTINCT v.id) FROM vulnerabi
 const assetRiskScoreQueryExpr = `COALESCE((
 	SELECT MAX(CASE LOWER(COALESCE(v.severity,'')) WHEN 'critical' THEN 5 WHEN 'high' THEN 4 WHEN 'medium' THEN 3 WHEN 'low' THEN 2 WHEN 'info' THEN 1 ELSE 0 END)
 	FROM vulnerabilities v
+	-- undetermined（未判定）刻意留在計分內：拿不到證據通道的盲注類漏洞
+	-- 沒報出來只代表沒驗過，不代表安全。把未判定當成已排除，
+	-- 等於讓風險分數因為「沒驗到」而下降 —— 這正是證據紀律要擋的。
 	WHERE LOWER(COALESCE(v.status,'open')) NOT IN ('fixed','false_positive','ignored') AND ` + assetVulnerabilityMatchExpr + `
 ),0)`
 

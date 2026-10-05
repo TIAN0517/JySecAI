@@ -359,6 +359,45 @@ func renderMatch(rule compiledRule, candidate, toolName string, indices []int) *
 // A government-domain match proceeds when that exact matched host is inside the
 // configured authorization Scope. Scope never suppresses unrelated rules or a
 // second out-of-scope target carried in the same request.
+// allMatches returns every non-overlapping match of re in s, but it does not let
+// a consumed boundary character hide the match that follows it.
+//
+// The built-in rule is anchored on both sides by a *consuming* context group:
+// `(?:^|[^\p{L}\p{M}\p{N}_.-])host(?:$|[^\p{L}\p{M}\p{N}_.-])`. Go's RE2 has no
+// lookahead, so the character proving the boundary is part of the match.
+// FindAllStringSubmatchIndex restarts at the end of the previous match, which
+// means that character is already gone and the next hostname has no leading
+// boundary left to satisfy. In "authorized.gov.example president.gov.cn" only
+// the first hostname was ever examined, so an out-of-scope government target
+// riding along behind an in-scope one was never blocked.
+//
+// Give one character of context back after each match so the following token
+// can use it as its own leading boundary.
+func allMatches(re *regexp.Regexp, s string) [][]int {
+	var out [][]int
+	for pos := 0; pos < len(s); {
+		loc := re.FindStringSubmatchIndex(s[pos:])
+		if loc == nil {
+			break
+		}
+		for i := range loc {
+			if loc[i] >= 0 {
+				loc[i] += pos
+			}
+		}
+		out = append(out, loc)
+		next := loc[1]
+		if next > pos {
+			next-- // hand one consumed byte back as the next leading boundary
+		}
+		if next <= pos {
+			break // no forward progress; a zero-width match would loop forever
+		}
+		pos = next
+	}
+	return out
+}
+
 func (p *Policy) Check(toolName string, args map[string]interface{}) *Match {
 	if p == nil || !p.config.Enabled || len(p.rules) == 0 {
 		return nil
@@ -373,7 +412,7 @@ func (p *Policy) Check(toolName string, args map[string]interface{}) *Match {
 				}
 				continue
 			}
-			for _, indices := range rule.pattern.FindAllStringSubmatchIndex(candidate, -1) {
+			for _, indices := range allMatches(rule.pattern, candidate) {
 				start, end := matchBounds(rule, indices)
 				match := renderMatch(rule, candidate, toolName, indices)
 				// Scope is a precise exception to the built-in target rule. Checking

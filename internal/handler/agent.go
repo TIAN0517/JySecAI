@@ -188,6 +188,7 @@ type AgentHandler struct {
 	tasks            *AgentTaskManager
 	taskEventBus     *TaskEventBus // 镜像 SSE 事件，供刷新后订阅同一运行中任务
 	batchTaskManager *BatchTaskManager
+	batchGlobalSem   chan struct{}  // 批量队列全局并发预算（跨队列限制同时运行的子任务数）
 	hitlManager      *HITLManager
 	config           *config.Config // 配置引用，用于获取角色信息
 	knowledgeManager interface {    // 知识库管理器接口
@@ -290,6 +291,11 @@ func NewAgentHandler(agent *agent.Agent, db *database.DB, cfg *config.Config, lo
 		batchCronParser:  cron.NewParser(cron.Minute | cron.Hour | cron.Dom | cron.Month | cron.Dow | cron.Descriptor),
 		auditLLM:         openai.NewClient(llmCfg, llmHTTP, logger),
 	}
+	semSize := 8
+	if cfg != nil && cfg.Agent.BatchMaxGlobalConcurrency > 0 {
+		semSize = cfg.Agent.BatchMaxGlobalConcurrency
+	}
+	handler.batchGlobalSem = make(chan struct{}, semSize)
 	tm.SetToolCanceler(handler.cancelRunningMCPToolsForConversation)
 	if err := handler.hitlManager.EnsureSchema(); err != nil {
 		logger.Warn("初始化 HITL 表失败", zap.Error(err))
@@ -2023,7 +2029,14 @@ func (h *AgentHandler) ListBatchQueues(c *gin.Context) {
 	}
 
 	// 获取队列列表和总数
-	session, _ := security.CurrentSession(c)
+	// 解析不出 session 时返回 401，而不是把零值 userID 传下去：RBAC 过滤
+	// 收到空 userID 只能选择「看不到任何资料」或「看到全部」，这里显式拒绝，
+	// 免得将来过滤条件一改就变成越权。
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return
+	}
 	queues, total, err := h.batchTaskManager.ListQueuesForAccess(limit, offset, status, keyword, session.UserID, session.Scope)
 	if err != nil {
 		h.logger.Error("获取批量任务队列列表失败", zap.Error(err))

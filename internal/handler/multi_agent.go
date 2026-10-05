@@ -287,12 +287,13 @@ func (h *AgentHandler) MultiAgentLoopStream(c *gin.Context) {
 				autoCancelledPendingExecutionIDs = mergeMCPExecutionIDLists(autoCancelledPendingExecutionIDs, cancelled)
 				decision = h.decideAgentRunForDeliveryWithPolicy(conversationID, assistantMessageID, agentMode, result, cumulativeMCPExecutionIDs, requestRequiresExecutionEvidence(&req))
 			}
-			if h.tryAutoContinueAfterFinalization(taskCtx, conversationID, result, decision, &finalizationAutoContinueAttempt, &curHistory, &curFinalMessage, progressCallback) {
+			if h.tryAutoContinueAfterFinalization(taskCtx, conversationID, result, decision, cumulativeMCPExecutionIDs, &finalizationAutoContinueAttempt, &curHistory, &curFinalMessage, progressCallback) {
 				mainIterationOffset += segmentMainIterationMax
 				timeoutCancel()
 				baseCtx, cancelWithCause, taskCtx, timeoutCancel = h.rebindEinoRunningTask(taskCtx, conversationID, timeoutCancel)
 				continue
 			}
+			decision = h.finalizeExhaustedFailedExecutions(decision, finalizationAutoContinueAttempt, cumulativeMCPExecutionIDs, result)
 			timeoutCancel()
 			break
 		}
@@ -534,9 +535,10 @@ func (h *AgentHandler) MultiAgentLoop(c *gin.Context) {
 			autoCancelledPendingExecutionIDs = mergeMCPExecutionIDLists(autoCancelledPendingExecutionIDs, cancelled)
 			decision = h.decideAgentRunForDeliveryWithPolicy(prep.ConversationID, prep.AssistantMessageID, agentMode, result, result.MCPExecutionIDs, requestRequiresExecutionEvidence(&req))
 		}
-		if h.tryAutoContinueAfterFinalization(taskCtx, prep.ConversationID, result, decision, &finalizationAutoContinueAttempt, &curHist, &curMsg, progressCallback) {
+		if h.tryAutoContinueAfterFinalization(taskCtx, prep.ConversationID, result, decision, result.MCPExecutionIDs, &finalizationAutoContinueAttempt, &curHist, &curMsg, progressCallback) {
 			continue
 		}
+		decision = h.finalizeExhaustedFailedExecutions(decision, finalizationAutoContinueAttempt, result.MCPExecutionIDs, result)
 		break
 	}
 

@@ -152,6 +152,93 @@ func (h *ConfigHandler) SetDB(db *database.DB) {
 	h.db = db
 }
 
+// maskProviderSecrets blanks every third-party credential in a config response.
+// GetConfig is reachable with only config:read, so without this any user in a
+// settings-viewing role receives every LLM channel key, the search-provider
+// keys, and the MCP service credential in the response body.
+func maskProviderSecrets(cfg *config.Config) {
+	mask := func(value string) string {
+		if strings.TrimSpace(value) == "" {
+			return ""
+		}
+		return maskedConfigSecret
+	}
+	// MCP.AuthHeaderValue is the static global service credential. It is the
+	// single most sensitive field here: app.go turns it into a principal holding
+	// every permission in the catalog at RBACScopeAll.
+	cfg.MCP.AuthHeaderValue = mask(cfg.MCP.AuthHeaderValue)
+	cfg.OpenAI.APIKey = mask(cfg.OpenAI.APIKey)
+	if cfg.Vision.APIKey != "" {
+		cfg.Vision.APIKey = mask(cfg.Vision.APIKey)
+	}
+	if cfg.FOFA.APIKey != "" {
+		cfg.FOFA.APIKey = mask(cfg.FOFA.APIKey)
+	}
+	for name, ch := range cfg.AI.Channels {
+		if strings.TrimSpace(ch.APIKey) == "" {
+			continue
+		}
+		ch.APIKey = mask(ch.APIKey)
+		cfg.AI.Channels[name] = ch
+	}
+	for _, sc := range []*config.SpaceSearchConfig{
+		&cfg.ZoomEye, &cfg.Quake, &cfg.Shodan,
+	} {
+		if sc != nil && sc.APIKey != "" {
+			sc.APIKey = mask(sc.APIKey)
+		}
+	}
+	if cfg.Knowledge.Embedding.APIKey != "" {
+		cfg.Knowledge.Embedding.APIKey = mask(cfg.Knowledge.Embedding.APIKey)
+	}
+}
+
+// mergeProviderSecretsInto restores credentials that the client echoed back as
+// the mask placeholder, field by field, on a partial update request. Masking a
+// response without this counterpart would let a plain save overwrite every
+// stored key with the literal "********".
+func mergeProviderSecretsInto(req *UpdateConfigRequest, current *config.Config) {
+	preserve := func(value, old string) string {
+		if strings.TrimSpace(value) == "" || value == maskedConfigSecret {
+			return old
+		}
+		return value
+	}
+	if req.MCP != nil {
+		req.MCP.AuthHeaderValue = preserve(req.MCP.AuthHeaderValue, current.MCP.AuthHeaderValue)
+	}
+	if req.OpenAI != nil {
+		req.OpenAI.APIKey = preserve(req.OpenAI.APIKey, current.OpenAI.APIKey)
+	}
+	if req.Vision != nil {
+		req.Vision.APIKey = preserve(req.Vision.APIKey, current.Vision.APIKey)
+	}
+	if req.FOFA != nil {
+		req.FOFA.APIKey = preserve(req.FOFA.APIKey, current.FOFA.APIKey)
+	}
+	for _, pair := range [][2]*config.SpaceSearchConfig{
+		{req.ZoomEye, &current.ZoomEye},
+		{req.Quake, &current.Quake},
+		{req.Shodan, &current.Shodan},
+	} {
+		if pair[0] != nil {
+			pair[0].APIKey = preserve(pair[0].APIKey, pair[1].APIKey)
+		}
+	}
+	if req.AI != nil && len(req.AI.Channels) > 0 {
+		for name, ch := range req.AI.Channels {
+			if old, ok := current.AI.Channels[name]; ok {
+				ch.APIKey = preserve(ch.APIKey, old.APIKey)
+				req.AI.Channels[name] = ch
+			}
+		}
+	}
+	if req.Knowledge != nil && current.Knowledge.Embedding.APIKey != "" {
+		req.Knowledge.Embedding.APIKey = preserve(
+			req.Knowledge.Embedding.APIKey, current.Knowledge.Embedding.APIKey)
+	}
+}
+
 func (h *ConfigHandler) validateRobotServiceAccounts(robots config.RobotsConfig) error {
 	if h.db == nil {
 		return fmt.Errorf("RBAC 服务不可用，无法校验机器人服务账号")
@@ -397,13 +484,13 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		subAgentCount = len(agents.MergeYAMLAndMarkdown(h.config.MultiAgent.SubAgents, load.SubAgents))
 	}
 	multiPub := config.MultiAgentPublic{
-		Enabled:                                    h.config.MultiAgent.Enabled,
-		RobotDefaultAgentMode:                      config.NormalizeRobotAgentMode(h.config.MultiAgent),
-		BatchUseMultiAgent:                         h.config.MultiAgent.BatchUseMultiAgent,
-		SubAgentCount:                              subAgentCount,
-		Orchestration:                              config.NormalizeMultiAgentOrchestration(h.config.MultiAgent.Orchestration),
-		PlanExecuteLoopMaxIterations:               h.config.MultiAgent.PlanExecuteLoopMaxIterations,
-		SummarizationUserIntentLedgerMaxRunes:      h.config.MultiAgent.EinoMiddleware.SummarizationUserIntentLedgerMaxRunesEffective(),
+		Enabled:                               h.config.MultiAgent.Enabled,
+		RobotDefaultAgentMode:                 config.NormalizeRobotAgentMode(h.config.MultiAgent),
+		BatchUseMultiAgent:                    h.config.MultiAgent.BatchUseMultiAgent,
+		SubAgentCount:                         subAgentCount,
+		Orchestration:                         config.NormalizeMultiAgentOrchestration(h.config.MultiAgent.Orchestration),
+		PlanExecuteLoopMaxIterations:          h.config.MultiAgent.PlanExecuteLoopMaxIterations,
+		SummarizationUserIntentLedgerMaxRunes: h.config.MultiAgent.EinoMiddleware.SummarizationUserIntentLedgerMaxRunesEffective(),
 		SummarizationUserIntentLedgerEntryMaxRunes: h.config.MultiAgent.EinoMiddleware.SummarizationUserIntentLedgerEntryMaxRunesEffective(),
 		LatestUserMessageMaxRunes:                  h.config.MultiAgent.EinoMiddleware.LatestUserMessageMaxRunesEffective(),
 		LatestUserMessageHeadRunes:                 h.config.MultiAgent.EinoMiddleware.LatestUserMessageHeadRunesEffective(),
@@ -419,19 +506,34 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		),
 	}
 
+	// 遮蔽必須作用在副本上：h.config 是 live 設定，直接改會把真正的
+	// 憑證換成 "********"，後續所有模型呼叫都會拿到無效的 key。
+	publicCfg := *h.config
+	publicCfg.AI.Channels = make(map[string]config.AIChannelConfig, len(h.config.AI.Channels))
+	for k, v := range h.config.AI.Channels {
+		publicCfg.AI.Channels[k] = v
+	}
+	publicCfg.ZoomEye = h.config.ZoomEye
+	publicCfg.Quake = h.config.Quake
+	publicCfg.Shodan = h.config.Shodan
+	maskProviderSecrets(&publicCfg)
+
+	// 憑證不應被快取或留在瀏覽器紀錄中
+	c.Header("Cache-Control", "no-store")
+
 	c.JSON(http.StatusOK, GetConfigResponse{
-		AI:         h.config.AI,
-		OpenAI:     h.config.OpenAI,
-		Vision:     h.config.Vision,
-		FOFA:       h.config.FOFA,
-		ZoomEye:    h.config.ZoomEye,
-		Quake:      h.config.Quake,
-		Shodan:     h.config.Shodan,
-		MCP:        h.config.MCP,
+		AI:         publicCfg.AI,
+		OpenAI:     publicCfg.OpenAI,
+		Vision:     publicCfg.Vision,
+		FOFA:       publicCfg.FOFA,
+		ZoomEye:    publicCfg.ZoomEye,
+		Quake:      publicCfg.Quake,
+		Shodan:     publicCfg.Shodan,
+		MCP:        publicCfg.MCP,
 		Tools:      tools,
-		Agent:      h.config.Agent,
+		Agent:      publicCfg.Agent,
 		Hitl:       h.config.Hitl,
-		Knowledge:  h.config.Knowledge,
+		Knowledge:  publicCfg.Knowledge,
 		C2:         h.config.C2.Public(),
 		Robots:     maskRobotSecrets(h.config.Robots),
 		MultiAgent: multiPub,
@@ -842,6 +944,12 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 
 	h.mu.Lock()
 	defer h.mu.Unlock()
+
+	// GetConfig 現在會把憑證遮蔽成 "********"；前端讀取後原樣送回時，
+	// 那些遮蔽值必須還原成現有真實憑證，否則一次 innocuous 的儲存
+	// 就會把所有 API key 覆蓋成字面值。
+	currentSnapshot := *h.config
+	mergeProviderSecretsInto(&req, &currentSnapshot)
 
 	// 更新OpenAI配置
 	if req.AI != nil {
@@ -1807,7 +1915,7 @@ func (h *ConfigHandler) saveConfig() error {
 		return fmt.Errorf("读取配置文件失败: %w", err)
 	}
 
-	if err := os.WriteFile(h.configPath+".backup", data, 0644); err != nil {
+	if err := os.WriteFile(h.configPath+".backup", data, 0600); err != nil {
 		h.logger.Warn("创建配置备份失败", zap.Error(err))
 	}
 

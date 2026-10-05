@@ -865,6 +865,25 @@ func (m *Manager) GetRetrievalLogs(conversationID, messageID string, limit int) 
 	return logs, nil
 }
 
+// GetRetrievalLogConversationID 返回一条检索日志所属的对话 ID，供调用方在
+// 删除前做归属判定。日志不存在时返回错误；日志没有对话归属时返回空串。
+func (m *Manager) GetRetrievalLogConversationID(id string) (string, error) {
+	id = strings.TrimSpace(id)
+	if id == "" {
+		return "", fmt.Errorf("检索日志 ID 不能为空")
+	}
+	var conversationID sql.NullString
+	if err := m.db.QueryRow(
+		"SELECT conversation_id FROM knowledge_retrieval_logs WHERE id = ?", id,
+	).Scan(&conversationID); err != nil {
+		return "", fmt.Errorf("读取检索日志归属失败: %w", err)
+	}
+	if !conversationID.Valid {
+		return "", nil
+	}
+	return strings.TrimSpace(conversationID.String), nil
+}
+
 // DeleteRetrievalLog 删除检索日志
 func (m *Manager) DeleteRetrievalLog(id string) error {
 	result, err := m.db.Exec("DELETE FROM knowledge_retrieval_logs WHERE id = ?", id)

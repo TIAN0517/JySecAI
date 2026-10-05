@@ -228,8 +228,12 @@ func (db *DB) ListProjects(status, search string, limit, offset int) ([]*Project
 }
 
 func (db *DB) ListProjectsForAccess(status, search string, limit, offset int, userID, scope string) ([]*Project, error) {
-	if scope == RBACScopeAll || strings.TrimSpace(userID) == "" {
+	if scope == RBACScopeAll {
 		return db.ListProjects(status, search, limit, offset)
+	}
+	// 解析不出呼叫者时返回空，而不是回退到未过滤的 ListProjects。
+	if strings.TrimSpace(userID) == "" {
+		return []*Project{}, nil
 	}
 	if limit <= 0 {
 		limit = 50

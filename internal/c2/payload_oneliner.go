@@ -2,6 +2,7 @@ package c2
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 	"strings"
@@ -54,7 +55,7 @@ func OnelinerKindsForListener(listenerType string) []OnelinerKind {
 			OnelinerBash, OnelinerNc, OnelinerNcMkfifo,
 			OnelinerPython, OnelinerPerl, OnelinerPowerShell,
 		}
-	case ListenerTypeHTTPBeacon, ListenerTypeHTTPSBeacon, ListenerTypeWebSocket:
+	case ListenerTypeHTTPBeacon, ListenerTypeHTTPSBeacon:
 		return []OnelinerKind{OnelinerCurl}
 	default:
 		return nil
@@ -66,7 +67,7 @@ func IsOnelinerCompatible(listenerType string, kind OnelinerKind) bool {
 	switch ListenerType(listenerType) {
 	case ListenerTypeTCPReverse:
 		return tcpOnelinerKinds[kind]
-	case ListenerTypeHTTPBeacon, ListenerTypeHTTPSBeacon, ListenerTypeWebSocket:
+	case ListenerTypeHTTPBeacon, ListenerTypeHTTPSBeacon:
 		return httpOnelinerKinds[kind]
 	default:
 		return false
@@ -96,6 +97,15 @@ func ValidateOnelinerForListener(listener *database.C2Listener, kind OnelinerKin
 			return fmt.Errorf("监听器未开启 allow_legacy_shell：tcp_reverse 默认仅接受 CSB1 加密 Beacon（AES-GCM + Token）；请用 build 生成 beacon，或显式开启 allow_legacy_shell（公网不推荐）")
 		}
 	}
+	if (ListenerType(listener.Type) == ListenerTypeHTTPBeacon || ListenerType(listener.Type) == ListenerTypeHTTPSBeacon) && kind == OnelinerCurl {
+		cfg := &ListenerConfig{}
+		if strings.TrimSpace(listener.ConfigJSON) != "" {
+			_ = json.Unmarshal([]byte(listener.ConfigJSON), cfg)
+		}
+		if !cfg.AllowPlaintextCheckIn {
+			return fmt.Errorf("beacon 未开启 allow_plaintext_check_in：curl_beacon 走明文 /check_in 默认会被监听器拒绝；请在监听器配置显式开启该选项（仅限授权演练环境），或改用 build 生成 AES-GCM 加密 beacon")
+		}
+	}
 	return nil
 }
 
@@ -108,6 +118,12 @@ func GenerateOneliner(in OnelinerInput) (string, error) {
 	host := strings.TrimSpace(in.Host)
 	if host == "" {
 		return "", fmt.Errorf("host is required")
+	}
+	// host 会被原样插进 shell 字符串：bash 变体嵌在 '...' 内（一个单引号就能
+	// 闭合），nc 变体甚至是裸插（连引号都不需要）。因此这里不能信任调用方，
+	// 必须自己校验。ResolveBeaconDialHost 也做同样校验，但那是另一道防线。
+	if err := validateBeaconHost(host); err != nil {
+		return "", fmt.Errorf("非法的回连主机 %q: %w", in.Host, err)
 	}
 	switch in.Kind {
 	case OnelinerBash:
@@ -179,6 +195,17 @@ func GenerateOneliner(in OnelinerInput) (string, error) {
 		if strings.TrimSpace(in.ImplantToken) == "" {
 			return "", fmt.Errorf("implant_token is required for curl_beacon")
 		}
+		// 两者都被原样插进 bash -c '...' 的单引号块里：URL 在双引号内，
+		// token 在双引号内（不过外层 '...'）。一个单引号就能闭合整个 bash -c
+		// 参数，一个双引号或 $() 就能在 URL 里执行命令。目前两个调用方构造的
+		// 值都是安全的（URL 由已校验的 host 拼出，token 是 base64 随机串），
+		// 但 GenerateOneliner 是导出函数，不该把安全性寄托在调用方的构造上。
+		if err := validateShellToken(in.ImplantToken); err != nil {
+			return "", fmt.Errorf("非法的 implant_token: %w", err)
+		}
+		if err := validateShellURL(in.HTTPBaseURL); err != nil {
+			return "", fmt.Errorf("非法的 http_base_url %q: %w", in.HTTPBaseURL, err)
+		}
 		base := strings.TrimRight(in.HTTPBaseURL, "/")
 		return fmt.Sprintf(
 			`bash -c 'H="X-Implant-Token: %s";`+
@@ -207,4 +234,64 @@ func GenerateOneliner(in OnelinerInput) (string, error) {
 // urlEncodeForShell URL 编码字符串，避免特殊字符在 shell 中破坏转义
 func urlEncodeForShell(s string) string {
 	return url.QueryEscape(s)
+}
+
+// validateShellToken 只接受 base64url 字符集：字母、数字、'-'、'_'。
+// ImplantToken 由 GenerateImplantToken 以 base64.RawURLEncoding 产生，只会
+// 落在这个集合里，所以这里不会拒绝任何合法的值，只是把 shell 元字符挡在
+// sink 之外。
+func validateShellToken(tok string) error {
+	if tok == "" {
+		return errors.New("empty token")
+	}
+	if len(tok) > 128 {
+		return errors.New("token too long")
+	}
+	for i := 0; i < len(tok); i++ {
+		ch := tok[i]
+		ok := (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') ||
+			(ch >= '0' && ch <= '9') || ch == '-' || ch == '_'
+		if !ok {
+			return fmt.Errorf("invalid character %q at offset %d", ch, i)
+		}
+	}
+	return nil
+}
+
+// validateShellURL 接受 http/https 绝对 URL，且 authority 必须是一个已校验的
+// 主机（带可選端口）。路径、userinfo、query、fragment 一律拒绝：base URL 会被
+// 插进双引号内的 `URL="%s"`，而双引号不阻止 $(...) 与反引号展开，路径段同样
+// 是一个注入面。两个调用方构造的 base 都是纯 scheme://host:port。
+func validateShellURL(raw string) error {
+	u, err := url.Parse(strings.TrimSpace(raw))
+	if err != nil {
+		return err
+	}
+	if u.Scheme != "http" && u.Scheme != "https" {
+		return fmt.Errorf("unsupported scheme %q", u.Scheme)
+	}
+	host := u.Hostname()
+	if host == "" {
+		return errors.New("missing host")
+	}
+	if err := validateBeaconHost(host); err != nil {
+		return fmt.Errorf("invalid host: %w", err)
+	}
+	if p := u.Port(); p != "" {
+		for i := 0; i < len(p); i++ {
+			if p[i] < '0' || p[i] > '9' {
+				return errors.New("invalid port")
+			}
+		}
+	}
+	if u.User != nil || u.RawQuery != "" || u.Fragment != "" {
+		return errors.New("userinfo, query and fragment are not allowed")
+	}
+	if p := u.EscapedPath(); p != "" && p != "/" {
+		return fmt.Errorf("path %q is not allowed", p)
+	}
+	if u.Opaque != "" {
+		return errors.New("opaque URL is not allowed")
+	}
+	return nil
 }

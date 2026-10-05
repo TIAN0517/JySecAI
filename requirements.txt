@@ -15,3 +15,7 @@ impacket>=0.11.0
 
 # MCP (Model Context Protocol) SDK
 mcp>=1.0.0
+# Dragon-V hunter chain runtime deps (aiohttp: hunter/*, dnspython+cryptography: covert_exfil)
+aiohttp>=3.9.0
+dnspython>=2.4.0
+cryptography>=41.0.0

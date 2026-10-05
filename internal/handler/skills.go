@@ -172,7 +172,12 @@ func (h *SkillsHandler) GetSkill(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不能为空"})
 		return
 	}
-
+	// 在讀任何檔案之前就拒絕非法的 :name。原本這裡沒有任何檢查，
+	// skillID 會一路流到 filepath.Join(skillsRoot, skillID) 當成 base。
+	if err := skillpackage.ValidateSkillID(skillName); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	resPath := strings.TrimSpace(c.Query("resource_path"))
 	if resPath == "" {
 		resPath = strings.TrimSpace(c.Query("skill_script_path"))
@@ -250,6 +255,10 @@ func (h *SkillsHandler) GetSkill(c *gin.Context) {
 // ListSkillPackageFiles lists all files in a skill directory (Agent Skills layout).
 func (h *SkillsHandler) ListSkillPackageFiles(c *gin.Context) {
 	skillID := c.Param("name")
+	if err := skillpackage.ValidateSkillID(skillID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	files, err := skillpackage.ListPackageFiles(h.skillsRootAbs(), skillID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -261,6 +270,10 @@ func (h *SkillsHandler) ListSkillPackageFiles(c *gin.Context) {
 // GetSkillPackageFile returns one file by relative path (?path=).
 func (h *SkillsHandler) GetSkillPackageFile(c *gin.Context) {
 	skillID := c.Param("name")
+	if err := skillpackage.ValidateSkillID(skillID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	rel := strings.TrimSpace(c.Query("path"))
 	if rel == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "query path is required"})
@@ -277,6 +290,10 @@ func (h *SkillsHandler) GetSkillPackageFile(c *gin.Context) {
 // PutSkillPackageFile writes a file inside the skill package.
 func (h *SkillsHandler) PutSkillPackageFile(c *gin.Context) {
 	skillID := c.Param("name")
+	if err := skillpackage.ValidateSkillID(skillID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	var req struct {
 		Path    string `json:"path" binding:"required"`
 		Content string `json:"content"`
@@ -402,7 +419,16 @@ func (h *SkillsHandler) UpdateSkill(c *gin.Context) {
 		return
 	}
 
-	mdPath := filepath.Join(h.skillsRootAbs(), skillName, "SKILL.md")
+	// :name 會被當成路徑的 base。寫入點必須自己擋一次：skillpackage.SkillDir
+	// 會再擋一次，但 handler 在此之前就有一次 filepath.Join，兩者之間沒有
+	// 任何保證。
+	skillDir, err := skillpackage.SkillDir(h.skillsRootAbs(), skillName)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	mdPath := filepath.Join(skillDir, "SKILL.md")
 	raw, err := os.ReadFile(mdPath)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "skill不存在: " + err.Error()})
@@ -425,8 +451,6 @@ func (h *SkillsHandler) UpdateSkill(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	skillDir := filepath.Join(h.skillsRootAbs(), skillName)
 
 	if err := os.WriteFile(filepath.Join(skillDir, "SKILL.md"), skillMD, 0644); err != nil {
 		h.logger.Error("更新 SKILL.md 失败", zap.String("skill", skillName), zap.Error(err))
@@ -451,6 +475,17 @@ func (h *SkillsHandler) DeleteSkill(c *gin.Context) {
 		return
 	}
 
+	// os.RemoveAll 沒有任何「路徑已經在預期目錄下」的保險：給一個
+	// `..\..\data` 之類的 :name，它會遞迴刪掉 skillsRoot 之外的整個目錄樹。
+	//
+	// 這道檢查必須排在 removeSkillFromRoles 之前：後者會改寫 role 的 YAML，
+	// 放在後面會讓一個被拒絕的請求仍然留下磁碟上的副作用。
+	skillDir, err := skillpackage.SkillDir(h.skillsRootAbs(), skillName)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	// 检查是否有角色绑定了该skill，如果有则自动移除绑定
 	affectedRoles := h.removeSkillFromRoles(skillName)
 	if len(affectedRoles) > 0 {
@@ -459,7 +494,6 @@ func (h *SkillsHandler) DeleteSkill(c *gin.Context) {
 			zap.Strings("roles", affectedRoles))
 	}
 
-	skillDir := filepath.Join(h.skillsRootAbs(), skillName)
 	if err := os.RemoveAll(skillDir); err != nil {
 		h.logger.Error("删除skill失败", zap.String("skill", skillName), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "删除skill失败: " + err.Error()})
@@ -577,6 +611,10 @@ func (h *SkillsHandler) ClearSkillStatsByName(c *gin.Context) {
 	skillName := c.Param("name")
 	if skillName == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不能为空"})
+		return
+	}
+	if err := skillpackage.ValidateSkillID(skillName); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

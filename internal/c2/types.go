@@ -95,6 +95,8 @@ const (
 	TaskTypeSocksStop    TaskType = "socks_stop"
 	TaskTypeLoadAssembly TaskType = "load_assembly"
 	TaskTypePersist      TaskType = "persist"
+	// 凭证访问（ATT&CK TA0006 / T1003）
+	TaskTypeCredDump     TaskType = "cred_dump" // SAM/SYSTEM/SECURITY hive + LSASS MiniDump + NTDS.dit（Windows，需 SYSTEM 权限）
 )
 
 // AllTaskTypes 全部 task_type，便于工具 schema 列出 enum
@@ -105,7 +107,7 @@ func AllTaskTypes() []TaskType {
 		TaskTypeUpload, TaskTypeDownload, TaskTypeScreenshot,
 		TaskTypeSleep, TaskTypeExit, TaskTypeSelfDelete,
 		TaskTypePortFwd, TaskTypeSocksStart, TaskTypeSocksStop, TaskTypeLoadAssembly,
-		TaskTypePersist,
+		TaskTypePersist, TaskTypeCredDump,
 	}
 }
 
@@ -116,7 +118,7 @@ func IsDangerousTaskType(t TaskType) bool {
 	case TaskTypeExec, TaskTypeShell, TaskTypeCd, TaskTypeKillProc,
 		TaskTypeUpload, TaskTypeDownload, TaskTypeScreenshot, TaskTypeSleep,
 		TaskTypeExit, TaskTypeSelfDelete, TaskTypePortFwd, TaskTypeSocksStart,
-		TaskTypeSocksStop, TaskTypeLoadAssembly, TaskTypePersist:
+		TaskTypeSocksStop, TaskTypeLoadAssembly, TaskTypePersist, TaskTypeCredDump:
 		return true
 	}
 	return false

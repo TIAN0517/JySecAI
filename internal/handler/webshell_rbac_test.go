@@ -44,11 +44,12 @@ func TestWebshellExecAllowsAdHocURLWithoutConnectionID(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	_, user, _, _ := setupWebshellRBACTest(t)
 	handler := NewWebShellHandler(zap.NewNop(), nil)
-	// Ad-hoc probe (connectivity test before save) must not be rejected as "无权访问".
-	// The target URL will fail to connect; we only assert auth allows the request through.
-	w := performWebshellJSON(user, http.MethodPost, "/api/webshell/exec", map[string]interface{}{
+	// Ad-hoc probe (connectivity test before save) must not be rejected as "无权访问"
+	// for a session that holds webshell:connect-unsaved. The target URL will fail
+	// to connect; we only assert auth allows the request through.
+	w := performWebshellJSONWithPerms(user, http.MethodPost, "/api/webshell/exec", map[string]interface{}{
 		"url": "http://127.0.0.1:1/admin", "command": "id",
-	}, handler.Exec)
+	}, handler.Exec, map[string]bool{"webshell:write": true, "webshell:connect-unsaved": true})
 	if w.Code == http.StatusForbidden {
 		t.Fatalf("ad-hoc URL status = %d, want non-403: %s", w.Code, w.Body.String())
 	}
@@ -58,6 +59,23 @@ func TestWebshellExecAllowsAdHocURLWithoutConnectionID(t *testing.T) {
 	}
 	if resp.OK {
 		t.Fatalf("expected connection failure for closed port, got ok=true")
+	}
+}
+
+func TestWebshellExecRejectsAdHocWithoutConnectUnsavedPermission(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	_, user, _, _ := setupWebshellRBACTest(t)
+	handler := NewWebShellHandler(zap.NewNop(), nil)
+	// Omitting connection_id bypasses the per-connection ownership ACL and
+	// uses the caller's own url/password, reaching any host the server can
+	// reach. webshell:write is granted to Operator by default, so that alone
+	// must not be sufficient.
+	w := performWebshellJSON(user, http.MethodPost, "/api/webshell/exec", map[string]interface{}{
+		"url": "http://169.254.169.254/latest/meta-data/", "command": "id",
+	}, handler.Exec)
+	if w.Code != http.StatusForbidden {
+		t.Fatalf("ad-hoc URL with only webshell:write status = %d, want %d: %s",
+			w.Code, http.StatusForbidden, w.Body.String())
 	}
 }
 
@@ -207,15 +225,26 @@ func setupWebshellRBACTest(t *testing.T) (*database.DB, *database.RBACUser, *dat
 }
 
 func performWebshellJSON(user *database.RBACUser, method, path string, body map[string]interface{}, handler gin.HandlerFunc) *httptest.ResponseRecorder {
+	return performWebshellJSONWithPerms(user, method, path, body, handler, nil)
+}
+
+// performWebshellJSONWithPerms runs the handler with webshell:write already
+// granted and any extra permission layered on top, so a test can model a
+// session that also holds an admin-only capability.
+func performWebshellJSONWithPerms(user *database.RBACUser, method, path string, body map[string]interface{}, handler gin.HandlerFunc, extra map[string]bool) *httptest.ResponseRecorder {
 	payload, _ := json.Marshal(body)
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 	c.Request = httptest.NewRequest(method, path, bytes.NewReader(payload))
 	c.Request.Header.Set("Content-Type", "application/json")
+	perms := map[string]bool{"webshell:write": true}
+	for k, v := range extra {
+		perms[k] = v
+	}
 	c.Set(security.ContextSessionKey, security.Session{
 		UserID:      user.ID,
 		Username:    user.Username,
-		Permissions: map[string]bool{"webshell:write": true},
+		Permissions: perms,
 		Scope:       database.RBACScopeAssigned,
 	})
 	handler(c)

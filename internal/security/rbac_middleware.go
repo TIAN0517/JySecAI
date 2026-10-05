@@ -254,6 +254,11 @@ func resourceAllowed(c *gin.Context, db *database.DB) bool {
 		return db.UserCanAccessResource(session.UserID, session.Scope, "c2_session", c.Param("id"))
 	case strings.HasPrefix(path, "/c2/tasks/:id"):
 		return db.UserCanAccessResource(session.UserID, session.Scope, "c2_task", c.Param("id"))
+	case strings.HasPrefix(path, "/xss/payloads/:id"):
+		// XSS payload 會攔截並保存受害者 cookie/token。缺少歸屬檢查時，
+		// 任何具備 xss:read 的角色（會傳播到 viewer）都能讀取全部
+		// engagements 的竊取結果。
+		return db.UserCanAccessResource(session.UserID, session.Scope, "xss_payload", c.Param("id"))
 	default:
 		return true
 	}

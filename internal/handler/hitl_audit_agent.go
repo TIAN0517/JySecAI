@@ -46,8 +46,13 @@ func (h *AgentHandler) auditAgentReview(ctx context.Context, hitlMode, toolName 
 		},
 		"temperature":           0.1,
 		"max_completion_tokens": 1024,
-		// 审计裁决需要结构化 JSON；关闭 thinking 避免 Qwen 等把正文放进 reasoning_content 导致解析失败。
-		"thinking": map[string]interface{}{"type": "disabled"},
+		// 不要在这里发送 thinking / reasoning 控制参数。
+		// 这里原本固定送 thinking.type=disabled，目的是避免 Qwen 等把正文放进
+		// reasoning_content 导致解析失败。但 MiniMax-M3.1 这类强制 adaptive thinking
+		// 的模型会直接返回 400（"model requires adaptive thinking; thinking.type=
+		// disabled is not allowed"），而 auditAgentReview 对调用失败是 fail-closed
+		// 判成 reject 的，结果是每一次工具调用都被审计 Agent 拒绝。
+		// 该场景改由下方 msg.Content 为空时回退 reasoning_content 的既有逻辑处理。
 	}
 
 	var apiResponse struct {

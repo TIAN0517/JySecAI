@@ -14,6 +14,7 @@ import (
 	"unicode/utf8"
 
 	"jysecai/internal/config"
+	"jysecai/internal/security"
 
 	"go.uber.org/zap"
 )
@@ -64,7 +65,10 @@ func normalizeStreamingDelta(current, incoming string) (next, delta string) {
 // NewClient 创建一个新的OpenAI客户端。
 func NewClient(cfg *config.OpenAIConfig, httpClient *http.Client, logger *zap.Logger) *Client {
 	if httpClient == nil {
-		httpClient = http.DefaultClient
+		// base_url 可由 /api/config 更新请求提供，指向内网地址即可把本服务变成
+		// SSRF 跳板。http.DefaultClient 既无超时也会跟随重定向，因此使用在
+		// dial 时校验解析结果、并逐跳复检重定向的 transport。
+		httpClient = security.NewSSRFGuardedClient(60 * time.Second)
 	}
 	if logger == nil {
 		logger = zap.NewNop()

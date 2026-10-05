@@ -29,6 +29,10 @@ func SendProactive(ctx context.Context, cfg config.RobotsConfig, platform, exter
 		return fmt.Errorf("invalid robot recipient")
 	}
 	switch platform {
+	case "webhook":
+		// Routed through the structured path so the receiver gets the
+		// vulnerability fields, not just the preformatted message.
+		return sendWebhookProactive(ctx, cfg.Webhook, userID, message, WebhookAlert{})
 	case "telegram":
 		if !cfg.Telegram.Enabled || strings.TrimSpace(cfg.Telegram.BotToken) == "" {
 			return fmt.Errorf("telegram is not configured")
@@ -86,7 +90,7 @@ func SendProactive(ctx context.Context, cfg config.RobotsConfig, platform, exter
 
 func SupportsProactive(platform string) bool {
 	switch strings.ToLower(strings.TrimSpace(platform)) {
-	case "telegram", "slack", "discord", "wecom", "lark":
+	case "telegram", "slack", "discord", "wecom", "lark", "webhook":
 		return true
 	default:
 		return false

@@ -26,7 +26,10 @@ func ListSkillSummaries(skillsRoot string) ([]SkillSummary, error) {
 }
 
 func loadSummary(skillsRoot, dirName string) (SkillSummary, error) {
-	skillPath := SkillDir(skillsRoot, dirName)
+	skillPath, err := SkillDir(skillsRoot, dirName)
+	if err != nil {
+		return SkillSummary{}, err
+	}
 	mdPath, err := ResolveSKILLPath(skillPath)
 	if err != nil {
 		return SkillSummary{}, err
@@ -85,7 +88,10 @@ type LoadOptions struct {
 
 // LoadSkill returns manifest + body + package listing for admin.
 func LoadSkill(skillsRoot, skillID string, opt LoadOptions) (*SkillView, error) {
-	skillPath := SkillDir(skillsRoot, skillID)
+	skillPath, err := SkillDir(skillsRoot, skillID)
+	if err != nil {
+		return nil, err
+	}
 	mdPath, err := ResolveSKILLPath(skillPath)
 	if err != nil {
 		return nil, err

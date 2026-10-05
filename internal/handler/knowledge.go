@@ -10,6 +10,7 @@ import (
 	"jysecai/internal/audit"
 	"jysecai/internal/database"
 	"jysecai/internal/knowledge"
+	"jysecai/internal/security"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -443,15 +444,27 @@ func (h *KnowledgeHandler) ScanKnowledgeBase(c *gin.Context) {
 }
 
 // GetRetrievalLogs 获取检索日志
+//
+// 日志里的 query 是使用者的原始提问，retrievedItems 是命中的知识项 —— 两者
+// 都可能是敏感内容。manager 层的查询只按 conversationId/messageId 过滤，
+// 不认识调用者，所以可见性必须在这里判定：不带参数时不能回传全部租户的
+// 日志，带 conversationId 时也不能因为知道 id 就越权读取。
 func (h *KnowledgeHandler) GetRetrievalLogs(c *gin.Context) {
-	conversationID := c.Query("conversationId")
-	messageID := c.Query("messageId")
+	conversationID := strings.TrimSpace(c.Query("conversationId"))
+	messageID := strings.TrimSpace(c.Query("messageId"))
 	limit := 50 // 默认 50 条
 
 	if limitStr := c.Query("limit"); limitStr != "" {
 		if parsed, err := parseInt(limitStr); err == nil && parsed > 0 {
 			limit = parsed
 		}
+	}
+
+	// 指定了对话时先确认可访问；否则一个 viewer 只要拿到别人的 conversationId
+	// 就能定向读取该对话的全部检索日志。
+	if conversationID != "" && !h.knowledgeConversationAllowed(c, conversationID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该对话"})
+		return
 	}
 
 	logs, err := h.manager.GetRetrievalLogs(conversationID, messageID, limit)
@@ -461,12 +474,75 @@ func (h *KnowledgeHandler) GetRetrievalLogs(c *gin.Context) {
 		return
 	}
 
+	// 未指定对话时，逐笔按所属对话过滤。
+	if conversationID == "" {
+		logs = h.filterRetrievalLogsByAccess(c, logs)
+	}
+	if logs == nil {
+		logs = []*knowledge.RetrievalLog{}
+	}
+
 	c.JSON(http.StatusOK, gin.H{"logs": logs})
+}
+
+// filterRetrievalLogsByAccess 保留调用者有权访问其所属对话的日志。
+func (h *KnowledgeHandler) filterRetrievalLogsByAccess(c *gin.Context, logs []*knowledge.RetrievalLog) []*knowledge.RetrievalLog {
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		return nil
+	}
+	out := make([]*knowledge.RetrievalLog, 0, len(logs))
+	for _, log := range logs {
+		if log == nil {
+			continue
+		}
+		// 没有对话归属的日志不属于任何租户，只有全权范围才看得到。
+		if strings.TrimSpace(log.ConversationID) == "" {
+			if session.Scope == database.RBACScopeAll {
+				out = append(out, log)
+			}
+			continue
+		}
+		if h.db.UserCanAccessResource(session.UserID, session.Scope, "conversation", log.ConversationID) {
+			out = append(out, log)
+		}
+	}
+	return out
+}
+
+func (h *KnowledgeHandler) knowledgeConversationAllowed(c *gin.Context, conversationID string) bool {
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		return false
+	}
+	return h.db.UserCanAccessResource(session.UserID, session.Scope, "conversation", conversationID)
 }
 
 // DeleteRetrievalLog 删除检索日志
 func (h *KnowledgeHandler) DeleteRetrievalLog(c *gin.Context) {
-	id := c.Param("id")
+	id := strings.TrimSpace(c.Param("id"))
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid log id"})
+		return
+	}
+	// 原本这里只有 delete 动作，没有任何归属检查：任何持有 knowledge:delete
+	// 的调用方都能删掉任意租户的日志（日志内容含用户原始提问）。
+	owner, err := h.manager.GetRetrievalLogConversationID(id)
+	if err != nil {
+		h.logger.Warn("读取检索日志归属失败", zap.Error(err))
+		c.JSON(http.StatusNotFound, gin.H{"error": "检索日志不存在"})
+		return
+	}
+	if strings.TrimSpace(owner) == "" {
+		session, ok := security.CurrentSession(c)
+		if !ok || session.Scope != database.RBACScopeAll {
+			c.JSON(http.StatusForbidden, gin.H{"error": "无权删除该检索日志"})
+			return
+		}
+	} else if !h.knowledgeConversationAllowed(c, owner) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权删除该检索日志"})
+		return
+	}
 
 	if err := h.manager.DeleteRetrievalLog(id); err != nil {
 		h.logger.Error("删除检索日志失败", zap.Error(err))

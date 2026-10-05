@@ -63,7 +63,11 @@ func registerAssetTools(server *mcp.Server, db *database.DB, logger *zap.Logger)
 		if err != nil {
 			return textResult("错误: "+err.Error(), true), nil
 		}
-		asset, err := db.GetAsset(strings.TrimSpace(strArg(args, "id")), assetAccessOnly(ctx, "asset:read"))
+		readAccess, ok := assetAccessOnly(ctx, "asset:read")
+		if !ok {
+			return textResult("错误: 无法确定调用者身份", true), nil
+		}
+		asset, err := db.GetAsset(strings.TrimSpace(strArg(args, "id")), readAccess)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				return textResult("错误: 资产不存在或无权查看", true), nil
@@ -93,7 +97,11 @@ func registerAssetTools(server *mcp.Server, db *database.DB, logger *zap.Logger)
 			// 对话绑定项目后，项目范围是服务端强制边界；不能通过工具参数扩大或切换范围。
 			filter.ProjectID = projectID
 		}
-		items, total, err := db.ListAssets(pageSize, (page-1)*pageSize, filter, assetAccessOnly(ctx, "asset:read"))
+		readAccess, ok := assetAccessOnly(ctx, "asset:read")
+		if !ok {
+			return textResult("错误: 无法确定调用者身份", true), nil
+		}
+		items, total, err := db.ListAssets(pageSize, (page-1)*pageSize, filter, readAccess)
 		if err != nil {
 			return textResult("错误: "+err.Error(), true), nil
 		}
@@ -121,7 +129,10 @@ func registerAssetTools(server *mcp.Server, db *database.DB, logger *zap.Logger)
 		InputSchema: map[string]interface{}{"type": "object", "properties": updateProperties, "required": []string{"id"}},
 	}, func(ctx context.Context, args map[string]interface{}) (*mcp.ToolResult, error) {
 		id := strings.TrimSpace(strArg(args, "id"))
-		access := assetAccessOnly(ctx, "asset:write")
+		access, ok := assetAccessOnly(ctx, "asset:write")
+		if !ok {
+			return textResult("错误: 无法确定调用者身份", true), nil
+		}
 		asset, err := db.GetAsset(id, access)
 		if err != nil {
 			return textResult("错误: 资产不存在或无权更新", true), nil
@@ -144,7 +155,11 @@ func registerAssetTools(server *mcp.Server, db *database.DB, logger *zap.Logger)
 		InputSchema: map[string]interface{}{"type": "object", "properties": map[string]interface{}{"id": map[string]interface{}{"type": "string", "description": "资产 ID"}}, "required": []string{"id"}},
 	}, func(ctx context.Context, args map[string]interface{}) (*mcp.ToolResult, error) {
 		id := strings.TrimSpace(strArg(args, "id"))
-		if err := db.DeleteAsset(id, assetAccessOnly(ctx, "asset:delete")); err != nil {
+		deleteAccess, ok := assetAccessOnly(ctx, "asset:delete")
+		if !ok {
+			return textResult("错误: 无法确定调用者身份", true), nil
+		}
+		if err := db.DeleteAsset(id, deleteAccess); err != nil {
 			return textResult("错误: 资产不存在或无权删除", true), nil
 		}
 		return textResult("资产已删除: "+id, false), nil
@@ -167,7 +182,10 @@ func registerAssetTools(server *mcp.Server, db *database.DB, logger *zap.Logger)
 		if conversationID == "" {
 			return textResult("错误: 无法确定当前扫描对话", true), nil
 		}
-		access := assetAccessOnly(ctx, "asset:write")
+		access, ok := assetAccessOnly(ctx, "asset:write")
+		if !ok {
+			return textResult("错误: 无法确定调用者身份", true), nil
+		}
 		if err := db.CompleteAssetScan(id, conversationID, access); err != nil {
 			if err == sql.ErrNoRows {
 				return textResult("错误: 资产不存在或无权回写扫描结果", true), nil
@@ -414,12 +432,15 @@ func stringSliceArg(raw interface{}) ([]string, error) {
 	return values, nil
 }
 
-func assetAccessOnly(ctx context.Context, permission string) database.RBACListAccess {
+// assetAccessOnly 解析工具调用者的资产访问范围。解析不出 principal 时返回
+// ok=false：DB 层现在把零值解释为「看不到任何资产」，但对 delete/update
+// 来说那只是让操作静默无效，调用方与模型都会以为失败了却不知道为什么。
+func assetAccessOnly(ctx context.Context, permission string) (database.RBACListAccess, bool) {
 	principal, ok := authctx.PrincipalFromContext(ctx)
 	if !ok {
-		return database.RBACListAccess{}
+		return database.RBACListAccess{}, false
 	}
-	return database.RBACListAccess{UserID: principal.UserID, Scope: principal.ScopeFor(permission)}
+	return database.RBACListAccess{UserID: principal.UserID, Scope: principal.ScopeFor(permission)}, true
 }
 
 func assetAccessFromToolContext(ctx context.Context, permission string) (database.RBACListAccess, string, bool) {

@@ -14,9 +14,9 @@
     <script>
         (function () {
             try {
-                var stored = localStorage.getItem('jysec-theme') || 'system';
+                var stored = localStorage.getItem('cyberstrike-theme') || 'dark';
                 if (stored !== 'system' && stored !== 'light' && stored !== 'dark') {
-                    stored = 'system';
+                    stored = 'dark';
                 }
                 var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
                 var resolved = stored === 'dark' || (stored !== 'light' && prefersDark) ? 'dark' : 'light';
@@ -24,7 +24,7 @@
                 document.documentElement.setAttribute('data-theme', resolved);
                 document.documentElement.style.colorScheme = resolved;
             } catch (e) {
-                document.documentElement.setAttribute('data-theme', 'light');
+                document.documentElement.setAttribute('data-theme', 'dark');
             }
         })();
     </script>
@@ -36,10 +36,12 @@
             }
         })();
     </script>
-    <link rel="stylesheet" href="/static/css/style.css?v=20260907-1">
+    <link rel="stylesheet" href="/static/css/style.css?v=20261003-1">
     <link rel="stylesheet" href="/static/css/chat-plan-progress.css?v=20260813-4">
     <link rel="stylesheet" href="/static/css/c2.css">
     <link rel="stylesheet" href="/static/css/sentinel.css">
+    <link rel="stylesheet" href="/static/css/tool-guard.css?v=20261003-1">
+    <link rel="stylesheet" href="/static/css/vulnerability-triage.css?v=1">
     <link rel="stylesheet" href="/static/vendor/xterm.css">
     <script src="/static/js/router.js?v=20260819-3"></script>
 </head>
@@ -460,6 +462,15 @@
                     </div>
                     <div class="nav-section-label" role="presentation">
                         <span data-i18n="navGroups.administration">平台管理</span>
+                    </div>
+                    <div class="nav-item" data-page="tool-guard">
+                        <div class="nav-item-content" data-title="调用拦截" onclick="switchPage('tool-guard')" data-i18n="nav.toolGuard" data-i18n-attr="data-title" data-i18n-skip-text="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M4.9 4.9l14.2 14.2"></path>
+                            </svg>
+                            <span data-i18n="nav.toolGuard">调用拦截</span>
+                        </div>
                     </div>
                     <div class="nav-item" data-page="platform-rbac">
                         <div class="nav-item-content" data-title="平台权限" onclick="switchPage('platform-rbac')" data-i18n="nav.platformRbac" data-i18n-attr="data-title" data-i18n-skip-text="true">
@@ -2828,7 +2839,9 @@
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                                 <span>批量產出 POC</span>
                             </button>
+                            <button class="btn-secondary" type="button" data-require-permission="vulnerability:write" onclick="openTriageModal()" style="border-color: #0ea5e9; color: #0284c7; font-weight: 500;" data-i18n="vulnTriage.button">AI 待處理分流</button>
                             <button class="btn-secondary" data-require-permission="vulnerability:read" onclick="exportVulnerabilityReports()" data-i18n="vulnerabilityPage.batchExport">批量导出</button>
+                            <button class="btn-secondary" type="button" data-require-permission="vulnerability:read" onclick="exportFilteredVulnerabilityURLs()" data-i18n="vulnerabilityPage.extractUrls">提取 URL</button>
                             <button class="btn-secondary btn-delete" data-require-permission="vulnerability:delete" onclick="batchDeleteVulnerabilityReports()" data-i18n="vulnerabilityPage.batchDelete">批量删除</button>
                             <button class="btn-secondary" onclick="refreshVulnerabilities()" data-i18n="common.refresh">刷新</button>
                             <button class="btn-primary" data-require-permission="vulnerability:write" onclick="showAddVulnerabilityModal()" data-i18n="vulnerability.addVuln">添加漏洞</button>
@@ -2930,6 +2943,16 @@
                                                             data-i18n="vulnerabilityPage.filterExactId" data-i18n-attr="placeholder" placeholder="精确匹配漏洞 ID" />
                                                     </label>
                                                     <label class="vulnerability-filter-field">
+                                                        <span data-i18n="vulnerabilityPage.detailType">漏洞类型</span>
+                                                        <input type="text" id="vulnerability-type-filter" list="vulnerability-type-suggestions"
+                                                            data-i18n="vulnerabilityPage.filterType" data-i18n-attr="placeholder" placeholder="例如 SQL 注入、XSS" />
+                                                    </label>
+                                                    <label class="vulnerability-filter-field">
+                                                        <span data-i18n="vulnerabilityPage.detailTarget">目标 URL</span>
+                                                        <input type="text" id="vulnerability-target-filter" list="vulnerability-target-suggestions"
+                                                            data-i18n="vulnerabilityPage.filterTarget" data-i18n-attr="placeholder" placeholder="筛选目标域名或 URL" />
+                                                    </label>
+                                                    <label class="vulnerability-filter-field">
                                                         <span data-i18n="vulnerabilityPage.conversationId">会话 ID</span>
                                                         <input type="text" id="vulnerability-conversation-filter" list="vulnerability-conversation-suggestions"
                                                             data-i18n="vulnerabilityPage.filterConversation" data-i18n-attr="placeholder" placeholder="筛选特定会话" />
@@ -2977,6 +3000,8 @@
                             <datalist id="vulnerability-task-suggestions"></datalist>
                             <datalist id="vulnerability-conversation-tag-suggestions"></datalist>
                             <datalist id="vulnerability-task-tag-suggestions"></datalist>
+                            <datalist id="vulnerability-type-suggestions"></datalist>
+                            <datalist id="vulnerability-target-suggestions"></datalist>
                         </div>
 
                         <!-- 漏洞列表 -->
@@ -3494,68 +3519,70 @@
                     </div>
                 </div>
 
-                <!-- XSS 收割页面 -->
+                <!-- 安全回呼验证页面 -->
                 <div id="page-xss" class="page">
                     <div class="page-header">
-                        <h2>XSS 收割</h2>
+                        <h2 data-i18n="xss.pageTitle">XSS / SSRF 收割验证</h2>
                         <div class="page-header-actions">
-                            <button type="button" class="btn-secondary" onclick="XSS.init('true')">刷新</button>
-                            <button type="button" class="btn-primary" data-require-permission="xss:read" onclick="XSS.showConfig()">收集服务配置</button>
+                            <button type="button" class="btn-secondary" onclick="XSS.init('true')" data-i18n="common.refresh">刷新</button>
+                            <button type="button" class="btn-primary" data-require-permission="xss:read" onclick="XSS.showConfig()" data-i18n="xss.collectConfig">收集服务配置</button>
                         </div>
                     </div>
                     <div class="page-content">
                         <div class="xss-status-bar" id="xss-status-bar">
-                            <span id="xss-status-text">加载中…</span>
+                            <span id="xss-status-text" data-i18n="common.loading">加载中…</span>
                         </div>
 
-                        <!-- 接管载荷 -->
+                        <!-- 安全回呼 -->
                         <div class="xss-section">
                             <div class="xss-section-head">
-                                <h3>接管载荷 <span id="xss-payload-count" class="xss-count-badge">0</span></h3>
-                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.openGenerateModal()">+ 生成载荷</button>
+                                <h3><span data-i18n="xss.callbacks">接管载荷</span> <span id="xss-payload-count" class="xss-count-badge">0</span></h3>
+                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.openGenerateModal()" data-i18n="xss.createCallback">+ 生成载荷</button>
                             </div>
                             <div class="xss-table-wrap">
                                 <table class="xss-table">
                                     <thead>
                                         <tr>
-                                            <th>名称</th>
-                                            <th>来源</th>
-                                            <th>状态</th>
-                                            <th>创建时间</th>
-                                            <th>操作</th>
+                                            <th data-i18n="xss.colName">名称</th>
+                                            <th data-i18n="xss.colSource">来源</th>
+                                            <th data-i18n="xss.colStatus">状态</th>
+                                            <th data-i18n="xss.colCreated">创建时间</th>
+                                            <th data-i18n="common.actions">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="xss-payload-list"></tbody>
                                 </table>
-                                <div id="xss-payload-empty" class="xss-empty" hidden>尚未生成接管载荷，点击右上角「生成载荷」创建。</div>
+                                <div id="xss-payload-empty" class="xss-empty" hidden data-i18n="xss.noCallbacks">尚未生成接管载荷，点击右上角「生成载荷」创建。</div>
                             </div>
                             <div id="xss-script-modal" class="xss-modal-overlay" style="display:none;" onclick="if(event.target===this)XSS.closeModal(this)">
                                 <div class="xss-modal" onclick="event.stopPropagation()">
-                                    <div class="xss-modal-head"><h3>注入脚本</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
-                                    <p class="xss-modal-hint">将以下脚本植入目标页面的 XSS 触发点（如 <code>&lt;script&gt;</code>、事件属性、URL 参数注入点）。目标浏览器打开后会自动回连收集服务。</p>
+                                    <div class="xss-modal-head"><h3 data-i18n="xss.scriptTitle">注入脚本</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
+                                    <!-- data-i18n-skip-text：整句含 <code> 子元素，applyTranslations 不會替換
+                                         帶子節點的元素，改由 XSS.applyHintMarkup() 依語言注入。 -->
+                                    <p class="xss-modal-hint" id="xss-script-hint" data-i18n="xss.scriptHint" data-i18n-skip-text="true">将以下脚本植入目标页面的 XSS 触发点（如 <code>&lt;img src=x onerror=…&gt;</code>、事件属性、URL 参数注入点）。目标浏览器打开后会自动回连收集服务。XSS 模式只收割 <code>jysec_*</code> 测试 Canary，不会回连登录或工作会话 Cookie；探针模式只记录一次交互，不保存请求内容。</p>
                                     <textarea id="xss-script-text" class="xss-script-text" readonly spellcheck="false"></textarea>
                                     <div class="xss-modal-actions">
-                                        <button type="button" class="btn-primary btn-sm" onclick="XSS.copyScript()">复制脚本</button>
-                                        <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)">关闭</button>
+                                        <button type="button" class="btn-primary btn-sm" onclick="XSS.copyScript()" data-i18n="xss.copyScript">复制脚本</button>
+                                        <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)" data-i18n="common.close">关闭</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 回显收割 -->
+                        <!-- 回呼记录 -->
                         <div class="xss-section">
                             <div class="xss-section-head">
-                                <h3>回显收割 <span id="xss-capture-count" class="xss-count-badge">0</span></h3>
+                                <h3><span data-i18n="xss.captureRecords">回显收割</span> <span id="xss-capture-count" class="xss-count-badge">0</span></h3>
                             </div>
                             <div class="xss-capture-toolbar">
                                 <label class="xss-capture-field">
-                                    <span>状态</span>
+                                    <span data-i18n="xss.colStatus">状态</span>
                                     <select id="xss-capture-status" class="form-control" onchange="XSS.loadCaptures()">
-                                        <option value="">全部</option>
-                                        <option value="new">未处理</option>
-                                        <option value="seized">已接管</option>
-                                        <option value="analyzed">已分析</option>
-                                        <option value="ignored">已忽略</option>
+                                        <option value="" data-i18n="xss.filterAll">全部</option>
+                                        <option value="new" data-i18n="xss.statusNew">未处理</option>
+                                        <option value="seized" data-i18n="xss.statusSeized">已接管</option>
+                                        <option value="analyzed" data-i18n="xss.statusAnalyzed">已分析</option>
+                                        <option value="ignored" data-i18n="xss.statusIgnored">已忽略</option>
                                     </select>
                                 </label>
                             </div>
@@ -3563,36 +3590,53 @@
                                 <table class="xss-table">
                                     <thead>
                                         <tr>
-                                            <th>时间</th>
-                                            <th>来源 URL</th>
-                                            <th>页面</th>
-                                            <th>Cookie</th>
-                                            <th>状态</th>
-                                            <th>操作</th>
+                                            <th data-i18n="xss.colTime">时间</th>
+                                            <th data-i18n="xss.colSourceUrl">来源 URL</th>
+                                            <th data-i18n="xss.colPage">页面</th>
+                                            <th data-i18n="xss.colCookie">Cookie</th>
+                                            <th data-i18n="xss.colStatus">状态</th>
+                                            <th data-i18n="common.actions">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="xss-capture-list"></tbody>
                                 </table>
-                                <div id="xss-capture-empty" class="xss-empty" hidden>暂无回显。植入载荷后目标浏览器回连即会出现在这里。</div>
+                                <div id="xss-capture-empty" class="xss-empty" hidden data-i18n="xss.noCaptureRecords">暂无回显。植入载荷后目标浏览器回连即会出现在这里。</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 生成载荷模态框 -->
+                    <!-- 建立安全回呼模态框 -->
                     <div id="xss-generate-modal" class="xss-modal-overlay" style="display:none;" onclick="if(event.target===this)XSS.closeModal(this)">
                         <div class="xss-modal" onclick="event.stopPropagation()">
-                            <div class="xss-modal-head"><h3>生成接管载荷</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
+                            <div class="xss-modal-head"><h3 data-i18n="xss.createCallbackTitle">生成接管载荷</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
                             <div class="xss-form-group">
-                                <label>名称</label>
-                                <input type="text" id="xss-generate-name" class="form-control" placeholder="例：目标站登录页">
+                                <label data-i18n="xss.fieldName">名称</label>
+                                <input type="text" id="xss-generate-name" class="form-control" placeholder="例：目标站登录页" data-i18n-attr="placeholder" data-i18n="xss.phName">
                             </div>
                             <div class="xss-form-group">
-                                <label>来源（目标触发点 URL，可选）</label>
-                                <input type="text" id="xss-generate-source" class="form-control" placeholder="https://target.example/login">
+                                <label data-i18n="xss.fieldAuthorizedTarget">来源（目标触发点 URL，可选）</label>
+                                <input type="text" id="xss-generate-source" class="form-control" placeholder="https://authorized.example/login">
+                            </div>
+                            <div class="xss-form-group">
+                                <label data-i18n="xss.fieldVerificationType">验证类型</label>
+                                <select id="xss-generate-type" class="form-control">
+                                    <option value="image" data-i18n="xss.typeCanary">XSS Canary（只收割 jysec_* 测试 Cookie）</option>
+                                    <option value="probe" data-i18n="xss.typeProbe">SSRF / XXE 一次性探针</option>
+                                </select>
+                            </div>
+                            <div class="xss-form-group">
+                                <label data-i18n="xss.fieldTtl">有效时间（秒，60–86400）</label>
+                                <input type="number" id="xss-generate-ttl" class="form-control" min="60" max="86400" value="3600">
+                            </div>
+                            <div class="xss-form-group">
+                                <label class="xss-toggle-row">
+                                    <input type="checkbox" id="xss-generate-one-time" checked>
+                                    <span data-i18n="xss.oneTimeExpiry">收到第一次有效回连后立即失效</span>
+                                </label>
                             </div>
                             <div class="xss-modal-actions">
-                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.generatePayload()">生成</button>
-                                <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)">取消</button>
+                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.generatePayload()" data-i18n="xss.create">生成</button>
+                                <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)" data-i18n="common.cancel">取消</button>
                             </div>
                         </div>
                     </div>
@@ -3600,7 +3644,7 @@
                     <!-- 回显详情模态框 -->
                     <div id="xss-detail-modal" class="xss-modal-overlay" style="display:none;" onclick="if(event.target===this)XSS.closeModal(this)">
                         <div class="xss-modal xss-modal-lg" onclick="event.stopPropagation()">
-                            <div class="xss-modal-head"><h3>回显详情</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
+                            <div class="xss-modal-head"><h3 data-i18n="xss.detailTitle">回显详情</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
                             <div id="xss-detail-body"></div>
                         </div>
                     </div>
@@ -3608,29 +3652,40 @@
                     <!-- 收集服务配置模态框 -->
                     <div id="xss-config-modal" class="xss-modal-overlay" style="display:none;" onclick="if(event.target===this)XSS.closeModal(this)">
                         <div class="xss-modal" onclick="event.stopPropagation()">
-                            <div class="xss-modal-head"><h3>收集服务配置</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
+                            <div class="xss-modal-head"><h3 data-i18n="xss.collectConfig">收集服务配置</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
                             <div class="xss-form-group">
                                 <label class="xss-toggle-row">
                                     <input type="checkbox" id="xss-config-enabled">
-                                    <span>启用收集服务（监听收割回连）</span>
+                                    <span data-i18n="xss.configEnableService">启用收集服务（监听收割回连）</span>
                                 </label>
-                                <p class="xss-modal-hint">启用后，生成的载荷即可回连收割 Cookie / localStorage / sessionStorage。需同时配置 <code>public_url</code> 为公网/内网可达地址。</p>
+                                <p class="xss-modal-hint" id="xss-config-hint" data-i18n="xss.configHint" data-i18n-skip-text="true">启用后，生成的载荷即可回连收割 Cookie / localStorage / sessionStorage。需同时配置 <code>public_url</code> 为公网/内网可达地址。安全模式只允许 <code>jysec_*</code> Canary；SSRF / XXE 探针为一次性且不保存 Header、Body、Cookie 或查询参数。</p>
                             </div>
                             <div class="xss-form-group">
-                                <label>监听地址</label>
+                                <label data-i18n="xss.fieldBindAddress">监听地址</label>
                                 <input type="text" id="xss-config-bind" class="form-control" readonly>
                             </div>
                             <div class="xss-form-group">
-                                <label>收割地址（public_url）</label>
+                                <label data-i18n="xss.fieldPublicUrl">收割地址（public_url）</label>
                                 <input type="text" id="xss-config-url" class="form-control" readonly>
                             </div>
                             <div class="xss-form-group">
-                                <label>冷却（秒）</label>
+                                <label data-i18n="xss.fieldCooldown">冷却（秒）</label>
                                 <input type="number" id="xss-config-cooldown" class="form-control" readonly>
                             </div>
+                            <div class="xss-form-group">
+                                <label data-i18n="xss.fieldCanaryCookie">Canary Cookie 名称</label>
+                                <input type="text" id="xss-config-canary" class="form-control" readonly>
+                            </div>
+                            <div class="xss-form-group">
+                                <label data-i18n="xss.fieldDefaultTtl">默认有效时间（秒）</label>
+                                <input type="number" id="xss-config-ttl" class="form-control" readonly>
+                            </div>
+                            <div class="xss-form-group">
+                                <label data-i18n="xss.fieldRateLimit">每来源每分钟上限</label>
+                                <input type="number" id="xss-config-rate" class="form-control" readonly>
+                            </div>
                             <div class="xss-modal-actions">
-                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.saveConfig()">保存</button>
-                                <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)">关闭</button>
+                                <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)" data-i18n="common.close">关闭</button>
                             </div>
                         </div>
                     </div>
@@ -5510,6 +5565,147 @@
                     </div>
                 </div>
 
+                <!-- 调用拦截页面 -->
+                <div id="page-tool-guard" class="page tool-guard-page">
+                    <div class="page-header">
+                        <h2 data-i18n="toolGuard.title">调用拦截</h2>
+                        <p data-i18n="toolGuard.description">在 MCP 工具执行前检查工具名称和参数，命中规则立即阻止调用。人机协同审批和工具白名单不会跳过此检查。</p>
+                        <div class="page-header-actions">
+                            <span id="tool-guard-save-state" class="tool-guard-save-state"></span>
+                            <button type="button" class="btn-secondary" id="tool-guard-open-test" onclick="openToolGuardTest()" data-i18n="toolGuard.testEntry">全部规则验证</button>
+                            <button type="button" class="btn-secondary" id="tool-guard-reset" onclick="resetToolGuardConfig()" data-i18n="toolGuard.reset">撤销修改</button>
+                            <button type="button" class="btn-primary" id="tool-guard-save" onclick="saveToolGuardConfig()" data-i18n="toolGuard.save">保存并生效</button>
+                        </div>
+                    </div>
+                    <div class="tool-guard-content">
+                        <section class="tool-guard-card tool-guard-policy">
+                            <div class="tool-guard-policy-info">
+                                <span class="tool-guard-policy-icon" aria-hidden="true">
+                                    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                                </span>
+                                <div class="tool-guard-policy-copy">
+                                    <h3 data-i18n="toolGuard.policyTitle">拦截策略</h3>
+                                    <p data-i18n="toolGuard.enableHint">在工具执行前检查风险，修改后保存生效。</p>
+                                </div>
+                            </div>
+                            <label class="tool-guard-toggle tool-guard-switch">
+                                <input type="checkbox" id="tool-guard-enabled" onchange="changeToolGuardEnabled(this.checked)">
+                                <span data-i18n="toolGuard.enabled">启用调用拦截</span>
+                            </label>
+                            <span id="tool-guard-protection-status" class="tool-guard-save-state"></span>
+                        </section>
+
+                        <section class="tool-guard-card tool-guard-scope-card">
+                            <div class="tool-guard-section-header">
+                                <div>
+                                    <h3 data-i18n="toolGuard.scopeTitle">授权范围</h3>
+                                    <p data-i18n="toolGuard.scopeListHint">列在此处的目标会跳过「政府网站保护」规则；范围外的目标与其他规则完全不受影响。</p>
+                                </div>
+                                <span id="tool-guard-scope-status" class="tool-guard-rule-count"></span>
+                            </div>
+                            <p class="tool-guard-hint" data-i18n="toolGuard.scopeHint">正则仅检查调用中可见的文本；不会解析 IP 归属、重定向目标或工具读取的文件内容。域名规则不能保证覆盖所有间接访问。</p>
+                            <div class="tool-guard-scope-auth">
+                                <label for="tool-guard-scope-auth" data-i18n="toolGuard.scopeAuthorizationLabel">书面授权依据</label>
+                                <input type="text" id="tool-guard-scope-auth" maxlength="200" autocomplete="off" spellcheck="false" hidden placeholder="案号或授权书文件名" data-i18n="toolGuard.scopeAuthorizationPlaceholder" data-i18n-attr="placeholder">
+                                <p class="tool-guard-field-hint" data-i18n="toolGuard.scopeAuthorizationHint">加入 .gov.tw 这类根后缀前必须填写：该后缀会放行整个 TLD 底下的政府网域。</p>
+                            </div>
+                            <div id="tool-guard-scope" class="tool-guard-scope"></div>
+                            <details class="tool-guard-help">
+                                <summary>
+                                    <span data-i18n="toolGuard.scopeSyntaxTitle">授权范围写法</span>
+                                    <span class="tool-guard-chevron" aria-hidden="true">›</span>
+                                </summary>
+                                <div class="tool-guard-help-body">
+                                    <p data-i18n="toolGuard.scopeSyntaxHint">四种写法可混用。每一项加入前都会先试匹配：确认它确实被放行，且范围外的政府网域仍被拦截，才会写入。</p>
+                                </div>
+                            </details>
+                        </section>
+
+                        <section class="tool-guard-card">
+                            <div class="tool-guard-section-header">
+                                <div>
+                                    <h3 data-i18n="toolGuard.rulesTitle">拦截规则</h3>
+                                    <p data-i18n="toolGuard.rulesHint">按顺序匹配已启用的规则，使用首条命中规则的提醒。正则采用 RE2 语法，保存和试运行时由服务端校验。</p>
+                                </div>
+                                <div class="tool-guard-heading-line">
+                                    <span id="tool-guard-rule-count" class="tool-guard-rule-count"></span>
+                                    <button type="button" class="btn-primary tool-guard-add" id="tool-guard-add" onclick="addToolGuardRule()">
+                                        <span aria-hidden="true">+</span>
+                                        <span data-i18n="toolGuard.addRule">添加规则</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="tool-guard-rules" class="tool-guard-rules"></div>
+                            <p class="tool-guard-hint" data-i18n="toolGuard.listHint">点击规则查看和编辑，按列表顺序匹配。</p>
+                            <details class="tool-guard-help">
+                                <summary>
+                                    <span data-i18n="toolGuard.helpTitle">规则说明与匹配范围</span>
+                                    <span class="tool-guard-chevron" aria-hidden="true">›</span>
+                                </summary>
+                                <div class="tool-guard-help-body">
+                                    <p data-i18n="toolGuard.scopeHint">正则仅检查调用中可见的文本；不会解析 IP 归属、重定向目标或工具读取的文件内容。域名规则不能保证覆盖所有间接访问。</p>
+                                </div>
+                            </details>
+                        </section>
+
+                        <details id="tool-guard-test-panel" class="tool-guard-card tool-guard-test-panel">
+                            <summary>
+                                <span class="tool-guard-test-icon" aria-hidden="true">
+                                    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                                </span>
+                                <span class="tool-guard-disclosure-copy">
+                                    <strong data-i18n="toolGuard.testTitle">全部规则验证</strong>
+                                    <span data-i18n="toolGuard.testSummary">按规则顺序和启停状态，检查整体拦截效果</span>
+                                </span>
+                                <span class="tool-guard-chevron" aria-hidden="true">›</span>
+                            </summary>
+                            <div class="tool-guard-test-body">
+                                <p class="tool-guard-test-hint" data-i18n="toolGuard.testHint">使用页面上的当前配置（包括未保存修改），仅检查匹配结果，不执行任何工具。</p>
+                                <div class="tool-guard-field">
+                                    <label for="tool-guard-test-tool" data-i18n="toolGuard.testTool">工具名称</label>
+                                    <input type="text" id="tool-guard-test-tool" value="http_request" spellcheck="false" autocomplete="off" oninput="invalidateToolGuardTest()">
+                                </div>
+                                <div class="tool-guard-field">
+                                    <label for="tool-guard-test-arguments" data-i18n="toolGuard.testArguments">工具参数（JSON 对象）</label>
+                                    <textarea id="tool-guard-test-arguments" rows="4" spellcheck="false" oninput="invalidateToolGuardTest()">{"target": "https://example.gov.cn"}</textarea>
+                                </div>
+                                <div class="tool-guard-test-actions">
+                                    <button type="button" class="btn-secondary tool-guard-test-run" id="tool-guard-test" onclick="testToolGuardConfig()" data-i18n="toolGuard.testAll">验证全部规则</button>
+                                </div>
+                                <div id="tool-guard-test-result" class="tool-guard-test-result" role="status" hidden></div>
+                            </div>
+                        </details>
+
+                        <div id="tool-guard-feedback" class="tool-guard-feedback" role="status" hidden></div>
+                    </div>
+
+                    <dialog id="tool-guard-add-dialog" class="tool-guard-add-dialog">
+                        <form method="dialog">
+                            <div class="tool-guard-add-header">
+                                <div>
+                                    <h3 data-i18n="toolGuard.addDialogTitle">添加拦截规则</h3>
+                                    <p class="tool-guard-hint" data-i18n="toolGuard.addDialogHint">先配置规则，再用示例参数验证效果，确认后添加到列表。</p>
+                                </div>
+                                <button type="button" class="tool-guard-dialog-close" onclick="closeToolGuardRuleDialog()" aria-label="关闭添加规则" data-i18n="toolGuard.closeDialog" data-i18n-attr="aria-label">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+                                </button>
+                            </div>
+                            <div class="tool-guard-add-body" id="tool-guard-add-body">
+                                <div id="tool-guard-add-fields" class="tool-guard-add-fields"></div>
+                                <div id="tool-guard-add-test" class="tool-guard-add-test"></div>
+                                <div id="tool-guard-add-feedback" class="tool-guard-feedback" role="status" hidden></div>
+                            </div>
+                            <div class="tool-guard-add-footer">
+                                <p class="tool-guard-hint" data-i18n="toolGuard.addToListHint">添加到列表后，点击页面顶部「保存并生效」应用规则。</p>
+                                <div class="tool-guard-dialog-actions">
+                                    <button type="button" class="btn-secondary" onclick="closeToolGuardRuleDialog()" data-i18n="toolGuard.cancelAdd">取消</button>
+                                    <button type="button" class="btn-primary" id="tool-guard-add-confirm" onclick="commitToolGuardRule()" data-i18n="toolGuard.addToList">添加到列表</button>
+                                </div>
+                            </div>
+                        </form>
+                    </dialog>
+                </div>
+
                 <!-- 平台权限页面 -->
                 <div id="page-platform-rbac" class="page platform-rbac-page">
                                 <div class="page-header">
@@ -7260,6 +7456,33 @@
         </div>
     </div>
 
+    <!-- 漏洞待處理分流彈窗 -->
+    <div id="vuln-triage-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="vuln-triage-title" style="display: none;">
+        <div class="modal-content vuln-triage-modal-content" style="max-width: 860px;">
+            <div class="modal-header vuln-triage-modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h3 id="vuln-triage-title" data-i18n="vulnTriage.title">待處理分流</h3>
+                </div>
+                <button type="button" class="modal-close" onclick="closeTriageModal()" aria-label="关闭" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <div class="modal-body vuln-triage-modal-body">
+                <p class="vuln-triage-scope-line"><span data-i18n="vulnTriage.scopeLabel">分流范围</span>：<code id="vuln-triage-scope"></code></p>
+                <p class="vuln-triage-hint" id="vuln-triage-hint"></p>
+                <div class="vuln-triage-status" id="vuln-triage-status" role="status" aria-live="polite"></div>
+                <div class="vuln-triage-run-row">
+                    <button class="btn-primary" type="button" id="vuln-triage-run" onclick="runVulnerabilityTriage()" data-i18n="vulnTriage.run">开始分流</button>
+                </div>
+                <div class="vuln-triage-results" id="vuln-triage-results"></div>
+                <div class="vuln-triage-actions" id="vuln-triage-actions" hidden>
+                    <button class="btn-ghost" type="button" onclick="selectAllTriage()" data-i18n="vulnTriage.selectAll">全选</button>
+                    <button class="btn-ghost" type="button" onclick="selectNoneTriage()" data-i18n="vulnTriage.selectNone">全不选</button>
+                    <span class="vuln-triage-apply-count" id="vuln-triage-apply-count"></span>
+                    <button class="btn-primary" type="button" id="vuln-triage-apply" onclick="applyVulnerabilityTriage()" data-i18n="vulnTriage.apply">套用已勾选</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 批量產出 POC 彈窗 -->
     <div id="batch-poc-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="batch-poc-title" style="display: none;">
         <div class="modal-content" style="max-width: 650px;">
@@ -7333,6 +7556,7 @@
     <script src="/static/js/fact-graph.js"></script>
     <script src="/static/js/projects.js?v=20260819-1"></script>
     <script src="/static/js/vulnerability.js?v=14"></script>
+    <script src="/static/js/vulnerability-triage.js?v=1"></script>
     <script src="/static/js/webshell.js"></script>
     <script src="/static/js/chat-files.js"></script>
     <script src="/static/js/tasks.js"></script>
@@ -7342,7 +7566,8 @@
     <script src="/static/js/roles.js"></script>
     <script src="/static/js/rbac.js"></script>
     <script src="/static/js/c2.js"></script>
-    <script src="/static/js/xss.js"></script>
+    <script src="/static/js/xss.js?v=20261002-1"></script>
     <script src="/static/js/rbac-guards.js?v=20260717-1"></script>
+    <script src="/static/js/tool-guard.js?v=20261003-1"></script>
 </body>
 </html>

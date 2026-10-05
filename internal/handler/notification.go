@@ -787,7 +787,11 @@ func (h *NotificationHandler) GetSummary(c *gin.Context) {
 	items = append(items, longRunningItems...)
 	items = append(items, completedItems...)
 
-	session, _ := security.CurrentSession(c)
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return
+	}
 	items, err := h.applyReadStates(session.UserID, items)
 	if err != nil {
 		h.logger.Warn("加载通知已读状态失败", zap.Error(err))

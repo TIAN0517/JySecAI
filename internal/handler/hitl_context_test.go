@@ -16,6 +16,9 @@ func TestEnrichHitlApprovalPayload(t *testing.T) {
 	if err != nil {
 		t.Fatalf("db: %v", err)
 	}
+	// 必須在 os.RemoveAll 之前關閉（defers 以 LIFO 順序執行，所以這行要排在
+	// os.RemoveAll 之前）：SQLite 檔案句柄開著時 Windows 不允許刪除。
+	defer func() { _ = db.Close() }()
 	defer os.RemoveAll(tmp)
 
 	conv, err := db.CreateConversation("hitl ctx", database.ConversationCreateMeta{})

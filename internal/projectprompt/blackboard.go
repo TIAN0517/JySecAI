@@ -86,6 +86,9 @@ func FactRecordingBlackboardSection(coordinatorDelegate bool) string {
 	b.WriteString(" 查重，详情用 ")
 	b.WriteString(builtin.ToolGetVulnerability)
 	b.WriteString("(id)（默认仅当前项目/会话）。\n")
+	b.WriteString("\n")
+	b.WriteString(vulnerabilityEvidenceDiscipline(builtin.ToolRecordVulnerability))
+	b.WriteString("\n")
 	b.WriteString("- 同一发现可能需**各记一次**（事实记**完整攻击链与 exploit 细节**供复现，漏洞记正式 findings）。误报用 ")
 	b.WriteString(builtin.ToolDeprecateProjectFact)
 	b.WriteString(" 或漏洞状态 false_positive。\n")
@@ -98,6 +101,31 @@ func FactRecordingBlackboardSection(coordinatorDelegate bool) string {
 	b.WriteString("\n\n")
 	b.WriteString(factRecordingGuidanceBlock())
 	b.WriteString("\n\n严重程度：critical / high / medium / low / info。证明须含足够证据（请求响应、截图、命令输出等）。")
+	return b.String()
+}
+
+// vulnerabilityEvidenceDiscipline 漏洞证据纪律。
+//
+// 移植 Zack-AI-Scanner v3.0 的三条硬规矩，它们对应的都是实测翻车过的坑：
+//
+//  1. 95% 报告闸门 —— 模型给 90 分的判断不该被报成漏洞。
+//  2. 「未判定」不等于「安全」 —— 关掉回连通道后，盲注类漏洞必然停在未判定；
+//     漏报只代表没拿到证据，不代表没有。把未判定当排除项，风险分数会因「没验到」而下降。
+//  3. 没有证据绝不能被当成没有漏洞的证据 —— 查询失败不是反向证据。
+func vulnerabilityEvidenceDiscipline(tool string) string {
+	var b strings.Builder
+	b.WriteString("### 漏洞证据纪律（硬规矩）\n\n")
+	b.WriteString("- **95% 报告闸门**：每条 `")
+	b.WriteString(tool)
+	b.WriteString("` 都要给 `confidence`（0-100 证据可信度）。只有拿到**可复现的客观证据**才可给 >= 95：")
+	b.WriteString("基线与载荷响应的**差异**、带随机标记的**回连**、服务端**算术求值**结果、真实的读写副作用。")
+	b.WriteString("证据不足就如实给低分 —— 系统只拦下「标成 confirmed」这个动作，**不会丢掉你的记录**。\n")
+	b.WriteString("- **没有证据 ≠ 没有漏洞**：拿不到判定通道时（回连关闭时的盲注 XXE/SSRF、Log4j2、Fastjson、Struts2、Shiro），")
+	b.WriteString("传 `status=\"undetermined\"`。**未判定不等于安全**，没报出来只代表没拿到证据。\n")
+	b.WriteString("- **探测载荷是对照组**：同一次测试的探测响应要和主攻载荷放在一起比对。")
+	b.WriteString("「与基线一致、但与对照不同」才是布尔盲注这类漏洞的证据形态；一份利用成功的产物不能当正常响应的参照。\n")
+	b.WriteString("- **严重程度与 confidence 是两件事**：影响大不等于证据足。")
+	b.WriteString("真实凭据 + 已验证读写副作用 = high + 95；只有标题写着 SQLi 而没有任何 SQL 证据 = 最多 medium + 40。\n")
 	return b.String()
 }
 
@@ -116,6 +144,9 @@ func FactRecordingBlackboardSectionMarkdown(coordinatorDelegate bool) string {
 	b.WriteString("- **环境/目标/认证等认知**（非正式漏洞）：使用 **`upsert_project_fact`**，`fact_key` 建议 `category/slug`（如 `target/primary_domain`），同 key 覆盖更新；body 记端口/版本/凭据特征与证据来源。\n")
 	b.WriteString("- **发现与利用上下文**（审计复现）：`fact_key` 建议 `finding/`、`chain/`、`exploit/`、`poc/` 前缀；**body 必填**完整攻击链（入口 → 步骤 → 原始请求/响应或命令 → 现象 → 关联 `related_vulnerability_id`），**禁止仅写结论**；summary 写「什么 + 在哪 + 如何验证」一行要点。\n")
 	b.WriteString("- **可交付漏洞**：使用 **`record_vulnerability`**（标题、描述、严重程度、类型、目标、证明 POC、影响、修复建议）。严重程度 critical / high / medium / low / info。\n")
+	b.WriteString("\n")
+	b.WriteString(vulnerabilityEvidenceDiscipline("record_vulnerability"))
+	b.WriteString("\n")
 	b.WriteString("- 同一发现可能需**各记一次**（事实记可复现攻击链，漏洞记正式 findings）。误报用 **`deprecate_project_fact`** 或漏洞状态 false_positive。\n")
 	b.WriteString("- 事实多时用 **`list_project_facts`** / **`search_project_facts`** 检索。\n\n")
 	b.WriteString(factEdgeRecordingGuidance())

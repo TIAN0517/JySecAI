@@ -281,19 +281,70 @@ func (fc *FunctionCall) UnmarshalJSON(data []byte) error {
 type ProgressCallback func(eventType, message string, data interface{})
 
 // EinoSingleAgentSystemInstruction 供 Eino adk.ChatModelAgent.Instruction 使用（含 system_prompt_path）。
+// resolveWithinPromptBase resolves a configured prompt file path and confirms
+// it stays inside base. An empty base means no confinement is configured, in
+// which case only a relative path is accepted — an absolute path would
+// otherwise be a direct read of any file on the host.
+func resolveWithinPromptBase(base, path string) (string, error) {
+	if strings.TrimSpace(base) == "" {
+		// 没有根目录时，唯一的依据就是“它必须是干净的相对路径”。
+		// 不能只靠 filepath.IsAbs：Windows 上它是 volume-aware 的，
+		// IsAbs(`\Windows\System32\config\SAM`) 为 false，但 filepath.Abs 会
+		// 解析成 `C:\Windows\System32\config\SAM` 而成功读出 SAM。
+		if filepath.VolumeName(path) != "" || strings.HasPrefix(path, "/") ||
+			strings.HasPrefix(path, `\`) {
+			return "", errors.New("未配置提示词根目录，拒绝读取根路径或绝对路径")
+		}
+		cleaned := filepath.Clean(path)
+		if cleaned == ".." || strings.HasPrefix(cleaned, ".."+string(os.PathSeparator)) {
+			return "", fmt.Errorf("路径 %s 越出当前目录", path)
+		}
+		abs, err := filepath.Abs(cleaned)
+		if err != nil {
+			return "", err
+		}
+		return abs, nil
+	}
+	baseAbs, err := filepath.Abs(base)
+	if err != nil {
+		return "", err
+	}
+	candidate := path
+	if !filepath.IsAbs(candidate) {
+		candidate = filepath.Join(baseAbs, candidate)
+	}
+	// EvalSymlinks defeats a symlink planted inside base that points outward.
+	if resolved, evalErr := filepath.EvalSymlinks(candidate); evalErr == nil {
+		candidate = resolved
+	}
+	if resolvedBase, evalErr := filepath.EvalSymlinks(baseAbs); evalErr == nil {
+		baseAbs = resolvedBase
+	}
+	candidate = filepath.Clean(candidate)
+	if candidate != baseAbs && !strings.HasPrefix(candidate, baseAbs+string(os.PathSeparator)) {
+		return "", fmt.Errorf("路径 %s 不在提示词根目录内", path)
+	}
+	return candidate, nil
+}
+
 func (a *Agent) EinoSingleAgentSystemInstruction() string {
 	systemPrompt := DefaultSingleAgentSystemPrompt()
 	if a.agentConfig != nil {
 		if p := strings.TrimSpace(a.agentConfig.SystemPromptPath); p != "" {
-			path := p
 			a.mu.RLock()
 			base := a.promptBaseDir
 			a.mu.RUnlock()
-			if !filepath.IsAbs(path) && base != "" {
-				path = filepath.Join(base, path)
-			}
-			if b, err := os.ReadFile(path); err != nil {
-				a.logger.Warn("读取单代理 system_prompt_path 失败，使用内置提示", zap.String("path", path), zap.Error(err))
+
+			// system_prompt_path 可由 PUT /api/config 写入，其内容会成为 LLM
+			// 系统提示并可经对话回显。绝对路径原本直接读取，等于把「更新设置」
+			// 变成「读取主机上任意文件」（含 ~/.ssh/id_rsa 等）。要求解析后的
+			// 路径仍位于提示词根目录内。
+			path, err := resolveWithinPromptBase(base, p)
+			if err != nil {
+				a.logger.Warn("拒绝读取提示词目录之外的文件，使用内置提示",
+					zap.String("path", p), zap.Error(err))
+			} else if b, readErr := os.ReadFile(path); readErr != nil {
+				a.logger.Warn("读取单代理 system_prompt_path 失败，使用内置提示", zap.String("path", path), zap.Error(readErr))
 			} else if s := strings.TrimSpace(string(b)); s != "" {
 				systemPrompt = s
 			}

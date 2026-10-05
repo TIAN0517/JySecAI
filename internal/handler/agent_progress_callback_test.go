@@ -86,6 +86,9 @@ func TestCreateProgressCallback_HidesInternalEinoDiagnostics(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewDB: %v", err)
 	}
+	// 必須在 t.TempDir()/os.RemoveAll 之前關閉：SQLite 檔案句柄開著時
+	// Windows 不允許刪除（Linux 可以），會讓測試在 Windows 上誤判失敗。
+	defer func() { _ = db.Close() }()
 	conv, err := db.CreateConversation("diag-hidden", database.ConversationCreateMeta{})
 	if err != nil {
 		t.Fatalf("CreateConversation: %v", err)
@@ -133,6 +136,9 @@ func TestCreateProgressCallback_PersistsRunningResponseBeforeDone(t *testing.T) 
 	if err != nil {
 		t.Fatalf("NewDB: %v", err)
 	}
+	// 必須在 t.TempDir()/os.RemoveAll 之前關閉：SQLite 檔案句柄開著時
+	// Windows 不允許刪除（Linux 可以），會讓測試在 Windows 上誤判失敗。
+	defer func() { _ = db.Close() }()
 	conv, err := db.CreateConversation("refresh-running", database.ConversationCreateMeta{})
 	if err != nil {
 		t.Fatalf("CreateConversation: %v", err)
@@ -178,6 +184,9 @@ func TestCreateProgressCallback_FlushesReasoningOnDone(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewDB: %v", err)
 	}
+	// 必須在 t.TempDir()/os.RemoveAll 之前關閉：SQLite 檔案句柄開著時
+	// Windows 不允許刪除（Linux 可以），會讓測試在 Windows 上誤判失敗。
+	defer func() { _ = db.Close() }()
 	defer os.RemoveAll(tmp)
 
 	conv, err := db.CreateConversation("test", database.ConversationCreateMeta{})

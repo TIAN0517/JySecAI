@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"jysecai/internal/database"
+	"jysecai/internal/security"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -307,8 +308,14 @@ func (h *OpenAPIHandler) GetOpenAPISpec(c *gin.Context) {
 						},
 						"status": map[string]interface{}{
 							"type":        "string",
-							"description": "状态",
-							"enum":        []string{"open", "confirmed", "fixed", "false_positive", "ignored"},
+							"description": "状态；undetermined = 未判定（拿不到证据通道，不等于安全）",
+							"enum":        []string{"open", "undetermined", "confirmed", "fixed", "false_positive", "ignored"},
+						},
+						"confidence": map[string]interface{}{
+							"type":        "integer",
+							"minimum":     0,
+							"maximum":     100,
+							"description": "证据可信度 0-100；0=未评估。升为 confirmed 需 >= 95",
 						},
 						"target": map[string]interface{}{
 							"type":        "string",
@@ -585,8 +592,14 @@ func (h *OpenAPIHandler) GetOpenAPISpec(c *gin.Context) {
 						},
 						"status": map[string]interface{}{
 							"type":        "string",
-							"description": "状态",
-							"enum":        []string{"open", "closed", "fixed"},
+							"description": "状态；undetermined = 未判定（拿不到证据通道，不等于安全）",
+							"enum":        []string{"open", "undetermined", "confirmed", "fixed", "false_positive", "ignored"},
+						},
+						"confidence": map[string]interface{}{
+							"type":        "integer",
+							"minimum":     0,
+							"maximum":     100,
+							"description": "证据可信度 0-100；0=未评估。升为 confirmed 需 >= 95",
 						},
 						"type": map[string]interface{}{
 							"type":        "string",
@@ -628,8 +641,14 @@ func (h *OpenAPIHandler) GetOpenAPISpec(c *gin.Context) {
 						},
 						"status": map[string]interface{}{
 							"type":        "string",
-							"description": "状态",
-							"enum":        []string{"open", "confirmed", "fixed", "false_positive", "ignored"},
+							"description": "状态；undetermined = 未判定（拿不到证据通道，不等于安全）",
+							"enum":        []string{"open", "undetermined", "confirmed", "fixed", "false_positive", "ignored"},
+						},
+						"confidence": map[string]interface{}{
+							"type":        "integer",
+							"minimum":     0,
+							"maximum":     100,
+							"description": "证据可信度 0-100；0=未评估。升为 confirmed 需 >= 95",
 						},
 						"type": map[string]interface{}{
 							"type":        "string",
@@ -6320,6 +6339,20 @@ func (h *OpenAPIHandler) GetOpenAPISpec(c *gin.Context) {
 // 这个端点只是为了提供结果聚合功能
 func (h *OpenAPIHandler) GetConversationResults(c *gin.Context) {
 	conversationID := c.Param("id")
+
+	// 在 handler 内部重验一次归属。middleware 的 resourceAllowed 靠
+	// HasPrefix("/conversations/:id") 匹配，它会因为将来新增一个更长的
+	// 兄弟路径而静默失效；这个端点聚合了整段对话的消息与漏洞，漏掉
+	// 归属检查的代价是整段对话外泄。
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return
+	}
+	if !h.db.UserCanAccessResource(session.UserID, session.Scope, "conversation", conversationID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 
 	// 验证对话是否存在
 	conv, err := h.db.GetConversation(conversationID)

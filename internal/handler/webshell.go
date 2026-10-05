@@ -29,6 +29,30 @@ import (
 	"golang.org/x/text/transform"
 )
 
+// maxWebshellResponseBytes bounds how much of a WebShell response is buffered.
+//
+// webshell:write is granted to the operator role, so any operator could point a
+// connection at a host that streams forever and turn io.ReadAll into an
+// out-of-memory kill for every other user on the process. A transport timeout
+// does not bound this: a peer sending at line rate fills the heap long before
+// the deadline. 32 MiB matches the limit fofa.go already applies to outbound
+// search responses.
+const maxWebshellResponseBytes = 32 << 20
+
+// readWebshellBody reads at most maxWebshellResponseBytes and reports whether
+// the peer sent more, so the caller can tell the operator the output was
+// clipped instead of silently returning a short result.
+func readWebshellBody(r io.Reader) ([]byte, bool, error) {
+	out, err := io.ReadAll(io.LimitReader(r, maxWebshellResponseBytes+1))
+	if err != nil {
+		return out, false, err
+	}
+	if len(out) > maxWebshellResponseBytes {
+		return out[:maxWebshellResponseBytes], true, nil
+	}
+	return out, false, nil
+}
+
 // webshellSupportedEncodings 允许的 WebShell 响应编码取值（小写，含空串代表 auto）
 // 仅暴露目前最常见的几种，其他需求可后续扩展（如 Big5、Shift_JIS 等）。
 var webshellSupportedEncodings = map[string]struct{}{
@@ -283,28 +307,34 @@ func (h *WebShellHandler) buildFileCommand(in fileCommandInput) (string, error) 
 		if len(in.Content) > 512*1024 {
 			return "", errFileOpUploadTooLarge
 		}
+		// 與 write 相同：先由伺服器端 base64 編碼，遠端再解碼寫入。
+		// 原始 content 直接拼進 '...' 會讓其中的單引號終止引號，
+		// 其後內容即在目標主機上執行。
+		b64 := base64.StdEncoding.EncodeToString([]byte(in.Content))
 		if targetOS == "windows" {
 			path = normalizeWindowsCmdPath(path)
-			return buildWindowsPowerShellWrite(path, in.Content), nil
+			return buildWindowsPowerShellWrite(path, b64), nil
 		}
-		return "echo '" + in.Content + "' | base64 -d > " + quoteShellSinglePosix(path), nil
+		return "echo '" + b64 + "' | base64 -d > " + quoteShellSinglePosix(path), nil
 
 	case "upload_chunk":
 		if path == "" {
 			return "", errFileOpPathRequired
 		}
+		// 同 upload：內容必須先由伺服器端編碼，不能原樣拼進 shell 引號。
+		b64 := base64.StdEncoding.EncodeToString([]byte(in.Content))
 		if targetOS == "windows" {
 			path = normalizeWindowsCmdPath(path)
 			if in.ChunkIndex == 0 {
-				return buildWindowsPowerShellWrite(path, in.Content), nil
+				return buildWindowsPowerShellWrite(path, b64), nil
 			}
-			return buildWindowsPowerShellAppend(path, in.Content), nil
+			return buildWindowsPowerShellAppend(path, b64), nil
 		}
 		redir := ">>"
 		if in.ChunkIndex == 0 {
 			redir = ">"
 		}
-		return "echo '" + in.Content + "' | base64 -d " + redir + " " + quoteShellSinglePosix(path), nil
+		return "echo '" + b64 + "' | base64 -d " + redir + " " + quoteShellSinglePosix(path), nil
 	}
 
 	return "", errFileOpUnsupportedAction(action)
@@ -378,15 +408,29 @@ func NewWebShellHandler(logger *zap.Logger, db *database.DB) *WebShellHandler {
 
 // newWebShellTransport 构造 WebShell 出站 HTTP 客户端。
 //
-// 默认使用系统 CA 并要求 TLS 1.2；旧式自签目标可用自定义 CA，或显式开启不安全相容模式。
+// 默认相容模式：不校验证书。这是刻意保留的默认行为——政府与关键基础设施目标
+// 普遍使用自签或内部 CA 凭证，若默认强制校验，授权范围内���多政府目标将无法探测。
+// 需要校验时设置 JYSSECAI_WEBSHELL_CA_FILE / JYSSECAI_WEBSHELL_CA_SERVER 即可恢复。
+// 三种模式的优先级：
 //
-//	JYSSECAI_WEBSHELL_CA_FILE   指定 CA 证书文件（PEM），启用证书校验
-//	JYSSECAI_WEBSHELL_CA_SERVER 指定 CA 发行机构（如 DigiCert Global Root G2）
-//	JYSSECAI_WEBSHELL_INSECURE  显式设为 1/true 时跳过证书校验（仅相容模式）
+//  1. JYSSECAI_WEBSHELL_INSECURE=1/true  显式相容模式（等价于默认，但用于覆盖 CA 配置）
+//
+//  2. JYSSECAI_WEBSHELL_CA_FILE / _CA_SERVER 有设置  以该 CA 校验证书
+//
+//  3. 两者都未设置                        默认相容模式，不校验证书
+//
+//     示例：
+//     JYSSECAI_WEBSHELL_CA_FILE   指定 CA 证书文件（PEM），启用证书校验
+//     JYSSECAI_WEBSHELL_CA_SERVER 指定 CA 发行机构（如 DigiCert Global Root G2）
+//     JYSSECAI_WEBSHELL_INSECURE  显式设为 1/true 时跳过证书校验（覆盖 CA 配置）
 func newWebShellTransport(logger *zap.Logger) *http.Transport {
 	tr := &http.Transport{DisableKeepAlives: false}
 
+	caFile := strings.TrimSpace(os.Getenv("JYSSECAI_WEBSHELL_CA_FILE"))
+	caServer := strings.TrimSpace(os.Getenv("JYSSECAI_WEBSHELL_CA_SERVER"))
 	insecure := strings.TrimSpace(os.Getenv("JYSSECAI_WEBSHELL_INSECURE"))
+
+	// 1. 显式相容模式优先，可用于覆盖下方的 CA 配置。
 	if insecure == "1" || strings.EqualFold(insecure, "true") {
 		tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true, MinVersion: tls.VersionTLS12} //nolint:gosec // explicit legacy compatibility switch
 		if logger != nil {
@@ -396,22 +440,32 @@ func newWebShellTransport(logger *zap.Logger) *http.Transport {
 		return tr
 	}
 
-	pool, err := buildWebShellCAPool()
-	if err != nil {
-		// 自定义 CA 配置错误时维持安全默认值；请求会使用系统 CA，而不是静默降级。
-		if logger != nil {
-			logger.Warn("WebShell TLS: 加载自定义 CA 失败，回退系统 CA", zap.Error(err))
+	// 2. 配置了自定义 CA 时启用校验。
+	if caFile != "" || caServer != "" {
+		pool, err := buildWebShellCAPool()
+		if err != nil {
+			// 自定义 CA 配置错误时维持安全默认值；请求会使用系统 CA，而不是静默降级。
+			if logger != nil {
+				logger.Warn("WebShell TLS: 加载自定义 CA 失败，回退系统 CA", zap.Error(err))
+			}
+			pool, _ = x509.SystemCertPool()
+			tr.TLSClientConfig = &tls.Config{RootCAs: pool, MinVersion: tls.VersionTLS12}
+			return tr
 		}
-		pool, _ = x509.SystemCertPool()
 		tr.TLSClientConfig = &tls.Config{RootCAs: pool, MinVersion: tls.VersionTLS12}
+		if logger != nil {
+			logger.Debug("WebShell TLS: 已启用证书校验",
+				zap.String("ca_file", caFile),
+				zap.String("ca_server", caServer))
+		}
 		return tr
 	}
 
-	tr.TLSClientConfig = &tls.Config{RootCAs: pool, MinVersion: tls.VersionTLS12}
+	// 3. 未配置 CA：默认相容模式，保证授权范围内的自签目标可探测。
+	tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true, MinVersion: tls.VersionTLS12} //nolint:gosec // default compatibility for self-signed authorized targets
 	if logger != nil {
-		logger.Debug("WebShell TLS: 已启用证书校验",
-			zap.String("ca_file", os.Getenv("JYSSECAI_WEBSHELL_CA_FILE")),
-			zap.String("ca_server", os.Getenv("JYSSECAI_WEBSHELL_CA_SERVER")))
+		logger.Warn("WebShell TLS: 未设置自定义 CA，已启用默认相容模式（不校验证书）。" +
+			"如需校验请设置 JYSSECAI_WEBSHELL_CA_FILE。")
 	}
 	return tr
 }
@@ -475,7 +529,11 @@ func (h *WebShellHandler) ListConnections(c *gin.Context) {
 		c.JSON(http.StatusServiceUnavailable, gin.H{"error": "database not available"})
 		return
 	}
-	session, _ := security.CurrentSession(c)
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return
+	}
 	list, err := h.db.ListWebshellConnectionsForAccess(session.UserID, session.Scope, c.Query("project_id"))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -883,7 +941,12 @@ func (h *WebShellHandler) Exec(c *gin.Context) {
 		// transport credentials or a URL.
 		req.URL, req.Password, req.Type = conn.URL, conn.Password, conn.Type
 		req.Method, req.CmdParam, req.Encoding = conn.Method, conn.CmdParam, conn.Encoding
-	} else if !security.SessionHasPermission(c, "webshell:write") {
+	} else if !security.SessionHasPermission(c, "webshell:write") ||
+		// 省略 connection_id 时使用调用者自带的 url/password，可直达内网任意
+		// 目标并把回显当命令输出返回。这是「存库前的连通性测试」，但非管理员
+		// 不应拥有该能力：webshell:write 默认授予 Operator，而其 scope 为
+		// assigned，本应只能操作自己名下的连接。
+		!security.SessionHasPermission(c, "webshell:connect-unsaved") {
 		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
 		return
 	}
@@ -925,11 +988,17 @@ func (h *WebShellHandler) Exec(c *gin.Context) {
 	}
 	defer resp.Body.Close()
 
-	out, readErr := io.ReadAll(resp.Body)
+	out, truncated, readErr := readWebshellBody(resp.Body)
 	if readErr != nil {
 		h.logger.Warn("webshell exec read body", zap.Error(readErr))
 	}
+	if truncated {
+		h.logger.Warn("webshell exec response truncated", zap.Int("limit_bytes", maxWebshellResponseBytes))
+	}
 	output := decodeWebshellOutput(out, req.Encoding)
+	if truncated {
+		output += fmt.Sprintf("\n[响应超过 %d 字节，已截断]", maxWebshellResponseBytes)
+	}
 	httpCode := resp.StatusCode
 
 	ok := resp.StatusCode == http.StatusOK
@@ -995,7 +1064,12 @@ func (h *WebShellHandler) FileOp(c *gin.Context) {
 		}
 		req.URL, req.Password, req.Type = conn.URL, conn.Password, conn.Type
 		req.Method, req.CmdParam, req.Encoding, req.OS = conn.Method, conn.CmdParam, conn.Encoding, conn.OS
-	} else if !security.SessionHasPermission(c, "webshell:write") {
+	} else if !security.SessionHasPermission(c, "webshell:write") ||
+		// 省略 connection_id 时使用调用者自带的 url/password，可直达内网任意
+		// 目标并把回显当命令输出返回。这是「存库前的连通性测试」，但非管理员
+		// 不应拥有该能力：webshell:write 默认授予 Operator，而其 scope 为
+		// assigned，本应只能操作自己名下的连接。
+		!security.SessionHasPermission(c, "webshell:connect-unsaved") {
 		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
 		return
 	}
@@ -1065,11 +1139,17 @@ func (h *WebShellHandler) FileOp(c *gin.Context) {
 	}
 	defer resp.Body.Close()
 
-	out, readErr := io.ReadAll(resp.Body)
+	out, truncated, readErr := readWebshellBody(resp.Body)
 	if readErr != nil {
 		h.logger.Warn("webshell fileop read body", zap.Error(readErr))
 	}
+	if truncated {
+		h.logger.Warn("webshell fileop response truncated", zap.Int("limit_bytes", maxWebshellResponseBytes))
+	}
 	output := decodeWebshellOutput(out, req.Encoding)
+	if truncated {
+		output += fmt.Sprintf("\n[响应超过 %d 字节，已截断]", maxWebshellResponseBytes)
+	}
 	ok := resp.StatusCode == http.StatusOK && readErr == nil
 	auditResult := "failure"
 	if ok {
@@ -1167,9 +1247,12 @@ func (h *WebShellHandler) ExecWithConnection(conn *database.WebShellConnection, 
 		return "", false, err.Error()
 	}
 	defer resp.Body.Close()
-	out, readErr := io.ReadAll(resp.Body)
+	out, truncated, readErr := readWebshellBody(resp.Body)
 	if readErr != nil {
 		h.logger.Warn("webshell ExecWithConnection read body", zap.Error(readErr))
+	}
+	if truncated {
+		h.logger.Warn("webshell ExecWithConnection response truncated", zap.Int("limit_bytes", maxWebshellResponseBytes))
 	}
 	ok = resp.StatusCode == http.StatusOK
 	auditResult := "failure"
@@ -1177,7 +1260,11 @@ func (h *WebShellHandler) ExecWithConnection(conn *database.WebShellConnection, 
 		auditResult = "success"
 	}
 	h.recordOperationAudit(nil, "command_execute", auditResult, conn.ID, conn.URL, command, map[string]interface{}{"source": "internal", "http_code": resp.StatusCode, "response_bytes": len(out)})
-	return decodeWebshellOutput(out, conn.Encoding), ok, ""
+	decoded := decodeWebshellOutput(out, conn.Encoding)
+	if truncated {
+		decoded += fmt.Sprintf("\n[响应超过 %d 字节，已截断]", maxWebshellResponseBytes)
+	}
+	return decoded, ok, ""
 }
 
 // FileOpWithConnection 在指定 WebShell 连接上执行文件操作（供 MCP/Agent 调用），支持 list / read / write
@@ -1246,9 +1333,12 @@ func (h *WebShellHandler) FileOpWithConnection(conn *database.WebShellConnection
 		return "", false, err.Error()
 	}
 	defer resp.Body.Close()
-	out, readErr := io.ReadAll(resp.Body)
+	out, truncated, readErr := readWebshellBody(resp.Body)
 	if readErr != nil {
 		h.logger.Warn("webshell FileOpWithConnection read body", zap.Error(readErr))
+	}
+	if truncated {
+		h.logger.Warn("webshell FileOpWithConnection response truncated", zap.Int("limit_bytes", maxWebshellResponseBytes))
 	}
 	ok = resp.StatusCode == http.StatusOK
 	auditResult := "failure"
@@ -1258,5 +1348,9 @@ func (h *WebShellHandler) FileOpWithConnection(conn *database.WebShellConnection
 	h.recordOperationAudit(nil, "file_operation", auditResult, conn.ID, conn.URL, path, map[string]interface{}{
 		"operation": action, "source": "internal", "http_code": resp.StatusCode, "response_bytes": len(out), "content_bytes": len(content),
 	})
-	return decodeWebshellOutput(out, conn.Encoding), ok, ""
+	decoded := decodeWebshellOutput(out, conn.Encoding)
+	if truncated {
+		decoded += fmt.Sprintf("\n[响应超过 %d 字节，已截断]", maxWebshellResponseBytes)
+	}
+	return decoded, ok, ""
 }

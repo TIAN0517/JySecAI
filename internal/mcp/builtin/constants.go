@@ -7,6 +7,8 @@ const (
 	ToolRecordVulnerability = "record_vulnerability"
 	ToolListVulnerabilities = "list_vulnerabilities"
 	ToolGetVulnerability    = "get_vulnerability"
+	ToolUpdateVulnerability = "update_vulnerability"
+	ToolVulnTriageReport    = "vuln_triage_report"
 
 	// 资产管理工具
 	ToolCreateAsset       = "create_asset"
@@ -81,6 +83,8 @@ func IsBuiltinTool(toolName string) bool {
 	case ToolRecordVulnerability,
 		ToolListVulnerabilities,
 		ToolGetVulnerability,
+		ToolUpdateVulnerability,
+		ToolVulnTriageReport,
 		ToolCreateAsset,
 		ToolGetAsset,
 		ToolQueryAssets,
@@ -142,6 +146,8 @@ func GetAllBuiltinTools() []string {
 		ToolRecordVulnerability,
 		ToolListVulnerabilities,
 		ToolGetVulnerability,
+		ToolUpdateVulnerability,
+		ToolVulnTriageReport,
 		ToolCreateAsset,
 		ToolGetAsset,
 		ToolQueryAssets,

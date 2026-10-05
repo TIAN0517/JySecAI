@@ -128,6 +128,7 @@ agent:
   external_mcp_max_concurrent_total: 16 # 所有外部 MCP 工具全局并发上限；0=默认16；负数=不限制
   external_mcp_circuit_failure_threshold: 15 # 单个外部 MCP server 连续失败多少次后熔断；0=默认3；负数=关闭熔断
   external_mcp_circuit_cooldown_seconds: 60 # 熔断冷却秒数；0=默认60
+  batch_max_global_concurrency: 8 # 所有批量任务队列全局同时运行的子任务数上限；0=默认8
   shell_no_output_timeout_seconds: 1200 # execute/exec 连续无新输出则终止（秒）；通用防挂死；0=默认300；-1=关闭
   workspace_root_dir: "" # 会话工作目录根路径（curl/wget 下载、read_file/glob/grep 本地分析）；空=tmp/workspace，其下按 projects/{id} 或 conversations/{id} 隔离；勿用系统 /tmp
   # system_prompt_path: prompts/single-agent.md # 可选：单代理系统提示文件（相对本配置文件所在目录）；非空且可读时替换内置提示
@@ -420,9 +421,57 @@ mcp:
 # 外部 MCP 配置
 external_mcp:
   servers: {}
+  # 官方 Hex-Rays IDA MCP（先依 docs/zh-CN/ida-mcp-integration.md 启动本机服务）：
+  # servers:
+  #   ida-official:
+  #     type: http
+  #     url: http://127.0.0.1:8737/mcp
+  #     description: Official Hex-Rays IDA MCP shared with Hermes
+  #     timeout: 120
+  #     keep_alive: 30
+  #     max_retries: 5
+  #     external_mcp_enable: true
+  #     tool_enabled:
+  #       open_database: true
+  #       execute_python: true
+  #       reference: true
+  #       list_databases: true
+  #       save_database: true
+  #       close_database: true
+  #
+  # NVIDIA SkillSpector（Apache-2.0），安裝在獨立 venv 後啟用：
+  #   python3 -m venv ~/.venvs/skillspector
+  #   ~/.venvs/skillspector/bin/pip install skillspector
+  # 掃描單位必須是「單一 skill 目錄」（內含 SKILL.md）。若直接指向市集根目錄，
+  # 會被當成一個 unknown skill、coverage 掉到 0%，每個檔案都被誤報為
+  # Concealed Executable Artifact。判讀請人工複核，不要拿 risk_score 當准入閘門。
+  # skillspector:
+  #   type: stdio
+  #   command: /home/bossjy/.venvs/skillspector/bin/skillspector
+  #   args: [mcp]
+  #   allowed_command_roots: [/home/bossjy/.venvs/skillspector/bin]
+  #   description: 'SkillSpector: scan an agent skill directory for supply-chain risk before install.'
+  #   timeout: 120
+  #   disabled: true
+  #   max_retries: 2
+  #   keep_alive: 15
+  #   external_mcp_enable: false
+  #   tool_enabled:
+  #     scan_skill: true
 # 内置 C2：本机仅做对话/知识库时可设为 false，不启动监听器、不注册 C2 MCP 工具；省略本段时默认启用
 c2:
   enabled: true
+# 安全回呼驗證：只收集 jysec_* Canary；SSRF/XXE 使用一次性探針
+xss:
+  enabled: true
+  bind_host: 127.0.0.1
+  bind_port: 18877
+  public_url: https://b.xs1.ccwu.cc
+  canary_cookie_name: jysec_xss_canary
+  probe_ttl_seconds: 3600
+  rate_limit_per_minute: 30
+  max_capture_bytes: 512
+  cooldown_seconds: 60
 # ============================================
 # 知识库相关配置
 # ============================================
@@ -434,6 +483,21 @@ knowledge:
     model: text-embedding-v4 # 嵌入模型名称
     base_url: https://dashscope.aliyuncs.com/compatible-mode/v1 # 留空则使用OpenAI配置的base_url
     api_key: sk-xxxxxxx # 留空则使用OpenAI配置的api_key
+    # 用本机 Ollama 时改成下面这样（Ollama 自带 OpenAI 兼容的 /v1/embeddings）：
+    #   model: bge-m3
+    #   base_url: http://127.0.0.1:11434/v1
+    #   api_key: ollama          # Ollama 不验证密钥，但此栏不能留空
+    # 记得同时把下面的 retrieval.rerank.provider 设成 none。
+    #
+    # 自家 Jy Gateway 的 jy-embed（OpenAI 兼容 /embeddings，向量维度 1024）：
+    #   model: jy-embed
+    #   base_url: https://ai5090.gasjy.com/api/v1
+    #   api_key: <與 ai.channels.jy-gateway-jy53* 同一把>
+    # 该网关只提供 /embeddings，没有 /rerank，所以 rerank.provider 一样要设 none。
+    #
+    # 配好之後用 cmd/knowledge-doctor 確認端點真的通（不要只靠設定檔看起來對）：
+    #   go run ./cmd/knowledge-doctor --config config.yaml
+    # exit 0=正常 1=有錯誤 2=診斷本身失敗。輸出只顯示遮罩後的金鑰。
   retrieval:
     top_k: 5 # 检索返回的Top-K结果数量
     similarity_threshold: 0.4 # 余弦相似度阈值（0-1），低于此值的结果将被过滤
@@ -442,10 +506,13 @@ knowledge:
       max_queries: 4 # 改写变体上限（含语义覆盖）；建议 3~4
     # 精排（始终启用）：dashscope 用 gte-rerank；其他 OpenAI 兼容端点走 /v1/rerank
     rerank:
-      provider: "" # 空=按 base_url 推断：dashscope | cohere
+      provider: "" # 空=按 base_url 推断：dashscope | cohere；none/off=关闭精排
       model: "" # 空=dashscope→gte-rerank，cohere→rerank-multilingual-v3.0
       base_url: "" # 留空则用 embedding / openai 的 base_url
       api_key: "" # 留空则用 embedding / openai 的 api_key
+      # 用本机 embedding 端点（如 Ollama）时请设 provider: none。
+      # 留空会被推断成 cohere，导致每次检索都去请求本机不存在的 /v1/rerank；
+      # 虽然流水线会优雅降级为融合序，但精排实际已失效且每次查询都会记录警告。
     post_retrieve:
       prefetch_top_k: 20 # 每条 MultiQuery 变体的向量候选数；0=内置 max(top_k*4,20)
       max_context_chars: 0 # 0 不限制；否则返回的正文总 Unicode 字符上限（整段 chunk）
@@ -483,6 +550,14 @@ knowledge:
 # 用于在手机端通过企业微信/钉钉/飞书与 JySecAI 对话，无需部署在服务器上也可使用
 # 在系统设置 -> 机器人设置 中可配置
 robots:
+  webhook: # 把漏洞推播转交给另一个服务（例如 hermes gateway），由它投递到聊天频道
+    enabled: false
+    # 必须同时设定 url 与 secret 才会启用：webhook 不做平台身份验证，
+    # 两者绑在一起当作单一收件人凭据。
+    # url: http://127.0.0.1:8791/jysecai/alert
+    # secret: "" # 请求会带 X-JySecAI-Signature: sha256=<hex(HMAC-SHA256(secret, body))>
+    auth:
+      mode: user_binding
   wechat: # 微信 iLink（个人微信 ClawBot，扫码绑定）
     enabled: false
     # 鉴权默认 user_binding；专用机器人可改 service_account，并必须限制真实发送者
@@ -578,3 +653,14 @@ project:
   fact_index_path_max_runes: 10000
   fact_summary_max_runes: 24000
   default_inject_deprecated: false
+
+auto_triage: # 全自动 AI 漏洞分流（定时把待处理漏洞分群、评优先序并套用状态）
+  # 默认关闭：它会自动改写 vulnerabilities.status，是唯一不需要人点一下就动资料的排程。
+  enabled: false
+  interval_seconds: 7200
+  # 每轮送几笔给模型。20 是量出来的：60 笔时模型只覆盖 6 笔（其余落进「未分组」被跳过），
+  # 20 笔时 20/20 全中。批次太大会被输出长度截断。
+  batch: 20
+  # 必须是 all 范围的角色，启动时会实际验证；填错就不启动。
+  # 注意套用纪录仍署名 auto-triage，这个值只影响可见范围。
+  actor_user_id: ""

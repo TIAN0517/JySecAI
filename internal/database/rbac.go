@@ -376,6 +376,16 @@ func grantSystemRolePermissions(tx *sql.Tx, permissions map[string]string) error
 			continue
 		case key == "mcp:write" || key == "mcp:external:execute":
 			continue
+		// agent:local-execute 與 mcp:execute 可經 /api/mcp 呼叫 exec 工具，
+		// 後者以 args["shell"] 指定執行檔、args["command"] 執行任意 shell。
+		// 這與刻意只授予 admin 的 terminal:execute 是同一種能力，
+		// 不得因走 MCP 這條路就落入下方 default 而洩漏給 Operator。
+		case key == "agent:local-execute" || key == "mcp:execute":
+			continue
+		// 省略 connection_id 的 webshell 請求會繞過每條連線的歸屬 ACL，
+		// 可直達內網任意目標。僅 admin 可用。
+		case key == "webshell:connect-unsaved":
+			continue
 		case key == "roles:write" || key == "roles:delete" ||
 			key == "skills:write" || key == "skills:delete" ||
 			key == "agents:write" || key == "agents:delete" ||
@@ -949,7 +959,9 @@ func enrichRBACAssignmentLabels(rows []RBACResourceAssignment, lookup func(resou
 	for resourceType, ids := range idsByType {
 		options, err := lookup(resourceType, ids)
 		if err != nil {
-			return err
+			// 單一資源類型的標籤查詢失敗（例如資源已被刪除或類型不支援）
+			// 只略過該類型的標籤富化，不讓整個授權清單回 500。
+			continue
 		}
 		labelsByType[resourceType] = options
 	}

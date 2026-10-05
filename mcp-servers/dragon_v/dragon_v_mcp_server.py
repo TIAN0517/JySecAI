@@ -28,6 +28,7 @@ try:  # MCP SDK 2.x
 except ImportError:  # MCP SDK 1.x compatibility
     from mcp.server.fastmcp import FastMCP as _MCPServer
 
+from apps import cve_sync as _cve_sync
 from apps.exploit_database import MCPExploitDatabase, default_data_dir
 from apps.payloads_database import MCPPayloadsDatabase
 
@@ -124,7 +125,7 @@ def _load_fingerprint_yamls() -> list[Dict[str, Any]]:
     fingerprints: list[Dict[str, Any]] = []
     if not _FINGERPRINT_DIR.is_dir():
         return fingerprints
-    for yaml_file in sorted(_FINGERPRINT_DIR.glob("*.yaml")):
+    for yaml_file in sorted(_FINGERPRINT_DIR.rglob("*.yaml")):
         try:
             import yaml
 
@@ -141,13 +142,13 @@ def _load_fingerprint_yamls() -> list[Dict[str, Any]]:
 app = _MCPServer(
     name="dragon-v",
     instructions=(
-        "Dragon-V 整合：離線 CVE（414 中/英 YAML）、應用指紋、滲透負載與授權掃描。 "
+        "Dragon-V 整合：離線 CVE（中/英 YAML）、應用指紋、滲透負載與授權掃描。 "
         "所有掃描僅供已授權的滲透測試；generate_payload 產生的負載只能在授權目標與受控環境使用。"
     ),
 )
 
 
-@app.tool(description="搜尋 Dragon-V 離線 CVE 資料庫（中文+英文合併去重，共 413 筆獨特 CVE）")
+@app.tool(description="搜尋 Dragon-V 離線 CVE 資料庫（中文+英文合併去重，筆數以 dragonv_stats 為準）")
 def dragonv_search_exploits(keyword: str, limit: int = 50) -> Dict[str, Any]:
     if not keyword or not keyword.strip():
         raise ValueError("keyword 不能為空")
@@ -190,17 +191,49 @@ def dragonv_search_payloads(keyword: str, limit: int = 20) -> Dict[str, Any]:
     return {"query": keyword, "results": _PAYLOAD_DB.search_payloads(keyword, limit)}
 
 
-@app.tool(description="Dragon-V 離線資料庫統計（CVE 數、應用數、嚴重度分布、負載數）")
+@app.tool(description="Dragon-V 離線資料庫統計（CVE 數、應用數、嚴重度分布、年度分布、負載數、同步狀態）")
 def dragonv_stats() -> Dict[str, Any]:
     stats = _EXPLOIT_DB.stats()
     stats["payload_counts"] = _PAYLOAD_DB.get_all_payloads_count()
     stats["fingerprint_count"] = len(_load_fingerprint_yamls())
     stats["eval_datasets"] = [p.name for p in _EVAL_DIR.glob("*.json")] if _EVAL_DIR.is_dir() else []
     stats["data_dir"] = str(_DATA_DIR)
+    stats["last_synced"] = _cve_sync.read_sync_state(_DATA_DIR).get("last_synced")
+    years: Dict[str, int] = {}
+    for cve_id in _EXPLOIT_DB.cve_index:
+        match = re.match(r"CVE-(\d{4})-", cve_id)
+        if match:
+            years[match.group(1)] = years.get(match.group(1), 0) + 1
+    stats["cve_years"] = dict(sorted(years.items()))
     return stats
 
 
-@app.tool(description="查詢應用指紋庫（36 種 AI/LLM 應用，如 anythingllm、comfyui、fastapi），回傳特徵、CVE 對應與探測路徑")
+@app.tool(description="從 NVD API 2.0 增量同步 AI/LLM 應用 CVE 到離線武器庫（keywords 逗號分隔可選、省略時用 fingerprints+內建清單；dry_run 只統計不寫檔；需網路，無 NVD_API_KEY 時限速 5 req/30s）")
+def dragonv_sync_cves(
+    keywords: str = "",
+    max_per_keyword: int = 20,
+    dry_run: bool = False,
+) -> Dict[str, Any]:
+    if max_per_keyword < 1 or max_per_keyword > 200:
+        raise ValueError("max_per_keyword 必須在 1-200 之間")
+    keyword_list = (
+        [k.strip() for k in keywords.split(",") if k.strip()]
+        if keywords and keywords.strip()
+        else None
+    )
+    result = _cve_sync.sync_cves(
+        keyword_list,
+        max_per_keyword=max_per_keyword,
+        dry_run=dry_run,
+        data_dir=_DATA_DIR,
+    )
+    if not dry_run and result.get("total_new"):
+        global _EXPLOIT_DB  # 重新載入，讓 search/details/stats 立即涵蓋同步進來的 CVE
+        _EXPLOIT_DB = MCPExploitDatabase(_DATA_DIR)
+    return result
+
+
+@app.tool(description="查詢應用指紋庫（AI/LLM 應用，含子目錄，如 anythingllm、comfyui、fastapi），回傳特徵、CVE 對應與探測路徑")
 def dragonv_lookup_fingerprint(app_name: str = "") -> Dict[str, Any]:
     fingerprints = _load_fingerprint_yamls()
     query = app_name.strip().lower()

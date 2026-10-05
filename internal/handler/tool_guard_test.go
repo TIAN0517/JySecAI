@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"runtime"
 	"strings"
 	"sync"
 	"testing"
@@ -68,8 +69,13 @@ func TestToolGuardSavePersistsAndAppliesWithoutChangingHITL(t *testing.T) {
 	}
 	info, _ := os.Stat(h.configPath)
 	data, _ := os.ReadFile(h.configPath)
-	if info.Mode().Perm() != 0600 || !strings.Contains(string(data), "# keep this comment") {
-		t.Fatal("file permissions or comments were lost")
+	// Windows 沒有 POSIX 權限位，os.Stat 一律回報 0666（依唯讀屬性合成），
+	// 0600 在該平台永遠比對不過。權限斷言只在有實際權限位的系統上執行。
+	if runtime.GOOS != "windows" && info.Mode().Perm() != 0600 {
+		t.Errorf("檔案權限應維持 0600，實際 %v", info.Mode().Perm())
+	}
+	if !strings.Contains(string(data), "# keep this comment") {
+		t.Error("存檔後註解遺失")
 	}
 	match := h.toolGuard.Check("scan", map[string]interface{}{"target": "agency.gov.cn"})
 	if match == nil || !strings.Contains(match.Message, "agency.gov.cn") {

@@ -27,9 +27,17 @@ type HTTPReranker struct {
 }
 
 // NewHTTPReranker builds a rerank client from knowledge retrieval config; openAI supplies fallback credentials.
+// 當 knowledge.retrieval.rerank.provider 明確設為 none/off 時回傳 (nil, nil)，
+// 表示精排被關閉。呼叫端以 nil 判斷跳過，見 knowledgePipelineRetriever.Retrieve。
 func NewHTTPReranker(rc *config.RerankConfig, openAI *config.OpenAIConfig, logger *zap.Logger) (*HTTPReranker, error) {
 	if rc == nil {
 		return nil, fmt.Errorf("rerank config is nil")
+	}
+	if rc.RerankDisabled() {
+		if logger != nil {
+			logger.Info("知识库精排已关闭（rerank.provider=none）")
+		}
+		return nil, nil
 	}
 	baseURL := strings.TrimSpace(rc.BaseURL)
 	apiKey := strings.TrimSpace(rc.APIKey)

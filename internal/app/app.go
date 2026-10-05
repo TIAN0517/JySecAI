@@ -89,6 +89,15 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
+	// gin 預設信任所有代理（trustedProxies 為 0.0.0.0/0），ClientIP() 會直接
+	// 採用 X-Forwarded-For。攻擊者只要每次請求帶不同的 XFF，RateLimitMiddleware
+	// 的 per-IP 桶就會不斷換新，登入與 webhook 的速率限制形同失效。
+	// 本服務預設直接對外提供，不假設前方一定有可信反向代理。
+	if err := router.SetTrustedProxies(nil); err != nil {
+		return nil, fmt.Errorf("设置可信代理失败: %w", err)
+	}
+	router.ForwardedByClientIP = false
+
 	// CORS中间件
 	router.Use(corsMiddleware(cfg.Server.CORSAllowedOrigins))
 
@@ -243,13 +252,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		knowledgeManager = knowledge.NewManager(knowledgeDB, cfg.Knowledge.BasePath, log.Logger)
 
 		// 创建嵌入器
-		// 使用OpenAI配置的API Key（如果知识库配置中没有指定）
-		if cfg.Knowledge.Embedding.APIKey == "" {
-			cfg.Knowledge.Embedding.APIKey = cfg.OpenAI.APIKey
-		}
-		if cfg.Knowledge.Embedding.BaseURL == "" {
-			cfg.Knowledge.Embedding.BaseURL = cfg.OpenAI.BaseURL
-		}
+		applyKnowledgeEmbeddingConfig(cfg, log.Logger)
 
 		embedder, err := knowledge.NewEmbedder(context.Background(), &cfg.Knowledge, &cfg.OpenAI, log.Logger)
 		if err != nil {
@@ -403,6 +406,8 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	authHandler.SetAudit(auditSvc)
 	attackChainHandler := handler.NewAttackChainHandler(db, &cfg.OpenAI, log.Logger)
 	vulnerabilityHandler := handler.NewVulnerabilityHandler(db, log.Logger)
+	vulnerabilityHandler.SetPocOutputDir(filepath.Join(filepath.Dir(dbPath), "poc_drafts"))
+	vulnerabilityHandler.SetTriageConfig(&cfg.OpenAI)
 	assetHandler := handler.NewAssetHandler(db, log.Logger)
 	projectHandler := handler.NewProjectHandler(db, log.Logger)
 	rbacHandler := handler.NewRBACHandler(db, log.Logger)
@@ -495,6 +500,9 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	alertCtx, alertCancel := context.WithCancel(context.Background())
 	app.alertCancel = alertCancel
 	go robotHandler.RunVulnerabilityAlertWorker(alertCtx)
+	// 自動分流掛在 alertCtx 底下：收工（alertCancel）時連帶停掉，避免關機流程
+	// 留下一個還在呼叫模型的 goroutine。
+	vulnerabilityHandler.StartAutoTriage(alertCtx, cfg.AutoTriage)
 
 	// 设置漏洞工具注册器（内置工具，必须设置）
 	vulnerabilityRegistrar := func() error {
@@ -1262,12 +1270,21 @@ func setupRoutes(
 		// 漏洞管理
 		protected.GET("/vulnerabilities", vulnerabilityHandler.ListVulnerabilities)
 		protected.GET("/vulnerabilities/export", vulnerabilityHandler.ExportVulnerabilities)
+		protected.GET("/vulnerabilities/export-urls", vulnerabilityHandler.ExportVulnerabilityURLs)
 		protected.DELETE("/vulnerabilities/batch", vulnerabilityHandler.BatchDeleteVulnerabilities)
 		protected.GET("/vulnerabilities/filter-options", vulnerabilityHandler.GetVulnerabilityFilterOptions)
 		protected.GET("/vulnerabilities/stats", vulnerabilityHandler.GetVulnerabilityStats)
+		protected.POST("/vulnerabilities/batch-generate-poc", vulnerabilityHandler.BatchGeneratePoc)
 		protected.GET("/vulnerability-alerts/subscription", vulnerabilityHandler.GetMyAlertSubscription)
 		protected.PUT("/vulnerability-alerts/subscription", vulnerabilityHandler.UpdateMyAlertSubscription)
+		// 分流路由必須註冊在 /vulnerabilities/:id 之前，否則 gin 會因為
+		// 靜態段與 wildcard 在同一層衝突而 panic。
+		protected.POST("/vulnerabilities/triage/run", vulnerabilityHandler.RunTriage)
+		protected.GET("/vulnerabilities/triage/runs", vulnerabilityHandler.ListTriageRuns)
+		protected.GET("/vulnerabilities/triage/runs/:id", vulnerabilityHandler.GetTriageRun)
+		protected.POST("/vulnerabilities/triage/runs/:id/apply", vulnerabilityHandler.ApplyTriageRun)
 		protected.GET("/vulnerabilities/:id", vulnerabilityHandler.GetVulnerability)
+		protected.POST("/vulnerabilities/:id/generate-poc", vulnerabilityHandler.GeneratePoc)
 		protected.POST("/vulnerabilities", vulnerabilityHandler.CreateVulnerability)
 		protected.PUT("/vulnerabilities/:id", vulnerabilityHandler.UpdateVulnerability)
 		protected.DELETE("/vulnerabilities/:id", vulnerabilityHandler.DeleteVulnerability)
@@ -2043,6 +2060,39 @@ func registerWebshellManagementTools(mcpServer *mcp.Server, db *database.DB, web
 	logger.Debug("WebShell 管理工具注册成功")
 }
 
+// applyKnowledgeEmbeddingConfig 解析知识库实际使用的 embedding 设置并写回 cfg，
+// 同时把「哪些字段是从 OpenAI 聊天设置继承来的」记录到日志。
+//
+// 这段继承逻辑原本在两处初始化点各写了一份，且完全静默。当 base_url 与 api_key
+// 同时继承自聊天设置时，平台会把 /embeddings 请求打到只提供 /v1/messages 的
+// 聊天端点上，得到一个看不出成因的 404。集中到这里之后，至少启动日志能指认来源，
+// 完整的端点实测诊断见 cmd/knowledge-doctor。
+func applyKnowledgeEmbeddingConfig(cfg *config.Config, logger *zap.Logger) {
+	if cfg == nil {
+		return
+	}
+	resolved := knowledge.ResolveEmbeddingConfig(&cfg.Knowledge, &cfg.OpenAI)
+
+	cfg.Knowledge.Embedding.BaseURL = resolved.BaseURL
+	cfg.Knowledge.Embedding.APIKey = resolved.APIKey
+	if resolved.Model != "" {
+		cfg.Knowledge.Embedding.Model = resolved.Model
+	}
+
+	if logger != nil {
+		for _, msg := range resolved.Diagnostics() {
+			logger.Warn("知识库 embedding 配置问题", zap.String("detail", msg))
+		}
+		logger.Info("知识库 embedding 配置已解析",
+			zap.String("model", resolved.Model),
+			zap.String("baseURL", resolved.BaseURL),
+			zap.Bool("baseURL继承自OpenAI聊天设置", resolved.BaseURLInherited),
+			zap.Bool("apiKey继承自OpenAI聊天设置", resolved.APIKeyInherited),
+			zap.Bool("apiKey是示例占位符", resolved.PlaceholderAPIKey),
+		)
+	}
+}
+
 // initializeKnowledge 初始化知识库组件（用于动态初始化）
 func initializeKnowledge(
 	cfg *config.Config,
@@ -2081,13 +2131,7 @@ func initializeKnowledge(
 	knowledgeManager := knowledge.NewManager(knowledgeDB, cfg.Knowledge.BasePath, logger)
 
 	// 创建嵌入器
-	// 使用OpenAI配置的API Key（如果知识库配置中没有指定）
-	if cfg.Knowledge.Embedding.APIKey == "" {
-		cfg.Knowledge.Embedding.APIKey = cfg.OpenAI.APIKey
-	}
-	if cfg.Knowledge.Embedding.BaseURL == "" {
-		cfg.Knowledge.Embedding.BaseURL = cfg.OpenAI.BaseURL
-	}
+	applyKnowledgeEmbeddingConfig(cfg, logger)
 
 	embedder, err := knowledge.NewEmbedder(context.Background(), &cfg.Knowledge, &cfg.OpenAI, logger)
 	if err != nil {

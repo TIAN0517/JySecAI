@@ -25,7 +25,7 @@ APK: apktool d / jadx | Manifest看exported组件/deeplink/debuggable | rg硬编
   配置: manifest.json(appId/版本/nativePlugins→wrs-httpserver=内嵌HTTP服务!) | supplierconfig.json(vivo/xiaomi/huawei/oppo appid) | dcloud_uniplugins.json(插件清单)
   ChengZi SDK(橙子建站): init3接口返回XOR单字节(key=0x96,见chengzi_decrypt.py)加密JSON→解密得APK真实下载链接(fu字段)+渠道码
   域名兜底: 静态拿不到$apiHost时→Android模拟器(Waydroid/AVD)+tcpdump/mitmproxy抓运行时DNS
-  参见: references/uniapp-apk-reverse-engineering.md, references/uniapp-apk-reversing.md, scripts/js_rc4_deobfuscate.js, scripts/chengzi_decrypt.py
+  参见: references/uniapp-apk-reverse-engineering.md, references/uniapp-apk-reversing.md, scripts/js_rc4_deobfuscate.js, scripts/chengzi_decrypt.py（以上支持文件暂缺，待从归档还原；引用前必须确认文件存在）
 🚨Flutter APK快速逆向(无需脱壳): 加固(MogoSec/梆梆/360)保护DEX层,但Flutter的lib/arm64-v8a/libapp.so(Dart AOT)通常不加密
   strings -n8 libapp.so|grep 'https\?://' → 全部硬编码URL/API域名/S3地址/CDN
   strings -n8 libapp.so|grep -E '^/' → API路径矩阵(/Member/Login, /Web/VideoList, /BBS/GetSTSToken等)

@@ -3,7 +3,10 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
+	"regexp"
+	"strings"
 	"sync"
 
 	"jysecai/internal/audit"
@@ -134,7 +137,67 @@ func externalMCPConfigForResponse(_ *gin.Context, cfg config.ExternalMCPServerCo
 			copyCfg.Headers[key] = "***"
 		}
 	}
+	// stdio servers routinely receive their credential as a command-line
+	// argument (--api-key <secret>), and an http/sse URL can embed one as
+	// https://user:token@host/mcp. Reading this endpoint requires only
+	// mcp:read while changing the server requires mcp:write, so returning
+	// these verbatim would let a read-only role recover credentials that a
+	// write role had to set. Mask any argument that looks like a secret and
+	// strip userinfo from the URL.
+	copyCfg.Args = redactMCPArgs(cfg.Args)
+	copyCfg.URL = redactMCPURL(cfg.URL)
 	return copyCfg
+}
+
+// redactMCPArgs masks the value that follows any flag naming a secret, plus
+// any bare token-shaped argument.
+func redactMCPArgs(args []string) []string {
+	if len(args) == 0 {
+		return args
+	}
+	// -p / -k 这类短选项不含任何关键字，必须显式列出，
+	// 否则 `-p <password>` 会让密码原样出现在响应里。
+	secretFlag := regexp.MustCompile(`(?i)^(--?[a-z0-9-]*(key|token|secret|password|passwd|auth|credential)[a-z0-9-]*(=|$)|-[pk]$)`)
+	tokenish := regexp.MustCompile(`^[A-Za-z0-9_\-]{20,}$`)
+	out := make([]string, len(args))
+	maskNext := false
+	for i, arg := range args {
+		switch {
+		case maskNext:
+			out[i] = "***"
+			maskNext = false
+		case strings.Contains(arg, "=") && secretFlag.MatchString(arg):
+			// --api-key=SECRET -> --api-key=***
+			key, _, _ := strings.Cut(arg, "=")
+			out[i] = key + "=***"
+		case secretFlag.MatchString(arg):
+			out[i] = arg
+			maskNext = true
+		case tokenish.MatchString(arg) && strings.ContainsAny(arg, "0123456789"):
+			out[i] = "***"
+		default:
+			out[i] = arg
+		}
+	}
+	return out
+}
+
+// redactMCPURL strips embedded credentials from an MCP endpoint URL.
+func redactMCPURL(raw string) string {
+	trimmed := strings.TrimSpace(raw)
+	if trimmed == "" {
+		return trimmed
+	}
+	u, err := url.Parse(trimmed)
+	if err != nil || u.User == nil {
+		return trimmed
+	}
+	if name := u.User.Username(); name != "" {
+		u.User = url.User(name)
+	} else {
+		u.User = nil
+	}
+	return u.String()
 }
 
 func mergeExternalMCPSecrets(in, current config.ExternalMCPServerConfig) config.ExternalMCPServerConfig {
@@ -162,7 +225,42 @@ func mergeExternalMCPSecrets(in, current config.ExternalMCPServerConfig) config.
 	}
 	in.Env = mergeMap(in.Env, current.Env)
 	in.Headers = mergeMap(in.Headers, current.Headers)
+	// Restore argument values the client echoed back as "***" rather than
+	// writing the mask into config.yaml. Matched positionally because a masked
+	// argument carries no value to key on.
+	if len(in.Args) == len(current.Args) {
+		args := make([]string, len(in.Args))
+		for i := range in.Args {
+			if in.Args[i] == "***" {
+				args[i] = current.Args[i]
+			} else {
+				args[i] = in.Args[i]
+			}
+		}
+		in.Args = args
+	}
+	if in.URL == "***" {
+		in.URL = current.URL
+	} else if restored := restoreMCPURLUserinfo(in.URL, current.URL); restored != "" {
+		in.URL = restored
+	}
 	return in
+}
+
+// restoreMCPURLUserinfo re-attaches the password that redactMCPURL stripped
+// from an http/sse endpoint, preserving any edit the caller made to the rest
+// of the URL.
+func restoreMCPURLUserinfo(incoming, current string) string {
+	cur, err := url.Parse(strings.TrimSpace(current))
+	if err != nil || cur.User == nil {
+		return ""
+	}
+	parsed, err := url.Parse(strings.TrimSpace(incoming))
+	if err != nil {
+		return ""
+	}
+	parsed.User = cur.User
+	return parsed.String()
 }
 
 // externalMCPStatusError 在 error/disconnected 状态下返回最近错误（含断连原因）。
@@ -199,8 +297,22 @@ func (h *ExternalMCPHandler) AddOrUpdateExternalMCP(c *gin.Context) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
+	cfg := req.Config
+
+	// Normalize the persisted/runtime configuration before handing it to the
+	// manager.  The Web JSON format follows the official MCP convention where a
+	// server is enabled unless `disabled` is true.  Keeping this normalization
+	// here also ensures the manager receives expanded URLs and environment
+	// values on the first connection attempt.
+	if cfg.Disabled {
+		cfg.ExternalMCPEnable = false
+	} else if !cfg.ExternalMCPEnable {
+		cfg.ExternalMCPEnable = true
+	}
+	config.ExpandConfigEnv(&cfg)
+
 	// 添加或更新配置
-	if err := h.manager.AddOrUpdateConfig(name, req.Config); err != nil {
+	if err := h.manager.AddOrUpdateConfig(name, cfg); err != nil {
 		h.logger.Error("添加或更新外部MCP配置失败", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "添加或更新配置失败: " + err.Error()})
 		return
@@ -210,19 +322,6 @@ func (h *ExternalMCPHandler) AddOrUpdateExternalMCP(c *gin.Context) {
 	if h.config.ExternalMCP.Servers == nil {
 		h.config.ExternalMCP.Servers = make(map[string]config.ExternalMCPServerConfig)
 	}
-
-	cfg := req.Config
-
-	// 官方 disabled 字段 → ExternalMCPEnable 取反
-	if cfg.Disabled {
-		cfg.ExternalMCPEnable = false
-	} else if !cfg.ExternalMCPEnable {
-		// 用户未显式设置 external_mcp_enable，官方配置默认就是启用的
-		cfg.ExternalMCPEnable = true
-	}
-
-	// 展开 ${VAR} 环境变量
-	config.ExpandConfigEnv(&cfg)
 
 	h.config.ExternalMCP.Servers[name] = cfg
 
@@ -413,7 +512,7 @@ func (h *ExternalMCPHandler) saveConfig() error {
 		return fmt.Errorf("读取配置文件失败: %w", err)
 	}
 
-	if err := os.WriteFile(h.configPath+".backup", data, 0644); err != nil {
+	if err := os.WriteFile(h.configPath+".backup", data, 0600); err != nil {
 		h.logger.Warn("创建配置备份失败", zap.Error(err))
 	}
 

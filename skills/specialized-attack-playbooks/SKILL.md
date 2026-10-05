@@ -1,7 +1,7 @@
 ---
 name: specialized-attack-playbooks
 description: >-
-  专题实战利用:GoEdge私钥导出,灰产CDN取证,ARP MITM,CDN→S3 STS链,宝塔+UniApp,AI IDE API反代,OCS+MinIO;含references/scripts支持文件索引。Use when applying specialized playbooks for GoEdge, CDN, ARP MITM, BT Panel, OCS, MinIO.
+  专题实战利用:GoEdge私钥导出,灰产CDN取证,ARP MITM,CDN→S3 STS链,宝塔+UniApp,AI IDE API反代,OCS+MinIO;references/scripts支持文件暂缺待还原。Use when applying specialized playbooks for GoEdge, CDN, ARP MITM, BT Panel, OCS, MinIO.
 metadata:
   tags: [渗透测试, penetration-testing, 红队]
 ---
@@ -62,7 +62,7 @@ metadata:
     注册无验证: 无SMS/无验证码/任意手机号 → 批量注册可能
     STS过度授权: 普通用户角色获得s3:PutObject → 覆盖CDN源站文件
     S3 bucket ListBucket公开: prefix参数无效(CDN缓存), 但直连S3域名可全量枚举
-  参考: references/cdn-antiblock-s3-attack-chain.md
+  参考: references/cdn-antiblock-s3-attack-chain.md（文件暂缺待还原）
 ```
 
 ### 宝塔面板(BT Panel)渗透 + UniApp/DCloud APK逆向
@@ -88,7 +88,7 @@ metadata:
 场景: 色情/灰产APP分发落地页常用ChengZi做免填邀请+跳转+APK分发
 init3接口: POST /web/<appkey>/<channel>/init3 → 返回URL-safe base64编码的XOR加密数据
 解密: base64url_decode → 逐字节XOR 0x96 → JSON(含fu=下载URL, ph=安装包路径, fm=跳转方式)
-  脚本: scripts/chengzi_decrypt.py
+  脚本: scripts/chengzi_decrypt.py（文件暂缺待还原）
 利用: 解密拿到真实APK的阿里云FC函数URL → 下载APK → 逆向提取后端API
 ```
 
@@ -129,6 +129,8 @@ Longteng CDN: TLS证书暴露所有关联域名 | Server头暴露源站OS版本
 ```
 
 ## 支持文件索引
+
+> ⚠ 以下文件当前不在仓库中（待从归档还原）；引用前必须确认存在，避免按路径读档空跑。
 
 ```
 === references/ 攻击链实录 ===

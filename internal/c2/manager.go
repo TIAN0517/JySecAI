@@ -176,6 +176,11 @@ func (m *Manager) CreateListener(in CreateListenerInput) (*database.C2Listener, 
 	if bindHost == "" {
 		bindHost = "127.0.0.1" // 默认绑定环回，需要外网时操作员显式改
 	}
+	// 在写入点就拒绝：bind_host 会流进 beacon 模板的 Go 源码与 oneliner 的
+	// shell 字符串，存进资料库等于把一个已知的注入载荷持久化。
+	if err := validateBeaconHost(bindHost); err != nil {
+		return nil, &CommonError{Code: "invalid_bind_host", Message: fmt.Sprintf("非法的 bind_host %q: %v", bindHost, err), HTTP: 400}
+	}
 	cfg := in.Config
 	if cfg == nil {
 		cfg = &ListenerConfig{}

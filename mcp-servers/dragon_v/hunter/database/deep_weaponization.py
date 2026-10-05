@@ -12,8 +12,6 @@ from dataclasses import dataclass, field
 from enum import Enum
 import aiohttp
 import logging
-from cryptography.fernet import Fernet
-import pandas as pd
 
 class DatabaseType(Enum):
     """数据库类型枚举"""
@@ -71,8 +69,6 @@ class SQLServerWeaponization:
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.encryption_key = Fernet.generate_key()
-        self.fernet = Fernet(self.encryption_key)
 
         # SQL Server特定的攻击查询
         self.queries = {

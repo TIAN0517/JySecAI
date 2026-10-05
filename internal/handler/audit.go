@@ -47,7 +47,11 @@ func (h *AuditHandler) Summary(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "database unavailable"})
 		return
 	}
-	base := auditFilterForAccess(c, auditFilterFromQuery(c))
+	base, ok := auditFilterForAccess(c, auditFilterFromQuery(c))
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return
+	}
 	total, err := h.db.CountAuditLogs(base)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -83,7 +87,11 @@ func (h *AuditHandler) ListLogs(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "database unavailable"})
 		return
 	}
-	filter := auditFilterForAccess(c, auditFilterFromQuery(c))
+	filter, ok := auditFilterForAccess(c, auditFilterFromQuery(c))
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return
+	}
 	page, pageSize := auditPaginationFromQuery(c)
 	filter.Limit = pageSize
 	filter.Offset = (page - 1) * pageSize
@@ -131,7 +139,11 @@ func (h *AuditHandler) ExportLogs(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "database unavailable"})
 		return
 	}
-	filter := auditFilterForAccess(c, auditFilterFromQuery(c))
+	filter, ok := auditFilterForAccess(c, auditFilterFromQuery(c))
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return
+	}
 	filter.Limit = 5000
 	filter.Offset = 0
 
@@ -151,9 +163,19 @@ func (h *AuditHandler) ExportLogs(c *gin.Context) {
 	})
 }
 
-func auditFilterForAccess(c *gin.Context, filter database.ListAuditLogsFilter) database.ListAuditLogsFilter {
-	if session, ok := security.CurrentSession(c); ok && session.Scope != database.RBACScopeAll {
+// auditFilterForAccess 把审计日志收窄到调用者自己的记录。
+//
+// 解析不出 session 时返回 ok=false：原本的 `if session, ok := ...; ok && ...`
+// 在 !ok 时让 filter.Actor 留空，而 buildAuditLogsWhere 只在 Actor 非空时才
+// 附加条件，于是查询退化成 WHERE 1=1，返回全部租户的审计记录。
+// 同文件的 GetLog 已经用 `!ok ||` 正确拒绝，这里是同样的语义。
+func auditFilterForAccess(c *gin.Context, filter database.ListAuditLogsFilter) (database.ListAuditLogsFilter, bool) {
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		return filter, false
+	}
+	if session.Scope != database.RBACScopeAll {
 		filter.Actor = session.Username
 	}
-	return filter
+	return filter, true
 }

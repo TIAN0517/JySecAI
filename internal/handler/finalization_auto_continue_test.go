@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -11,6 +12,7 @@ import (
 	"jysecai/internal/config"
 	"jysecai/internal/database"
 	"jysecai/internal/mcp"
+	"jysecai/internal/multiagent"
 
 	"go.uber.org/zap"
 )
@@ -43,6 +45,48 @@ func TestShouldAutoContinueAfterFinalization(t *testing.T) {
 	}
 	if shouldAutoContinueAfterFinalization(awaitingHITL, 0) {
 		t.Fatal("awaiting HITL should not auto-continue without approval")
+	}
+}
+
+func TestFailedToolExecutionsRecoverThenFinalizeAsExplicitFailure(t *testing.T) {
+	db, err := database.NewDB(filepath.Join(t.TempDir(), "failed-finalization.db"), zap.NewNop())
+	if err != nil {
+		t.Fatalf("NewDB: %v", err)
+	}
+	t.Cleanup(func() { _ = db.Close() })
+	for _, execution := range []*mcp.ToolExecution{
+		{ID: "failed-1", ToolName: "scanner", Status: mcp.ToolExecutionStatusFailed, Error: "secret upstream detail", StartTime: time.Now()},
+		{ID: "failed-2", ToolName: "fetch", Status: mcp.ToolExecutionStatusHardTimeout, Error: "private timeout detail", StartTime: time.Now()},
+	} {
+		if err := db.SaveToolExecution(execution); err != nil {
+			t.Fatalf("SaveToolExecution: %v", err)
+		}
+	}
+	h := &AgentHandler{db: db, logger: zap.NewNop()}
+	decision := agentfinalizer.Decision{
+		Status: agentfinalizer.StatusBlocked, CompletionReason: agentfinalizer.ReasonMissingEvidence,
+		MissingChecks: []string{"all recorded executions failed"},
+	}
+	recovery := h.finalizationRecoveryInstruction(decision, 1, []string{"failed-1", "failed-2"})
+	if !strings.Contains(recovery, "2 个工具执行") || !strings.Contains(recovery, "不要无变化地重复") {
+		t.Fatalf("recovery instruction lacks actionable context: %q", recovery)
+	}
+
+	result := &multiagent.RunResult{}
+	settled := h.finalizeExhaustedFailedExecutions(decision, finalizationAutoContinueMaxAttempts, []string{"failed-1", "failed-2"}, result)
+	if !settled.Finalizable || !settled.Finalized || settled.Status != agentfinalizer.StatusFailed || settled.EvidenceVerified {
+		t.Fatalf("unexpected settled decision: %+v", settled)
+	}
+	if !strings.Contains(settled.FinalText, "不需人工解除") || strings.Contains(settled.FinalText, "secret upstream detail") {
+		t.Fatalf("unsafe or unclear failure text: %q", settled.FinalText)
+	}
+	if !result.Finalized || result.Status != agentfinalizer.StatusFailed {
+		t.Fatalf("run result not synchronized: %+v", result)
+	}
+
+	notSettled := h.finalizeExhaustedFailedExecutions(decision, finalizationAutoContinueMaxAttempts, []string{"missing-record"}, nil)
+	if notSettled.Finalizable {
+		t.Fatalf("missing execution record must remain blocked: %+v", notSettled)
 	}
 }
 

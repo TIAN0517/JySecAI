@@ -32,7 +32,7 @@ func TestModelTokenUsagePersistsFromUsageProcessDetail(t *testing.T) {
 		t.Fatalf("AddProcessDetail: %v", err)
 	}
 
-	stats, err := db.GetModelTokenUsageStats(ModelTokenUsageFilter{})
+	stats, err := db.GetModelTokenUsageStats(ModelTokenUsageFilter{Access: RBACListAccess{Scope: RBACScopeAll}})
 	if err != nil {
 		t.Fatalf("GetModelTokenUsageStats: %v", err)
 	}
@@ -65,7 +65,7 @@ func TestModelTokenUsageBackfillIsIdempotent(t *testing.T) {
 	if err := db.BackfillModelTokenUsageFromProcessDetails(); err != nil {
 		t.Fatalf("Backfill 2: %v", err)
 	}
-	stats, err := db.GetModelTokenUsageStats(ModelTokenUsageFilter{})
+	stats, err := db.GetModelTokenUsageStats(ModelTokenUsageFilter{Access: RBACListAccess{Scope: RBACScopeAll}})
 	if err != nil {
 		t.Fatalf("GetModelTokenUsageStats: %v", err)
 	}

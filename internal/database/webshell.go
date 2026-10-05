@@ -81,7 +81,10 @@ func (db *DB) ListWebshellConnectionsForAccess(userID, scope, projectID string) 
 		args = append(args, projectID)
 	}
 	userID = strings.TrimSpace(userID)
-	if userID != "" && scope != RBACScopeAll {
+	if scope != RBACScopeAll && userID == "" {
+		// fail-closed：解析不出呼叫者时看不到任何资料。
+		query += " AND 1=0"
+	} else if scope != RBACScopeAll {
 		query += ` AND (
 			owner_user_id = ?
 			OR EXISTS (

@@ -41,14 +41,14 @@
     }
 
     function normalizePreference(value) {
-        return THEMES.includes(value) ? value : 'system';
+        return THEMES.includes(value) ? value : 'dark';
     }
 
     function readPreference() {
         try {
             return normalizePreference(localStorage.getItem(STORAGE_KEY));
         } catch (err) {
-            return 'system';
+            return 'dark';
         }
     }
 

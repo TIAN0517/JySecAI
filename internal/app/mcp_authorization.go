@@ -84,6 +84,17 @@ func mcpToolAuthorizer(db *database.DB) func(context.Context, string, map[string
 			return nil
 		case builtin.ToolGetVulnerability:
 			return resource("vulnerability:read", "vulnerability", "id")
+		case builtin.ToolUpdateVulnerability:
+			return resource("vulnerability:write", "vulnerability", "id")
+		case builtin.ToolVulnTriageReport:
+			if err := require("vulnerability:read"); err != nil {
+				return err
+			}
+			conversationID := mcpAuthorizationConversationID(ctx)
+			if conversationID == "" || db == nil || !db.UserCanAccessResource(principal.UserID, principal.ScopeFor("vulnerability:read"), "conversation", conversationID) {
+				return fmt.Errorf("no access to conversation %s", conversationID)
+			}
+			return nil
 		case builtin.ToolQueryAssets:
 			return require("asset:read")
 		case builtin.ToolGetAsset:

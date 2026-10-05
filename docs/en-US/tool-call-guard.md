@@ -6,6 +6,8 @@ The standalone `cmd/mcp-stdio` service also loads these rules. As a separate pro
 
 Government-domain protection is enabled by default, including when an older config omits `tool_guard`. The default rule matches government-domain forms such as `.gov`, `.gov.cn`, and wildcards, ignoring case. Add, edit, enable, or delete rules on the new page. Test an unsaved configuration with a tool name and JSON arguments before saving; testing never executes tools or updates the active policy.
 
+Put formally authorized targets in `tool_guard.scope`. It supports exact domains, domain suffixes, single-label wildcards, and CIDRs. A scoped host bypasses only the built-in `government-domains` target rule; other rules continue to apply. Mixed-target requests are evaluated match by match, so one scoped host cannot release another out-of-scope host in the same request. Loading and saving rules in the UI preserves the scope.
+
 **Add rule** opens a dialog with an independent draft and its own test inputs and results. **Add to list** checks the rule's RE2 syntax before adding it to the page draft; canceling leaves the list unchanged. Use the page's save button to apply the added rule.
 
 Use **Test all rules** in the page header to check the configured order and enabled states. **Test this rule** inside an expanded rule opens a test area directly below that editor. Single-rule tests ignore the global and individual enable switches so disabled drafts can be checked; other rules cannot claim the match first. Each test area keeps separate inputs and displays its own matched text and rendered reminder.
@@ -22,6 +24,6 @@ Text matching cannot establish target ownership from IP addresses, DNS aliases, 
 
 API endpoints:
 
-- `GET /api/tool-guard`: active `{enabled, rules}` configuration.
-- `PUT /api/tool-guard`: save that structure, explicitly providing both fields. Rules contain `id`, `name`, `enabled`, `pattern`, and `message`.
+- `GET /api/tool-guard`: active `{enabled, rules, scope?}` configuration.
+- `PUT /api/tool-guard`: save that structure, explicitly providing `enabled` and `rules`; `scope` is optional. Rules contain `id`, `name`, `enabled`, `pattern`, and `message`.
 - `POST /api/tool-guard/test`: accepts `{config, toolName, arguments}` and returns `{blocked, match?}`. Match fields are `ruleId`, `ruleName`, `matchedText`, and `message`.

@@ -152,9 +152,15 @@ func (h *AuthHandler) ChangePassword(c *gin.Context) {
 		return
 	}
 
-	session, _ := security.CurrentSession(c)
-	if session.Username == "" {
-		session.Username = "admin"
+	// 解析不出 session 就拒絕，不要退化成 admin：原本的
+	// `session.Username == "" → "admin"` 讓這條路徑在沒有 session 時
+	// 變成「攻擊者指定要改哪個帳號的密碼」。AuthMiddleware 目前擋住了
+	// 無 session 的請求，所以這是預設值本身的問題：安全預設應該是
+	// 拒絕，而不是猜。
+	session, ok := security.CurrentSession(c)
+	if !ok || session.Username == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未授权访问，请先登录"})
+		return
 	}
 	if !h.manager.CheckUserPassword(session.Username, oldPassword) {
 		if h.audit != nil {
@@ -171,7 +177,9 @@ func (h *AuthHandler) ChangePassword(c *gin.Context) {
 	}
 
 	if session.UserID == "" {
-		session.UserID = "admin"
+		// 与上面同理：没有 user id 就没有身份，猜一个等于授权给猜测。
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未授权访问，请先登录"})
+		return
 	}
 	if err := h.manager.UpdateUserPassword(session.UserID, newPassword); err != nil {
 		if h.logger != nil {

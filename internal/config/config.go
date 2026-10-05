@@ -49,17 +49,43 @@ type Config struct {
 	Project     ProjectConfig         `yaml:"project,omitempty" json:"project,omitempty"`
 	Vision      VisionConfig          `yaml:"vision,omitempty" json:"vision,omitempty"`
 	Xss         XssConfig             `yaml:"xss,omitempty" json:"xss,omitempty"`
+	AutoTriage  AutoTriageConfig      `yaml:"auto_triage,omitempty" json:"auto_triage,omitempty"`
+}
+
+// AutoTriageConfig 控制「全自動 AI 漏洞分流」要不要跑。
+//
+// 預設關閉：它會自動改寫 vulnerabilities.status，是全系統唯一不需要人點一下就
+// 動資料的排程。actor_user_id 必須指向真的有管理員角色的帳號，否則啟動時會跳過
+// 並記錄原因。
+type AutoTriageConfig struct {
+	Enabled         bool `yaml:"enabled" json:"enabled"`
+	IntervalSeconds int  `yaml:"interval_seconds,omitempty" json:"interval_seconds,omitempty"`
+	Batch           int  `yaml:"batch,omitempty" json:"batch,omitempty"`
+	// ActorUserID 是自動 worker 執行時使用的帳號（可見範圍固定為 all）。
+	// 啟動時會實際查這個帳號有沒有 all 範圍的角色，沒有就不啟動 —— 因為
+	// scope=all 的存取檢查會直接放行、不會回頭驗證 userID。
+	// 套用紀錄仍署名 auto-triage，所以這個值只影響可見範圍、不影響稽核署名。
+	ActorUserID string `yaml:"actor_user_id,omitempty" json:"actor_user_id,omitempty"`
 }
 
 // XssConfig XSS 收割平台配置
 type XssConfig struct {
-	Enabled         bool   `yaml:"enabled" json:"enabled"`
-	Token           string `yaml:"token,omitempty" json:"token,omitempty"`
-	BindHost        string `yaml:"bind_host,omitempty" json:"bind_host,omitempty"`
-	BindPort        int    `yaml:"bind_port,omitempty" json:"bind_port,omitempty"`
-	CooldownSeconds int    `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
-	PublicURL       string `yaml:"public_url,omitempty" json:"public_url,omitempty"`
-	DNSExfilDomain  string `yaml:"dns_exfil_domain,omitempty" json:"dns_exfil_domain,omitempty"`
+	Enabled            bool   `yaml:"enabled" json:"enabled"`
+	Token              string `yaml:"token,omitempty" json:"token,omitempty"`
+	BindHost           string `yaml:"bind_host,omitempty" json:"bind_host,omitempty"`
+	BindPort           int    `yaml:"bind_port,omitempty" json:"bind_port,omitempty"`
+	CooldownSeconds    int    `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
+	PublicURL          string `yaml:"public_url,omitempty" json:"public_url,omitempty"`
+	DNSExfilDomain     string `yaml:"dns_exfil_domain,omitempty" json:"dns_exfil_domain,omitempty"` // Deprecated: cookie data is never sent over DNS.
+	CanaryCookieName   string `yaml:"canary_cookie_name,omitempty" json:"canary_cookie_name,omitempty"`
+	ProbeTTLSeconds    int    `yaml:"probe_ttl_seconds,omitempty" json:"probe_ttl_seconds,omitempty"`
+	RateLimitPerMinute int    `yaml:"rate_limit_per_minute,omitempty" json:"rate_limit_per_minute,omitempty"`
+	MaxCaptureBytes    int    `yaml:"max_capture_bytes,omitempty" json:"max_capture_bytes,omitempty"`
+	// TrustProxyHeaders 让采集端点在来源为 loopback 时采信 CF-Connecting-IP。
+	// 默认关闭：仅凭「对端是 127.0.0.1」不足以证明请求经过可信隧道——同主机的
+	// 普通反向代理不会覆写客户端自带的该头，外部访客可以随意伪造，从而绕过
+	// 以 IP 为键的写入频率限制。只有在确认前置代理会强制覆写该头时才开启。
+	TrustProxyHeaders bool `yaml:"trust_proxy_headers,omitempty" json:"trust_proxy_headers,omitempty"`
 }
 
 func (c XssConfig) EnabledEffective() bool {
@@ -88,6 +114,55 @@ func (c XssConfig) XssCooldownSecondsEffective() int {
 		return 60
 	}
 	return c.CooldownSeconds
+}
+
+// XssCanaryCookieNameEffective only permits the dedicated application-owned
+// canary name so the collector cannot be retargeted at authentication cookies.
+func (c XssConfig) XssCanaryCookieNameEffective() string {
+	name := strings.TrimSpace(c.CanaryCookieName)
+	if name != "jysec_xss_canary" {
+		return "jysec_xss_canary"
+	}
+	return name
+}
+
+// XssProbeTTLSecondsEffective bounds callback lifetime to one minute through one day.
+func (c XssConfig) XssProbeTTLSecondsEffective() int {
+	if c.ProbeTTLSeconds <= 0 {
+		return 3600
+	}
+	if c.ProbeTTLSeconds < 60 {
+		return 60
+	}
+	if c.ProbeTTLSeconds > 86400 {
+		return 86400
+	}
+	return c.ProbeTTLSeconds
+}
+
+// XssRateLimitPerMinuteEffective bounds per-source callback traffic.
+func (c XssConfig) XssRateLimitPerMinuteEffective() int {
+	if c.RateLimitPerMinute <= 0 {
+		return 30
+	}
+	if c.RateLimitPerMinute > 300 {
+		return 300
+	}
+	return c.RateLimitPerMinute
+}
+
+// XssMaxCaptureBytesEffective limits stored canary values and metadata.
+func (c XssConfig) XssMaxCaptureBytesEffective() int {
+	if c.MaxCaptureBytes <= 0 {
+		return 512
+	}
+	if c.MaxCaptureBytes < 64 {
+		return 64
+	}
+	if c.MaxCaptureBytes > 4096 {
+		return 4096
+	}
+	return c.MaxCaptureBytes
 }
 
 // XssPublicURLEffective returns the public URL for the XSS collector; empty means use local bind.
@@ -624,6 +699,7 @@ type RobotsConfig struct {
 	Slack    RobotSlackConfig    `yaml:"slack,omitempty" json:"slack,omitempty"`       // Slack
 	Discord  RobotDiscordConfig  `yaml:"discord,omitempty" json:"discord,omitempty"`   // Discord
 	QQ       RobotQQConfig       `yaml:"qq,omitempty" json:"qq,omitempty"`             // QQ 机器人
+	Webhook  RobotWebhookConfig  `yaml:"webhook,omitempty" json:"webhook,omitempty"`   // 轉送到 hermes gateway
 }
 
 // RobotWechatConfig 微信 iLink 机器人配置（个人微信 ClawBot / iLink 协议）
@@ -637,6 +713,23 @@ type RobotWechatConfig struct {
 	BotAgent      string                   `yaml:"bot_agent,omitempty" json:"bot_agent,omitempty"`             // base_info.bot_agent
 	GetUpdatesBuf string                   `yaml:"get_updates_buf,omitempty" json:"get_updates_buf,omitempty"` // 长轮询游标（运行时）
 	Auth          RobotAuthorizationConfig `yaml:"auth,omitempty" json:"auth,omitempty"`
+}
+
+// RobotWebhookConfig 把漏洞推播轉送到另一個服務（例如 hermes gateway），由它決定
+// 投遞到哪些聊天頻道。設計上是「單一收件人」：webhook 不做平台身分驗證，所以
+// Secret 與 URL 綁在一起，兩者都必須設定才會啟用。
+type RobotWebhookConfig struct {
+	Enabled bool                     `yaml:"enabled" json:"enabled"`
+	URL     string                   `yaml:"url,omitempty" json:"url,omitempty"`
+	Secret  string                   `yaml:"secret,omitempty" json:"secret,omitempty"`
+	Auth    RobotAuthorizationConfig `yaml:"auth,omitempty" json:"auth,omitempty"`
+}
+
+// Configured reports whether the webhook has both halves of its credential.
+// A URL without a secret (or vice versa) would deliver unauthenticated, so it
+// is treated as not configured rather than silently sending in the clear.
+func (c RobotWebhookConfig) Configured() bool {
+	return c.Enabled && strings.TrimSpace(c.URL) != "" && strings.TrimSpace(c.Secret) != ""
 }
 
 const (
@@ -1164,6 +1257,7 @@ type AgentConfig struct {
 	ExternalMCPMaxConcurrentTotal      int `yaml:"external_mcp_max_concurrent_total" json:"external_mcp_max_concurrent_total"`           // 所有外部 MCP 工具全局并发；0 表示默认 16
 	ExternalMCPCircuitFailureThreshold int `yaml:"external_mcp_circuit_failure_threshold" json:"external_mcp_circuit_failure_threshold"` // 单个 MCP server 连续失败多少次后打开熔断；0 表示默认 3；负数关闭
 	ExternalMCPCircuitCooldownSeconds  int `yaml:"external_mcp_circuit_cooldown_seconds" json:"external_mcp_circuit_cooldown_seconds"`   // 熔断后冷却秒数；0 表示默认 60
+	BatchMaxGlobalConcurrency          int `yaml:"batch_max_global_concurrency" json:"batch_max_global_concurrency"`                     // 所有批量队列全局同时运行子任务上限；0 表示默认 8
 	// ShellNoOutputTimeoutSeconds execute/exec 无任何 stdout/stderr 时的空闲终止秒数（通用防挂死，不维护命令黑名单）；0=默认 300（5 分钟）；-1=关闭。
 	ShellNoOutputTimeoutSeconds int `yaml:"shell_no_output_timeout_seconds" json:"shell_no_output_timeout_seconds"`
 	// WorkspaceRootDir 会话工作目录根路径（curl/wget 下载、read_file/glob/grep 本地分析）；空=tmp/workspace，其下按 projects/{id} 或 conversations/{id} 隔离。
@@ -2047,6 +2141,7 @@ func Default() *Config {
 			ExternalMCPMaxConcurrentTotal:      16,  // 外部 MCP 工具全局默认最多 16 个同时执行
 			ExternalMCPCircuitFailureThreshold: 3,   // 单个 server 连续 3 次失败后临时熔断
 			ExternalMCPCircuitCooldownSeconds:  60,  // 熔断默认冷却 60 秒
+			BatchMaxGlobalConcurrency:          8,   // 批量队列全局默认最多 8 个子任务同时执行
 			ShellNoOutputTimeoutSeconds:        300, // execute/exec 无新输出空闲终止（秒）；-1 关闭
 		},
 		Security: SecurityConfig{
@@ -2110,10 +2205,14 @@ func Default() *Config {
 			},
 		},
 		Xss: XssConfig{
-			Enabled:         true,
-			BindHost:        "127.0.0.1",
-			BindPort:        18877,
-			CooldownSeconds: 60,
+			Enabled:            true,
+			BindHost:           "127.0.0.1",
+			BindPort:           18877,
+			CooldownSeconds:    60,
+			CanaryCookieName:   "jysec_xss_canary",
+			ProbeTTLSeconds:    3600,
+			RateLimitPerMinute: 30,
+			MaxCaptureBytes:    512,
 		},
 	}
 }
@@ -2237,6 +2336,23 @@ func (c RerankConfig) ProviderEffective(baseURL string) string {
 		return "dashscope"
 	}
 	return "cohere"
+}
+
+// RerankDisabledProvider 是明確關閉精排的設定值。
+//
+// 沒有這個值的時候，provider 留空會被 ProviderEffective 推斷成 cohere，
+// 於是換成本機 embedding 端點（例如 Ollama）之後，每次檢索都會去呼叫
+// 該端點上並不存在的 /v1/rerank。雖然 pipeline 會優雅降級成融合序，
+// 但等於精排靜默失效且每次查詢都噴警告。設成這個值才能真的關掉。
+const RerankDisabledProvider = "none"
+
+// RerankDisabled 判斷精排是否被明確關閉。
+func (c RerankConfig) RerankDisabled() bool {
+	switch strings.TrimSpace(strings.ToLower(c.Provider)) {
+	case RerankDisabledProvider, "off", "disabled", "false":
+		return true
+	}
+	return false
 }
 
 func (c RerankConfig) ModelEffective(provider string) string {

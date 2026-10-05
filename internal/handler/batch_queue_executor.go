@@ -22,6 +22,9 @@ import (
 
 const batchQueueWorkerIdlePoll = 200 * time.Millisecond
 
+// batchGlobalConcurrencyWait 全局并发预算满时的最长等待；超时判失败，避免 worker 无限滞留。
+const batchGlobalConcurrencyWait = 15 * time.Minute
+
 // executeBatchQueue 使用并发 worker 池执行批量任务队列。
 func (h *AgentHandler) executeBatchQueue(queueID string) {
 	defer h.batchTaskManager.UnmarkQueueExecutor(queueID)
@@ -111,6 +114,19 @@ func (h *AgentHandler) tryFinalizeBatchQueue(queueID string) {
 
 // executeOneBatchSubTask 执行单条批量子任务（各自独立会话）。
 func (h *AgentHandler) executeOneBatchSubTask(queueID string, queue *BatchTaskQueue, task *BatchTask) {
+	if h.batchGlobalSem != nil {
+		select {
+		case h.batchGlobalSem <- struct{}{}:
+			defer func() { <-h.batchGlobalSem }()
+		case <-time.After(batchGlobalConcurrencyWait):
+			h.batchTaskManager.UpdateTaskStatus(queueID, task.ID, BatchTaskStatusFailed, "", "批量任务全局并发预算已满（等待超时），可调大 batch_max_global_concurrency 或降低各队列并发")
+			return
+		}
+		// 等待期间队列可能已被停止/删除，拿到预算后复核一次
+		if q, ok := h.batchTaskManager.GetBatchQueue(queueID); !ok || q == nil || batchQueueExecutionShouldStop(q, ok) {
+			return
+		}
+	}
 	ownerUserID := h.db.GetResourceOwner("batch_task", queueID)
 	access, accessErr := h.db.ResolveRBACAccess(ownerUserID)
 	if accessErr != nil || access == nil || !access.User.Enabled {
@@ -224,6 +240,9 @@ func (h *AgentHandler) executeOneBatchSubTask(queueID string, queue *BatchTaskQu
 	taskCtx = mcp.WithMCPConversationID(taskCtx, conversationID)
 	taskCtx = mcp.WithToolRunRegistry(taskCtx, h.tasks)
 	taskCtx = mcp.WithEinoExecuteRunRegistry(taskCtx, h.tasks)
+	taskCtx = multiagent.WithHITLToolInterceptor(taskCtx, func(ctx context.Context, toolName, arguments string) (string, error) {
+		return h.interceptHITLForEinoTool(ctx, cancelWithCause, conversationID, assistantMessageID, sendEvent, toolName, arguments)
+	})
 
 	useBatchMulti := false
 	batchOrch := "deep"

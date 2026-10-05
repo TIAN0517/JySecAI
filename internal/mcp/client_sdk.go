@@ -401,9 +401,12 @@ func createSDKClient(ctx context.Context, serverCfg config.ExternalMCPServerConf
 		}
 		// 必须用 exec.Command 而非 CommandContext：doConnect 返回后 ctx 会被 cancel，
 		// 若用 CommandContext(ctx) 会立刻杀掉子进程，导致 ListTools 等后续请求失败、显示 0 工具
-		cmd := exec.Command(commandPath, serverCfg.Args...)
-		cmd.Dir = strings.TrimSpace(serverCfg.WorkingDirectory)
+		cmd := exec.Command(commandPath, serverCfg.Args...)
+		cmd.Dir = strings.TrimSpace(serverCfg.WorkingDirectory)
 		cmd.Env = envMapToSlice(serverCfg.Env, serverCfg.InheritParentEnv)
+		// 子程序 stderr 接到服務 stderr（journald）：stdio MCP 子程序若啟動即死，
+		// 沒有這行的話就只是無聲的 initialize: EOF，完全無法診斷。
+		cmd.Stderr = os.Stderr
 		ct := &mcp.CommandTransport{Command: cmd}
 		if serverCfg.TerminateDuration > 0 {
 			ct.TerminateDuration = time.Duration(serverCfg.TerminateDuration) * time.Second
@@ -560,7 +563,12 @@ func validateExternalMCPCommand(cfg config.ExternalMCPServerConfig) (string, err
 			return "", fmt.Errorf("MCP 命令 SHA-256 不匹配")
 		}
 	}
-	return resolvedPath, nil
+	// 安全驗證（allowed_command_roots、command_sha256）以 resolvedPath 為準——
+	// 它與 commandPath 指向同一個檔案，防護語意不變。
+	// 但「執行」必須回傳 commandPath 原路徑：venv 的 bin/python 是指向基礎直譯器的
+	// 符號連結，若執行解引用後的路徑會脫離 venv（site-packages 失效），
+	// 子程序會因 import mcp 失敗立即死亡，表現為 initialize: EOF。
+	return commandPath, nil
 }
 
 func pathWithinRoot(root, target string) bool {

@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strings"
 	"time"
@@ -27,11 +28,30 @@ type TerminalHandler struct {
 	logger *zap.Logger
 }
 
+// terminalSecretPattern matches commands that read or transmit credentials.
+// A two-word denylist ("sudo", "password") let every realistic command
+// through — `cat ~/.aws/credentials`, `mysql -uroot -pSECRET`,
+// `unzip -P hunter2`, `curl -H 'Authorization: Bearer …'` all wrote the
+// secret verbatim into the log file.
+//
+// 每个分支末尾的 `|` 两侧都留有分隔：Go 的原始字符串拼接不会自动插入空格，
+// 曾经因为 `set\s*\|` 后面直接接 `\s-(...)` 而黏成一个分支，导致 `set |`
+// 和 `-pSECRET` 两种写法都匹配不到。
+var terminalSecretPattern = regexp.MustCompile(`(?i)(` +
+	`/etc/shadow|/etc/sudoers|\.aws/credentials|\.ssh/id_|\.netrc|\.npmrc|\.pypirc|` +
+	`\.kube/config|\.docker/config\.json|\.git-credentials|` +
+	`printenv` +
+	`|set\s*\|` +
+	// -p / -P 之后必须直接接内容（`-phunter2`），或用 = 分隔，或独立成词。
+	`|\s-{1,2}[a-z-]*(?:passwd|password|token|secret|credential|auth|key|p)(?:=|\s|[a-z0-9])` +
+	`|--password|--token|--api-key|--secret` +
+	`|authorization\s*:\s*bearer` +
+	`|unzip\s+-P)`)
+
 // maskTerminalCommand 对可能包含敏感信息的终端命令做脱敏，避免在日志中直接记录密码等内容
 func maskTerminalCommand(cmd string) string {
 	trimmed := strings.TrimSpace(cmd)
-	lower := strings.ToLower(trimmed)
-	if strings.Contains(lower, "sudo") || strings.Contains(lower, "password") {
+	if terminalSecretPattern.MatchString(trimmed) {
 		return "[masked sensitive terminal command]"
 	}
 	if len(trimmed) > 256 {

