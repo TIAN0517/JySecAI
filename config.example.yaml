@@ -664,3 +664,17 @@ auto_triage: # 全自动 AI 漏洞分流（定时把待处理漏洞分群、评�
   # 必须是 all 范围的角色，启动时会实际验证；填错就不启动。
   # 注意套用纪录仍署名 auto-triage，这个值只影响可见范围。
   actor_user_id: ""
+
+auto_verify: # 自动漏洞复测（定时把非 critical 的 open 漏洞送进批次佇列，每笔开独立对话让 agent 唯读复测并写回判定）
+  # 默认关闭：它会经 update_vulnerability 改写漏洞状态。判定仍走完整工具路径
+  # （HITL / Tool Guard / 稽核全继承批次佇列行为），confirmed 需 confidence ≥95
+  # 否则被信心闸门自动压回 open。
+  enabled: false
+  interval_seconds: 1800
+  # 每轮派几笔（每笔一个独立对话）。批次 5 是为了把模型注意力留给指令本身。
+  batch: 5
+  # 必须是 all 范围的角色，启动时会实际验证；填错就不启动。
+  actor_user_id: ""
+  # 排除的严重度，大小写不敏感；预设只排 critical，留给人工。
+  exclude_severities:
+    - critical

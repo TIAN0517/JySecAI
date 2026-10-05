@@ -504,6 +504,11 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	// 留下一個還在呼叫模型的 goroutine。
 	vulnerabilityHandler.StartAutoTriage(alertCtx, cfg.AutoTriage)
 
+	// 自動複測：非 critical 的 open 漏洞自動開對話重掃（vulnerability_verify_auto.go）。
+	// 掛在同一個 alertCtx 下收工；派工走批次佇列既有機制，不另開特權通道。
+	vulnerabilityHandler.SetAutoVerifyQueueRunner(agentHandler)
+	vulnerabilityHandler.StartAutoVerify(alertCtx, cfg.AutoVerify)
+
 	// 设置漏洞工具注册器（内置工具，必须设置）
 	vulnerabilityRegistrar := func() error {
 		registerVulnerabilityTools(mcpServer, db, log.Logger)

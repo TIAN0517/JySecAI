@@ -50,6 +50,7 @@ type Config struct {
 	Vision      VisionConfig          `yaml:"vision,omitempty" json:"vision,omitempty"`
 	Xss         XssConfig             `yaml:"xss,omitempty" json:"xss,omitempty"`
 	AutoTriage  AutoTriageConfig      `yaml:"auto_triage,omitempty" json:"auto_triage,omitempty"`
+	AutoVerify  AutoVerifyConfig      `yaml:"auto_verify,omitempty" json:"auto_verify,omitempty"`
 }
 
 // AutoTriageConfig 控制「全自動 AI 漏洞分流」要不要跑。
@@ -66,6 +67,20 @@ type AutoTriageConfig struct {
 	// scope=all 的存取檢查會直接放行、不會回頭驗證 userID。
 	// 套用紀錄仍署名 auto-triage，所以這個值只影響可見範圍、不影響稽核署名。
 	ActorUserID string `yaml:"actor_user_id,omitempty" json:"actor_user_id,omitempty"`
+}
+
+// AutoVerifyConfig 控制「全自動漏洞複測」排程：把非 critical 的 open 漏洞
+// 自動送進批次佇列，每筆開獨立對話讓 agent 實際重掃，並呼叫
+// update_vulnerability 寫回判定（判定走對話工具的完整 HITL/稽核路徑）。
+type AutoVerifyConfig struct {
+	Enabled         bool `yaml:"enabled" json:"enabled"`
+	IntervalSeconds int  `yaml:"interval_seconds,omitempty" json:"interval_seconds,omitempty"`
+	Batch           int  `yaml:"batch,omitempty" json:"batch,omitempty"`
+	// ActorUserID 同 auto_triage：worker 的可見範圍帳號，啟動時實際驗證 all 範圍，
+	// 沒有就不啟動。佇列與複測對話都掛在這個帳號名下。
+	ActorUserID string `yaml:"actor_user_id,omitempty" json:"actor_user_id,omitempty"`
+	// ExcludeSeverities 不自動複測的嚴重度；留空預設排除 critical（嚴重留給人工）。
+	ExcludeSeverities []string `yaml:"exclude_severities,omitempty" json:"exclude_severities,omitempty"`
 }
 
 // XssConfig XSS 收割平台配置
