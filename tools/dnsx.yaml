@@ -1,0 +1,66 @@
+name: "dnsx"
+command: "python3"
+args:
+  - "-c"
+  - |
+    import re
+    import shlex
+    import subprocess
+    import sys
+
+    domains = sys.argv[1] if len(sys.argv) > 1 else ""
+    extra = sys.argv[2] if len(sys.argv) > 2 else ""
+
+    payload = ""
+    if domains:
+        parts = [d.strip() for d in re.split(r"[,\s]+", domains) if d.strip()]
+        payload = "\n".join(parts)
+
+    cmd = ["dnsx", "-silent"]
+    if extra:
+        cmd.extend(shlex.split(extra))
+
+    proc = subprocess.run(cmd, input=payload, capture_output=True, text=True)
+    if proc.stdout:
+        sys.stdout.write(proc.stdout)
+    if proc.stderr:
+        sys.stderr.write(proc.stderr)
+    sys.exit(proc.returncode)
+enabled: true
+short_description: "dnsx DNS 解析与爆破工具（projectdiscovery），A/AAAA/PTR/NS/SRV/MX/TXT"
+description: |
+  dnsx（projectdiscovery）用于批量 DNS 解析、记录枚举与子域爆破，配合 `attack-surface-recon` Skill 使用。
+
+  **仅限授权范围内使用**：仅用于已获书面授权（SOW）的目标域。
+
+  **主要功能：**
+  - 批量解析域名（A/AAAA/CNAME/PTR/NS/SRV/MX/TXT/CAA）
+  - 响应回显（`-resp`）带 IP/ASN 整理
+  - 配合字典做 DNS 爆破（`-w`）
+
+  **使用场景：**
+  - subfinder 产出的子域做存活解析过滤（`dnsx -silent -a -resp`）
+  - 反查 PTR / 枚举 NS/MX/SRV 记录补全资产视图
+
+  **注意事项：**
+  - 本包装通过 stdin 传入域名，一次执行即结束（非交互）
+  - 推荐 additional_args：`-a -resp`（解析并回显 IP）或 `-resp-only -ptr`（反查）
+  - 爆破模式（`-w wordlist`）有查询量：控制 `-rl` 速率，避免打爆目标 DNS
+parameters:
+  - name: "domains"
+    type: "string"
+    description: |
+      域名列表（可选）：单个或逗号/空白分隔的域名。
+      示例：`example.com, sub.example.com, vpn.target.com`
+      传 `-l <文件>` 或 `-w <字典>` 时可留空。
+    required: false
+    position: 0
+    format: "positional"
+  - name: "additional_args"
+    type: "string"
+    description: |
+      额外的 dnsx 参数（追加在命令末尾，按空格解析）。
+      示例：`-a -resp -asn` 或 `-w subs.txt -rl 100`
+    required: false
+    position: 1
+    format: "positional"

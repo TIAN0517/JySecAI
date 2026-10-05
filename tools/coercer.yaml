@@ -1,0 +1,92 @@
+name: "coercer"
+command: "python3"
+args:
+  - "-c"
+  - |
+    import shlex
+    import subprocess
+    import sys
+
+    if len(sys.argv) < 2:
+        sys.stderr.write("缺少coercer子命令（scan/coerce）\n")
+        sys.exit(1)
+
+    subcommand = sys.argv[1]
+    url = sys.argv[2] if len(sys.argv) > 2 else ""
+    username = sys.argv[3] if len(sys.argv) > 3 else ""
+    password = sys.argv[4] if len(sys.argv) > 4 else ""
+    extra = sys.argv[5] if len(sys.argv) > 5 else ""
+
+    cmd = ["coercer", subcommand]
+    if url:
+        cmd.append(f"--url={url}")
+    if username:
+        cmd.extend(["-u", username])
+    if password:
+        cmd.extend(["-p", password])
+    if extra:
+        cmd.extend(shlex.split(extra))
+
+    proc = subprocess.run(cmd, capture_output=True, text=True)
+    if proc.stdout:
+        sys.stdout.write(proc.stdout)
+    if proc.stderr:
+        sys.stderr.write(proc.stderr)
+    sys.exit(proc.returncode)
+enabled: true
+short_description: "Coercer 强制认证工具，多协议触发目标回连（配合 NTLM relay）"
+description: |
+  Coercer 通过 MS-EFSRPC / MS-SCMR 等多协议接口触发 Windows 主机向攻击机强制认证，产出的 NetNTLM/NTLM 认证流量喂给 ntlmrelayx（ESC8/ADCS 中继，见 `active-directory-attack`）。
+
+  **仅限授权范围内使用**：仅用于已获书面授权（SOW）的目标域环境。
+
+  **主要功能：**
+  - scan：枚举目标主机上可用的强制认证漏洞接口
+  - coerce：对指定接口触发强制认证
+
+  **使用场景：**
+  - 配合 ntlmrelayx 打 ADCS ESC8 / LDAP 中继
+  - 触发机器账户认证获取 NetNTLMv2（转 hashcat 5600 或直接 relay）
+
+  **注意事项：**
+  - 每次触发在目标侧留下事件日志，属主动动作，控制频次
+  - 先起 relay 监听（ntlmrelayx），再跑 coercer，顺序不可反
+  - 认证触发会写入目标日志：报告需注明动作时间点
+parameters:
+  - name: "subcommand"
+    type: "string"
+    description: |
+      coercer 子命令（必需）：scan 或 coerce。
+    required: true
+    position: 0
+    format: "positional"
+  - name: "url"
+    type: "string"
+    description: |
+      目标 RPC/HTTP 接口地址（可选），映射为 `--url=`。
+      示例：http://dc01.corp.local/wsman 或 ncacn_np:10.0.0.1[\\pipe\\lsarpc]
+    required: false
+    position: 1
+    format: "positional"
+  - name: "username"
+    type: "string"
+    description: |
+      域用户名（可选），映射为 `-u`。
+    required: false
+    position: 2
+    format: "positional"
+  - name: "password"
+    type: "string"
+    description: |
+      域密码（可选），映射为 `-p`；也可经 additional_args 传 `--hashes`。
+    required: false
+    position: 3
+    format: "positional"
+  - name: "additional_args"
+    type: "string"
+    description: |
+      额外的 coercer 参数（追加在命令末尾，按空格解析）。
+      示例：`-d corp.local --http-port 80 --filter-protocol-name MS-EFSRPC`
+    required: false
+    position: 4
+    format: "positional"

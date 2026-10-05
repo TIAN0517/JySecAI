@@ -1,0 +1,56 @@
+# Pre-commit 防護：阻止憑證與敏感資料進入版控
+#
+# 安裝（一次性）：
+#   pip install pre-commit
+#   pre-commit install
+#
+# 或不裝 pre-commit，直接用 .githooks/ 方式（見 .githooks/pre-commit）
+#
+# 注意：本檔案只做「阻擋」，不做自動修補。發現問題時請手動處理後重新 commit。
+
+default_language_version:
+  python: python3
+
+repos:
+  # 1. 憑證檔名黑名單：這些檔名一旦被加入版控就代表洩漏風險
+  - repo: local
+    hooks:
+      - id: block-secret-filenames
+        name: "[P0] 阻擋憑證檔名進入版控"
+        entry: python3 .githooks/block_secret_filenames.py
+        language: system
+        pass_filenames: true
+        always_run: false
+
+      # 2. 內容掃描：偵測 API key / bot token / JWT secret / 政府帳密
+      - id: scan-secret-content
+        name: "[P0] 掃描檔案內容中的憑證"
+        entry: python3 .githooks/scan_secret_content.py
+        language: system
+        pass_filenames: true
+        always_run: false
+
+      # 3. 安全強化檢查：第三方 API 不應關閉 TLS 驗證
+      - id: jysecai-harden-check
+        name: "[P1] 檢查第三方 API 的 TLS 驗證設定"
+        entry: python3 harden.py
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [commit]
+
+      # 4. Python 語法檢查：擋下 BOM 與語法錯誤
+      - id: python-syntax
+        name: "[P1] Python 語法檢查（含 BOM）"
+        entry: python3 .githooks/check_python_syntax.py
+        language: system
+        pass_filenames: true
+        always_run: false
+
+      # 5. 尾隨空白與檔案結尾
+      - id: trailing-whitespace
+        name: "[P2] 移除行尾空白"
+        entry: python3 .githooks/fix_trailing_whitespace.py
+        language: system
+        types: [text]
+        exclude: '\.(png|jpg|jpeg|gif|ico|pdf|zip|gz|min\.js|map)$'

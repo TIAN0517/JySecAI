@@ -1,0 +1,67 @@
+name: "httpx"
+command: "python3"
+args:
+  - "-c"
+  - |
+    import re
+    import shlex
+    import subprocess
+    import sys
+
+    targets = sys.argv[1] if len(sys.argv) > 1 else ""
+    extra = sys.argv[2] if len(sys.argv) > 2 else ""
+
+    payload = ""
+    if targets:
+        parts = [t.strip() for t in re.split(r"[,\s]+", targets) if t.strip()]
+        payload = "\n".join(parts)
+
+    cmd = ["httpx"]
+    if extra:
+        cmd.extend(shlex.split(extra))
+
+    proc = subprocess.run(cmd, input=payload, capture_output=True, text=True)
+    if proc.stdout:
+        sys.stdout.write(proc.stdout)
+    if proc.stderr:
+        sys.stderr.write(proc.stderr)
+    sys.exit(proc.returncode)
+enabled: true
+short_description: "httpx 存活探测工具，批量验证 HTTP 服务与标题/状态码/指纹"
+description: |
+  httpx（projectdiscovery）用于批量 HTTP 存活探测与信息采集，配合 `attack-surface-recon` Skill 使用。
+
+  **仅限授权范围内使用**：仅用于已获书面授权（SOW）的目标资产。
+
+  **主要功能：**
+  - 批量探测存活 Web 服务（支持域名/IP/CIDR/URL 混合输入）
+  - 采集状态码、标题、技术栈、响应时长
+  - 输出可直接喂给后续扫描器（nuclei 等）
+
+  **使用场景：**
+  - 资产测绘第二棒：subfinder/naabu 结果的 HTTP 存活确认
+  - 大量目标的 Web 指纹快速分筛
+
+  **注意事项：**
+  - 本包装通过 stdin 传入目标，一次执行即结束（非交互）
+  - 推荐 additional_args：`-silent -status-code -title -tech-detect -no-color`
+  - 大列表传 `-l <文件>`（经 additional_args）时 targets 参数可留空
+  - 控制并发（`-threads`）避免触发 WAF 封禁（见 `redteam-opsec`）
+parameters:
+  - name: "targets"
+    type: "string"
+    description: |
+      目标列表（可选）：单个或逗号/空白分隔的域名、IP、URL。
+      示例：`example.com, 10.0.0.1:8443, https://vpn.target.com`
+      传 `-l <文件>` 时可留空。
+    required: false
+    position: 0
+    format: "positional"
+  - name: "additional_args"
+    type: "string"
+    description: |
+      额外的 httpx 参数（追加在命令末尾，按空格解析）。
+      示例：`-silent -status-code -title -tech-detect`
+    required: false
+    position: 1
+    format: "positional"

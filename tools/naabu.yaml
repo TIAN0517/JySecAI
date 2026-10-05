@@ -1,0 +1,77 @@
+name: "naabu"
+command: "python3"
+args:
+  - "-c"
+  - |
+    import shlex
+    import subprocess
+    import sys
+
+    host = sys.argv[1] if len(sys.argv) > 1 else ""
+    ports = sys.argv[2] if len(sys.argv) > 2 else ""
+    extra = sys.argv[3] if len(sys.argv) > 3 else ""
+
+    if not host and "-l" not in extra and "-list" not in extra:
+        sys.stderr.write("缺少目标：请提供 host，或经 additional_args 传 -l <文件>\n")
+        sys.exit(1)
+
+    cmd = ["naabu", "-silent"]
+    if host:
+        cmd.extend(["-host", host])
+    if ports:
+        cmd.extend(["-p", ports])
+    if extra:
+        cmd.extend(shlex.split(extra))
+
+    proc = subprocess.run(cmd, capture_output=True, text=True)
+    if proc.stdout:
+        sys.stdout.write(proc.stdout)
+    if proc.stderr:
+        sys.stderr.write(proc.stderr)
+    sys.exit(proc.returncode)
+enabled: true
+short_description: "naabu 快速端口扫描器（projectdiscovery），SYN/CONNECT 高速扫段"
+description: |
+  naabu（projectdiscovery）用于高速端口扫描，配合 `attack-surface-recon` Skill 作为 nmap 前置分筛。
+
+  **仅限授权范围内使用**：仅用于已获书面授权（SOW）的目标网段。
+
+  **主要功能：**
+  - SYN/CONNECT 两种模式的高速端口扫描
+  - 支持 top-ports、端口范围、逗号列表
+  - 结果可直接喂给 httpx 做存活确认
+
+  **使用场景：**
+  - 大段资产的一轮快筛（比 nmap 快），再对开放端口精细 nmap -sCV
+  - 授权网段的端口暴露面基线
+
+  **注意事项：**
+  - SYN 扫描需 root/CAP_NET_RAW；无特权时自动退化为 connect 扫描（可用 `-s connect` 显式指定）
+  - 推荐附加 `-rate-limit` 控速，避开 IDS 阈值（见 `redteam-opsec`）
+  - 输出为 `host:port` 行，可 `tee` 落盘作为 httpx 输入
+parameters:
+  - name: "host"
+    type: "string"
+    description: |
+      扫描目标（可选）：IP、CIDR 或逗号分隔列表。
+      示例：`10.0.0.1/24` 或 `10.0.0.1,10.0.0.2`
+      传 `-l <文件>` 时可留空。
+    required: false
+    position: 0
+    format: "positional"
+  - name: "ports"
+    type: "string"
+    description: |
+      端口（可选），映射为 `-p`。
+      示例：`top-100`、`1-1000`、`80,443,8080`
+    required: false
+    position: 1
+    format: "positional"
+  - name: "additional_args"
+    type: "string"
+    description: |
+      额外的 naabu 参数（追加在命令末尾，按空格解析）。
+      示例：`-rate-limit 500 -s connect -c 50`
+    required: false
+    position: 2
+    format: "positional"
