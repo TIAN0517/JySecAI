@@ -678,3 +678,8 @@ auto_verify: # 自动漏洞复测（定时把非 critical 的 open 漏洞送进�
   # 排除的严重度，大小写不敏感；预设只排 critical，留给人工。
   exclude_severities:
     - critical
+
+  # 复测对话用的 AI 通道；空则用 ai.default_channel。复测需要可靠的工具调用
+  # 能力：flash 级小模型会发空参数 tool_search 甚至乱摸无关工具，建议指定
+  # 强通道；通道无效时回退默认通道（仅记 warn）。
+  ai_channel: ""

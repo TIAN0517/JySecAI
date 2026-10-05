@@ -74,6 +74,9 @@ type BatchTaskQueue struct {
 	ID                    string       `json:"id"`
 	Title                 string       `json:"title,omitempty"`
 	Role                  string       `json:"role,omitempty"` // 角色名称（空字符串表示默认角色）
+	// AIChannelID 会话级 AI 通道覆盖（仅内存态，不落库）：自动复测等程序化派工
+	// 用指定通道跑对话。重启即丢——队列本来就是派工即执行，重启也会终止执行。
+	AIChannelID           string       `json:"aiChannelId,omitempty"`
 	AgentMode             string       `json:"agentMode"`      // single | eino_single | deep | plan_execute | supervisor
 	ScheduleMode          string       `json:"scheduleMode"`   // manual | cron
 	CronExpr              string       `json:"cronExpr,omitempty"`

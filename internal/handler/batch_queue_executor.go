@@ -265,14 +265,15 @@ func (h *AgentHandler) executeOneBatchSubTask(queueID string, queue *BatchTaskQu
 
 	var resultMA *multiagent.RunResult
 	var runErr error
+	runCfg := h.batchRunConfig(queue)
 	switch {
 	case useBatchMulti:
-		resultMA, runErr = multiagent.RunDeepAgent(taskCtx, h.config, &h.config.MultiAgent, h.agent, h.db, h.logger, conversationID, h.conversationProjectID(conversationID), finalMessage, []agent.ChatMessage{}, roleTools, progressCallback, h.agentsMarkdownDir, batchOrch, nil, h.agentSessionContextBlock(conversationID))
+		resultMA, runErr = multiagent.RunDeepAgent(taskCtx, runCfg, &h.config.MultiAgent, h.agent, h.db, h.logger, conversationID, h.conversationProjectID(conversationID), finalMessage, []agent.ChatMessage{}, roleTools, progressCallback, h.agentsMarkdownDir, batchOrch, nil, h.agentSessionContextBlock(conversationID))
 	default:
 		if h.config == nil {
 			runErr = fmt.Errorf("服务器配置未加载")
 		} else {
-			resultMA, runErr = multiagent.RunEinoSingleChatModelAgent(taskCtx, h.config, &h.config.MultiAgent, h.agent, h.db, h.logger, conversationID, h.conversationProjectID(conversationID), finalMessage, []agent.ChatMessage{}, roleTools, progressCallback, nil, h.agentSessionContextBlock(conversationID))
+			resultMA, runErr = multiagent.RunEinoSingleChatModelAgent(taskCtx, runCfg, &h.config.MultiAgent, h.agent, h.db, h.logger, conversationID, h.conversationProjectID(conversationID), finalMessage, []agent.ChatMessage{}, roleTools, progressCallback, nil, h.agentSessionContextBlock(conversationID))
 		}
 	}
 
@@ -344,6 +345,32 @@ func (h *AgentHandler) executeOneBatchSubTask(queueID string, queue *BatchTaskQu
 		return
 	}
 	h.batchTaskManager.UpdateTaskStatusWithConversationID(queueID, task.ID, BatchTaskStatusCompleted, resText, "", conversationID)
+}
+
+// batchRunConfig 若队列绑定了 AI 通道（AIChannelID），返回换成该通道的配置副本；
+// 否则原样返回共享配置。与交互路径的 configForAIChannel 同一套解析，副本只换 OpenAI 段。
+// 注意：解析失败时 configForAIChannel 会静默回退默认通道——这里对「请求了 A
+// 却落到 B」的情况记 warn，否则派工质量劣化完全不可见。
+func (h *AgentHandler) batchRunConfig(queue *BatchTaskQueue) *config.Config {
+	if h == nil || h.config == nil || queue == nil || strings.TrimSpace(queue.AIChannelID) == "" {
+		return h.config
+	}
+	cfgCopy, resolvedID, err := h.configForAIChannel(queue.AIChannelID)
+	if err != nil {
+		h.logger.Warn("批量队列 AI 通道无效，回退默认通道",
+			zap.String("queueId", queue.ID),
+			zap.String("channel", queue.AIChannelID),
+			zap.Error(err))
+		return h.config
+	}
+	if config.NormalizeAIChannelID(resolvedID) != config.NormalizeAIChannelID(queue.AIChannelID) {
+		h.logger.Warn("批量队列 AI 通道解析结果与请求不符（可能通道名填错，已回退默认通道）",
+			zap.String("queueId", queue.ID),
+			zap.String("requestedChannel", queue.AIChannelID),
+			zap.String("resolvedChannel", resolvedID),
+			zap.String("model", cfgCopy.OpenAI.Model))
+	}
+	return cfgCopy
 }
 
 func batchSubTaskConversationMeta(cfg *config.Config, queue *BatchTaskQueue) database.ConversationCreateMeta {

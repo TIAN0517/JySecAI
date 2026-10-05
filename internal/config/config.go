@@ -81,6 +81,9 @@ type AutoVerifyConfig struct {
 	ActorUserID string `yaml:"actor_user_id,omitempty" json:"actor_user_id,omitempty"`
 	// ExcludeSeverities 不自動複測的嚴重度；留空預設排除 critical（嚴重留給人工）。
 	ExcludeSeverities []string `yaml:"exclude_severities,omitempty" json:"exclude_severities,omitempty"`
+	// AIChannelID 複測對話用的 AI 通道；空則用 ai.default_channel。
+	// 複測需要可靠的工具呼叫能力，預設通道是 flash 級小模型時建議指定強通道。
+	AIChannelID string `yaml:"ai_channel,omitempty" json:"ai_channel,omitempty"`
 }
 
 // XssConfig XSS 收割平台配置
