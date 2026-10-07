@@ -2,6 +2,7 @@ package audit
 
 import (
 	"encoding/json"
+	"reflect"
 	"strings"
 	"testing"
 	"unicode/utf8"
@@ -76,6 +77,98 @@ func TestSanitizeDetailKeepsNonSensitiveFields(t *testing.T) {
 		if got[k] != want {
 			t.Errorf("欄位 %q = %v, want %v（非機密欄位不應被遮罩）", k, got[k], want)
 		}
+	}
+}
+
+// 反向保護（LLM 專屬）：token 用量是這個平台成本稽核的第一手資料。
+//
+// 第一版用「子字串比對」時，下列欄位全部被遮成 ***，等於把稽核紀錄最核心的
+// 內容連同稽核本身一起摧毀。這個測試就是為了擋住那次回退。
+func TestSanitizeDetailKeepsLLMUsageMetrics(t *testing.T) {
+	detail := map[string]interface{}{
+		"max_tokens":         float64(4096),
+		"prompt_tokens":      float64(120),
+		"completion_tokens":  float64(880),
+		"total_tokens":       float64(1000),
+		"token_count":        float64(1000),
+		"tokens_used":        float64(1000),
+		"token_usage":        map[string]interface{}{"input": 120.0, "output": 880.0},
+		"tokenizer":          "jy-tokenizer-v3",
+		"token_type":         "bearer",
+		"token_id":           "tok_123",
+		"secret_count":       float64(0),
+		"credential_type":    "api_key",
+		"prompt_token_count": float64(120),
+		"max_token_usage":    float64(4096),
+	}
+	got := SanitizeDetail(detail, 0)
+	for k, want := range detail {
+		if toStr(got[k]) == "***" {
+			t.Errorf("計量欄位 %q 被遮罩：稽核紀錄會失去用量與成本對帳能力", k)
+		}
+		if !reflect.DeepEqual(got[k], want) {
+			t.Errorf("欄位 %q = %#v, want %#v", k, got[k], want)
+		}
+	}
+	// 巢狀的用量明細也必須原樣保留。
+	usage := got["token_usage"].(map[string]interface{})
+	if usage["input"] != 120.0 || usage["output"] != 880.0 {
+		t.Errorf("巢狀 token_usage 被破壞: %#v", usage)
+	}
+}
+
+// 計量豁免不能變成繞過點：同樣帶著計量詞的憑證欄位仍必須遮。
+func TestSanitizeDetailMasksCredentialsDespiteMeasurementWord(t *testing.T) {
+	for _, key := range []string{
+		"token", "tokens", "access_token", "refresh_token", "bot_token",
+		"password", "user_password", "client_secret", "jwt",
+		"signature", "credential", "api_key",
+	} {
+		got := SanitizeDetail(map[string]interface{}{key: "SENTINEL"}, 0)
+		if toStr(got[key]) != "***" {
+			t.Errorf("欄位 %q 未被遮罩: %#v", key, got[key])
+		}
+	}
+}
+
+// 複合詞比對必須有右側詞邊界，否則 api_keyword 這類欄位會被誤判成機密。
+func TestSanitizeDetailPhraseMatchRespectsWordBoundary(t *testing.T) {
+	detail := map[string]interface{}{
+		"api_keyword":     "關鍵字", // 不是機密
+		"master_keyboard": "鍵盤",  // 不是機密
+		"sort_key":        "created_at",
+	}
+	got := SanitizeDetail(detail, 0)
+	for k, want := range detail {
+		if toStr(got[k]) == "***" {
+			t.Errorf("欄位 %q 被誤判為機密", k)
+		}
+		if !reflect.DeepEqual(got[k], want) {
+			t.Errorf("欄位 %q = %#v, want %#v", k, got[k], want)
+		}
+	}
+	// 但確實是機密的複合詞，含底線前後綴都要命中。
+	for _, key := range []string{
+		"api_key", "x-api-key", "user_api_key", "JY_SECMASTER_KEY",
+		// 左邊界刻意不判斷：myapi_key 左側接著字母，但它確實是憑證，
+		// 放行就是漏遮（見 containsPhrase 的說明）。
+		"myapi_key",
+	} {
+		got := SanitizeDetail(map[string]interface{}{key: "SENTINEL"}, 0)
+		if toStr(got[key]) != "***" {
+			t.Errorf("欄位 %q 未被遮罩", key)
+		}
+	}
+}
+
+// 遮罩與否只看欄位名，值本身帶敏感字串不影響判斷。
+func TestSanitizeDetailMaskingDecidesOnKeyNotValue(t *testing.T) {
+	got := SanitizeDetail(map[string]interface{}{
+		"token_usage": "access_token=abc", // 值像憑證，但欄位名是計量
+		"auth_method": "password",
+	}, 0)
+	if got["token_usage"] != "access_token=abc" {
+		t.Errorf("計量欄位被遮罩: %#v", got["token_usage"])
 	}
 }
 
