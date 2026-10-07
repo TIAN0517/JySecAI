@@ -12,10 +12,11 @@
 | 項目 | 值 |
 |---|---|
 | 工作分支 | `fix/audit-20261002` |
-| PR | [#8](https://github.com/TIAN0517/JySecAI/pull/8)（+3425 −81 / 45 檔） |
+| PR | [#8](https://github.com/TIAN0517/JySecAI/pull/8) |
 | base | `main` @ `bf7eaa8` |
 | CI | `go-test` / `frontend-test` / `build-linux` 全綠 |
 | 工作區 | 乾淨 |
+| 第二輪發現 | [`AUDIT_FINDINGS_20261007.md`](AUDIT_FINDINGS_20261007.md) |
 
 **已完成的第一輪（5 個 commit，不要重做）：**
 
@@ -26,6 +27,18 @@
 | `8923d35` | C2 三項強化（XSS、符號連結、明文 beacon 需顯式開啟） |
 | `c05716a` | 稽核脫敏修正 + CI 從單套件擴充到全專案 |
 | `fe94771` | 不再把主金鑰交給任何子行程 |
+
+**第二輪（2 個 commit）：**
+
+| Commit | 主題 |
+|---|---|
+| `402e9e8` | 本檔（協調地圖） |
+| `24ae3b7` | 稽核脫敏精準化：segment 比對 + 計量豁免（修正 `c05716a` 的過度遮蔽） |
+
+> ⚠️ `c05716a` 的稽核脫敏**已被 `24ae3b7` 修正**。子字串比對會把
+> `max_tokens`、`prompt_tokens`、`token_usage` 等 LLM 用量欄位全遮掉。
+> 若你正在做稽核相關的工作，請以 `24ae3b7` 的 `internal/audit/sanitize.go`
+> 為準，並用 `go run ./tools/redact_probe` 確認分類。
 
 ---
 
@@ -42,6 +55,8 @@ internal/secretstore/subprocess_env_policy_test.go
 internal/database/secrets.go                 internal/database/database.go
 internal/database/c2.go                      internal/database/webshell.go
 internal/audit/sanitize.go
+internal/audit/sanitize_test.go
+tools/redact_probe/main.go
 internal/config/robots_public.go
 ```
 
@@ -67,6 +82,7 @@ web/templates/index.html
 web/static/i18n/en-US.json  web/static/i18n/zh-CN.json
 web/static/js/c2-xss.test.cjs
 config.example.yaml         SECURITY.md
+AUDIT_FINDINGS_20261007.md
 docs/en-US/security-hardening.md   docs/zh-CN/security-hardening.md
 .github/workflows/linux-build.yml
 ```
@@ -149,6 +165,14 @@ gofmt "$f" > /tmp/x.go && diff <(tr -d '\r' < "$f") /tmp/x.go
 `internal/handler`(6)、`internal/logger`(2)、`internal/security`(4)。
 排除清單寫在 `.github/workflows/linux-build.yml`，附有原因註解。
 **若你修好了其中一項，請把套件從排除清單移除** — 這是刻意留給後續工作的出口。
+
+**已實測的結論**（用 `ci/exclusion-check` 分支跑真實 Actions，run `37567963574`）：
+
+| 套件 | Linux runner | 結論 |
+|---|---|---|
+| `internal/logger` | `ok jysecai/internal/logger 0.010s` | **排除是過度保守，移出清單即可白拿 +290 LOC 的 CI 覆蓋**。這是最低成本、最高報酬的一步。 |
+| `internal/security` | 只剩 `TestEinoStreamingShell_SudoFailsFast` | runner 以 root 跑，`sudo` 反而成功 → **環境造成，非產品缺陷**。紅線禁止用 skip 掩蓋，正解是讓該測試在非 root 下有明確意義。 |
+| `internal/handler` | — | 4 個是 Windows 測試衛生問題（缺 `defer db.Close()`），2 個是真實缺陷。 |
 
 ---
 
