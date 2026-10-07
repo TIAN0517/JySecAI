@@ -107,7 +107,10 @@ func TestHTTPBeaconListener_CheckInMatrix(t *testing.T) {
 		}
 	})
 
-	t.Run("check_in_ok_plaintext_json", func(t *testing.T) {
+	// 未开启 allow_plaintext_checkin 的 listener 必须拒绝明文 check-in。
+	// 过去这里是无条件回退到明文解析，等于只要拿到 implant_token 就能完全
+	// 绕过加密通道，hostname / username / internal_ip 全走明文。
+	t.Run("check_in_plaintext_rejected_by_default", func(t *testing.T) {
 		body := `{"hostname":"n","username":"u","os":"Linux","arch":"amd64","internal_ip":"10.0.0.1","pid":42}`
 		req, _ := http.NewRequest(http.MethodPost, base+"/check_in", strings.NewReader(body))
 		req.Header.Set("X-Implant-Token", token)
@@ -118,17 +121,109 @@ func TestHTTPBeaconListener_CheckInMatrix(t *testing.T) {
 		}
 		defer resp.Body.Close()
 		b, _ := io.ReadAll(resp.Body)
-		if resp.StatusCode != http.StatusOK {
-			t.Fatalf("status=%d body=%s", resp.StatusCode, b)
+		if resp.StatusCode != http.StatusNotFound {
+			t.Fatalf("明文 check-in 未被拒绝：status=%d body=%s", resp.StatusCode, b)
 		}
-		var out ImplantCheckInResponse
-		if err := json.Unmarshal(b, &out); err != nil {
-			t.Fatalf("json: %v body=%s", err, b)
+		// 走的是 disguisedReject：回 HTML 404 而不是 JSON 错误，避免向扫描器暴露端点语义。
+		if !strings.Contains(string(b), "404 Not Found") {
+			t.Fatalf("expected disguised HTML, got: %q", b)
 		}
-		if out.SessionID == "" || out.NextSleep <= 0 {
-			t.Fatalf("bad response: %+v", out)
+		if ct := resp.Header.Get("Content-Type"); !strings.Contains(ct, "text/html") {
+			t.Fatalf("content-type=%q body=%q", ct, b)
 		}
 	})
+}
+
+// 显式开启 allow_plaintext_checkin 后，明文 check-in 必须恢复可用。
+// 这是刻意保留的既有功能（curl oneliner 依赖它），不是被移除。
+func TestHTTPBeaconListener_PlaintextCheckInWhenOptedIn(t *testing.T) {
+	tmp := t.TempDir()
+	db, err := database.NewDB(filepath.Join(tmp, "c2.db"), zap.NewNop())
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = db.Close() })
+	lnPick, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	port := lnPick.Addr().(*net.TCPAddr).Port
+	_ = lnPick.Close()
+
+	keyB64, err := GenerateAESKey()
+	if err != nil {
+		t.Fatal(err)
+	}
+	token := "optin-implant-token"
+	lid := "l_plaintextoptin"
+	rec := &database.C2Listener{
+		ID:            lid,
+		Name:          "t",
+		Type:          string(ListenerTypeHTTPBeacon),
+		BindHost:      "127.0.0.1",
+		BindPort:      port,
+		EncryptionKey: keyB64,
+		ImplantToken:  token,
+		Status:        "stopped",
+		ConfigJSON:    `{"beacon_check_in_path":"/check_in","allow_plaintext_checkin":true}`,
+		CreatedAt:     time.Now(),
+	}
+	if err := db.CreateC2Listener(rec); err != nil {
+		t.Fatal(err)
+	}
+	m := NewManager(db, zap.NewNop(), filepath.Join(tmp, "c2store"))
+	m.Registry().Register(string(ListenerTypeHTTPBeacon), NewHTTPBeaconListener)
+	if _, err := m.StartListener(lid); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = m.StopListener(lid) })
+
+	client := &http.Client{Timeout: 5 * time.Second}
+	body := `{"hostname":"n","username":"u","os":"Linux","arch":"amd64","internal_ip":"10.0.0.1","pid":42}`
+	req, _ := http.NewRequest(http.MethodPost, "http://127.0.0.1:"+strconv.Itoa(port)+"/check_in", strings.NewReader(body))
+	req.Header.Set("X-Implant-Token", token)
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	b, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("status=%d body=%s", resp.StatusCode, b)
+	}
+	var out ImplantCheckInResponse
+	if err := json.Unmarshal(b, &out); err != nil {
+		t.Fatalf("json: %v body=%s", err, b)
+	}
+	if out.SessionID == "" || out.NextSleep <= 0 {
+		t.Fatalf("bad response: %+v", out)
+	}
+}
+
+// 即使开启了明文，未加密的 /tasks 仍应下发加密响应，除非客户端明确以明文方式请求。
+// 过去 isPlaintextClient 只看请求头，等于任何自称 curl 的客户端都能把任务指令取走。
+func TestIsPlaintextClientRequiresOptIn(t *testing.T) {
+	mk := func(allow bool) *HTTPBeaconListener {
+		return &HTTPBeaconListener{cfg: &ListenerConfig{AllowPlaintextCheckIn: allow}}
+	}
+	curlReq, _ := http.NewRequest(http.MethodGet, "http://x/tasks?session_id=s", nil)
+	curlReq.Header.Set("User-Agent", "curl/8.0.0")
+	jsonReq, _ := http.NewRequest(http.MethodGet, "http://x/tasks?session_id=s", nil)
+	jsonReq.Header.Set("Accept", "application/json")
+
+	if mk(false).isPlaintextClient(curlReq) {
+		t.Error("未开启 opt-in 时，curl UA 不得让响应转为明文")
+	}
+	if mk(false).isPlaintextClient(jsonReq) {
+		t.Error("未开启 opt-in 时，Accept: application/json 不得让响应转为明文")
+	}
+	if !mk(true).isPlaintextClient(curlReq) {
+		t.Error("开启 opt-in 后 curl UA 应恢复明文响应")
+	}
+	if !mk(true).isPlaintextClient(jsonReq) {
+		t.Error("开启 opt-in 后 Accept: application/json 应恢复明文响应")
+	}
 }
 
 func TestHTTPBeaconListener_HandleFileServe(t *testing.T) {

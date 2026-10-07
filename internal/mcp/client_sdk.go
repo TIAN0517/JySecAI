@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"jysecai/internal/config"
+	"jysecai/internal/secretstore"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"go.uber.org/zap"
@@ -389,9 +390,8 @@ func createSDKClient(ctx context.Context, serverCfg config.ExternalMCPServerConf
 		// 必须用 exec.Command 而非 CommandContext：doConnect 返回后 ctx 会被 cancel，
 		// 若用 CommandContext(ctx) 会立刻杀掉子进程，导致 ListTools 等后续请求失败、显示 0 工具
 		cmd := exec.Command(serverCfg.Command, serverCfg.Args...)
-		if len(serverCfg.Env) > 0 {
-			cmd.Env = append(cmd.Env, envMapToSlice(serverCfg.Env)...)
-		}
+		// 外部 MCP 是第三方行程，不能拿到本服務的主金鑰。
+		cmd.Env = stdioSubprocessEnv(serverCfg.Env)
 		ct := &mcp.CommandTransport{Command: cmd}
 		if serverCfg.TerminateDuration > 0 {
 			ct.TerminateDuration = time.Duration(serverCfg.TerminateDuration) * time.Second
@@ -448,6 +448,16 @@ func envMapToSlice(env map[string]string) []string {
 		out = append(out, k+"="+v)
 	}
 	return out
+}
+
+// stdioSubprocessEnv 組出 stdio 外部 MCP 子行程的環境變數。
+//
+// 外部 MCP 是第三方行程，不能拿到本服務的主金鑰：它一經解密就等於拿走整個
+// 機密欄位資料庫，落盤加密等於沒做。envMapToSlice 以 os.Environ() 為基底，
+// 因此必須在合併完設定端的 env 之後再濾掉，而且要無條件回傳 —— Env 留 nil
+// 時 exec 會隱式繼承整包 os.Environ()，同樣會把主金鑰交出去。
+func stdioSubprocessEnv(extra map[string]string) []string {
+	return secretstore.WithoutSecrets(envMapToSlice(extra))
 }
 
 func httpClientWithTimeoutAndHeaders(timeout time.Duration, headers map[string]string) *http.Client {

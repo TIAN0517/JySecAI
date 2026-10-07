@@ -67,6 +67,8 @@ Before production use:
 - keep C2 disabled unless explicitly needed;
 - review external MCP servers before enabling them;
 - keep high-risk tools out of global HITL allowlists;
+- set `JY_SECMASTER_KEY` (32 bytes, hex) and back it up separately from `data/`;
+- the key stays inside the server process — it is stripped from every child environment (external MCP, interactive shell, tool execution, C2 payload build), so a compromised child cannot decrypt the database;
 - back up `config.yaml`, `data/`, and custom resource directories.
 
 See:
@@ -142,6 +144,8 @@ Shell 执行、WebShell 管理、C2、payload 生成、外部 MCP 工具、批�
 - 不需要 C2 时保持关闭；
 - 启用外部 MCP 前进行审查；
 - 高风险工具不要加入全局 HITL 白名单；
+- 设置 `JY_SECMASTER_KEY`（32 字节十六进制），并与 `data/` 分开备份；
+- 主密钥只留在服务进程内 —— 所有子进程环境（外部 MCP、交互式 shell、工具执行、C2 payload 编译）在启动前都会先剔除它，被攻破的子进程无法解密数据库；
 - 备份 `config.yaml`、`data/` 和自定义资源目录。
 
 参见：

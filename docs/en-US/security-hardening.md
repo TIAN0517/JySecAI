@@ -90,6 +90,7 @@ C2:
 - disabled by default;
 - enabled only during authorized window;
 - listener ports separated from admin UI;
+- `allow_legacy_shell` and `allow_plaintext_checkin` both default to off. Enabling either puts sessions or beacon traffic on the wire in cleartext — hostnames, usernames, internal IPs and dispatched task commands become readable to anyone on the path. Keep them off outside a lab network;
 - cleanup payloads, sessions, tasks, and events.
 
 WebShell:
@@ -98,6 +99,19 @@ WebShell:
 - clear naming;
 - write/delete/execute requires approval;
 - delete connections after project end.
+
+## At-Rest Secret Encryption
+
+C2 listener `encryption_key` / `implant_token` and WebShell `password` are stored in SQLite encrypted with AES-256-GCM. The master key comes from the `JY_SECMASTER_KEY` environment variable — 32 bytes as 64 hex characters, e.g. `openssl rand -hex 32`.
+
+- set `JY_SECMASTER_KEY` before starting the service; the key is never written to the config file, the database, the repository, or backups;
+- back the key up **separately** from the database — a database backup without the key cannot be decrypted, and a key without the database is worthless;
+- a fresh install with no stored secrets starts without the key. Once any secret exists, a missing, malformed, or mismatched key makes startup **fail** rather than fall back to plaintext;
+- a wrong key does not corrupt data: reads of affected rows error out instead of returning garbage;
+- the key never reaches a child process. Every subprocess environment — external MCP, interactive shell, tool execution, C2 payload build — is filtered before launch, so a compromised third-party process cannot decrypt the database. No legitimate child needs it, and an MCP server configured with it explicitly still does not receive it;
+- legacy plaintext values are migrated in place at startup and marked with a `v1:` prefix; the migration is idempotent and re-verifies every row it rewrites.
+
+There is no automated key rotation. Changing `JY_SECMASTER_KEY` while encrypted values exist will block startup by design; rotating requires re-encrypting those rows out of band (export with the old key, restart with the new key, re-import).
 
 ## Retention
 

@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"jysecai/internal/secretstore"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -96,7 +98,12 @@ func (h *TerminalHandler) RunCommand(c *gin.Context) {
 	} else {
 		cmd = exec.CommandContext(ctx, shell, "-c", cmdStr)
 		// 无 TTY 时设置 COLUMNS/TERM，使 ping 等工具的 usage 排版与真实终端一致
-		cmd.Env = append(os.Environ(), "COLUMNS=256", "LINES=40", "TERM=xterm-256color")
+		cmd.Env = secretstore.ChildEnv("COLUMNS=256", "LINES=40", "TERM=xterm-256color")
+	}
+	// Env 留 nil 時 exec 會隱式繼承 os.Environ()，主金鑰會隨之進入子行程。
+	// 互動式 shell 不需要它，因此兩條路徑都顯式給出過濾後的環境。
+	if cmd.Env == nil {
+		cmd.Env = secretstore.ChildEnv()
 	}
 
 	if req.Cwd != "" {
@@ -218,7 +225,12 @@ func (h *TerminalHandler) RunCommandStream(c *gin.Context) {
 		cmd = exec.CommandContext(ctx, "cmd", "/c", cmdStr)
 	} else {
 		cmd = exec.CommandContext(ctx, shell, "-c", cmdStr)
-		cmd.Env = append(os.Environ(), "COLUMNS=256", "LINES=40", "TERM=xterm-256color")
+		cmd.Env = secretstore.ChildEnv("COLUMNS=256", "LINES=40", "TERM=xterm-256color")
+	}
+	// Env 留 nil 時 exec 會隱式繼承 os.Environ()，主金鑰會隨之進入子行程。
+	// 互動式 shell 不需要它，因此兩條路徑都顯式給出過濾後的環境。
+	if cmd.Env == nil {
+		cmd.Env = secretstore.ChildEnv()
 	}
 	if req.Cwd != "" {
 		absCwd, err := filepath.Abs(req.Cwd)

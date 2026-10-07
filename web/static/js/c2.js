@@ -1224,6 +1224,7 @@
         const cbHost = C2.getListenerCallbackHost(l);
         const cfg = C2.getListenerConfig(l);
         const legacyShell = !!cfg.allow_legacy_shell;
+        const plaintextCheckIn = !!cfg.allow_plaintext_checkin;
         const modal = document.getElementById('c2-modal');
         const content = document.getElementById('c2-modal-content');
         if (!content || !modal) return;
@@ -1303,6 +1304,14 @@
                     </label>
                     <div class="form-hint form-hint--warning">${escapeHtml(c2t('c2.listeners.allowLegacyShellHint'))}</div>
                 </div>` : ''}
+                ${(lt === 'http' || lt === 'https') ? `
+                <div class="c2-form-group" id="c2-listener-plaintext-checkin-group">
+                    <label class="c2-checkbox-label">
+                        <input type="checkbox" id="c2-listener-plaintext-checkin"${plaintextCheckIn ? ' checked' : ''}>
+                        ${escapeHtml(c2t('c2.listeners.allowPlaintextCheckIn'))}
+                    </label>
+                    <div class="form-hint form-hint--warning">${escapeHtml(c2t('c2.listeners.allowPlaintextCheckInHint'))}</div>
+                </div>` : ''}
             </div>
             <div class="c2-modal-footer">
                 <button class="btn-secondary" onclick="C2.closeModal()">${escapeHtml(c2t('common.cancel'))}</button>
@@ -1325,17 +1334,18 @@
         const profileEl = document.getElementById('c2-listener-profile-id');
         const profileId = profileEl ? String(profileEl.value || '').trim() : '';
         const legacyEl = document.getElementById('c2-listener-legacy-shell');
+        const plaintextEl = document.getElementById('c2-listener-plaintext-checkin');
         const body = {
             name, bind_host: bindHost, bind_port: bindPort, remark,
             callback_host: callbackHost,
             project_id: (document.getElementById('c2-listener-project-id')?.value || '').trim(),
             profile_id: profileId
         };
-        if (legacyEl) {
+        if (legacyEl || plaintextEl) {
             const existing = C2.listeners.find(x => x.id === id);
-            const merged = Object.assign({}, C2.getListenerConfig(existing), {
-                allow_legacy_shell: legacyEl.checked === true
-            });
+            const merged = Object.assign({}, C2.getListenerConfig(existing));
+            if (legacyEl) merged.allow_legacy_shell = legacyEl.checked === true;
+            if (plaintextEl) merged.allow_plaintext_checkin = plaintextEl.checked === true;
             body.config = merged;
         }
 
@@ -2791,7 +2801,7 @@
             payload: { path: path }
         }).then(data => {
             if (data.error) {
-                if (container) container.innerHTML = `<div class="c2-error">${data.error}</div>`;
+                if (container) container.innerHTML = `<div class="c2-error">${escapeHtml(data.error)}</div>`;
                 return;
             }
             C2.waitForFileList(data.task?.id || data.task_id, sessionId, path);

@@ -143,6 +143,14 @@ type ListenerConfig struct {
 	CallbackHost string `json:"callback_host,omitempty"`
 	// AllowLegacyShell 为 true 时 tcp_reverse 允许未加密的经典 bash/nc 反弹 shell 登记会话（默认 false，公网部署强烈不建议开启）
 	AllowLegacyShell bool `json:"allow_legacy_shell,omitempty"`
+	// AllowPlaintextCheckIn 为 true 时 HTTP/HTTPS beacon 允许明文 JSON 交互（兼容 curl oneliner
+	// 等轻量客户端），默认 false。
+	//
+	// 默认关闭的理由：beacon 流量里带 implant_uuid、主机名、账号、内网 IP，以及下发的任务
+	// 指令与路径。过去 check_in 解密失败就退回明文解析、响应是否加密只看请求头是否像 curl，
+	// 等于让加密形同虚设 —— 链路上的观察者能直接读出全部内容。
+	// 公网部署请保持关闭；确实需要 oneliner 时再显式开启，并清楚这意味着链路不可信。
+	AllowPlaintextCheckIn bool `json:"allow_plaintext_checkin,omitempty"`
 }
 
 // ApplyDefaults 对未填字段填默认值；调用方负责持久化时序列化新值

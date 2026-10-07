@@ -23,6 +23,41 @@ type WebShellConnection struct {
 	CreatedAt time.Time `json:"createdAt"`
 }
 
+// RedactedSecretPlaceholder 表示「該欄位有值但已遮罩」，見 config.RedactedSecretPlaceholder。
+const RedactedSecretPlaceholder = "***"
+
+// Redacted 回傳適合回傳給 API 用戶的副本：密碼以佔位符取代，其餘欄位原樣保留。
+//
+// /api/webshell/connections 的授權本身是正確的（ListWebshellConnectionsForAccess
+// 會過濾 owner 與 RBAC 授權），但 WebShellConnection 的 Password 帶有
+// json:"password" 標籤且 handler 直接序列化整個結構，等於把範圍內所有 WebShell
+// 的憑證一次回傳。持有 WebShell 密碼等同於可直接在目標主機下任意指令，
+// 因此回應中只保留「是否已設定」的資訊。
+//
+// 對既有流程無影響：/api/webshell/exec 與檔案端點在帶 connection_id 時，
+// handler 會以 DB 值覆寫請求帶來的密碼（見 authorizedWebshellConnection 呼叫處），
+// 客戶端回傳的 password 本來就不被採用。
+func (c WebShellConnection) Redacted() WebShellConnection {
+	out := c
+	if out.Password != "" {
+		out.Password = RedactedSecretPlaceholder
+	}
+	return out
+}
+
+// RedactedWebshellConnections 批次套用 Redacted；nil 輸入回傳空切片而非 nil，
+// 避免序列化結果從 [] 變成 null。
+func RedactedWebshellConnections(list []WebShellConnection) []WebShellConnection {
+	if list == nil {
+		return []WebShellConnection{}
+	}
+	out := make([]WebShellConnection, 0, len(list))
+	for _, c := range list {
+		out = append(out, c.Redacted())
+	}
+	return out
+}
+
 // GetWebshellConnectionState 获取连接关联的持久化状态 JSON，不存在时返回 "{}"
 func (db *DB) GetWebshellConnectionState(connectionID string) (string, error) {
 	var stateJSON string
@@ -106,6 +141,10 @@ func (db *DB) ListWebshellConnectionsForAccess(userID, scope, projectID string) 
 			db.logger.Warn("扫描 WebShell 连接行失败", zap.Error(err))
 			continue
 		}
+		if err := openWebshellPassword(&c); err != nil {
+			db.logger.Warn("解密 WebShell 密码失败", zap.String("id", c.ID), zap.Error(err))
+			continue
+		}
 		list = append(list, c)
 	}
 	return list, rows.Err()
@@ -127,16 +166,26 @@ func (db *DB) GetWebshellConnection(id string) (*WebShellConnection, error) {
 		db.logger.Error("查询 WebShell 连接失败", zap.Error(err), zap.String("id", id))
 		return nil, err
 	}
+	if err := openWebshellPassword(&c); err != nil {
+		db.logger.Error("解密 WebShell 密码失败", zap.String("id", id), zap.Error(err))
+		return nil, err
+	}
 	return &c, nil
 }
 
 // CreateWebshellConnection 创建 WebShell 连接
 func (db *DB) CreateWebshellConnection(c *WebShellConnection) error {
+	// 寫入前加密。用複本處理，呼叫端持有的結構維持明文、不受影響。
+	sealed := *c
+	if err := sealWebshellPassword(&sealed); err != nil {
+		db.logger.Error("加密 WebShell 密码失败", zap.String("id", c.ID), zap.Error(err))
+		return err
+	}
 	query := `
 		INSERT INTO webshell_connections (id, project_id, url, password, type, method, cmd_param, remark, encoding, os, created_at)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
-	_, err := db.Exec(query, c.ID, strings.TrimSpace(c.ProjectID), c.URL, c.Password, c.Type, c.Method, c.CmdParam, c.Remark, c.Encoding, c.OS, c.CreatedAt)
+	_, err := db.Exec(query, sealed.ID, strings.TrimSpace(sealed.ProjectID), sealed.URL, sealed.Password, sealed.Type, sealed.Method, sealed.CmdParam, sealed.Remark, sealed.Encoding, sealed.OS, sealed.CreatedAt)
 	if err != nil {
 		db.logger.Error("创建 WebShell 连接失败", zap.Error(err), zap.String("id", c.ID))
 		return err
@@ -146,12 +195,17 @@ func (db *DB) CreateWebshellConnection(c *WebShellConnection) error {
 
 // UpdateWebshellConnection 更新 WebShell 连接
 func (db *DB) UpdateWebshellConnection(c *WebShellConnection) error {
+	sealed := *c
+	if err := sealWebshellPassword(&sealed); err != nil {
+		db.logger.Error("加密 WebShell 密码失败", zap.String("id", c.ID), zap.Error(err))
+		return err
+	}
 	query := `
 		UPDATE webshell_connections
 		SET project_id = ?, url = ?, password = ?, type = ?, method = ?, cmd_param = ?, remark = ?, encoding = ?, os = ?
 		WHERE id = ?
 	`
-	result, err := db.Exec(query, strings.TrimSpace(c.ProjectID), c.URL, c.Password, c.Type, c.Method, c.CmdParam, c.Remark, c.Encoding, c.OS, c.ID)
+	result, err := db.Exec(query, strings.TrimSpace(sealed.ProjectID), sealed.URL, sealed.Password, sealed.Type, sealed.Method, sealed.CmdParam, sealed.Remark, sealed.Encoding, sealed.OS, sealed.ID)
 	if err != nil {
 		db.logger.Error("更新 WebShell 连接失败", zap.Error(err), zap.String("id", c.ID))
 		return err

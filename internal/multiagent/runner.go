@@ -194,14 +194,25 @@ func RunDeepAgent(
 				instr = "你是 JySecAI 中的专业子代理，在授权渗透测试场景下协助完成用户委托的子任务。优先使用可用工具获取证据，回答简洁专业。"
 			}
 
-			roleTools := sub.RoleTools
+			// 這裡刻意不叫 roleTools：同名會遮蔽函式參數 roleTools（父代理允許
+			// 集合，runner.go:76），父代理的限制就再也進不了子代理的工具計算。
+			subRoleKeys := sub.RoleTools
 			bind := strings.TrimSpace(sub.BindRole)
 			if bind != "" && appCfg.Roles != nil {
 				if r, ok := appCfg.Roles[bind]; ok && r.Enabled {
-					if len(roleTools) == 0 && len(r.Tools) > 0 {
-						roleTools = r.Tools
+					if len(subRoleKeys) == 0 && len(r.Tools) > 0 {
+						subRoleKeys = r.Tools
 					}
 				}
+			}
+
+			// 子代理可用工具 = 父代理允許集合 ∩ 子代理宣告集合。
+			subDefs, denyAll := resolveSubAgentDefs(roleTools, subRoleKeys, ag.ToolsForRole)
+			if denyAll {
+				logger.Warn("子代理工具交集為空，該子代理本輪不取得任何工具",
+					zap.String("sub_agent", id),
+					zap.Strings("parent_tools", roleTools),
+					zap.Strings("sub_tools", subRoleKeys))
 			}
 
 			subModel, err := agenticModelFactory(ctx, appCfg.OpenAI, einoModelModeNormal)
@@ -209,7 +220,6 @@ func RunDeepAgent(
 				return nil, fmt.Errorf("子代理 %q AgenticModel: %w", id, err)
 			}
 
-			subDefs := ag.ToolsForRole(roleTools)
 			subTools, err := einomcp.ToolsFromDefinitions(ag, holder, subDefs, recorder, nil, toolInvokeNotify, id)
 			if err != nil {
 				return nil, fmt.Errorf("子代理 %q 工具: %w", id, err)

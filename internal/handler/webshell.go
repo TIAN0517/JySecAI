@@ -368,12 +368,16 @@ type UpdateConnectionRequest struct {
 	ProjectID string `json:"project_id"`
 	URL       string `json:"url" binding:"required"`
 	Password  string `json:"password"`
-	Type      string `json:"type"`
-	Method    string `json:"method"`
-	CmdParam  string `json:"cmd_param"`
-	Remark    string `json:"remark"`
-	Encoding  string `json:"encoding"`
-	OS        string `json:"os"`
+	// ClearPassword 讓使用者能明確清空既有密碼。密碼欄位在讀取時已被遮罩，
+	// 編輯表單預設留空代表「不變更」，若要移除密碼必須另外勾選此旗標，
+	// 否則無法區分「沒改」與「想清空」。
+	ClearPassword bool   `json:"clear_password,omitempty"`
+	Type          string `json:"type"`
+	Method        string `json:"method"`
+	CmdParam      string `json:"cmd_param"`
+	Remark        string `json:"remark"`
+	Encoding      string `json:"encoding"`
+	OS            string `json:"os"`
 }
 
 // ListConnections 列出所有 WebShell 连接（GET /api/webshell/connections）
@@ -391,7 +395,7 @@ func (h *WebShellHandler) ListConnections(c *gin.Context) {
 	if list == nil {
 		list = []database.WebShellConnection{}
 	}
-	c.JSON(http.StatusOK, list)
+	c.JSON(http.StatusOK, database.RedactedWebshellConnections(list))
 }
 
 // CreateConnection 创建 WebShell 连接（POST /api/webshell/connections）
@@ -457,7 +461,7 @@ func (h *WebShellHandler) CreateConnection(c *gin.Context) {
 			"host": host, "type": shellType,
 		})
 	}
-	c.JSON(http.StatusOK, conn)
+	c.JSON(http.StatusOK, conn.Redacted())
 }
 
 // UpdateConnection 更新 WebShell 连接（PUT /api/webshell/connections/:id）
@@ -498,11 +502,30 @@ func (h *WebShellHandler) UpdateConnection(c *gin.Context) {
 	if shellType == "" {
 		shellType = "php"
 	}
+	// 密碼欄位在回應中是被遮罩的，設定頁的讀-改-寫流程會把 "***" 原樣送回，
+	// 而編輯表單在「不修改密碼」時會送空字串。兩者都視為沿用既有密碼；
+	// 只有 clear_password 明確為 true 時才會清空。
+	password := strings.TrimSpace(req.Password)
+	switch {
+	case req.ClearPassword:
+		password = ""
+	case password == database.RedactedSecretPlaceholder || password == "":
+		existing, err := h.db.GetWebshellConnection(id)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		if existing == nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "connection not found"})
+			return
+		}
+		password = existing.Password
+	}
 	conn := &database.WebShellConnection{
 		ID:        id,
 		ProjectID: projectID,
 		URL:       req.URL,
-		Password:  strings.TrimSpace(req.Password),
+		Password:  password,
 		Type:      shellType,
 		Method:    method,
 		CmdParam:  strings.TrimSpace(req.CmdParam),
@@ -520,9 +543,9 @@ func (h *WebShellHandler) UpdateConnection(c *gin.Context) {
 	}
 	updated, _ := h.db.GetWebshellConnection(id)
 	if updated != nil {
-		c.JSON(http.StatusOK, updated)
+		c.JSON(http.StatusOK, updated.Redacted())
 	} else {
-		c.JSON(http.StatusOK, conn)
+		c.JSON(http.StatusOK, conn.Redacted())
 	}
 }
 

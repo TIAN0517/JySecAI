@@ -38,6 +38,9 @@ func TestStartListener_ImplantTokenSurvivesHandlerRedaction(t *testing.T) {
 		Type:     string(ListenerTypeHTTPBeacon),
 		BindHost: "127.0.0.1",
 		BindPort: port,
+		// 本测试用明文 check-in 触发 handler 的脱敏路径，与被测点无关。
+		// 显式开启 opt-in，避免在默认的加密强制策略下拿不到会话。
+		Config: &ListenerConfig{AllowPlaintextCheckIn: true},
 	})
 	if err != nil {
 		t.Fatal(err)

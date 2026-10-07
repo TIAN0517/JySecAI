@@ -6759,6 +6759,11 @@
                 <div class="form-group">
                     <label for="webshell-password" data-i18n="webshell.password">连接密码/密钥</label>
                     <input type="text" id="webshell-password" data-i18n="webshell.passwordPlaceholder" data-i18n-attr="placeholder" placeholder="如冰蝎/蚁剑的连接密码" />
+                    <div class="form-check" id="webshell-clear-password-wrap" style="display: none; margin-top: 6px;">
+                        <input type="checkbox" class="form-check-input" id="webshell-clear-password" />
+                        <label class="form-check-label" for="webshell-clear-password" data-i18n="webshell.clearPassword">清除已保存的密码</label>
+                    </div>
+                    <div class="form-text" id="webshell-password-keep-hint" style="display: none;" data-i18n="webshell.passwordKeepHint">已保存的密码不会回显；留空表示保持不变。</div>
                 </div>
                 <div class="form-group">
                     <label for="webshell-type" data-i18n="webshell.type">Shell 类型</label>

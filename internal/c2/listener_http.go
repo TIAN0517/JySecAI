@@ -182,7 +182,14 @@ func (l *HTTPBeaconListener) handleCheckIn(w http.ResponseWriter, r *http.Reques
 			return
 		}
 	} else {
-		// 解密失败：尝试当作明文 JSON（兼容 curl oneliner 等轻量级客户端）
+		// 解密失败：明文 JSON 只在 listener 显式开启 allow_plaintext_checkin 时才接受。
+		// 过去这里是无条件回退，意味着一旦知道 implant_token 就能完全绕过加密通道，
+		// beacon 的身份与主机信息会以明文走完整条链路。加密是底线，不该被客户端偷懒带偏。
+		if !l.cfg.AllowPlaintextCheckIn {
+			l.disguisedReject(w)
+			return
+		}
+		// 兼容 curl oneliner 等轻量级客户端
 		if err := json.Unmarshal(body, &req); err != nil {
 			l.disguisedReject(w)
 			return
@@ -524,7 +531,16 @@ func shortHash(s string) string {
 
 // isPlaintextClient 判断请求是否来自明文客户端（curl oneliner 等）
 // 完整 beacon 二进制会设置 Content-Type: application/octet-stream
+// isPlaintextClient 判断该客户端是否走明文响应。
+//
+// 未显式开启 allow_plaintext_checkin 的 listener 一律返回加密响应。
+// 过去这里只看请求头（Content-Type / Accept / User-Agent 是否含 curl），
+// 意味着任何自称 curl 的客户端都能把任务内容（含指令与文件路径）以明文取走，
+// 哪怕它本身有能力加密。加密与否是 listener 的策略决定，不该由客户端自称的身份决定。
 func (l *HTTPBeaconListener) isPlaintextClient(r *http.Request) bool {
+	if !l.cfg.AllowPlaintextCheckIn {
+		return false
+	}
 	ct := r.Header.Get("Content-Type")
 	accept := r.Header.Get("Accept")
 	return strings.Contains(ct, "application/json") ||

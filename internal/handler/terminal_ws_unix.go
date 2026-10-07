@@ -5,9 +5,10 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-	"os"
 	"os/exec"
 	"time"
+
+	"jysecai/internal/secretstore"
 
 	"github.com/creack/pty"
 	"github.com/gin-gonic/gin"
@@ -44,7 +45,7 @@ func (h *TerminalHandler) RunCommandWS(c *gin.Context) {
 		shell = "sh"
 	}
 	cmd := exec.Command(shell)
-	cmd.Env = append(os.Environ(),
+	cmd.Env = secretstore.ChildEnv(
 		"COLUMNS=80",
 		"LINES=24",
 		"TERM=xterm-256color",
