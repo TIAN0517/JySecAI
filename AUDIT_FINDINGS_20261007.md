@@ -250,4 +250,210 @@ Linux 上不會發生。補上 `defer db.Close()` 即可。
 
 ---
 
+## D. 五個專項審計助手的回報 — 已由主審計者逐項複驗
+
+> 交叉驗證是硬規則：第一輪曾有「發現」是錯的（`/vulnerabilities/:id` IDOR 已撤回）。
+> 下列 **D1–D7 全部由主審計者重新讀原始碼確認為真**，每項都附複驗過的證據。
+> §E 之後是「回報但尚未複驗」，**不可直接動工**。
+
+### [嚴重度 高] D1 — `GET /api/config` 明文回傳 API 金鑰給**任何登入者**
+
+**位置**：`internal/app/app.go:1080`、`internal/handler/config.go:374-390`、
+`internal/config/config.go:881-890`
+
+```go
+// app.go:1080 —— protected 群組有 AuthMiddleware，但這個端點沒有 RequirePermission
+protected.GET("/config", configHandler.GetConfig)
+```
+
+```go
+// config.go:376-384 —— 直接回傳原始設定物件
+AI:         h.config.AI,
+OpenAI:     h.config.OpenAI,     // ← 含 APIKey
+FOFA:       h.config.FOFA,
+Shodan:     h.config.Shodan,
+```
+
+```go
+// config.go:883 —— json tag 沒有任何遮罩處理
+APIKey string `yaml:"api_key" json:"api_key"`
+```
+
+**複驗結果**：確認。`protected` 群組掛了 `AuthMiddleware` +
+`RBACMiddlewareWithDenyHook`，但 `/config` 本身**沒有 `RequirePermission`**，
+因此**任何角色、任何登入者**都能取得明文 `api_key`。
+
+**這是 PR #8 的漏網**。該輪已為 C2 與 Robots 做了 `C2.Public()` / `Robots.Public()`
+清洗（見 `internal/config/robots_public.go`），但同樣的處理沒有套用到
+`OpenAI` / `AI` / `FOFA` / `Shodan` / `ZoomEye` / `Quake` / `MCP`。
+修法模式**已經在 repo 裡**，照著做即可。
+
+---
+
+### [嚴重度 高] D2 — 人機協同（HITL）可由發起者自己在請求內關閉
+
+**位置**：`internal/handler/hitl.go:304-308`、`:618-631`、
+`internal/handler/eino_single_agent.go:109` / `:440`、`multi_agent.go:126` / `:459`
+
+```go
+// hitl.go:304
+func (m *HITLManager) ActivateConversation(conversationID string, req *HITLRequest) {
+	if req == nil || !req.Enabled {
+		m.DeactivateConversation(conversationID)   // ← 客戶端送 enabled:false 走這裡
+		return
+	}
+```
+
+```go
+// hitl.go:620-627 —— 只有 req 為 nil 才會去撈資料庫設定
+if req == nil {
+	cfg, err := h.loadHITLConversationConfig(conversationID)
+	if err == nil { req = cfg }
+}
+```
+
+**複驗結果**：確認。`ChatRequest.Hitl` 是客戶端 JSON（`json:"hitl,omitempty"`），
+而 `hitlRequestWithMergedConfigWhitelist`（`hitl.go:361-386`）**只合併工具白名單，
+不會把 `Enabled` 翻回 true**。因此送 `{"hitl":{"enabled":false}}` 會讓
+`shouldInterrupt`（`hitl.go:388-395`）在 runtime map 找不到 key 而直接回傳 `false`
+→ 不審批直接執行工具。
+
+**修法方向**：啟用狀態改由伺服器端決定；請求內的 `hitl` 欄位只允許「收緊」
+（提高敏感度），不允許「放寬」。這是**產品政策決定**，需先確認預設語意。
+
+---
+
+### [嚴重度 高] D3 — `DELETE /api/skills/:name` 可遞迴刪除任意目錄
+
+**位置**：`internal/handler/skills.go:448-463`
+
+```go
+skillName := c.Param("name")
+if skillName == "" { ... }              // ← 唯一的檢查
+skillDir := filepath.Join(h.skillsRootAbs(), skillName)
+if err := os.RemoveAll(skillDir); ...   // ← 無路徑約束
+```
+
+**複驗結果**：確認，且**同一個 handler 裡已有正確的驗證函式** ——
+`isValidSkillName`（`skills.go:700`，只允許 `[a-z0-9-]`）只被 `CreateSkill`
+（`skills.go:337`）呼叫，`DeleteSkill` 是唯一沒用的破壞性端點。
+
+`:name=..` 可刪掉整個 config 目錄（`config.yaml`、`roles/`、`skills/`）；
+Windows 上 `..%5c..%5c` 可留在單一 URL segment 內，被 `filepath.Join` 清理成
+多層穿越。
+
+**修法**：`DeleteSkill` 開頭加 `isValidSkillName`，`os.RemoveAll` 前再以
+路徑約束二次確認。**零歧義，可直接修。**
+
+---
+
+### [嚴重度 高] D4 — 知識庫 `category` / `title` 未驗證 → 知識庫根外任意檔案寫入
+
+**位置**：`internal/knowledge/manager.go:603`（Create）、`:644`/`:654`（Update）、
+`:703`/`:718`（Delete）
+
+```go
+filePath := filepath.Join(m.basePath, category, title+".md")  // ← 無任何驗證
+os.MkdirAll(filepath.Dir(filePath), 0755)
+os.WriteFile(filePath, []byte(content), 0644)
+```
+
+**複驗結果**：確認。兩個欄位只經過 `binding:"required"`（僅檢查非空），
+沒有 `filepath.Clean` / `IsAbs` / `Rel` / 前綴比對 / `Lstat`。
+對照組：`internal/c2/manager.go:804` 的 `ensurePathInDir` 明確擋掉絕對路徑與
+`..` 前綴 —— 知識庫這條路徑**沒有等價防線**。
+
+`UpdateItem` 還會 `os.Rename` 把既有檔案搬走，`DeleteItem` 對 DB 記錄的路徑做
+`os.Remove` 並刪空目錄。
+
+**修法**：沿用既有的單段名稱白名單（`isValidSkillName` 的模式），或一律以
+路徑約束解析後才寫入。
+
+---
+
+### [嚴重度 高] D5 — 工作流的 `tool` 節點完全沒有 HITL
+
+**位置**：`internal/workflow/nodes.go:77`、`internal/handler/workflow_integration.go`
+
+```go
+// nodes.go:77 —— 直接呼叫，繞過所有 ToolMiddleware
+result, err := args.Agent.ExecuteMCPToolForConversation(ctx, args.ConversationID, toolName, toolArgs)
+```
+
+**複驗結果**：確認。`WithHITLToolInterceptor` 在 `workflow_integration.go`
+**零命中**。HITL 是以 Eino `ToolMiddleware` 形式掛載的，而 workflow 的 tool
+節點直接呼叫 Agent，**不經過 middleware 鏈**。`nodes.go` 裡的 `case "hitl"`
+只是讓圖作者**手動放置**的審批節點；`validation.go` 從不要求 `tool` 節點前
+必須有 `hitl` 節點。
+
+**已確認仍有的防線**：這條路徑的 RBAC 與 toolguard 都在（`CallTool` 內的
+authorizer 與 `checkToolGuard`），所以**缺的只有人工這一關**，不是全面繞過。
+
+---
+
+### [嚴重度 高] D6 — 子代理工具清單覆寫父代理的角色限制
+
+**位置**：`internal/multiagent/runner.go:197`（參數定義於 `runner.go:76`）、
+`internal/agent/agent.go:324`
+
+```go
+// runner.go:76  —— 函式參數
+roleTools []string,
+
+// runner.go:197 —— 遮蔽了上面的參數
+roleTools := sub.RoleTools
+subDefs := ag.ToolsForRole(roleTools)   // ← 只用子代理自己的清單
+```
+
+**複驗結果**：確認。子代理**完全沒有**把父代理的 `roleTools` 拿進來做交集。
+`agent.go:324` 的 `if len(roleToolSet) > 0` 表示**空清單 = 全部工具**。
+因此 `role_tools` 留空且未綁角色的子代理會拿到完整工具目錄，
+父代理被剝奪的工具它都能叫。
+
+**修法**：子代理可用工具 = 父代理允許集合 ∩ 子代理宣告集合。**零歧義。**
+
+---
+
+### [嚴重度 高] D7 — 速率限制可被 `X-Forwarded-For` 偽造繞過（= §A F1）
+
+已於 §A F1 完整記錄，此處不重複。**複驗確認**：全專案零 `SetTrustedProxies` 呼叫。
+
+---
+
+## E. 回報但尚未複驗 —— 動工前必須先自己確認
+
+| 項目 | 回報者 | 備註 |
+|---|---|---|
+| skills 檔案讀取 `:name` 未驗證 → 設定外洩 | fileio-audit | 走 `internal/skillpackage/layout.go` + `io.go:88-107`，與 D3 同型，很可能是真的 |
+| 保留單輪 SHA-256 舊密碼驗證分支 | authleak-audit | 回報者自己標為**條件式**：已確認全樹沒有任何寫入 `sha256$` 格式的程式碼 |
+| 登入回應時間差可列舉帳號 | authleak-audit | 需精準計時，實務影響被 D7 淹沒 |
+| 初始管理員密碼明文寫 stdout、無強制變更旗標 | authleak-audit | 無硬編碼預設密碼（這點是好的） |
+| `NewRateLimiter` goroutine 洩漏 | 主審計者 | 見 §C C2 |
+
+> 複驗發現回報有誤時**必須明確撤回**並在本檔記錄，不要默默不寫。
+> 第一輪的 `/vulnerabilities/:id` IDOR 就是這樣被擋下來的。
+
+---
+
+## F. 基礎設施事件（非專案缺陷，但影響所有人）
+
+2026-10-07 約 11:52，`D:\AI` 子樹被**整批刪除**（`security`、`deploy`、`portal`、
+`dealers`、`gateway`、`tin888`、`Ollama`、`worktrees`、`Workspaces` 全部消失），
+12:00 起有程序開始還原。
+
+`fileio-audit` 的鑑識結果：
+
+- **非磁碟故障** — `chkdsk D:` 唯讀掃描 754,136 檔案記錄，**0 bad file records**
+- **非回收筒** — D 槽無 `$Recycle.Bin`
+- **無備份可還原** — `wbadmin` 無備份；**D 槽無 VSS 陰影副本**（僅 C 槽有 10/3、10/6 兩份）
+
+即這是一次**不可從快照復原的直接刪除**。`D:\AI\deploy` 的營運紀錄
+（`deploy/*/REPORT.md`）至今仍未回來。
+
+**教訓**：D 槽目前**沒有任何備份**。所有工作只推上 GitHub 才算安全。
+
+---
+
+---
+
 **維護規則：本檔記載的發現、證據或未修理由有變更時，須在同一變更中更新本檔。**
