@@ -168,8 +168,8 @@ func (h *SkillsHandler) GetSkills(c *gin.Context) {
 // GetSkill 获取单个skill的详细信息
 func (h *SkillsHandler) GetSkill(c *gin.Context) {
 	skillName := c.Param("name")
-	if skillName == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不能为空"})
+	if !isValidSkillName(skillName) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不合法"})
 		return
 	}
 
@@ -250,6 +250,11 @@ func (h *SkillsHandler) GetSkill(c *gin.Context) {
 // ListSkillPackageFiles lists all files in a skill directory (Agent Skills layout).
 func (h *SkillsHandler) ListSkillPackageFiles(c *gin.Context) {
 	skillID := c.Param("name")
+	// skillID 會被 filepath.Join 成目錄根，未驗證等於讓呼叫者指定要瀏覽哪個目錄。
+	if !isValidSkillName(skillID) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不合法"})
+		return
+	}
 	files, err := skillpackage.ListPackageFiles(h.skillsRootAbs(), skillID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -261,6 +266,13 @@ func (h *SkillsHandler) ListSkillPackageFiles(c *gin.Context) {
 // GetSkillPackageFile returns one file by relative path (?path=).
 func (h *SkillsHandler) GetSkillPackageFile(c *gin.Context) {
 	skillID := c.Param("name")
+	// 這裡特別重要：ReadPackageFile 內部的 SafeRelPath 只約束 ?path= 相對於
+	// skillID 組出的根目錄。skillID 若是「..」，根目錄就被移到 skills 根的上一層，
+	// ?path=config.yaml 便能讀出整份設定。
+	if !isValidSkillName(skillID) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不合法"})
+		return
+	}
 	rel := strings.TrimSpace(c.Query("path"))
 	if rel == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "query path is required"})
@@ -277,6 +289,11 @@ func (h *SkillsHandler) GetSkillPackageFile(c *gin.Context) {
 // PutSkillPackageFile writes a file inside the skill package.
 func (h *SkillsHandler) PutSkillPackageFile(c *gin.Context) {
 	skillID := c.Param("name")
+	// 寫入端點的後果比讀取更重：未驗證等於能在 skills 根之外建立檔案。
+	if !isValidSkillName(skillID) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不合法"})
+		return
+	}
 	var req struct {
 		Path    string `json:"path" binding:"required"`
 		Content string `json:"content"`
@@ -302,8 +319,8 @@ func (h *SkillsHandler) PutSkillPackageFile(c *gin.Context) {
 // GetSkillBoundRoles 获取绑定指定skill的角色列表
 func (h *SkillsHandler) GetSkillBoundRoles(c *gin.Context) {
 	skillName := c.Param("name")
-	if skillName == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不能为空"})
+	if !isValidSkillName(skillName) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不合法"})
 		return
 	}
 
@@ -387,8 +404,8 @@ func (h *SkillsHandler) CreateSkill(c *gin.Context) {
 // UpdateSkill 更新 SKILL.md（保留 front matter 中除 description 外的字段；可选覆盖 description）
 func (h *SkillsHandler) UpdateSkill(c *gin.Context) {
 	skillName := c.Param("name")
-	if skillName == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不能为空"})
+	if !isValidSkillName(skillName) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不合法"})
 		return
 	}
 
@@ -446,8 +463,15 @@ func (h *SkillsHandler) UpdateSkill(c *gin.Context) {
 // DeleteSkill 删除skill
 func (h *SkillsHandler) DeleteSkill(c *gin.Context) {
 	skillName := c.Param("name")
-	if skillName == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不能为空"})
+	// 名稱驗證是必要的，不是防禦性程式碼。:name 是 URL 路徑參數，未驗證就交給
+	// filepath.Join + os.RemoveAll 等於讓呼叫者指定刪除目標：.. 會刪掉整個
+	// config 目錄（config.yaml、roles/、skills/）；Windows 上 %5c 反斜線可以
+	// 留在單一 URL segment 內，被 filepath.Join 清理成多層穿越。
+	//
+	// 同一個 handler 的 CreateSkill 已經在用 isValidSkillName，這裡原本是
+	// 唯一漏掉的破壞性端點。
+	if !isValidSkillName(skillName) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不合法"})
 		return
 	}
 
@@ -459,7 +483,15 @@ func (h *SkillsHandler) DeleteSkill(c *gin.Context) {
 			zap.Strings("roles", affectedRoles))
 	}
 
-	skillDir := filepath.Join(h.skillsRootAbs(), skillName)
+	root := h.skillsRootAbs()
+	skillDir := filepath.Join(root, skillName)
+	// 第二層防護：字面確認解析後確實還在 skills 根目錄內。兩層都要有 ——
+	// 名稱驗證擋字面輸入，這層擋驗證規則日後被放寬，或 Windows 路徑正規化
+	// 造成的意外（比照 internal/c2 的 ensurePathInDir 採用的同一種雙層策略）。
+	if err := ensureSkillPathInRoot(root, skillDir); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "skill路径不合法"})
+		return
+	}
 	if err := os.RemoveAll(skillDir); err != nil {
 		h.logger.Error("删除skill失败", zap.String("skill", skillName), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "删除skill失败: " + err.Error()})
@@ -575,8 +607,8 @@ func (h *SkillsHandler) ClearSkillStats(c *gin.Context) {
 // ClearSkillStatsByName 清空指定skill的统计信息
 func (h *SkillsHandler) ClearSkillStatsByName(c *gin.Context) {
 	skillName := c.Param("name")
-	if skillName == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不能为空"})
+	if !isValidSkillName(skillName) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "skill名称不合法"})
 		return
 	}
 
@@ -707,4 +739,31 @@ func isValidSkillName(name string) bool {
 		}
 	}
 	return true
+}
+
+// ensureSkillPathInRoot 確認解析後的路徑仍在 skills 根目錄之內。
+//
+// 與 isValidSkillName 是互補而非重複：前者擋字面輸入（只准 [a-z0-9-]），
+// 這裡擋的是「驗證規則被改寬」或路徑正規化造成的意外。內部刻意不呼叫
+// ensureNoSymlinkEscape —— C2 那個 helper 是為了防攻擊者預先種符號連結，
+// 而 skill 目錄由管理員建立，且這裡的呼叫端本來就會刪掉整個目標目錄。
+func ensureSkillPathInRoot(root, path string) error {
+	absRoot, err := filepath.Abs(root)
+	if err != nil {
+		return err
+	}
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		return err
+	}
+	rel, err := filepath.Rel(absRoot, absPath)
+	if err != nil {
+		return err
+	}
+	if rel == "." || rel == ".." ||
+		strings.HasPrefix(rel, ".."+string(filepath.Separator)) ||
+		filepath.IsAbs(rel) {
+		return fmt.Errorf("skill 路徑逃出 skills 根目錄: %s", path)
+	}
+	return nil
 }
