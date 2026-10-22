@@ -248,9 +248,16 @@
             const title = kind === 'event' ? `#${item.sequence || '-'} ${item.type || 'event'}` : `${item.kind || 'artifact'} · ${item.sizeBytes || 0} bytes`;
             const time = item.at || item.createdAt;
             const data = kind === 'event' ? item.data : { objectKey: item.objectKey, sha256: item.sha256 };
-            const download = item.downloadPath ? `<a href="${esc(item.downloadPath)}">${item.kind === 'pentest_report' ? esc(tr('securityOps.downloadReport', '下载渗透报告')) : 'PDF'}</a>` : '';
+            const download = item.downloadPath ? `<button type="button" data-auth-download="${esc(item.downloadPath)}">${item.kind === 'pentest_report' ? esc(tr('securityOps.downloadReport', '下载渗透报告')) : 'PDF'}</button>` : '';
             return `<article><time>${esc(time ? new Date(time).toLocaleString() : '')}</time><strong>${esc(title)}</strong>${download}<pre>${esc(JSON.stringify(data || {}, null, 2))}</pre></article>`;
         }).join('') : '<div class="security-ops-empty">暂无数据</div>';
+        host.querySelectorAll('[data-auth-download]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const path = button.getAttribute('data-auth-download');
+                if (!path || typeof downloadAuthenticated !== 'function') return;
+                downloadAuthenticated(path, 'pentest-report.html').catch((error) => notify(error.message, 'error'));
+            });
+        });
     }
 
     async function openDetail(runId) {
@@ -310,7 +317,8 @@
             return;
         }
         const query = runId ? `?runId=${encodeURIComponent(runId)}` : '';
-        window.location.href = `/api/projects/${encodeURIComponent(id)}/pentest-report${query}`;
+        downloadAuthenticated(`/api/projects/${encodeURIComponent(id)}/pentest-report${query}`, 'pentest-report.html')
+            .catch((error) => notify(error.message, 'error'));
     }
 
     async function refreshReportBadge(projectId) {

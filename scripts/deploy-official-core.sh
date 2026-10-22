@@ -14,6 +14,9 @@ for rel in \
   web/static/js/vulnerability.js \
   web/static/js/security-ops.js \
   web/static/js/router.js \
+  web/static/js/auth.js \
+  web/static/js/projects.js \
+  web/static/js/recon.js \
   web/static/css/xss.css \
   web/static/css/security-ops.css \
   web/static/i18n/zh-CN.json \

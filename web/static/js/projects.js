@@ -4197,3 +4197,15 @@ window.fetchProjectSummary = fetchProjectSummary;
 window.projectNameById = projectNameById;
 window.ensureProjectsLoaded = ensureProjectsLoaded;
 window.isProjectsCacheReady = isProjectsCacheReady;
+
+async function downloadProjectPentestReport() {
+    if (!currentProjectId) return;
+    try {
+        await downloadAuthenticated('/api/projects/' + encodeURIComponent(currentProjectId) + '/pentest-report', 'pentest-report.html');
+    } catch (error) {
+        const message = error && error.message ? error.message : '無法下載滲透報告';
+        if (typeof showNotification === 'function') showNotification(message, 'error');
+        else alert(message);
+    }
+}
+window.downloadProjectPentestReport = downloadProjectPentestReport;

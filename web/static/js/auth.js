@@ -175,6 +175,31 @@ function handleUnauthorized({ message = null, silent = false } = {}) {
     return false;
 }
 
+async function downloadAuthenticated(path, fallbackName) {
+    const response = await apiFetch(path);
+    if (!response.ok) {
+        let message = '下載失敗';
+        try {
+            const payload = await response.json();
+            message = payload.message || payload.error || message;
+        } catch (error) {
+            message = '下載失敗';
+        }
+        throw new Error(typeof message === 'string' ? message : '下載失敗');
+    }
+    const blob = await response.blob();
+    const disposition = response.headers.get('Content-Disposition') || '';
+    const match = /filename="([^"]+)"/.exec(disposition);
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = (match && match[1]) || fallbackName || 'download';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+}
+
 async function apiFetch(url, options = {}) {
     await ensureAuthenticated();
     const opts = { ...options };

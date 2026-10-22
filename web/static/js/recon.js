@@ -2,107 +2,110 @@
     'use strict';
 
     let pollTimer = null;
-    let lastRunId = '';
+    let activeProject = '';
 
+    function tr(key, fallback) {
+        if (typeof window.t !== 'function') return fallback;
+        const value = window.t(key);
+        return !value || value === key ? fallback : value;
+    }
     function toast(message, type) {
         if (typeof showToast === 'function') showToast(message, type || 'info');
     }
-
-    function reconFetch(url, options) {
-        const opts = Object.assign({ credentials: 'include' }, options || {});
-        opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
-        return fetch(url, opts);
-    }
-
     function $(id) { return document.getElementById(id); }
+    function lines(value) {
+        return String(value || '').split(/\r?\n/u).map((item) => item.trim()).filter(Boolean);
+    }
+    function esc(value) {
+        return String(value || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
 
     window.initReconPage = function initReconPage() {
-        const startBtn = $('recon-start-btn');
-        const autoBtn = $('recon-auto-btn');
-        const cancelBtn = $('recon-cancel-btn');
-        if (startBtn && !startBtn.dataset.bound) {
-            startBtn.dataset.bound = '1';
-            startBtn.addEventListener('click', () => startRecon('quick'));
+        const form = $('recon-scan-form');
+        if (form && !form.dataset.bound) {
+            form.dataset.bound = '1';
+            form.addEventListener('submit', startRecon);
         }
-        if (autoBtn && !autoBtn.dataset.bound) {
-            autoBtn.dataset.bound = '1';
-            autoBtn.addEventListener('click', () => startRecon('auto'));
+        const report = $('recon-report-btn');
+        if (report && !report.dataset.bound) {
+            report.dataset.bound = '1';
+            report.addEventListener('click', downloadReconReport);
         }
-        if (cancelBtn && !cancelBtn.dataset.bound) {
-            cancelBtn.dataset.bound = '1';
-            cancelBtn.addEventListener('click', cancelRecon);
-        }
-        if (lastRunId) pollRecon(lastRunId);
+        if (activeProject) refreshRecon(activeProject);
     };
 
-    async function startRecon(mode) {
-        const target = ($('recon-target') && $('recon-target').value || '').trim();
-        if (!target) {
-            toast('請先填授權範圍內的目標（網域或 URL）', 'error');
-            return;
-        }
-        const profile = ($('recon-profile') && $('recon-profile').value) || 'quick';
-        const path = mode === 'auto' ? '/api/recon/auto' : '/api/recon/runs';
-        const body = mode === 'auto' ? { target, profile: 'deep' } : { target, profile };
+    async function startRecon(event) {
+        event.preventDefault();
+        const projectId = ($('recon-project').value || '').trim();
+        const targetLines = lines($('recon-target') && $('recon-target').value);
+        const patterns = lines($('recon-patterns') && $('recon-patterns').value);
+        const days = Number($('recon-days').value || 7);
+        const now = new Date();
+        const payload = {
+            projectId: projectId,
+            engine: 'xalgorix',
+            profile: 'audit',
+            targets: targetLines,
+            objective: '授权范围内的资产侦察与暴露面审查',
+            authorization: {
+                id: ($('recon-auth').value || '').trim(),
+                projectId: projectId,
+                targetPatterns: patterns,
+                operations: ['passive_discovery'],
+                validFrom: now.toISOString(),
+                validUntil: new Date(now.getTime() + days * 86400000).toISOString(),
+                approvedBy: ($('recon-approver').value || '').trim(),
+                attested: $('recon-attested').checked,
+            },
+            idempotencyKey: window.crypto && crypto.randomUUID ? crypto.randomUUID() : `recon-${Date.now()}`,
+        };
         try {
-            const res = await reconFetch(path, { method: 'POST', body: JSON.stringify(body) });
+            const res = await window.apiFetch('/api/security-ops/runs', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
             const data = await res.json().catch(() => ({}));
             if (!res.ok) {
-                toast(data.message || data.error || ('偵察啟動失敗 ' + res.status), 'error');
+                toast((data && data.message) || (data && data.error) || tr('reconPage.failed', '侦察启动失败'), 'error');
                 return;
             }
-            lastRunId = data.id || '';
-            renderRun(data);
-            toast('偵察已啟動', 'success');
-            if (lastRunId) {
-                if (pollTimer) clearInterval(pollTimer);
-                pollTimer = setInterval(() => pollRecon(lastRunId), 2000);
-            }
+            activeProject = projectId;
+            toast(tr('reconPage.started', '审查任务已建立，批准后才会执行'), 'success');
+            await refreshRecon(projectId);
+            if (pollTimer) clearInterval(pollTimer);
+            pollTimer = setInterval(() => refreshRecon(projectId), 4000);
         } catch (err) {
-            toast('偵察請求失敗', 'error');
+            toast(tr('reconPage.failed', '侦察启动失败'), 'error');
         }
     }
 
-    async function pollRecon(id) {
-        try {
-            const res = await reconFetch('/api/recon/runs/' + encodeURIComponent(id));
-            const data = await res.json().catch(() => ({}));
-            if (!res.ok) return;
-            renderRun(data);
-            if (data.status && data.status !== 'running') {
-                if (pollTimer) clearInterval(pollTimer);
-                pollTimer = null;
-            }
-        } catch (e) { /* keep polling */ }
-    }
-
-    async function cancelRecon() {
-        if (!lastRunId) return;
-        const res = await reconFetch('/api/recon/runs/' + encodeURIComponent(lastRunId) + '/cancel', { method: 'POST' });
-        if (res.ok) toast('已要求停止', 'info');
-    }
-
-    function renderRun(run) {
+    async function refreshRecon(projectId) {
         const box = $('recon-result');
+        const status = $('recon-status');
         if (!box) return;
-        const results = Array.isArray(run.results) ? run.results : [];
-        const rows = results.map(function (r) {
-            const assets = (r.assets || []).slice(0, 8).map(function (a) {
-                return (a.type || '') + ' ' + (a.value || '');
-            }).join('；');
-            return '<tr><td>' + escapeHtml(r.name || '') + '</td><td>' + escapeHtml(r.phase || '') +
-                '</td><td>' + escapeHtml(r.status || '') + '</td><td>' + escapeHtml(r.summary || r.error || '') +
-                '</td><td>' + escapeHtml(assets) + '</td></tr>';
-        }).join('');
-        box.innerHTML = '<p>任務 ' + escapeHtml(run.id || '') + '　狀態 ' + escapeHtml(run.status || '') +
-            '　目標 ' + escapeHtml(run.target || '') + '</p>' +
-            '<table class="data-table"><thead><tr><th>收集器</th><th>階段</th><th>狀態</th><th>摘要</th><th>資產</th></tr></thead><tbody>' +
-            (rows || '<tr><td colspan="5">尚無結果</td></tr>') + '</tbody></table>';
+        const res = await window.apiFetch('/api/security-ops/runs?limit=30&projectId=' + encodeURIComponent(projectId));
+        const data = await res.json().catch(() => ({}));
+        const runs = (data.items || []).filter((run) => run.operation === 'passive_discovery' || !run.operation);
+        if (status) status.textContent = runs.length ? tr('reconPage.tracking', '正在跟踪任务') : tr('reconPage.idle', '尚未启动');
+        const terminal = runs.length && runs.every((run) => ['completed', 'failed', 'cancelled'].includes(run.status));
+        if (terminal && pollTimer) {
+            clearInterval(pollTimer);
+            pollTimer = null;
+            toast(tr('reconPage.reportReady', '侦察状态已更新，可下载渗透报告'), 'success');
+        }
+        box.innerHTML = '<table class="data-table"><thead><tr><th>' + esc(tr('reconPage.colStatus', '状态')) + '</th><th>' + esc(tr('reconPage.colTarget', '目标')) + '</th><th>' + esc(tr('reconPage.colWhen', '时间')) + '</th></tr></thead><tbody>' +
+            (runs.map((run) => '<tr><td>' + esc(run.status || '') + '</td><td>' + esc((run.targets || []).join(', ')) + '</td><td>' + esc(run.createdAt ? new Date(run.createdAt).toLocaleString() : '') + '</td></tr>').join('') || '<tr><td colspan="3">' + esc(tr('reconPage.empty', '尚无审查任务')) + '</td></tr>') +
+            '</tbody></table>';
     }
 
-    function escapeHtml(s) {
-        return String(s || '').replace(/[&<>"']/g, function (c) {
-            return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
-        });
+    function downloadReconReport() {
+        const projectId = (($('recon-project') && $('recon-project').value) || activeProject || '').trim();
+        if (!projectId) {
+            toast(tr('reconPage.needProject', '请先填写项目 ID'), 'error');
+            return;
+        }
+        downloadAuthenticated('/api/projects/' + encodeURIComponent(projectId) + '/pentest-report', 'pentest-report.html')
+            .catch((error) => toast(error && error.message ? error.message : tr('reconPage.reportFailed', '无法下载渗透报告'), 'error'));
     }
 })();
