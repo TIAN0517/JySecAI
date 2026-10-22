@@ -118,6 +118,12 @@ func permissionForRequest(method, fullPath string) string {
 		return "hitl:write"
 	case strings.HasPrefix(path, "/agent-loop"), strings.HasPrefix(path, "/batch-tasks"):
 		return crudPermission(method, "tasks")
+	case strings.HasPrefix(path, "/security-ops"):
+		// 批准才會把任務交給外部掃描器，和 HITL 審批同一權限。
+		if strings.HasSuffix(path, "/approve") {
+			return "hitl:write"
+		}
+		return crudPermission(method, "tasks")
 	case path == "/usage/tokens":
 		return "dashboard:read"
 	case strings.HasPrefix(path, "/conversations"), strings.HasPrefix(path, "/messages"), strings.HasPrefix(path, "/process-details"):
@@ -153,6 +159,8 @@ func permissionForRequest(method, fullPath string) string {
 			return "knowledge:read"
 		}
 		return crudPermission(method, "knowledge")
+	case path == "/vulnerability-pending/approve":
+		return "vulnerability:write"
 	case strings.HasPrefix(path, "/vulnerabilities"):
 		return crudPermission(method, "vulnerability")
 	case path == "/assets/batch-delete", path == "/assets/merge":

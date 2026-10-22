@@ -6,6 +6,8 @@
         operation: 'passive_discovery',
         timer: null,
         detailRunId: '',
+        runStatus: {},
+        announced: {},
     };
     const terminalStatuses = new Set(['completed', 'failed', 'cancelled']);
     const operationLabels = {
@@ -30,6 +32,11 @@
     function currentPageIsSecurityOps() {
         return window.location.hash.replace(/^#/, '').split('?')[0] === 'security-ops';
     }
+    function tr(key, fallback) {
+        if (typeof window.t !== 'function') return fallback;
+        const value = window.t(key);
+        return !value || value === key ? fallback : value;
+    }
     function notify(message, type) {
         if (typeof window.showToast === 'function') window.showToast(message, type || 'info');
         else if (type === 'error') console.error(message);
@@ -40,8 +47,9 @@
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) {
             const error = payload && payload.error;
-            const reason = typeof error === 'string' ? error : (error && error.message) || `HTTP ${response.status}`;
-            const details = error && error.details && error.details.reasons;
+            const message = payload && typeof payload.message === 'string' ? payload.message : '';
+            const reason = message || (typeof error === 'string' ? error : (error && error.message) || `HTTP ${response.status}`);
+            const details = (error && error.details && error.details.reasons) || (payload && payload.details && payload.details.reasons);
             throw new Error(Array.isArray(details) && details.length ? `${reason}: ${details.join('; ')}` : reason);
         }
         return payload;
@@ -101,8 +109,8 @@
             state.catalog = await request('/api/security-ops/catalog');
             const ready = (state.catalog.engines || []).filter((engine) => engine.active).length;
             if (health) {
-                health.textContent = `控制面在线 · ${ready} 个引擎可用`;
-                health.classList.add('online');
+                health.textContent = state.catalog.note || `控制面在线 · ${ready} 个引擎可用`;
+                health.classList.toggle('online', ready > 0);
             }
             renderEngineOptions();
         } catch (error) {
@@ -127,6 +135,14 @@
         }
         const canWrite = typeof window.hasPermission !== 'function' || window.hasPermission('tasks:write');
         const canApprove = typeof window.hasPermission !== 'function' || window.hasPermission('hitl:write');
+        runs.forEach((run) => {
+            const previous = state.runStatus[run.id];
+            if (previous && previous !== 'completed' && run.status === 'completed' && !state.announced[run.id]) {
+                state.announced[run.id] = true;
+                notify(tr('securityOps.reportReady', '扫描已完成，渗透报告已可下载'), 'success');
+            }
+            state.runStatus[run.id] = run.status;
+        });
         host.innerHTML = runs.map((run) => {
             const approve = run.status === 'awaiting_approval' && canApprove
                 ? `<button type="button" class="btn-primary btn-small" data-security-approve="${esc(run.id)}">批准</button>` : '';
@@ -135,12 +151,13 @@
             return `<article class="security-ops-run">
                 <div class="security-ops-run-main">
                     <div class="security-ops-run-title"><strong>${esc(run.objective)}</strong><span class="security-ops-status status-${esc(run.status)}">${esc(statusLabels[run.status] || run.status)}</span></div>
-                    <div class="security-ops-run-meta"><span>${esc(run.engine)} / ${esc(run.profile)}</span><span>${esc((run.targets || []).join(', '))}</span><span>${esc(new Date(run.createdAt).toLocaleString())}</span></div>
+                    <div class="security-ops-run-meta"><span>${esc(run.engine)} / ${esc(run.profile)}</span><span>${esc((run.targets || []).join(', '))}</span>${run.currentPhase ? `<span>P${esc(run.currentPhase)}</span>` : ''}${run.vulnCount ? `<span>${esc(run.vulnCount)}</span>` : ''}<span>${esc(new Date(run.createdAt).toLocaleString())}</span></div>
                     ${run.statusReason ? `<div class="security-ops-run-reason">${esc(run.statusReason)}</div>` : ''}
                 </div>
-                <div class="security-ops-run-actions"><button type="button" class="btn-secondary btn-small" data-security-detail="${esc(run.id)}">详情</button>${approve}${cancel}</div>
+                <div class="security-ops-run-actions"><button type="button" class="btn-secondary btn-small" data-security-report="${esc(run.projectId || '')}" data-security-run="${esc(run.id)}">${esc(tr('securityOps.downloadReport', '下载渗透报告'))}</button><button type="button" class="btn-secondary btn-small" data-security-detail="${esc(run.id)}">详情</button>${approve}${cancel}</div>
             </article>`;
         }).join('');
+        host.querySelectorAll('[data-security-report]').forEach((button) => button.addEventListener('click', () => downloadReport(button.dataset.securityReport, button.dataset.securityRun)));
         host.querySelectorAll('[data-security-detail]').forEach((button) => button.addEventListener('click', () => openDetail(button.dataset.securityDetail)));
         host.querySelectorAll('[data-security-approve]').forEach((button) => button.addEventListener('click', () => approveRun(button.dataset.securityApprove)));
         host.querySelectorAll('[data-security-cancel]').forEach((button) => button.addEventListener('click', () => cancelRun(button.dataset.securityCancel)));
@@ -152,7 +169,10 @@
         if (projectId.trim()) query.set('projectId', projectId.trim());
         try {
             const payload = await request(`/api/security-ops/runs?${query.toString()}`);
-            renderRuns(Array.isArray(payload.items) ? payload.items : []);
+            const items = Array.isArray(payload.items) ? payload.items : [];
+            renderRuns(items);
+            const projectId = (el('security-ops-project-filter') || {}).value || '';
+            if (projectId.trim()) await refreshReportBadge(projectId.trim());
         } catch (error) {
             const host = el('security-ops-runs');
             if (host) host.innerHTML = `<div class="security-ops-empty error">${esc(error.message)}</div>`;
@@ -228,7 +248,8 @@
             const title = kind === 'event' ? `#${item.sequence || '-'} ${item.type || 'event'}` : `${item.kind || 'artifact'} · ${item.sizeBytes || 0} bytes`;
             const time = item.at || item.createdAt;
             const data = kind === 'event' ? item.data : { objectKey: item.objectKey, sha256: item.sha256 };
-            return `<article><time>${esc(time ? new Date(time).toLocaleString() : '')}</time><strong>${esc(title)}</strong><pre>${esc(JSON.stringify(data || {}, null, 2))}</pre></article>`;
+            const download = item.downloadPath ? `<a href="${esc(item.downloadPath)}">${item.kind === 'pentest_report' ? esc(tr('securityOps.downloadReport', '下载渗透报告')) : 'PDF'}</a>` : '';
+            return `<article><time>${esc(time ? new Date(time).toLocaleString() : '')}</time><strong>${esc(title)}</strong>${download}<pre>${esc(JSON.stringify(data || {}, null, 2))}</pre></article>`;
         }).join('') : '<div class="security-ops-empty">暂无数据</div>';
     }
 
@@ -282,6 +303,28 @@
         } catch (error) { notify(error.message, 'error'); }
     }
 
+    function downloadReport(projectId, runId) {
+        const id = String(projectId || (el('security-ops-project-filter') || {}).value || '').trim();
+        if (!id) {
+            notify(tr('securityOps.needProject', '请先填写项目 ID'), 'warning');
+            return;
+        }
+        const query = runId ? `?runId=${encodeURIComponent(runId)}` : '';
+        window.location.href = `/api/projects/${encodeURIComponent(id)}/pentest-report${query}`;
+    }
+
+    async function refreshReportBadge(projectId) {
+        const badge = el('security-ops-report-badge');
+        if (!badge || !projectId) return;
+        try {
+            const meta = await request(`/api/projects/${encodeURIComponent(projectId)}/pentest-report?format=meta`);
+            badge.textContent = meta.qualified ? tr('securityOps.qualified', '报告合格') : tr('securityOps.draft', '报告草稿');
+            badge.title = Array.isArray(meta.gaps) ? meta.gaps.join('\n') : '';
+        } catch (error) {
+            badge.textContent = '';
+        }
+    }
+
     async function init() {
         selectMode(state.operation);
         await refresh();
@@ -299,5 +342,6 @@
     window.selectSecurityOpsMode = selectMode;
     window.syncSecurityOpsEngine = syncEngine;
     window.submitSecurityOpsRun = submitRun;
+    window.downloadSecurityOpsPentestReport = () => downloadReport('', '');
     window.closeSecurityOpsDetail = closeDetail;
 }());

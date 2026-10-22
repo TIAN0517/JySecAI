@@ -74,9 +74,34 @@ var XSS = (function () {
 	function appendCell(row, value, className) {
 		var cell = document.createElement("td");
 		if (className) cell.className = className;
+		var text = toDisplayText(value);
 		cell.textContent = toDisplayText(value);
+		if (className === "cookie-cell" || className === "xss-clip") {
+			cell.title = text;
+			cell.classList.add("xss-clip");
+		}
 		row.appendChild(cell);
 		return cell;
+	}
+
+	function statusKind(payload) {
+		if (!payload.enabled) return "muted";
+		if (payload.consumed_at) return "used";
+		if (payload.expires_at && new Date(payload.expires_at).getTime() <= Date.now()) return "expired";
+		return "ok";
+	}
+
+	function putBadge(cell, text, kind) {
+		var badge = document.createElement("span");
+		badge.className = "xss-badge xss-badge--" + kind;
+		badge.textContent = text;
+		cell.replaceChildren(badge);
+	}
+
+	function setEmpty(wrapId, empty, isEmpty) {
+		if (empty) empty.hidden = !isEmpty;
+		var wrap = document.getElementById(wrapId);
+		if (wrap) wrap.classList.toggle("is-empty", isEmpty);
 	}
 
 	function formatTime(value) {
@@ -153,14 +178,16 @@ var XSS = (function () {
 			var empty = document.getElementById("xss-payload-empty");
 			clear(body);
 			document.getElementById("xss-payload-count").textContent = String(currentPayloads.length);
-			if (empty) empty.hidden = currentPayloads.length !== 0;
+			setEmpty("xss-payload-wrap", empty, currentPayloads.length === 0);
 			currentPayloads.forEach(function (payload) {
 				var row = document.createElement("tr");
 				appendCell(row, payload.name || "—");
-				appendCell(row, payload.domain || typeLabel(payload.type));
-				appendCell(row, statusText(payload));
+				appendCell(row, payload.domain || typeLabel(payload.type), "xss-clip");
+				var statusCell = appendCell(row, "");
+				putBadge(statusCell, statusText(payload), statusKind(payload));
 				appendCell(row, formatTime(payload.created_at));
 				var actions = appendCell(row, "");
+				actions.className = "xss-row-actions";
 
 				var view = document.createElement("button");
 				view.type = "button";
@@ -199,19 +226,36 @@ var XSS = (function () {
 		try {
 			var data = await request("/xss/captures");
 			currentCaptures = Array.isArray(data.captures) ? data.captures : [];
+			var filterEl = document.getElementById("xss-capture-status");
+			var filter = filterEl ? filterEl.value : "";
+			var visible = currentCaptures.filter(function (capture) {
+				var isProbe = capture.extra === "interaction-probe";
+				if (filter === "probe") return isProbe;
+				if (filter === "canary") return !isProbe;
+				return true;
+			});
 			var body = document.getElementById("xss-capture-list");
 			var empty = document.getElementById("xss-capture-empty");
 			clear(body);
-			document.getElementById("xss-capture-count").textContent = String(currentCaptures.length);
-			if (empty) empty.hidden = currentCaptures.length !== 0;
-			currentCaptures.forEach(function (capture) {
+			document.getElementById("xss-capture-count").textContent = String(visible.length);
+			if (empty) {
+				if (!empty.dataset.emptyDefault) empty.dataset.emptyDefault = empty.textContent;
+				empty.textContent = currentCaptures.length === 0
+					? empty.dataset.emptyDefault
+					: t("xss.filterEmpty", "No matches");
+			}
+			setEmpty("xss-capture-wrap", empty, visible.length === 0);
+			visible.forEach(function (capture) {
+				var isProbe = capture.extra === "interaction-probe";
 				var row = document.createElement("tr");
 				appendCell(row, formatTime(capture.created_at));
-				appendCell(row, capture.domain || "—");
-				appendCell(row, capture.extra === "interaction-probe" ? t("xss.labelProbe", "SSRF/XXE 探針") : t("xss.labelCanary", "XSS Canary"));
+				appendCell(row, capture.url || capture.domain || "—", "xss-clip");
+				appendCell(row, capture.domain || "—", "xss-clip");
 				appendCell(row, capture.cookie || "—", "cookie-cell");
-				appendCell(row, t("xss.verified", "已验证"));
+				var kindCell = appendCell(row, "");
+				putBadge(kindCell, isProbe ? t("xss.labelProbe", "SSRF/XXE probe") : t("xss.labelCanary", "XSS Canary"), isProbe ? "probe" : "ok");
 				var actions = appendCell(row, "");
+				actions.className = "xss-row-actions";
 				var detail = document.createElement("button");
 				detail.type = "button";
 				detail.className = "btn-secondary btn-sm";
@@ -228,21 +272,25 @@ var XSS = (function () {
 	apiObject.showCapture = function (capture) {
 		var body = document.getElementById("xss-detail-body");
 		clear(body);
+		var list = document.createElement("dl");
+		list.className = "xss-detail-list";
 		[
 			[t("xss.labelTime", "时间"), formatTime(capture.created_at)],
 			[t("xss.labelType", "类型"), capture.extra || "xss-canary"],
 			["Canary", capture.cookie || "—"],
-			[t("xss.labelSource", "来源"), capture.domain || "—"],
+			[t("xss.labelSource", "来源"), capture.url || capture.domain || "—"],
+			[t("xss.colPage", "页面"), capture.domain || "—"],
 			[t("xss.labelSourceIp", "来源 IP"), capture.ip || "—"],
 			["User-Agent", capture.user_agent || "—"],
 		].forEach(function (entry) {
-			var line = document.createElement("p");
-			var label = document.createElement("strong");
-			label.textContent = entry[0] + ": ";
-			line.appendChild(label);
-			line.appendChild(document.createTextNode(toDisplayText(entry[1])));
-			body.appendChild(line);
+			var label = document.createElement("dt");
+			label.textContent = entry[0];
+			var value = document.createElement("dd");
+			value.appendChild(document.createTextNode(toDisplayText(entry[1])));
+			list.appendChild(label);
+			list.appendChild(value);
 		});
+		body.appendChild(list);
 		document.getElementById("xss-detail-modal").style.display = "flex";
 	};
 
@@ -264,6 +312,7 @@ var XSS = (function () {
 
 	apiObject.copyScript = async function () {
 		var textarea = document.getElementById("xss-script-text");
+		var button = document.getElementById("xss-copy-script");
 		try {
 			await navigator.clipboard.writeText(textarea.value);
 		} catch (_) {
@@ -271,6 +320,12 @@ var XSS = (function () {
 			textarea.select();
 			document.execCommand("copy");
 		}
+		if (!button) return;
+		var previous = button.textContent;
+		button.textContent = t("xss.copied", "Copied");
+		window.setTimeout(function () {
+			button.textContent = previous;
+		}, 1600);
 	};
 
 	apiObject.saveConfig = function () {

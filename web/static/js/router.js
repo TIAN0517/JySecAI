@@ -102,6 +102,20 @@ function navigateToConversation(conversationId) {
 }
 window.navigateToConversation = navigateToConversation;
 
+const ROUTER_PAGE_ALLOWLIST = ['dashboard', 'chat', 'hitl', 'tool-guard', 'asset-overview', 'asset-library', 'asset-intel', 'info-collect', 'sentinel', 'recon', 'projects', 'vulnerabilities', 'security-ops', 'webshell', 'chat-files', 'mcp-monitor', 'mcp-management', 'knowledge-management', 'knowledge-retrieval-logs', 'roles-management', 'platform-rbac', 'workflows', 'skills-monitor', 'skills-management', 'agents-management', 'settings', 'tasks', 'xss', 'c2-listeners', 'c2-sessions', 'c2-tasks', 'c2-payloads', 'c2-events', 'c2-profiles'];
+
+function agentDebugLog() {}
+
+function openAuditSettings() {
+    switchPage('settings');
+    const open = function () {
+        if (typeof window.switchSettingsSection === 'function') window.switchSettingsSection('audit');
+    };
+    if (window.i18nReady && typeof window.i18nReady.then === 'function') window.i18nReady.then(open);
+    else open();
+}
+window.openAuditSettings = openAuditSettings;
+
 // 初始化路由
 function initRouter() {
     // 从URL hash读取页面（如果有）
@@ -110,7 +124,10 @@ function initRouter() {
         const hashParts = hash.split('?');
         let pageId = hashParts[0];
         if (pageId === 'c2') pageId = 'c2-listeners';
-        if (pageId && ['dashboard', 'chat', 'hitl', 'tool-guard', 'asset-overview', 'asset-library', 'info-collect', 'projects', 'vulnerabilities', 'webshell', 'chat-files', 'mcp-monitor', 'mcp-management', 'knowledge-management', 'knowledge-retrieval-logs', 'roles-management', 'platform-rbac', 'workflows', 'skills-monitor', 'skills-management', 'agents-management', 'settings', 'tasks', 'c2-listeners', 'c2-sessions', 'c2-tasks', 'c2-payloads', 'c2-events', 'c2-profiles'].includes(pageId)) {
+        // #region agent log
+        agentDebugLog('A', 'router.js:initRouter', 'hash route decision', {pageId: pageId, allowed: ROUTER_PAGE_ALLOWLIST.includes(pageId), hash: hashParts[0]});
+        // #endregion
+        if (pageId && ROUTER_PAGE_ALLOWLIST.includes(pageId)) {
             switchPage(pageId);
             if (pageId === 'chat') {
                 scheduleChatConversationFromHash(0);
@@ -165,6 +182,37 @@ function switchPage(pageId) {
     updateNavState(pageId);
         
     // 页面特定的初始化
+    const watched = pageId === 'security-ops' || pageId === 'sentinel' || pageId === 'recon' || pageId === 'xss';
+    if (watched) {
+        const pageEl = document.getElementById('page-' + pageId);
+        const parentNav = pageId === 'sentinel' || pageId === 'recon'
+            ? document.querySelector('.nav-item[data-page="assets"]')
+            : null;
+        // #region agent log
+        agentDebugLog('B', 'router.js:switchPage', 'watched page shown', {
+            pageId: pageId,
+            hasInitSecurity: typeof window.initSecurityOpsPage,
+            hasInitSentinel: typeof window.initSentinelPage,
+            hasInitRecon: typeof window.initReconPage,
+            hasXssInit: typeof window.XSS !== 'undefined' && window.XSS && typeof window.XSS.init,
+            cssLink: !!document.querySelector('link[href*="security-ops"]'),
+            runsText: pageId === 'security-ops' && document.getElementById('security-ops-runs') ? document.getElementById('security-ops-runs').textContent.slice(0, 40) : '',
+            parentExpanded: !!(parentNav && parentNav.classList.contains('expanded')),
+            pageDisplay: pageEl ? getComputedStyle(pageEl).display : ''
+        });
+        // #endregion
+        if (pageId === 'security-ops' && typeof window.apiFetch === 'function') {
+            window.apiFetch('/api/security-ops/catalog').then(function (response) {
+                // #region agent log
+                agentDebugLog('C', 'router.js:switchPage', 'security-ops catalog probe', {status: response.status, ok: response.ok});
+                // #endregion
+            }).catch(function (error) {
+                // #region agent log
+                agentDebugLog('C', 'router.js:switchPage', 'security-ops catalog probe failed', {error: String(error && error.message || error)});
+                // #endregion
+            });
+        }
+    }
     initPage(pageId);
 
     if (typeof applyRBACToUI === 'function') {
@@ -194,7 +242,7 @@ function updateNavState(pageId) {
         }
         const submenuItem = document.querySelector(`.nav-submenu-item[data-page="${pageId}"]`);
         if (submenuItem) submenuItem.classList.add('active');
-    } else if (pageId === 'asset-overview' || pageId === 'asset-library' || pageId === 'info-collect') {
+    } else if (pageId === 'asset-overview' || pageId === 'asset-library' || pageId === 'info-collect' || pageId === 'sentinel' || pageId === 'recon') {
         const assetItem = document.querySelector('.nav-item[data-page="assets"]');
         if (assetItem) {
             assetItem.classList.add('active');
@@ -402,6 +450,12 @@ function showSubmenuPopup(navItem, menuId) {
 
 // 初始化页面
 async function initPage(pageId) {
+    const initCases = ['dashboard', 'chat', 'tool-guard', 'hitl', 'info-collect', 'asset-overview', 'asset-library', 'sentinel', 'recon', 'tasks', 'mcp-monitor', 'mcp-management', 'projects', 'vulnerabilities', 'security-ops', 'webshell', 'chat-files', 'settings', 'roles-management', 'platform-rbac', 'workflows', 'skills-monitor', 'skills-management', 'agents-management', 'xss', 'c2-listeners', 'c2-sessions', 'c2-tasks', 'c2-payloads', 'c2-events', 'c2-profiles'];
+    if (!initCases.includes(pageId)) {
+        // #region agent log
+        agentDebugLog('B', 'router.js:initPage', 'page has no init case', {pageId: pageId});
+        // #endregion
+    }
     // 等待 i18n 就绪，避免快速刷新时翻译函数未初始化导致页面显示原始占位符 key
     if (window.i18nReady) await window.i18nReady;
     if (typeof stopExternalMcpPoll === 'function') {
@@ -444,6 +498,9 @@ async function initPage(pageId) {
             break;
         case 'asset-library':
             if (typeof loadAssets === 'function') loadAssets();
+            break;
+        case 'asset-intel':
+            if (typeof loadAssetIntelData === 'function') loadAssetIntelData();
             break;
         case 'tasks':
             // 初始化任务管理页面
@@ -511,6 +568,38 @@ async function initPage(pageId) {
             // 初始化漏洞管理页面
             if (typeof initVulnerabilityPage === 'function') {
                 initVulnerabilityPage();
+            }
+            break;
+        case 'security-ops':
+            // #region agent log
+            agentDebugLog('B', 'router.js:initPage', 'dispatch security-ops', {hasInit: typeof window.initSecurityOpsPage});
+            // #endregion
+            if (typeof initSecurityOpsPage === 'function') {
+                initSecurityOpsPage();
+            }
+            break;
+        case 'sentinel':
+            // #region agent log
+            agentDebugLog('E', 'router.js:initPage', 'dispatch sentinel', {hasInit: typeof window.initSentinelPage});
+            // #endregion
+            if (typeof initSentinelPage === 'function') {
+                initSentinelPage();
+            }
+            break;
+        case 'recon':
+            // #region agent log
+            agentDebugLog('E', 'router.js:initPage', 'dispatch recon', {hasInit: typeof window.initReconPage});
+            // #endregion
+            if (typeof initReconPage === 'function') {
+                initReconPage();
+            }
+            break;
+        case 'xss':
+            // #region agent log
+            agentDebugLog('B', 'router.js:initPage', 'dispatch xss', {hasInit: typeof window.XSS !== 'undefined' && !!window.XSS && typeof window.XSS.init});
+            // #endregion
+            if (window.XSS && typeof window.XSS.init === 'function') {
+                window.XSS.init();
             }
             break;
         case 'webshell':
@@ -621,7 +710,10 @@ document.addEventListener('DOMContentLoaded', function() {
         let pageId = hashParts[0];
         
         if (pageId === 'c2') pageId = 'c2-listeners';
-        if (pageId && ['dashboard', 'chat', 'hitl', 'tool-guard', 'asset-overview', 'asset-library', 'info-collect', 'projects', 'tasks', 'workflows', 'vulnerabilities', 'webshell', 'chat-files', 'mcp-monitor', 'mcp-management', 'knowledge-management', 'knowledge-retrieval-logs', 'roles-management', 'platform-rbac', 'skills-monitor', 'skills-management', 'agents-management', 'settings', 'c2-listeners', 'c2-sessions', 'c2-tasks', 'c2-payloads', 'c2-events', 'c2-profiles'].includes(pageId)) {
+        // #region agent log
+        agentDebugLog('A', 'router.js:hashchange', 'hashchange decision', {pageId: pageId, allowed: ROUTER_PAGE_ALLOWLIST.includes(pageId)});
+        // #endregion
+        if (pageId && ROUTER_PAGE_ALLOWLIST.includes(pageId)) {
             switchPage(pageId);
             if (pageId === 'chat') {
                 scheduleChatConversationFromHash(0);

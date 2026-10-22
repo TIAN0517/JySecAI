@@ -654,6 +654,13 @@ project:
   fact_summary_max_runes: 24000
   default_inject_deprecated: false
 
+# 外部 Xalgorix。只填操作者自己部署、且已限制來源的管理位址。
+# 不要把 Xalgorix 面板暴露到公網。token 用 XALGORIX_API_TOKEN，只授權 /api。
+xalgorix:
+  enabled: false
+  base_url: "http://127.0.0.1:9137"
+  api_token: ""
+
 auto_triage: # 全自动 AI 漏洞分流（定时把待处理漏洞分群、评优先序并套用状态）
   # 默认关闭：它会自动改写 vulnerabilities.status，是唯一不需要人点一下就动资料的排程。
   enabled: false

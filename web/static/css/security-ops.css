@@ -1,0 +1,233 @@
+.security-ops-page .security-ops-subtitle {
+    margin: 4px 0 0;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.security-ops-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.security-ops-compose,
+.security-ops-results,
+.security-ops-detail {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.security-ops-health {
+    align-self: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(245, 158, 11, 0.15);
+    color: #d97706;
+    font-size: 12px;
+}
+
+.security-ops-health.online {
+    background: rgba(16, 185, 129, 0.15);
+    color: #059669;
+}
+
+.security-ops-mode-grid,
+.security-ops-form-grid,
+.security-ops-detail-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.security-ops-mode-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: 16px;
+}
+
+.security-ops-mode {
+    text-align: left;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+.security-ops-mode strong,
+.security-ops-mode span {
+    display: block;
+}
+
+.security-ops-mode span,
+.security-ops-hint,
+.security-ops-run-meta,
+.security-ops-run-reason {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.security-ops-mode.active {
+    border-color: #2563eb;
+    box-shadow: inset 0 0 0 1px #2563eb;
+}
+
+.security-ops-mode-danger.active {
+    border-color: #dc2626;
+    box-shadow: inset 0 0 0 1px #dc2626;
+}
+
+.security-ops-form-grid {
+    grid-template-columns: 1fr 1fr;
+}
+
+.security-ops-span-2 {
+    grid-column: span 2;
+}
+
+.security-ops-form label,
+.security-ops-section-head label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+}
+
+.security-ops-form input,
+.security-ops-form textarea,
+.security-ops-form select,
+.security-ops-section-head input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+}
+
+.security-ops-attestation {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.security-ops-attestation input {
+    width: auto;
+    margin-top: 3px;
+}
+
+.security-ops-warning {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(220, 38, 38, 0.12);
+    color: #dc2626;
+}
+
+.security-ops-submit-row,
+.security-ops-section-head,
+.security-ops-run,
+.security-ops-finding {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+}
+
+.security-ops-submit-row {
+    margin-top: 12px;
+}
+
+.security-ops-run,
+.security-ops-finding {
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.security-ops-run-title {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.security-ops-run-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.security-ops-status,
+.security-ops-severity {
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    background: rgba(37, 99, 235, 0.12);
+}
+
+.security-ops-status.status-failed,
+.security-ops-severity.severity-critical,
+.security-ops-severity.severity-high {
+    background: rgba(220, 38, 38, 0.12);
+}
+
+.security-ops-status.status-completed {
+    background: rgba(16, 185, 129, 0.15);
+}
+
+.security-ops-detail-grid {
+    grid-template-columns: 1fr 1fr;
+}
+
+.security-ops-event-list article,
+.security-ops-empty {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.security-ops-event-list pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 6px 0 0;
+    color: var(--text-muted);
+}
+
+.security-ops-empty.error {
+    color: #dc2626;
+}
+
+@media (max-width: 800px) {
+    .security-ops-mode-grid,
+    .security-ops-form-grid,
+    .security-ops-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .security-ops-span-2 {
+        grid-column: auto;
+    }
+
+    .security-ops-run,
+    .security-ops-section-head,
+    .security-ops-submit-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+#page-vulnerabilities .page-header {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    overflow: visible;
+}
+
+#page-vulnerabilities .page-header-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: 100%;
+}
