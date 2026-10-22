@@ -17,6 +17,7 @@ import (
 
 	"jysecai/internal/config"
 	openaiClient "jysecai/internal/openai"
+	"jysecai/internal/proxypool"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -27,6 +28,18 @@ type FofaHandler struct {
 	logger       *zap.Logger
 	client       *http.Client
 	openAIClient *openaiClient.Client
+	proxyPool    *proxypool.Manager
+}
+
+func (h *FofaHandler) SetProxyPoolManager(manager *proxypool.Manager) {
+	h.proxyPool = manager
+	if manager == nil {
+		h.client = &http.Client{Timeout: 60 * time.Second}
+		return
+	}
+	// 情蒐查詢一律走住宅輪替組（residential）：台灣目標需要真實住宅出口，
+	// 避免機房 IP 被 FOFA/目標端風控。residential 組不可用時退回直連。
+	h.client = manager.ClientGroup(60*time.Second, "residential")
 }
 
 func NewFofaHandler(cfg *config.Config, logger *zap.Logger) *FofaHandler {
@@ -144,7 +157,7 @@ func defaultFieldsForProvider(provider string) string {
 	case "shodan":
 		return "ip_str,port,hostnames,domains,org,isp,location.country_name,location.city,product,transport"
 	default:
-		return "host,ip,port,domain,title,protocol,country,province,city,server"
+		return "host,ip,port,domain,title,protocol,country,region,city,server"
 	}
 }
 
@@ -635,7 +648,7 @@ func (h *FofaHandler) Search(c *gin.Context) {
 	params.Set("qbase64", qb64)
 	params.Set("size", fmt.Sprintf("%d", req.Size))
 	params.Set("page", fmt.Sprintf("%d", req.Page))
-	params.Set("fields", strings.TrimSpace(req.Fields))
+	params.Set("fields", normalizeFofaFields(req.Fields))
 	if req.Full {
 		params.Set("full", "true")
 	} else {

@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 
 	"jysecai/internal/termout"
 	"jysecai/internal/toolguard"
@@ -29,6 +30,7 @@ type Config struct {
 	ZoomEye     SpaceSearchConfig     `yaml:"zoomeye,omitempty" json:"zoomeye,omitempty"`
 	Quake       SpaceSearchConfig     `yaml:"quake,omitempty" json:"quake,omitempty"`
 	Shodan      SpaceSearchConfig     `yaml:"shodan,omitempty" json:"shodan,omitempty"`
+	ProxyPool   ProxyPoolConfig       `yaml:"proxy_pool,omitempty" json:"proxy_pool,omitempty"`
 	Agent       AgentConfig           `yaml:"agent"`
 	Hitl        HitlConfig            `yaml:"hitl,omitempty" json:"hitl,omitempty"`
 	ToolGuard   *toolguard.Config     `yaml:"tool_guard,omitempty" json:"tool_guard,omitempty"`
@@ -51,6 +53,16 @@ type Config struct {
 	Xss         XssConfig             `yaml:"xss,omitempty" json:"xss,omitempty"`
 	AutoTriage  AutoTriageConfig      `yaml:"auto_triage,omitempty" json:"auto_triage,omitempty"`
 	AutoVerify  AutoVerifyConfig      `yaml:"auto_verify,omitempty" json:"auto_verify,omitempty"`
+	// Xalgorix 只在伺服器設定裡保存。json:"-" 避免設定 API 把連線位址和 token 一起送出。
+	Xalgorix XalgorixConfig `yaml:"xalgorix,omitempty" json:"-"`
+}
+
+// XalgorixConfig 指向操作者自行部署的 Xalgorix。JySecAI 只呼叫它的管理 API，
+// 不在這個程序裡啟動掃描容器。APIToken 對應 XALGORIX_API_TOKEN。
+type XalgorixConfig struct {
+	Enabled  bool   `yaml:"enabled" json:"enabled"`
+	BaseURL  string `yaml:"base_url" json:"base_url"`
+	APIToken string `yaml:"api_token" json:"-"`
 }
 
 // AutoTriageConfig 控制「全自動 AI 漏洞分流」要不要跑。
@@ -201,6 +213,115 @@ func (c *XssConfig) XssTokenEffective() string {
 type EnsureLocalConfigResult struct {
 	Created     bool
 	ExamplePath string
+}
+
+// ProxyPoolConfig controls the SOCKS5 pool used by network-space search APIs.
+// It is deliberately scoped to reconnaissance API traffic so LLM and other
+// credential-bearing requests are never routed through third-party proxies.
+type ProxyPoolConfig struct {
+	Enabled               bool                `yaml:"enabled" json:"enabled"`
+	Strategy              string              `yaml:"strategy,omitempty" json:"strategy,omitempty"`
+	HealthCheckURL        string              `yaml:"health_check_url,omitempty" json:"health_check_url,omitempty"`
+	ConnectTimeoutSeconds int                 `yaml:"connect_timeout_seconds,omitempty" json:"connect_timeout_seconds,omitempty"`
+	RequestTimeoutSeconds int                 `yaml:"request_timeout_seconds,omitempty" json:"request_timeout_seconds,omitempty"`
+	FailureThreshold      int                 `yaml:"failure_threshold,omitempty" json:"failure_threshold,omitempty"`
+	CooldownSeconds       int                 `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
+	Proxies               []SOCKS5ProxyConfig `yaml:"proxies,omitempty" json:"proxies,omitempty"`
+}
+
+type SOCKS5ProxyConfig struct {
+	Name    string `yaml:"name,omitempty" json:"name,omitempty"`
+	URL     string `yaml:"url" json:"url"`
+	Enabled bool   `yaml:"enabled" json:"enabled"`
+	// Group 分流標籤：residential=住宅輪替（情蒐/掃描）, dc=機房（長連線/大流量）。
+	// 空值視為 dc；Manager.Client(group) 依此過濾。
+	Group string `yaml:"group,omitempty" json:"group,omitempty"`
+}
+
+// ProxyGroupEffective 回傳正規化後的群組標籤（dc 或 residential）。
+func (c SOCKS5ProxyConfig) ProxyGroupEffective() string {
+	g := strings.ToLower(strings.TrimSpace(c.Group))
+	if g == "residential" {
+		return "residential"
+	}
+	return "dc"
+}
+
+func (c *ProxyPoolConfig) NormalizeAndValidate() error {
+	if c == nil {
+		return nil
+	}
+	c.Strategy = strings.ToLower(strings.TrimSpace(c.Strategy))
+	if c.Strategy == "" {
+		c.Strategy = "round_robin"
+	}
+	if c.Strategy != "round_robin" && c.Strategy != "random" {
+		return fmt.Errorf("proxy_pool.strategy must be round_robin or random")
+	}
+	c.HealthCheckURL = strings.TrimSpace(c.HealthCheckURL)
+	if c.HealthCheckURL == "" {
+		c.HealthCheckURL = "https://api.ipify.org"
+	}
+	healthURL, err := url.Parse(c.HealthCheckURL)
+	if err != nil || healthURL.Scheme != "https" || healthURL.Hostname() == "" {
+		return fmt.Errorf("proxy_pool.health_check_url must be a valid HTTPS URL")
+	}
+	if c.ConnectTimeoutSeconds <= 0 {
+		c.ConnectTimeoutSeconds = 8
+	}
+	if c.RequestTimeoutSeconds <= 0 {
+		c.RequestTimeoutSeconds = 15
+	}
+	if c.FailureThreshold <= 0 {
+		c.FailureThreshold = 2
+	}
+	if c.CooldownSeconds <= 0 {
+		c.CooldownSeconds = 60
+	}
+
+	seen := make(map[string]struct{}, len(c.Proxies))
+	for i := range c.Proxies {
+		entry := &c.Proxies[i]
+		entry.Name = strings.TrimSpace(entry.Name)
+		entry.URL = strings.TrimSpace(entry.URL)
+		if entry.URL == "" {
+			return fmt.Errorf("proxy_pool.proxies[%d].url is required", i)
+		}
+		if !strings.Contains(entry.URL, "://") {
+			entry.URL = "socks5://" + entry.URL
+		}
+		proxyURL, parseErr := url.Parse(entry.URL)
+		if parseErr != nil ||
+			(proxyURL.Scheme != "socks5" && proxyURL.Scheme != "socks5h") ||
+			proxyURL.Hostname() == "" || proxyURL.Port() == "" ||
+			proxyURL.Path != "" || proxyURL.RawPath != "" || proxyURL.RawQuery != "" || proxyURL.Fragment != "" {
+			return fmt.Errorf("proxy_pool.proxies[%d].url must be socks5://host:port", i)
+		}
+		port, portErr := strconv.Atoi(proxyURL.Port())
+		if portErr != nil || port < 1 || port > 65535 {
+			return fmt.Errorf("proxy_pool.proxies[%d].url has an invalid port", i)
+		}
+		canonical := strings.ToLower(proxyURL.Scheme) + "://" + proxyURL.Host
+		if _, exists := seen[canonical]; exists {
+			return fmt.Errorf("proxy_pool contains duplicate proxy %s", proxyURL.Host)
+		}
+		seen[canonical] = struct{}{}
+		if entry.Name == "" {
+			entry.Name = proxyURL.Host
+		}
+	}
+	if c.Enabled {
+		enabled := 0
+		for _, entry := range c.Proxies {
+			if entry.Enabled {
+				enabled++
+			}
+		}
+		if enabled == 0 {
+			return fmt.Errorf("proxy_pool.enabled requires at least one enabled proxy")
+		}
+	}
+	return nil
 }
 
 const (
@@ -1020,7 +1141,9 @@ type OpenAIConfig struct {
 // AIConfig stores first-class model channels. Runtime callers resolve a channel
 // into OpenAIConfig at the edge instead of moving API credentials through chat requests.
 type AIConfig struct {
-	DefaultChannel string                     `yaml:"default_channel,omitempty" json:"default_channel,omitempty"`
+	DefaultChannel string `yaml:"default_channel,omitempty" json:"default_channel,omitempty"`
+	// RotateChannels 依序輪替未指定通道的掃描與對話。至少兩個才生效；指定 aiChannelId 時不輪替。
+	RotateChannels []string                   `yaml:"rotate_channels,omitempty" json:"rotate_channels,omitempty"`
 	Channels       map[string]AIChannelConfig `yaml:"channels,omitempty" json:"channels,omitempty"`
 }
 
@@ -1121,6 +1244,43 @@ func (c AIConfig) ResolveChannel(channelID string) (OpenAIConfig, string, bool) 
 	return OpenAIConfig{}, id, false
 }
 
+var scanChannelRotate struct {
+	mu sync.Mutex
+	n  uint64
+}
+
+// NextRotateChannel returns the next configured scan channel. Requests that
+// name a channel keep that choice. Fewer than two resolvable channels disables rotation.
+func (c *Config) NextRotateChannel() (string, bool) {
+	if c == nil {
+		return "", false
+	}
+	ids := make([]string, 0, len(c.AI.RotateChannels))
+	seen := map[string]struct{}{}
+	for _, raw := range c.AI.RotateChannels {
+		id := NormalizeAIChannelID(raw)
+		if id == "" {
+			continue
+		}
+		if _, ok := seen[id]; ok {
+			continue
+		}
+		if _, _, ok := c.AI.ResolveChannel(id); !ok {
+			continue
+		}
+		seen[id] = struct{}{}
+		ids = append(ids, id)
+	}
+	if len(ids) < 2 {
+		return "", false
+	}
+	scanChannelRotate.mu.Lock()
+	idx := scanChannelRotate.n % uint64(len(ids))
+	scanChannelRotate.n++
+	scanChannelRotate.mu.Unlock()
+	return ids[idx], true
+}
+
 func (c *Config) ResolveAIChannel(channelID string) (OpenAIConfig, string, bool) {
 	if c == nil {
 		return OpenAIConfig{}, "", false
@@ -1206,16 +1366,16 @@ func (c *Config) NormalizeAIProviderProfiles() {
 // OpenAIReasoningConfig 全局默认与网关 profile（对话页可通过 ChatRequest.reasoning 覆盖，受 AllowClientReasoning 约束）。
 type OpenAIReasoningConfig struct {
 	// Mode: auto（默认）| on | off | default（与 auto 相同）。
-	// off 在 OpenAI/Claude profile 下省略推理字段；DeepSeek profile 下发送 thinking.type=disabled（其默认开启思考）。
+	// off 对已知支持 none 的官方 OpenAI 模型发送 reasoning_effort=none；DeepSeek profile 发送 thinking.type=disabled；其他服务保持省略推理字段。
 	Mode string `yaml:"mode,omitempty" json:"mode,omitempty"`
-	// Effort: low | medium | high | max | xhigh；max/xhigh 为不同网关最高档命名，原样下发、不互转。空表示不单独指定强度。
+	// Effort: low | medium | high | max | xhigh；已知支持 none 的官方 OpenAI 模型另接受 none（等同关闭）。空表示不单独指定强度。
 	Effort string `yaml:"effort,omitempty" json:"effort,omitempty"`
 	// AllowClientReasoning 为 false 时忽略请求体 reasoning；nil 或未设置等同于 true。
 	AllowClientReasoning *bool `yaml:"allow_client_reasoning,omitempty" json:"allow_client_reasoning,omitempty"`
 	// Profile: auto | deepseek_compat | openai_compat | output_config_effort
 	Profile string `yaml:"profile,omitempty" json:"profile,omitempty"`
 	// ExtraRequestFields 合并进 Chat Completions 根 JSON（管理员用；与自动字段同名时后者覆盖）。
-	// Mode=off 时会移除其中的推理控制字段，但保留其他扩展字段；DeepSeek profile 随后补充显式关闭开关。
+	// Mode=off 时移除其中的推理控制字段，保留其他扩展字段，再按提供商与已知模型能力补充显式关闭参数。
 	ExtraRequestFields map[string]interface{} `yaml:"extra_request_fields,omitempty" json:"extra_request_fields,omitempty"`
 }
 

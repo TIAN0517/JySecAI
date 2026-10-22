@@ -188,7 +188,7 @@ type AgentHandler struct {
 	tasks            *AgentTaskManager
 	taskEventBus     *TaskEventBus // 镜像 SSE 事件，供刷新后订阅同一运行中任务
 	batchTaskManager *BatchTaskManager
-	batchGlobalSem   chan struct{}  // 批量队列全局并发预算（跨队列限制同时运行的子任务数）
+	batchGlobalSem   chan struct{} // 批量队列全局并发预算（跨队列限制同时运行的子任务数）
 	hitlManager      *HITLManager
 	config           *config.Config // 配置引用，用于获取角色信息
 	knowledgeManager interface {    // 知识库管理器接口
@@ -417,6 +417,11 @@ type ChatRequest struct {
 func (h *AgentHandler) configForAIChannel(channelID string) (*config.Config, string, error) {
 	if h == nil || h.config == nil {
 		return nil, "", fmt.Errorf("服务器配置未加载")
+	}
+	if strings.TrimSpace(channelID) == "" {
+		if id, ok := h.config.NextRotateChannel(); ok {
+			channelID = id
+		}
 	}
 	oa, resolvedID, ok := h.config.ResolveAIChannel(channelID)
 	if !ok {
@@ -1864,6 +1869,9 @@ type BatchTaskRequest struct {
 	ExecuteNow   bool     `json:"executeNow,omitempty"`     // 创建后是否立即执行（默认 false）
 	ProjectID    string   `json:"projectId,omitempty"`      // 队列内子对话绑定的项目（可选）
 	Concurrency  int      `json:"concurrency,omitempty"`    // 同时执行的子任务数，默认 1，最大 8
+	// AIChannelID 会话级 AI 通道覆盖（仅内存态，不落库）：工具协议吃力的
+	// flash 级通道跑不动複測，verify-drain 这类程序化派工靠它固定用强通道。
+	AIChannelID string `json:"aiChannelId,omitempty"`
 }
 
 // batchQueueWantsEino 队列是否配置为走 Eino 多代理。
@@ -1933,6 +1941,21 @@ func (h *AgentHandler) CreateBatchQueue(c *gin.Context) {
 	if createErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": createErr.Error()})
 		return
+	}
+
+	// AI 通道覆蓋必須在啟動前設定：batchRunConfig 是在子任務真正執行時才讀它。
+	// 通道不存在就直接拒絕——靜默回退預設通道會讓「指定強通道」這件事看起來生效
+	// 實際沒有，而複測失敗（工具不可用）正是這個回退最典型的後果。
+	if channelID := strings.TrimSpace(req.AIChannelID); channelID != "" {
+		if h.config == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "服务器配置未加载"})
+			return
+		}
+		if _, _, ok := h.config.AI.ResolveChannel(channelID); !ok {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "AI 通道不存在: " + channelID})
+			return
+		}
+		queue.AIChannelID = channelID
 	}
 	if session, ok := security.CurrentSession(c); ok && h.db != nil {
 		_ = h.db.SetResourceOwner("batch_task", queue.ID, session.UserID)

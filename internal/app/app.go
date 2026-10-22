@@ -30,6 +30,7 @@ import (
 	"jysecai/internal/mcp/builtin"
 	"jysecai/internal/monitor"
 	"jysecai/internal/multiagent"
+	"jysecai/internal/proxypool"
 	"jysecai/internal/robot"
 	"jysecai/internal/security"
 	"jysecai/internal/skillpackage"
@@ -74,6 +75,7 @@ type App struct {
 	c2Handler          *handler.C2Handler        // C2 REST（与 Manager 生命周期同步）
 	xssHandler         *handler.XssHandler       // XSS cookie-harvesting platform<br/>
 	auditSvc           *audit.Service
+	proxyPool          *proxypool.Manager
 }
 
 // New 创建新应用
@@ -87,6 +89,10 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	}
 
 	gin.SetMode(gin.ReleaseMode)
+	proxyPoolManager, err := proxypool.New(cfg.ProxyPool, log.Logger)
+	if err != nil {
+		return nil, fmt.Errorf("initialize SOCKS5 proxy pool: %w", err)
+	}
 	router := gin.Default()
 
 	// gin 預設信任所有代理（trustedProxies 為 0.0.0.0/0），ClientIP() 會直接
@@ -282,6 +288,17 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 
 		// 扫描知识库并建立索引（异步）
 		go func() {
+			resolved := knowledge.ResolveEmbeddingConfig(&cfg.Knowledge, &cfg.OpenAI)
+			probe := knowledge.ProbeEmbedding(&http.Client{Timeout: 8 * time.Second}, resolved, 8*time.Second)
+			if ok, why := knowledge.AutoIndexAllowed(probe); !ok {
+				log.Logger.Warn("嵌入服務不可達，跳過自動知識庫索引",
+					zap.String("endpoint", probe.Endpoint),
+					zap.Int("status", probe.StatusCode),
+					zap.String("reason", why),
+				)
+				return
+			}
+
 			itemsToIndex, err := knowledgeManager.ScanKnowledgeBase()
 			if err != nil {
 				log.Logger.Warn("扫描知识库失败", zap.Error(err))
@@ -424,6 +441,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	registerWebshellTools(mcpServer, db, webshellHandler, log.Logger)
 	registerWebshellManagementTools(mcpServer, db, webshellHandler, log.Logger)
 	configHandler := handler.NewConfigHandler(configPath, cfg, mcpServer, executor, agent, attackChainHandler, externalMCPMgr, log.Logger)
+	configHandler.SetProxyPoolManager(proxyPoolManager)
 	configHandler.SetDB(db)
 	configHandler.SetToolGuard(toolGuard)
 	configHandler.SetAudit(auditSvc)
@@ -437,6 +455,8 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	skillsHandler := handler.NewSkillsHandler(cfg, configPath, log.Logger)
 	skillsHandler.SetAudit(auditSvc)
 	fofaHandler := handler.NewFofaHandler(cfg, log.Logger)
+	fofaHandler.SetProxyPoolManager(proxyPoolManager)
+	assetIntelHandler := handler.NewAssetIntelHandler(cfg, log.Logger)
 	terminalHandler := handler.NewTerminalHandler(log.Logger)
 	if db != nil {
 		skillsHandler.SetDB(db) // 设置数据库连接以便获取调用统计
@@ -494,6 +514,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		c2Handler:          c2Handler,
 		xssHandler:         xssHandler,
 		auditSvc:           auditSvc,
+		proxyPool:          proxyPoolManager,
 	}
 	// 飞书/钉钉长连接（无需公网），启用时在后台启动；后续前端应用配置时会通过 RestartRobotConnections 重启
 	app.startRobotConnections()
@@ -610,6 +631,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		skillsHandler,
 		markdownAgentsHandler,
 		fofaHandler,
+		assetIntelHandler,
 		terminalHandler,
 		app.c2Handler,
 		app.xssHandler,
@@ -918,6 +940,7 @@ func setupRoutes(
 	skillsHandler *handler.SkillsHandler,
 	markdownAgentsHandler *handler.MarkdownAgentsHandler,
 	fofaHandler *handler.FofaHandler,
+	assetIntelHandler *handler.AssetIntelHandler,
 	terminalHandler *handler.TerminalHandler,
 	c2Handler *handler.C2Handler,
 	xssHandler *handler.XssHandler,
@@ -1033,6 +1056,14 @@ func setupRoutes(
 		// 信息收集 - 自然语言解析为 FOFA 语法（需人工确认后再查询）
 		protected.POST("/fofa/parse", fofaHandler.ParseNaturalLanguage)
 
+		// 资产管理 - asset_intelligence MCP 橋接 (唯讀, 不直接呼叫外部 API)
+		protected.GET("/assets-intel", assetIntelHandler.List)
+		protected.GET("/assets-intel/history", assetIntelHandler.RecentHistory)
+		protected.GET("/assets-intel/providers", assetIntelHandler.ProviderStatus)
+		protected.GET("/assets-intel/search", assetIntelHandler.Search)
+		protected.GET("/assets-intel/quota", assetIntelHandler.Quota)
+		protected.GET("/assets-intel/snapshots", assetIntelHandler.Snapshots)
+
 		// 资产管理
 		protected.GET("/assets", assetHandler.List)
 		protected.GET("/assets/selection", assetHandler.Selection)
@@ -1091,6 +1122,8 @@ func setupRoutes(
 
 		// 配置管理
 		protected.GET("/config", configHandler.GetConfig)
+		protected.GET("/config/proxy-pool/status", configHandler.GetProxyPoolStatus)
+		protected.POST("/config/test-proxy-pool", configHandler.TestProxyPool)
 		protected.GET("/tool-guard", configHandler.GetToolGuard)
 		protected.PUT("/tool-guard", configHandler.UpdateToolGuard)
 		protected.POST("/tool-guard/test", configHandler.TestToolGuard)
@@ -1289,15 +1322,28 @@ func setupRoutes(
 		protected.GET("/vulnerabilities/triage/runs/:id", vulnerabilityHandler.GetTriageRun)
 		protected.POST("/vulnerabilities/triage/runs/:id/apply", vulnerabilityHandler.ApplyTriageRun)
 		protected.GET("/vulnerabilities/:id", vulnerabilityHandler.GetVulnerability)
+		protected.POST("/vulnerability-pending/approve", vulnerabilityHandler.DispatchPendingVerification)
 		protected.POST("/vulnerabilities/:id/generate-poc", vulnerabilityHandler.GeneratePoc)
 		protected.POST("/vulnerabilities", vulnerabilityHandler.CreateVulnerability)
 		protected.PUT("/vulnerabilities/:id", vulnerabilityHandler.UpdateVulnerability)
 		protected.DELETE("/vulnerabilities/:id", vulnerabilityHandler.DeleteVulnerability)
 
+		securityOpsHandler := handler.NewSecurityOpsHandler(app.db, app.config, app.logger.Logger)
+		protected.GET("/security-ops/catalog", securityOpsHandler.Catalog)
+		protected.GET("/security-ops/runs", securityOpsHandler.ListRuns)
+		protected.POST("/security-ops/runs", securityOpsHandler.CreateRun)
+		protected.POST("/security-ops/runs/:id/approve", securityOpsHandler.ApproveRun)
+		protected.POST("/security-ops/runs/:id/cancel", securityOpsHandler.CancelRun)
+		protected.GET("/security-ops/runs/:id/events", securityOpsHandler.ListEvents)
+		protected.GET("/security-ops/runs/:id/artifacts", securityOpsHandler.ListArtifacts)
+		protected.GET("/security-ops/runs/:id/report", securityOpsHandler.DownloadReport)
+		protected.GET("/security-ops/projects/:projectId/findings", securityOpsHandler.ListFindings)
+
 		// 项目管理与事实黑板
 		protected.GET("/projects/dashboard-summary", projectHandler.GetDashboardSummary)
 		protected.GET("/projects", projectHandler.ListProjects)
 		protected.POST("/projects", projectHandler.CreateProject)
+		protected.GET("/projects/:id/pentest-report", securityOpsHandler.ProjectPentestReport)
 		protected.GET("/projects/:id/stats", projectHandler.GetProjectStats)
 		protected.GET("/projects/:id/conversations", projectHandler.ListProjectConversations)
 		protected.GET("/projects/:id", projectHandler.GetProject)

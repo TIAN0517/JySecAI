@@ -8,6 +8,17 @@ JySecAI is a single-service AI-native security operations platform in Go (module
 
 Deeper docs: `docs/en-US/architecture.md`, `docs/en-US/developer-guide.md`, `docs/en-US/testing.md`.
 
+## Live runtime (do not start a second copy)
+
+The site users actually open is the Kali WSL service `jysec-core`, not a Windows `jysecai.exe`.
+
+- Binary: `/opt/jysecai/core/current/jysec-core` (release `20260909-full-feature`)
+- Config: `/var/lib/jysecai/core/config.yaml`
+- Database: `/var/lib/jysecai/core/conversations.db` (the vulnerability set, POC drafts, conversations)
+- Listen: `127.0.0.1:8080` inside WSL. Windows `127.0.0.1:8855`, `localhost:8855`, and `52.128.238.210:6688` are portproxy onto that same process.
+
+`data/conversations.db` in this checkout is not production. It was a smaller divergent copy and has been moved to `C:\ProgramData\jysecai\quarantine-windows-split-20261021\`. Do not recreate it, do not point a server at it, and do not deploy this tree's binary over WSL unless the user explicitly asks for a production release. Editing Go, web, or `config.yaml` here does not change the running site until that release is deployed.
+
 ## Commands
 
 ```bash

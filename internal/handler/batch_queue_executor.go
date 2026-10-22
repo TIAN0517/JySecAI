@@ -352,10 +352,17 @@ func (h *AgentHandler) executeOneBatchSubTask(queueID string, queue *BatchTaskQu
 // 注意：解析失败时 configForAIChannel 会静默回退默认通道——这里对「请求了 A
 // 却落到 B」的情况记 warn，否则派工质量劣化完全不可见。
 func (h *AgentHandler) batchRunConfig(queue *BatchTaskQueue) *config.Config {
-	if h == nil || h.config == nil || queue == nil || strings.TrimSpace(queue.AIChannelID) == "" {
+	if h == nil || h.config == nil {
+		return nil
+	}
+	if queue == nil {
 		return h.config
 	}
-	cfgCopy, resolvedID, err := h.configForAIChannel(queue.AIChannelID)
+	channelID := strings.TrimSpace(queue.AIChannelID)
+	if channelID == "" && len(h.config.AI.RotateChannels) < 2 {
+		return h.config
+	}
+	cfgCopy, resolvedID, err := h.configForAIChannel(channelID)
 	if err != nil {
 		h.logger.Warn("批量队列 AI 通道无效，回退默认通道",
 			zap.String("queueId", queue.ID),
@@ -363,7 +370,7 @@ func (h *AgentHandler) batchRunConfig(queue *BatchTaskQueue) *config.Config {
 			zap.Error(err))
 		return h.config
 	}
-	if config.NormalizeAIChannelID(resolvedID) != config.NormalizeAIChannelID(queue.AIChannelID) {
+	if channelID != "" && config.NormalizeAIChannelID(resolvedID) != config.NormalizeAIChannelID(channelID) {
 		h.logger.Warn("批量队列 AI 通道解析结果与请求不符（可能通道名填错，已回退默认通道）",
 			zap.String("queueId", queue.ID),
 			zap.String("requestedChannel", queue.AIChannelID),
@@ -406,7 +413,7 @@ func (h *AgentHandler) handleBatchSubTaskRunError(
 		strings.Contains(strings.ToLower(errStr), "context canceled") ||
 		strings.Contains(strings.ToLower(errStr), "context cancelled") ||
 		(partialResp != "" && (strings.Contains(partialResp, "任务已被取消") || strings.Contains(partialResp, "任务执行中断")))
-	isTimeout := errors.Is(runErr, context.DeadlineExceeded) || errors.Is(context.Cause(taskCtx), context.DeadlineExceeded)
+	isTimeout := taskDeadlineExceeded(taskCtx)
 
 	if isTimeout {
 		*finishStatus = "timeout"

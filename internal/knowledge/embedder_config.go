@@ -190,3 +190,21 @@ func ProbeEmbedding(client *http.Client, r ResolvedEmbedding, timeout time.Durat
 	}
 	return res
 }
+
+// AutoIndexAllowed reports whether startup indexing should run. A dead embedding
+// origin must not be retried across every knowledge item on each process start.
+func AutoIndexAllowed(probe EmbeddingProbeResult) (bool, string) {
+	if probe.OK {
+		return true, ""
+	}
+	if probe.StatusCode != 0 {
+		return false, fmt.Sprintf("embedding HTTP %d", probe.StatusCode)
+	}
+	if probe.Err != nil {
+		return false, probe.Err.Error()
+	}
+	if probe.Body != "" {
+		return false, probe.Body
+	}
+	return false, "embedding probe failed"
+}

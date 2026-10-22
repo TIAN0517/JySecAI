@@ -11,14 +11,19 @@ import (
 	"time"
 
 	"crypto/rand"
+	"strconv"
+
+	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
 	"go.uber.org/zap"
 )
 
 const (
-	// SQLite 在 WAL 模式下建议使用较保守的连接数，降低长读快照导致 checkpoint 饥饿的概率。
-	sqliteMaxOpenConns = 25
-	sqliteMaxIdleConns = 5
+	// WAL 允許並行讀，但同一時間只有一個寫者。連線池過大時，並行寫入會在
+	// DEFERRED 交易升級寫鎖時立刻失敗，busy_timeout 來不及生效。
+	sqliteMaxOpenConns  = 8
+	sqliteMaxIdleConns  = 4
+	sqliteBusyTimeoutMS = 30000
 	// 以页为单位的自动 checkpoint 触发阈值（默认 1000 页，约 4MB @ 4KB/page）。
 	sqliteWALAutoCheckpointPages = 1000
 	// 控制 WAL 目标上限，避免异常场景持续膨胀（256MB）。
@@ -26,6 +31,11 @@ const (
 	// 定时执行 PASSIVE checkpoint，平滑推进 WAL 回收。
 	sqlitePassiveCheckpointInterval = 300 * time.Second
 )
+
+// sqliteOpenDSN 在 Begin 時就預留寫鎖。DEFERRED 升級可能不走 busy_timeout 而直接失敗。
+func sqliteOpenDSN(path string) string {
+	return fmt.Sprintf("%s?_journal_mode=WAL&_foreign_keys=1&_busy_timeout=%d&_synchronous=NORMAL&_txlock=immediate", path, sqliteBusyTimeoutMS)
+}
 
 // configureDBPool 设置 SQLite 连接池参数，提升并发稳定性
 func configureDBPool(db *sql.DB) {
@@ -130,7 +140,7 @@ func NewDB(dbPath string, logger *zap.Logger) (*DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("初始化凭证加密失败: %w", err)
 	}
-	db, err := sql.Open("sqlite3", dbPath+"?_journal_mode=WAL&_foreign_keys=1&_busy_timeout=5000&_synchronous=NORMAL")
+	db, err := sql.Open("sqlite3", sqliteOpenDSN(dbPath))
 	if err != nil {
 		return nil, fmt.Errorf("打开数据库失败: %w", err)
 	}
@@ -1022,6 +1032,10 @@ func (db *DB) initTables() error {
 		}
 	}
 
+	if _, err := db.Exec(createSecurityOpsRunsTable); err != nil {
+		return fmt.Errorf("创建security_ops_runs表失败: %w", err)
+	}
+
 	// 为已有表添加新字段（如果不存在）- 必须在创建索引之前
 	if err := db.migrateConversationsTable(); err != nil {
 		db.logger.Warn("迁移conversations表失败", zap.Error(err))
@@ -1749,7 +1763,7 @@ func (db *DB) migrateC2ListenersTable() error {
 
 // NewKnowledgeDB 创建知识库数据库连接（只包含知识库相关的表）
 func NewKnowledgeDB(dbPath string, logger *zap.Logger) (*DB, error) {
-	sqlDB, err := sql.Open("sqlite3", dbPath+"?_journal_mode=WAL&_foreign_keys=1&_busy_timeout=5000&_synchronous=NORMAL")
+	sqlDB, err := sql.Open("sqlite3", sqliteOpenDSN(dbPath))
 	if err != nil {
 		return nil, fmt.Errorf("打开知识库数据库失败: %w", err)
 	}
@@ -1889,7 +1903,7 @@ func (db *DB) migrateKnowledgeEmbeddingsColumns() error {
 
 // XssPayload represents a stored XSS payload used for cookie harvesting.
 type XssPayload struct {
-	ID             int64
+	ID             string
 	Token          string
 	Name           string
 	Type           string
@@ -1914,7 +1928,7 @@ type XssPayload struct {
 // XssCapture represents a captured cookie / data from an XSS hit.
 type XssCapture struct {
 	ID        int64
-	PayloadID int64
+	PayloadID string
 	Token     string
 	Cookie    string
 	URL       string
@@ -1925,8 +1939,20 @@ type XssCapture struct {
 	CreatedAt time.Time
 }
 
+// xssPayloadIDsAreText reports whether an existing table uses text IDs.
+// Production rows are UUIDs. A fresh database still uses INTEGER AUTOINCREMENT.
+func (db *DB) xssPayloadIDsAreText() bool {
+	var typ string
+	err := db.QueryRow(`SELECT type FROM pragma_table_info('xss_payloads') WHERE name = 'id'`).Scan(&typ)
+	if err != nil {
+		return false
+	}
+	upper := strings.ToUpper(typ)
+	return strings.Contains(upper, "TEXT") || strings.Contains(upper, "CHAR")
+}
+
 // CreateXssPayload stores a new XSS payload and returns its database ID.
-func (db *DB) CreateXssPayload(p *XssPayload) (int64, error) {
+func (db *DB) CreateXssPayload(p *XssPayload) (string, error) {
 	var projectID interface{} = nil
 	if p.ProjectID != "" {
 		projectID = p.ProjectID
@@ -1935,19 +1961,36 @@ func (db *DB) CreateXssPayload(p *XssPayload) (int64, error) {
 	if p.OwnerUserID != "" {
 		ownerUserID = p.OwnerUserID
 	}
+	if db.xssPayloadIDsAreText() {
+		id := uuid.NewString()
+		_, err := db.Exec(
+			`INSERT INTO xss_payloads (id, token, name, type, payload, config, project_id, enabled, description, domain, domain_only, dns_exfil_domain, script, one_time, expires_at, created_by, owner_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', ?, ?, ?, ?)`,
+			id, p.Token, p.Name, p.Type, p.Payload, p.Config, projectID, p.Enabled, p.Description, p.Domain, p.DomainOnly, p.DNSExfilDomain, p.OneTime, p.ExpiresAt, p.CreatedBy, ownerUserID,
+		)
+		if err != nil {
+			return "", err
+		}
+		p.ID = id
+		return id, nil
+	}
 	result, err := db.Exec(
 		`INSERT INTO xss_payloads (token, name, type, payload, config, project_id, enabled, description, domain, domain_only, dns_exfil_domain, script, one_time, expires_at, created_by, owner_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', ?, ?, ?, ?)`,
 		p.Token, p.Name, p.Type, p.Payload, p.Config, projectID, p.Enabled, p.Description, p.Domain, p.DomainOnly, p.DNSExfilDomain, p.OneTime, p.ExpiresAt, p.CreatedBy, ownerUserID,
 	)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
-	return result.LastInsertId()
+	n, err := result.LastInsertId()
+	if err != nil {
+		return "", err
+	}
+	p.ID = strconv.FormatInt(n, 10)
+	return p.ID, nil
 }
 
 // ListXssPayloads returns all XSS payloads, most recent first, with capture counts.
 func (db *DB) ListXssPayloads() ([]*XssPayload, error) {
-	rows, err := db.Query(`SELECT p.id, p.token, COALESCE(p.name,''), COALESCE(p.type,'image'), p.payload, COALESCE(p.config,'{}'), COALESCE(p.project_id,''), p.enabled, COALESCE(p.description,''), COALESCE(p.domain,''), COALESCE(p.domain_only,0), COALESCE(p.dns_exfil_domain,''), COALESCE(p.one_time,0), p.expires_at, p.consumed_at, p.created_at, p.updated_at, COALESCE(p.created_by,''), COUNT(c.id) as capture_count FROM xss_payloads p LEFT JOIN xss_captures c ON c.payload_id = p.id GROUP BY p.id ORDER BY p.created_at DESC`)
+	rows, err := db.Query(`SELECT p.id, COALESCE(p.token,''), COALESCE(p.name,''), COALESCE(p.type,'image'), COALESCE(p.payload,''), COALESCE(p.config,'{}'), COALESCE(p.project_id,''), COALESCE(p.enabled,0), COALESCE(p.description,''), COALESCE(p.domain,''), COALESCE(p.domain_only,0), COALESCE(p.dns_exfil_domain,''), COALESCE(p.one_time,0), p.expires_at, p.consumed_at, p.created_at, p.updated_at, COALESCE(p.created_by,''), COUNT(c.id) as capture_count FROM xss_payloads p LEFT JOIN xss_captures c ON c.payload_id = p.id GROUP BY p.id ORDER BY p.created_at DESC`)
 	if err != nil {
 		return nil, err
 	}
@@ -1989,8 +2032,8 @@ func (db *DB) ListXssPayloads() ([]*XssPayload, error) {
 	return payloads, rows.Err()
 }
 
-// GetXssPayload retrieves a payload by its numeric ID.
-func (db *DB) GetXssPayload(id int64) (*XssPayload, error) {
+// GetXssPayload retrieves a payload by its ID. Production IDs are UUID text.
+func (db *DB) GetXssPayload(id string) (*XssPayload, error) {
 	var p XssPayload
 	var nameVal, typeVal, projVal, descVal, domainVal, createdByVal, dnsExfilVal string
 	var domainOnlyVal, enabledVal int
@@ -2000,7 +2043,7 @@ func (db *DB) GetXssPayload(id int64) (*XssPayload, error) {
 	var createdAt, updatedAt time.Time
 	var captureCount int
 	err := db.QueryRow(
-		`SELECT p.id, p.token, COALESCE(p.name,''), COALESCE(p.type,'image'), p.payload, COALESCE(p.config,'{}'), COALESCE(p.project_id,''), p.enabled, COALESCE(p.description,''), COALESCE(p.domain,''), COALESCE(p.domain_only,0), COALESCE(p.dns_exfil_domain,''), COALESCE(p.one_time,0), p.expires_at, p.consumed_at, p.created_at, p.updated_at, COALESCE(p.created_by,''), COUNT(c.id) as capture_count FROM xss_payloads p LEFT JOIN xss_captures c ON c.payload_id = p.id WHERE p.id = ? GROUP BY p.id`,
+		`SELECT p.id, COALESCE(p.token,''), COALESCE(p.name,''), COALESCE(p.type,'image'), COALESCE(p.payload,''), COALESCE(p.config,'{}'), COALESCE(p.project_id,''), COALESCE(p.enabled,0), COALESCE(p.description,''), COALESCE(p.domain,''), COALESCE(p.domain_only,0), COALESCE(p.dns_exfil_domain,''), COALESCE(p.one_time,0), p.expires_at, p.consumed_at, p.created_at, p.updated_at, COALESCE(p.created_by,''), COUNT(c.id) as capture_count FROM xss_payloads p LEFT JOIN xss_captures c ON c.payload_id = p.id WHERE p.id = ? GROUP BY p.id`,
 		id,
 	).Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &dnsExfilVal, &oneTimeVal, &expiresAt, &consumedAt, &createdAt, &updatedAt, &createdByVal, &captureCount)
 	if err != nil {
@@ -2039,7 +2082,7 @@ func (db *DB) GetXssPayloadByToken(token string) (*XssPayload, error) {
 	var configVal []byte
 	var createdAt, updatedAt time.Time
 	err := db.QueryRow(
-		`SELECT id, token, COALESCE(name,''), COALESCE(type,'image'), payload, COALESCE(config,'{}'), COALESCE(project_id,''), enabled, COALESCE(description,''), COALESCE(domain,''), COALESCE(domain_only,0), COALESCE(dns_exfil_domain,''), COALESCE(one_time,0), expires_at, consumed_at, created_at, updated_at, COALESCE(created_by,'') FROM xss_payloads WHERE token = ?`,
+		`SELECT id, COALESCE(token,''), COALESCE(name,''), COALESCE(type,'image'), COALESCE(payload,''), COALESCE(config,'{}'), COALESCE(project_id,''), COALESCE(enabled,0), COALESCE(description,''), COALESCE(domain,''), COALESCE(domain_only,0), COALESCE(dns_exfil_domain,''), COALESCE(one_time,0), expires_at, consumed_at, created_at, updated_at, COALESCE(created_by,'') FROM xss_payloads WHERE token = ?`,
 		token,
 	).Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &dnsExfilVal, &oneTimeVal, &expiresAt, &consumedAt, &createdAt, &updatedAt, &createdByVal)
 	if err != nil {
@@ -2068,7 +2111,7 @@ func (db *DB) GetXssPayloadByToken(token string) (*XssPayload, error) {
 }
 
 // DeleteXssPayload removes a payload and all associated captures.
-func (db *DB) DeleteXssPayload(id int64) error {
+func (db *DB) DeleteXssPayload(id string) error {
 	_, err := db.Exec(`DELETE FROM xss_payloads WHERE id = ?`, id)
 	return err
 }
@@ -2076,7 +2119,7 @@ func (db *DB) DeleteXssPayload(id int64) error {
 // CreateXssCaptureIfAvailable atomically stores a callback only while the
 // payload is enabled, unexpired and (for one-time probes) not yet consumed.
 // The boolean is false when the callback is no longer eligible.
-func (db *DB) CreateXssCaptureIfAvailable(payloadID int64, token, cookie, url, domain, userAgent, ip, extra string) (int64, bool, error) {
+func (db *DB) CreateXssCaptureIfAvailable(payloadID string, token, cookie, url, domain, userAgent, ip, extra string) (int64, bool, error) {
 	tx, err := db.Begin()
 	if err != nil {
 		return 0, false, err
@@ -2145,7 +2188,7 @@ func (db *DB) ListXssCaptures() ([]*XssCapture, error) {
 }
 
 // ListXssCapturesByPayload returns captures for a specific payload, most recent first.
-func (db *DB) ListXssCapturesByPayload(payloadID int64) ([]*XssCapture, error) {
+func (db *DB) ListXssCapturesByPayload(payloadID string) ([]*XssCapture, error) {
 	rows, err := db.Query(`SELECT id, payload_id, token, cookie, url, domain, user_agent, ip, extra, created_at FROM xss_captures WHERE payload_id = ? ORDER BY created_at DESC`, payloadID)
 	if err != nil {
 		return nil, err
@@ -2167,13 +2210,13 @@ func (db *DB) ListXssCapturesByPayload(payloadID int64) ([]*XssCapture, error) {
 // userID. XSS captures carry the victim's stolen cookie and token, so listing
 // them must honour the caller's scope rather than returning the whole table.
 // An empty payloadID lists every visible payload; otherwise only that payload.
-func (db *DB) ListXssCapturesForUser(userID string, payloadID int64) ([]*XssCapture, error) {
+func (db *DB) ListXssCapturesForUser(userID string, payloadID string) ([]*XssCapture, error) {
 	query := `SELECT c.id, c.payload_id, c.token, c.cookie, c.url, c.domain, c.user_agent, c.ip, c.extra, c.created_at
 	          FROM xss_captures c
 	          JOIN xss_payloads p ON p.id = c.payload_id
 	          WHERE (p.owner_user_id = ? OR p.created_by = ?)`
 	args := []interface{}{userID, userID}
-	if payloadID > 0 {
+	if strings.TrimSpace(payloadID) != "" {
 		query += ` AND c.payload_id = ?`
 		args = append(args, payloadID)
 	}
@@ -2196,7 +2239,7 @@ func (db *DB) ListXssCapturesForUser(userID string, payloadID int64) ([]*XssCapt
 }
 
 // GetPayloadCaptureCount returns the number of captures for a given payload.
-func (db *DB) GetPayloadCaptureCount(payloadID int64) (int, error) {
+func (db *DB) GetPayloadCaptureCount(payloadID string) (int, error) {
 	var count int
 	err := db.QueryRow(`SELECT COUNT(*) FROM xss_captures WHERE payload_id = ?`, payloadID).Scan(&count)
 	return count, err

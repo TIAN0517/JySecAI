@@ -406,7 +406,7 @@ func (h *XssHandler) ListPayloads(c *gin.Context) {
 	if session, ok := security.CurrentSession(c); ok && session.Scope != database.RBACScopeAll {
 		visible := make([]*database.XssPayload, 0, len(payloads))
 		for _, p := range payloads {
-			if h.db.UserCanAccessResource(session.UserID, session.Scope, "xss_payload", strconv.FormatInt(p.ID, 10)) {
+			if h.db.UserCanAccessResource(session.UserID, session.Scope, "xss_payload", p.ID) {
 				visible = append(visible, p)
 			}
 		}
@@ -487,11 +487,11 @@ func (h *XssHandler) CreatePayload(c *gin.Context) {
 	}
 	if session, ok := security.CurrentSession(c); ok {
 		p.CreatedBy = session.UserID
-		_ = h.db.SetResourceOwner("xss_payload", strconv.FormatInt(id, 10), session.UserID)
-		_ = h.db.AssignResourceToUser(session.UserID, "xss_payload", strconv.FormatInt(id, 10))
+		_ = h.db.SetResourceOwner("xss_payload", id, session.UserID)
+		_ = h.db.AssignResourceToUser(session.UserID, "xss_payload", id)
 	}
 	if h.audit != nil {
-		h.audit.RecordOK(c, "xss", "payload_create", "创建安全回调", "xss_payload", strconv.FormatInt(id, 10), map[string]interface{}{
+		h.audit.RecordOK(c, "xss", "payload_create", "创建安全回调", "xss_payload", id, map[string]interface{}{
 			"token_hint": xssTokenHint(token), "name": name, "type": kind, "ttl_seconds": ttl,
 		})
 	}
@@ -510,8 +510,8 @@ func xssBoolToInt(value bool) int {
 }
 
 func (h *XssHandler) GetPayload(c *gin.Context) {
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil || id <= 0 {
+	id := strings.TrimSpace(c.Param("id"))
+	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid payload id"})
 		return
 	}
@@ -524,8 +524,8 @@ func (h *XssHandler) GetPayload(c *gin.Context) {
 }
 
 func (h *XssHandler) DeletePayload(c *gin.Context) {
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil || id <= 0 {
+	id := strings.TrimSpace(c.Param("id"))
+	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid payload id"})
 		return
 	}
@@ -536,7 +536,7 @@ func (h *XssHandler) DeletePayload(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		return
 	}
-	if !h.db.UserCanAccessResource(session.UserID, session.Scope, "xss_payload", strconv.FormatInt(id, 10)) {
+	if !h.db.UserCanAccessResource(session.UserID, session.Scope, "xss_payload", id) {
 		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
 		return
 	}
@@ -545,7 +545,7 @@ func (h *XssHandler) DeletePayload(c *gin.Context) {
 		return
 	}
 	if h.audit != nil {
-		h.audit.RecordOK(c, "xss", "payload_delete", "删除安全回调", "xss_payload", strconv.FormatInt(id, 10), nil)
+		h.audit.RecordOK(c, "xss", "payload_delete", "删除安全回调", "xss_payload", id, nil)
 	}
 	c.JSON(http.StatusOK, gin.H{"deleted": true})
 }
@@ -553,15 +553,7 @@ func (h *XssHandler) DeletePayload(c *gin.Context) {
 func (h *XssHandler) ListCaptures(c *gin.Context) {
 	var captures []*database.XssCapture
 	var err error
-	var payloadID int64
-	if raw := c.Query("payload_id"); raw != "" {
-		id, parseErr := strconv.ParseInt(raw, 10, 64)
-		if parseErr != nil || id <= 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid payload_id"})
-			return
-		}
-		payloadID = id
-	}
+	payloadID := strings.TrimSpace(c.Query("payload_id"))
 
 	// Captures hold the victim's stolen cookie and token. Scope "all" keeps the
 	// historical whole-table listing; narrower scopes are limited to the
@@ -572,7 +564,7 @@ func (h *XssHandler) ListCaptures(c *gin.Context) {
 		return
 	}
 	if session.Scope == database.RBACScopeAll {
-		if payloadID > 0 {
+		if payloadID != "" {
 			captures, err = h.db.ListXssCapturesByPayload(payloadID)
 		} else {
 			captures, err = h.db.ListXssCaptures()
