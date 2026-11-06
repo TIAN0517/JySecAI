@@ -239,21 +239,8 @@ ai:
       api_key: "${OPENAI_API_KEY}"
       base_url: "https://api.openai.com/v1"
       model: "your-model"
-```
 
-`openai` is a backward-compatible runtime field; maintain new model settings in `ai.channels`. Do not commit real credentials. Review the [configuration reference](docs/en-US/configuration.md), [recommended profiles](docs/en-US/configuration-profiles.md), and [security hardening guide](docs/en-US/security-hardening.md) before exposing the service beyond localhost.
 
-## Related documentation
-
-- **New users:** [Deployment](docs/en-US/deployment.md) → [Configuration](docs/en-US/configuration.md) → [Troubleshooting](docs/en-US/troubleshooting.md)
-- **Operators:** [Configuration profiles](docs/en-US/configuration-profiles.md) → [Security hardening](docs/en-US/security-hardening.md) → [Runbooks](docs/en-US/runbooks.md)
-- **Integrators:** [API reference](docs/en-US/api-reference.md) → [API recipes](docs/en-US/api-recipes.md) → [MCP federation](docs/en-US/mcp-federation.md)
-- **Contributors:** [Developer guide](docs/en-US/developer-guide.md) → [Testing](docs/en-US/testing.md) → [Contributing](docs/en-US/contributing-guide.md)
-- **All topics:** [English documentation](docs/en-US/README.md) · [Bilingual documentation index](docs/README.md)
-
-## Project Layout
-
-```
 JySecAI/
 ├── cmd/                 # Server, MCP stdio entrypoints, tooling
 ├── internal/            # Agent, MCP core, handlers, C2 (`internal/c2`), security executor
@@ -268,72 +255,3 @@ JySecAI/
 ├── config.yaml          # Runtime configuration
 ├── run.sh               # Convenience launcher
 └── README*.md
-```
-
-## Basic Usage Examples
-
-```
-Scan open ports on 192.168.1.1
-Perform a comprehensive port scan on 192.168.1.1 focusing on 80,443,22
-Check if https://example.com/page?id=1 is vulnerable to SQL injection
-Scan https://example.com for hidden directories and outdated software
-Enumerate subdomains for example.com, then run nuclei against the results
-```
-
-## Advanced Playbooks
-
-```
-Load the recon-engagement template, run amass/subfinder, then brute-force dirs on every live host.
-Use external Burp-based MCP server for authenticated traffic replay, then pass findings back for graphing.
-Compress the 5 MB nuclei report, summarize critical CVEs, and attach the artifact to the conversation.
-Build an attack chain for the latest engagement and export the node list with severity >= high.
-```
-
-
-
-## Community and Support
-
-- Join the community on [Discord](https://discord.gg/8PjVCMu8Zw).
-
-<details>
-<summary><strong>WeChat group</strong></summary>
-
-<img src="./images/wechat-group-cyberstrikeai-qr.jpg" alt="JySecAI WeChat group QR code" width="280">
-
-</details>
-
-<details>
-<summary><strong>Sponsorship via WeChat Pay or Alipay</strong></summary>
-
-<div align="center">
-  <img src="./images/sponsor-wechat-alipay-qr.jpg" alt="WeChat Pay and Alipay sponsorship QR codes" width="480">
-</div>
-
-</details>
-
-## License
-
-JySecAI is licensed under the Apache License 2.0.  
-See the [LICENSE](LICENSE) file for details.
-
----
-
-## ⚠️ Disclaimer
-
-**This tool is for educational and authorized testing purposes only!**
-
-JySecAI is a professional security testing platform designed to assist security researchers, penetration testers, and IT professionals in conducting security assessments and vulnerability research **with explicit authorization**.
-
-**By using this tool, you agree to:**
-- Use this tool only on systems where you have clear written authorization
-- Comply with all applicable laws, regulations, and ethical standards
-- Take full responsibility for any unauthorized use or misuse
-- Not use this tool for any illegal or malicious purposes
-
-**The developers are not responsible for any misuse!** Please ensure your usage complies with local laws and regulations, and that you have obtained explicit authorization from the target system owner.
-
-For vulnerability reporting and deployment hardening guidance, see [SECURITY.md](SECURITY.md).
-
----
-
-Need help or want to contribute? Open an issue or PR—community tooling additions are welcome!
