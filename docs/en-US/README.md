@@ -13,12 +13,13 @@
 
 - [Architecture](architecture.md) · [Security Model](security-model.md) · [RBAC](rbac.md)
 - [Agents and Roles](agent-and-role-guide.md) · [Skills](skills-guide.md) · [Eino Multi-Agent](MULTI_AGENT_EINO.md)
-- [Workflows](workflow-graph.md) · [Tool Execution Governance](tool-execution-governance.md) · [HITL Best Practices](hitl-best-practices.md)
+- [Workflows](workflow-graph.md) · [Tool Execution Governance](tool-execution-governance.md) · [HITL Best Practices](hitl-best-practices.md) · [Scope Registry](scope-registry.md)
 
 ## Feature guides
 
 - [Asset Management](asset-management.md) · [Knowledge Base](knowledge-base.md) · [Robot / Chatbot](robot.md) · [Vision](VISION.md)
-- [WebShell](webshell.md) · [C2](c2.md) · [MCP Federation](mcp-federation.md)
+- [WebShell](webshell.md) · [C2](c2.md) · [Penetration test report](pentest-report.md) · [MCP Federation](mcp-federation.md)
+- [Controlled Redirect Endpoints](redirect-endpoints.md) · [Batch Open Redirect Verification](redirect-batch-verify.md)
 
 ## Operations and reference
 

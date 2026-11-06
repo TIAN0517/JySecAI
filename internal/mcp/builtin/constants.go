@@ -7,6 +7,13 @@ const (
 	ToolRecordVulnerability = "record_vulnerability"
 	ToolListVulnerabilities = "list_vulnerabilities"
 	ToolGetVulnerability    = "get_vulnerability"
+	ToolUpdateVulnerability = "update_vulnerability"
+	ToolVulnTriageReport    = "vuln_triage_report"
+	// ToolEscalateFindingsChain 把多條已確認漏洞升級串成一條攻擊鏈發現。
+	ToolEscalateFindingsChain = "escalate_findings_chain"
+
+	// 受控跳轉（回連）探測工具
+	ToolRedirectProbe = "redirect_probe"
 
 	// 资产管理工具
 	ToolCreateAsset       = "create_asset"
@@ -81,6 +88,10 @@ func IsBuiltinTool(toolName string) bool {
 	case ToolRecordVulnerability,
 		ToolListVulnerabilities,
 		ToolGetVulnerability,
+		ToolUpdateVulnerability,
+		ToolVulnTriageReport,
+		ToolEscalateFindingsChain,
+		ToolRedirectProbe,
 		ToolCreateAsset,
 		ToolGetAsset,
 		ToolQueryAssets,
@@ -142,6 +153,10 @@ func GetAllBuiltinTools() []string {
 		ToolRecordVulnerability,
 		ToolListVulnerabilities,
 		ToolGetVulnerability,
+		ToolUpdateVulnerability,
+		ToolVulnTriageReport,
+		ToolEscalateFindingsChain,
+		ToolRedirectProbe,
 		ToolCreateAsset,
 		ToolGetAsset,
 		ToolQueryAssets,

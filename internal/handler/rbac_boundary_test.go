@@ -105,6 +105,87 @@ func TestVulnerabilityCannotBeReparentedToForeignProject(t *testing.T) {
 	}
 }
 
+func TestVulnerabilitySingleResourceEndpointsRejectForeignIDs(t *testing.T) {
+	db, err := database.NewDB(filepath.Join(t.TempDir(), "vuln-single-rbac.db"), zap.NewNop())
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = db.Close() })
+	user, err := db.CreateRBACUser("vuln-user", "Vulnerability User", "hash", true, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	vuln, err := db.CreateVulnerability(&database.Vulnerability{Title: "hidden", Severity: "high"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := db.SetResourceOwner("vulnerability", vuln.ID, "another-user"); err != nil {
+		t.Fatal(err)
+	}
+	h := NewVulnerabilityHandler(db, zap.NewNop())
+	for _, tc := range []struct {
+		name   string
+		method string
+		body   interface{}
+		fn     gin.HandlerFunc
+	}{
+		{"get", http.MethodGet, nil, h.GetVulnerability},
+		{"update", http.MethodPut, map[string]interface{}{"title": "stolen"}, h.UpdateVulnerability},
+		{"delete", http.MethodDelete, nil, h.DeleteVulnerability},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			w := performAssignedResourceHandler(user, tc.method, "/api/vulnerabilities/"+vuln.ID, tc.body, gin.Params{{Key: "id", Value: vuln.ID}}, tc.fn)
+			if w.Code != http.StatusForbidden {
+				t.Fatalf("status = %d, want 403: %s", w.Code, w.Body.String())
+			}
+		})
+	}
+}
+
+func TestBatchQueueSingleResourceEndpointsRejectForeignIDs(t *testing.T) {
+	db, err := database.NewDB(filepath.Join(t.TempDir(), "batch-single-rbac.db"), zap.NewNop())
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = db.Close() })
+	user, err := db.CreateRBACUser("batch-user", "Batch User", "hash", true, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	const queueID = "batch-hidden"
+	if err := db.SetResourceOwner("batch_task", queueID, "another-user"); err != nil {
+		t.Fatal(err)
+	}
+	h := &AgentHandler{db: db, logger: zap.NewNop()}
+	for _, tc := range []struct {
+		name   string
+		method string
+		body   interface{}
+		params gin.Params
+		fn     gin.HandlerFunc
+	}{
+		{"get", http.MethodGet, nil, gin.Params{{Key: "queueId", Value: queueID}}, h.GetBatchQueue},
+		{"start", http.MethodPost, nil, gin.Params{{Key: "queueId", Value: queueID}}, h.StartBatchQueue},
+		{"rerun", http.MethodPost, nil, gin.Params{{Key: "queueId", Value: queueID}}, h.RerunBatchQueue},
+		{"pause", http.MethodPost, nil, gin.Params{{Key: "queueId", Value: queueID}}, h.PauseBatchQueue},
+		{"metadata", http.MethodPut, map[string]interface{}{}, gin.Params{{Key: "queueId", Value: queueID}}, h.UpdateBatchQueueMetadata},
+		{"schedule", http.MethodPut, map[string]interface{}{}, gin.Params{{Key: "queueId", Value: queueID}}, h.UpdateBatchQueueSchedule},
+		{"schedule enabled", http.MethodPut, map[string]interface{}{}, gin.Params{{Key: "queueId", Value: queueID}}, h.SetBatchQueueScheduleEnabled},
+		{"delete", http.MethodDelete, nil, gin.Params{{Key: "queueId", Value: queueID}}, h.DeleteBatchQueue},
+		{"update task", http.MethodPut, map[string]interface{}{"message": "x"}, gin.Params{{Key: "queueId", Value: queueID}, {Key: "taskId", Value: "task-hidden"}}, h.UpdateBatchTask},
+		{"add task", http.MethodPost, map[string]interface{}{"message": "x"}, gin.Params{{Key: "queueId", Value: queueID}}, h.AddBatchTask},
+		{"run task", http.MethodPost, nil, gin.Params{{Key: "queueId", Value: queueID}, {Key: "taskId", Value: "task-hidden"}}, h.RunSingleBatchTask},
+		{"delete task", http.MethodDelete, nil, gin.Params{{Key: "queueId", Value: queueID}, {Key: "taskId", Value: "task-hidden"}}, h.DeleteBatchTask},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			w := performAssignedResourceHandler(user, tc.method, "/api/batch/"+queueID, tc.body, tc.params, tc.fn)
+			if w.Code != http.StatusForbidden {
+				t.Fatalf("status = %d, want 403: %s", w.Code, w.Body.String())
+			}
+		})
+	}
+}
+
 func TestAgentTaskEndpointsFilterAndRejectForeignConversations(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	db, user := setupConversationRBACTest(t)
@@ -333,6 +414,10 @@ func TestMonitorExecutionDetailRejectsForeignOwner(t *testing.T) {
 }
 
 func performAssignedHandler(user *database.RBACUser, method, path string, body interface{}, handler gin.HandlerFunc) *httptest.ResponseRecorder {
+	return performAssignedResourceHandler(user, method, path, body, nil, handler)
+}
+
+func performAssignedResourceHandler(user *database.RBACUser, method, path string, body interface{}, params gin.Params, handler gin.HandlerFunc) *httptest.ResponseRecorder {
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 	var req *http.Request
@@ -344,6 +429,7 @@ func performAssignedHandler(user *database.RBACUser, method, path string, body i
 		req.Header.Set("Content-Type", "application/json")
 	}
 	c.Request = req
+	c.Params = params
 	c.Set(security.ContextSessionKey, security.Session{UserID: user.ID, Scope: database.RBACScopeAssigned})
 	handler(c)
 	return w

@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"jysecai/internal/config"
+	"jysecai/internal/security"
 )
 
 func TestGenerateDraftFromNaturalLanguageHighRiskAddsHITLAndValidGraph(t *testing.T) {
@@ -75,6 +76,9 @@ func TestGenerateDraftAllowHighRiskStillLabelsConditionBranch(t *testing.T) {
 }
 
 func TestGenerateDraftFromLLMUsesOpenAICompatibleEndpoint(t *testing.T) {
+	// The OpenAI client refuses to dial private addresses, and the mock
+	// endpoint below lives on 127.0.0.1.
+	defer security.SetAllowPrivateNetworkForTesting(true)()
 	called := false
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		called = true
@@ -129,6 +133,7 @@ func TestGenerateDraftFromLLMUsesOpenAICompatibleEndpoint(t *testing.T) {
 }
 
 func TestGenerateDraftFromLLMReturnsErrorOnMalformedJSON(t *testing.T) {
+	defer security.SetAllowPrivateNetworkForTesting(true)()
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"choices":[{"message":{"content":"{\"meta\":{\"id\":\"bad\"},|\"graph\":{\"nodes\":[]}}"}}]}`))

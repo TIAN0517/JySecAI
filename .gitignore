@@ -254,3 +254,22 @@ scripts/*seed_export*.json
 
 # web/ 內的版本備份：純雜訊，而且會被 sync_web_assets.sh 一起部署到 /opt。
 web/**/*.bak-*
+
+# ===== 2026-11-07 推送前閘門偵測後補漏 =====
+# 禁區目標（119／EPCR／消防救護）的個案證據：內含真實 FOFA/ZoomEye API key
+# （36 碼，L1134）與目標細節，且全文提及 119 系統 155 次。
+# 這類檔案絕對不能進版控——即使倉庫是 private。
+/*-119-*.md
+/*_119-*.md
+/*-epcr-*.md
+/*_epcr-*.md
+
+# 本機版面備份目錄（2.4MB，含 .bak-* 快照）
+/.layout-backup-*/
+
+# 抓包殘留的原始 HTTP 請求（含 session cookie）
+/1
+
+# 一次性橋接產生器草稿：尾端有未閉合三引號（語法錯誤），且無任何引用。
+# 保留在本機作廢棄草稿，不進版控（語法閘門本來也會擋它）。
+/scripts/_write_fixed_minimal_bridge.py

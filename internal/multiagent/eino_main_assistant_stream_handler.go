@@ -1,6 +1,10 @@
 package multiagent
 
-import "strings"
+import (
+	"strings"
+
+	"jysecai/internal/openai"
+)
 
 type einoMainAssistantStreamHandler struct {
 	agentName        string
@@ -36,7 +40,7 @@ func (h *einoMainAssistantStreamHandler) EmitDelta(content string) bool {
 		return false
 	}
 	var delta string
-	h.buf, delta = normalizeStreamingDelta(h.buf, content)
+	h.buf, delta = openai.NormalizeStreamingDelta(h.buf, content)
 	if delta == "" {
 		return false
 	}

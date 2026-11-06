@@ -62,7 +62,8 @@
         saveVulnerability: 'vulnerability:write',
         deleteVulnerability: 'vulnerability:delete',
         batchDeleteVulnerabilityReports: 'vulnerability:delete',
-        exportVulnerabilityReports: 'vulnerability:read',
+        exportVulnerabilityReports: 'vulnerability:export',
+        exportVulnerabilityRecords: 'vulnerability:export',
         changeVulnerabilityStatus: 'vulnerability:write',
         bindVulnerabilityProject: 'vulnerability:write',
 

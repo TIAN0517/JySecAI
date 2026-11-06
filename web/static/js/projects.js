@@ -3,12 +3,12 @@
  */
 let projectsCache = [];
 let projectsCacheAll = [];
-const PROJECTS_LIST_PAGE_SIZE_KEY = 'cyberstrike.projects_list_page_size';
+const PROJECTS_LIST_PAGE_SIZE_KEY = 'jysec.projects_list_page_size';
 let currentProjectId = null;
 let currentProjectUpdatedAt = null;
 let currentProjectTab = 'facts';
 let currentProjectAssets = [];
-const PROJECT_ASSETS_PAGE_SIZE_KEY = 'cyberstrike.project_assets_page_size';
+const PROJECT_ASSETS_PAGE_SIZE_KEY = 'jysec.project_assets_page_size';
 let projectAssetsPagination = {
     page: 1,
     pageSize: (() => {
@@ -26,13 +26,16 @@ const projectNameById = {};
 let _projectsListReady = false;
 let _projectsFetchPromise = null;
 
-const PROJECT_ACTIVE_KEY = 'cyberstrike.activeProjectId';
+const PROJECT_ACTIVE_KEY = 'jysec.activeProjectId';
 const PROJECT_DESCRIPTION_MAX_LENGTH = 4000;
 const PROJECT_NAME_MAX_LENGTH = 200;
 
-function tp(key, opts) {
-    if (typeof window.t === 'function') return window.t(key, opts);
-    return key;
+function tp(key, opts, fallback) {
+    if (typeof window.t === 'function') {
+        const value = window.t(key, opts);
+        if (value && value !== key) return value;
+    }
+    return fallback || key;
 }
 
 function tpFmt(key, fallback, opts) {
@@ -2511,27 +2514,6 @@ function formatProjectTime(t, fallback) {
     return d.toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
-function escapeHtml(s) {
-    if (s == null) return '';
-    return String(s)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-}
-
-function escapeAttr(s) {
-    return escapeHtml(s).replace(/'/g, '&#39;');
-}
-
-function escapeJsString(text) {
-    return JSON.stringify(String(text == null ? '' : text));
-}
-
-function escapeJsStringAttr(text) {
-    return escapeAttr(escapeJsString(text));
-}
-
 function getChatProjectSelection() {
     const convId = window.currentConversationId;
     if (convId) {
@@ -2595,7 +2577,7 @@ let chatProjectFolderLastQuery = '';
 const chatProjectFolderExpandedIds = new Set();
 let chatProjectFolderLastSelectionId = null;
 const CHAT_UNASSIGNED_PROJECT_FOLDER_ID = '__chat_unassigned_project__';
-const PROJECT_FOLDER_COMPLETION_SEEN_KEY = 'cyberstrike-project-folder-completion-seen';
+const PROJECT_FOLDER_COMPLETION_SEEN_KEY = 'jysec-project-folder-completion-seen';
 const chatProjectFolderContext = {
     ready: false,
     conversations: [],
@@ -3072,10 +3054,10 @@ function formatProjectConversationPreviewAge(value) {
 function getProjectConversationModeLabel(conversation) {
     const mode = String(conversation?.agentMode || conversation?.agent_mode || '').trim().toLowerCase();
     const labels = {
-        eino_single: ['chat.agentModeEinoSingle', 'Eino 单代理（ADK）'],
-        deep: ['chat.agentModeDeep', 'Deep（DeepAgent）'],
-        plan_execute: ['chat.agentModePlanExecuteLabel', 'Plan-Execute'],
-        supervisor: ['chat.agentModeSupervisorLabel', 'Supervisor（专家路由）'],
+        eino_single: ['chat.agentModeEinoSingle', uiT('agentModes.single', 'Jy 红队 · 单代理')],
+        deep: ['chat.agentModeDeep', uiT('agentModes.deep', 'Jy 红队 · Deep')],
+        plan_execute: ['chat.agentModePlanExecuteLabel', uiT('agentModes.planExecute', 'Jy 红队 · Plan-Execute')],
+        supervisor: ['chat.agentModeSupervisorLabel', uiT('agentModes.supervisor', 'Jy 红队 · Supervisor')],
     };
     if (labels[mode]) return tpFmt(labels[mode][0], labels[mode][1]);
     return clampProjectPreviewText(
@@ -4197,3 +4179,15 @@ window.fetchProjectSummary = fetchProjectSummary;
 window.projectNameById = projectNameById;
 window.ensureProjectsLoaded = ensureProjectsLoaded;
 window.isProjectsCacheReady = isProjectsCacheReady;
+
+async function downloadProjectPentestReport() {
+    if (!currentProjectId) return;
+    try {
+        await downloadAuthenticated('/api/projects/' + encodeURIComponent(currentProjectId) + '/pentest-report', 'pentest-report.html');
+    } catch (error) {
+        const message = error && error.message ? error.message : tp('projects.reportDownloadFailed', {}, '無法下載滲透報告');
+        if (typeof showNotification === 'function') showNotification(message, 'error');
+        else alert(message);
+    }
+}
+window.downloadProjectPentestReport = downloadProjectPentestReport;

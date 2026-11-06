@@ -1,0 +1,13 @@
+[Unit]
+Description=JySecAi MCP watchdog - auto restart on disconnect
+After=network-online.target jysec-core.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/jysec-mcp-watchdog
+TimeoutStartSec=300
+RuntimeDirectory=jysec-mcp-watchdog
+Environment=JYSEC_CORE_CONFIG=/var/lib/jysecai/core/config.yaml
+Environment=JYSEC_WATCHDOG_STATE=/run/jysec-mcp-watchdog
+Environment=JYSEC_MCP_CATALOG_DIR=/var/lib/jysecai/mcp-catalog

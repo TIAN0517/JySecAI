@@ -67,9 +67,13 @@ func (rl *RateLimiter) allow(ip string) bool {
 }
 
 // RateLimitMiddleware 返回 Gin 中间件，对超限请求返回 429
-func RateLimitMiddleware(rl *RateLimiter) gin.HandlerFunc {
+//
+// trustCFConnectingIP 打开时，限流键改用真实客户端 IP（见 EffectiveClientIP）：
+// 默认关闭时键是对端 IP；由于本机的 tunnel/portproxy 转发会让所有外部请求都
+// 呈现为 127.0.0.1，打开后外部用户才会各自拥有独立的桶。
+func RateLimitMiddleware(rl *RateLimiter, trustCFConnectingIP bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ip := c.ClientIP()
+		ip := EffectiveClientIP(c, trustCFConnectingIP)
 		if !rl.allow(ip) {
 			c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
 				"error": "rate limit exceeded, please try again later",

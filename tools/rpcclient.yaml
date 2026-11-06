@@ -47,6 +47,7 @@ args:
         sys.stderr.write(proc.stderr)
     sys.exit(proc.returncode)
 enabled: true
+action_class: "credential_enum"
 short_description: "RPC枚举工具"
 description: |
   Rpcclient是一个RPC客户端工具，用于枚举Windows/Samba系统信息。
@@ -85,6 +86,8 @@ parameters:
     format: "positional"
   - name: "domain"
     type: "string"
+    target: true
+    target_kind: "host"
     description: "域名"
     required: false
     default: ""

@@ -41,6 +41,41 @@ type Executor struct {
 	shellNoOutputTimeoutSec int // execute/exec 无新输出空闲秒数；0=默认 300；-1=关闭（见 SetShellNoOutputTimeoutSeconds）
 	toolOutputMaxBytes      int
 	spillRootDir            string
+	// scopeGuard 是授權範圍登記（Scope Registry）的執行面兜底（攔截點 B）。
+	// 沒注入就完全不做檢查（維持既有行為）；注入後未覆蓋的目標一律 fail closed。
+	scopeGuard ScopeGuard
+}
+
+// SetScopeGuard 注入授權範圍檢查器（攔截點 B）。
+//
+// 用注入而不是改 NewExecutor 簽名：既有呼叫點（測試、其他組裝處）不能被破壞。
+func (e *Executor) SetScopeGuard(guard ScopeGuard) {
+	if e == nil {
+		return
+	}
+	e.scopeGuard = guard
+}
+
+// ScopeGuard 回傳目前注入的授權範圍檢查器（沒注入回 nil）。
+//
+// 給測試與健康檢查用：診斷端點需要知道「攔截點 B 到底有沒有生效」，
+// 但不該暴露內部欄位。
+func (e *Executor) ScopeGuard() ScopeGuard {
+	if e == nil {
+		return nil
+	}
+	return e.scopeGuard
+}
+
+// scopeToolConfig 取工具設定（找不到回 nil，不記錯誤）。
+//
+// 任意執行類工具（exec）不一定在工具索引裡，但同樣要接受授權檢查，
+// 所以這裡允許回 nil：動作類別會落到 arbitrary（最嚴格）。
+func (e *Executor) scopeToolConfig(toolName string) *config.ToolConfig {
+	if e == nil || e.toolIndex == nil {
+		return nil
+	}
+	return e.toolIndex[toolName]
 }
 
 // NewExecutor 创建新的执行器
@@ -127,10 +162,31 @@ func (e *Executor) ExecuteTool(ctx context.Context, toolName string, args map[st
 		zap.Any("args", args),
 	)
 
+	// 【Scope Registry P1：攔截點 B】執行面兜底。
+	//
+	// 放在最前面（真正 spawn 之前）：handler 層的攔截點 A 只涵蓋從 Eino 工具
+	// 中介層進來的呼叫；這裡擋的是繞過 handler 的內部呼叫路徑。
+	// 檢查器本身出錯也視為不通過（fail closed）。
+	//
+	// 拒絕時回傳「錯誤」而不是「IsError 的工具結果」：授權拒絕不是工具執行
+	// 失敗，而是一道安全邊界。回傳錯誤讓呼叫端可以用 errors.As 判斷是
+	// ScopeNotCoveredError（而不是一般的工具失敗），避免模型把它當成
+	// 「換個參數再試一次」就自動重試。
+	scopeCtx, scopeState := newScopeCallState(ctx)
+	if err := e.checkToolScope(scopeCtx, toolName, e.scopeToolConfig(toolName), args); err != nil {
+		e.logger.Warn("授權範圍檢查未通過，已拒絕執行",
+			zap.String("toolName", toolName),
+			zap.Error(err),
+		)
+		return nil, fmt.Errorf("工具執行被授權範圍閘拒絕：%w", err)
+	}
+
 	// 特殊处理：exec工具直接执行系统命令
 	if toolName == "exec" {
 		e.logger.Debug("执行exec工具")
-		return e.executeSystemCommand(ctx, args)
+		result, execErr := e.executeSystemCommand(scopeCtx, args)
+		e.commitToolScope(scopeCtx, scopeState)
+		return result, execErr
 	}
 
 	// 使用索引查找工具配置（O(1) 查找）
@@ -236,6 +292,8 @@ func (e *Executor) ExecuteTool(ctx context.Context, toolName string, args map[st
 						zap.Int("exitCode", *exitCode),
 						zap.String("output", string(output)),
 					)
+					// 工具確實跑完了 → 這次用掉的授權券要扣次數。
+					e.commitToolScope(scopeCtx, scopeState)
 					return &mcp.ToolResult{
 						Content: []mcp.Content{
 							{
@@ -270,6 +328,9 @@ func (e *Executor) ExecuteTool(ctx context.Context, toolName string, args map[st
 		zap.String("tool", toolName),
 		zap.String("output", string(output)),
 	)
+
+	// 工具確實跑完了 → 這次用掉的授權券要扣次數（失敗的呼叫不扣，避免用掉券卻沒結果）。
+	e.commitToolScope(scopeCtx, scopeState)
 
 	return &mcp.ToolResult{
 		Content: []mcp.Content{

@@ -14,6 +14,7 @@ import (
 	"unicode/utf8"
 
 	"jysecai/internal/config"
+	"jysecai/internal/security"
 
 	"go.uber.org/zap"
 )
@@ -35,7 +36,7 @@ func (e *APIError) Error() string {
 	return fmt.Sprintf("openai api error: status=%d body=%s", e.StatusCode, e.Body)
 }
 
-// normalizeStreamingDelta 将可能是“累计片段/重发片段”的内容归一化为“纯增量”。
+// NormalizeStreamingDelta 将可能是“累计片段/重发片段”的内容归一化为“纯增量”。
 // 部分兼容网关会返回累计 content；若直接 append 会出现重复文本。
 //
 // 注意：
@@ -45,7 +46,10 @@ func (e *APIError) Error() string {
 //   - incoming==current 仅当 current 长度 >1 个码点时才视为整包重发；单码点重复必须走拼接。
 //   - 不再使用「current 以 incoming 结尾则丢弃」：否则 "1943"+"43" 会误吞增量（19443 显示成 1943）。
 //     若网关重复发送尾部片段，应重复送完整累计串，由 HasPrefix 分支去重。
-func normalizeStreamingDelta(current, incoming string) (next, delta string) {
+//
+// 這是全專案唯一的正規化實作：internal/multiagent 等套件直接呼叫本函式，
+// 不再各自維護一份副本（舊的「保持一致」註解已改為真實 import）。
+func NormalizeStreamingDelta(current, incoming string) (next, delta string) {
 	if incoming == "" {
 		return current, ""
 	}
@@ -64,7 +68,10 @@ func normalizeStreamingDelta(current, incoming string) (next, delta string) {
 // NewClient 创建一个新的OpenAI客户端。
 func NewClient(cfg *config.OpenAIConfig, httpClient *http.Client, logger *zap.Logger) *Client {
 	if httpClient == nil {
-		httpClient = http.DefaultClient
+		// base_url 可由 /api/config 更新请求提供，指向内网地址即可把本服务变成
+		// SSRF 跳板。http.DefaultClient 既无超时也会跟随重定向，因此使用在
+		// dial 时校验解析结果、并逐跳复检重定向的 transport。
+		httpClient = security.NewSSRFGuardedClient(60 * time.Second)
 	}
 	if logger == nil {
 		logger = zap.NewNop()
@@ -293,7 +300,7 @@ func (c *Client) ChatCompletionStream(ctx context.Context, payload interface{}, 
 		}
 
 		var deltaOut string
-		fullText, deltaOut = normalizeStreamingDelta(fullText, delta)
+		fullText, deltaOut = NormalizeStreamingDelta(fullText, delta)
 		if deltaOut == "" {
 			continue
 		}
@@ -462,7 +469,7 @@ func (c *Client) ChatCompletionStreamWithToolCalls(
 		}
 		if content != "" {
 			var contentOut string
-			fullText, contentOut = normalizeStreamingDelta(fullText, content)
+			fullText, contentOut = NormalizeStreamingDelta(fullText, content)
 			if contentOut != "" {
 				full.WriteString(contentOut)
 				if onContentDelta != nil {

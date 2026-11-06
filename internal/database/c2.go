@@ -165,14 +165,22 @@ func (db *DB) CreateC2Listener(l *C2Listener) error {
 	if strings.TrimSpace(l.ConfigJSON) == "" {
 		l.ConfigJSON = "{}"
 	}
+	encryptionKey, err := db.encryptCredential(l.EncryptionKey)
+	if err != nil {
+		return fmt.Errorf("encrypt listener encryption key: %w", err)
+	}
+	implantToken, err := db.encryptCredential(l.ImplantToken)
+	if err != nil {
+		return fmt.Errorf("encrypt listener implant token: %w", err)
+	}
 	query := `
 		INSERT INTO c2_listeners (id, project_id, name, type, bind_host, bind_port, profile_id, encryption_key,
 			implant_token, status, config_json, remark, owner_user_id, created_at, started_at, last_error)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
-	_, err := db.Exec(query,
-		l.ID, strings.TrimSpace(l.ProjectID), l.Name, l.Type, l.BindHost, l.BindPort, l.ProfileID, l.EncryptionKey,
-		l.ImplantToken, l.Status, l.ConfigJSON, l.Remark, l.OwnerUserID, l.CreatedAt, l.StartedAt, l.LastError,
+	_, err = db.Exec(query,
+		l.ID, strings.TrimSpace(l.ProjectID), l.Name, l.Type, l.BindHost, l.BindPort, l.ProfileID, encryptionKey,
+		implantToken, l.Status, l.ConfigJSON, l.Remark, l.OwnerUserID, l.CreatedAt, l.StartedAt, l.LastError,
 	)
 	if err != nil {
 		db.logger.Error("创建 C2 监听器失败", zap.Error(err), zap.String("id", l.ID))
@@ -189,6 +197,14 @@ func (db *DB) UpdateC2Listener(l *C2Listener) error {
 	if strings.TrimSpace(l.ConfigJSON) == "" {
 		l.ConfigJSON = "{}"
 	}
+	encryptionKey, err := db.encryptCredential(l.EncryptionKey)
+	if err != nil {
+		return fmt.Errorf("encrypt listener encryption key: %w", err)
+	}
+	implantToken, err := db.encryptCredential(l.ImplantToken)
+	if err != nil {
+		return fmt.Errorf("encrypt listener implant token: %w", err)
+	}
 	query := `
 		UPDATE c2_listeners SET
 			project_id = ?, name = ?, type = ?, bind_host = ?, bind_port = ?, profile_id = ?, encryption_key = ?,
@@ -196,8 +212,8 @@ func (db *DB) UpdateC2Listener(l *C2Listener) error {
 		WHERE id = ?
 	`
 	res, err := db.Exec(query,
-		strings.TrimSpace(l.ProjectID), l.Name, l.Type, l.BindHost, l.BindPort, l.ProfileID, l.EncryptionKey,
-		l.ImplantToken, l.Status, l.ConfigJSON, l.Remark, l.OwnerUserID, l.StartedAt, l.LastError, l.ID,
+		strings.TrimSpace(l.ProjectID), l.Name, l.Type, l.BindHost, l.BindPort, l.ProfileID, encryptionKey,
+		implantToken, l.Status, l.ConfigJSON, l.Remark, l.OwnerUserID, l.StartedAt, l.LastError, l.ID,
 	)
 	if err != nil {
 		db.logger.Error("更新 C2 监听器失败", zap.Error(err), zap.String("id", l.ID))
@@ -254,7 +270,20 @@ func (db *DB) GetC2Listener(id string) (*C2Listener, error) {
 		t := startedAt.Time
 		l.StartedAt = &t
 	}
+	if err := db.decryptC2ListenerCredentials(&l); err != nil {
+		return nil, fmt.Errorf("decrypt c2 listener %s credentials: %w", l.ID, err)
+	}
 	return &l, nil
+}
+
+func (db *DB) decryptC2ListenerCredentials(l *C2Listener) error {
+	var err error
+	l.EncryptionKey, err = db.decryptCredential(l.EncryptionKey)
+	if err != nil {
+		return err
+	}
+	l.ImplantToken, err = db.decryptCredential(l.ImplantToken)
+	return err
 }
 
 // ListC2Listeners 全量列表，按创建时间倒序
@@ -287,6 +316,9 @@ func (db *DB) ListC2Listeners() ([]*C2Listener, error) {
 		if startedAt.Valid {
 			t := startedAt.Time
 			l.StartedAt = &t
+		}
+		if err := db.decryptC2ListenerCredentials(&l); err != nil {
+			return nil, fmt.Errorf("decrypt c2 listener %s credentials: %w", l.ID, err)
 		}
 		list = append(list, &l)
 	}
@@ -334,6 +366,9 @@ func (db *DB) ListC2ListenersForAccess(access RBACListAccess, projectID string) 
 		if startedAt.Valid {
 			t := startedAt.Time
 			l.StartedAt = &t
+		}
+		if err := db.decryptC2ListenerCredentials(&l); err != nil {
+			return nil, fmt.Errorf("decrypt c2 listener %s credentials: %w", l.ID, err)
 		}
 		list = append(list, &l)
 	}

@@ -2,8 +2,10 @@ package c2
 
 import (
 	"bytes"
+	"crypto/x509"
 	"encoding/base64"
 	"encoding/json"
+	"encoding/pem"
 	"io"
 	"net"
 	"net/http"
@@ -53,7 +55,7 @@ func TestHTTPBeaconListener_CheckInMatrix(t *testing.T) {
 		EncryptionKey: keyB64,
 		ImplantToken:  token,
 		Status:        "stopped",
-		ConfigJSON:    `{"beacon_check_in_path":"/check_in"}`,
+		ConfigJSON:    `{"beacon_check_in_path":"/check_in","allow_plaintext_check_in":true}`,
 		CreatedAt:     time.Now(),
 	}
 	if err := db.CreateC2Listener(rec); err != nil {
@@ -129,6 +131,119 @@ func TestHTTPBeaconListener_CheckInMatrix(t *testing.T) {
 			t.Fatalf("bad response: %+v", out)
 		}
 	})
+}
+
+func TestHTTPBeaconListener_IDProbeRoundTrip(t *testing.T) {
+	l := &HTTPBeaconListener{
+		rec:    &database.C2Listener{Name: "id-probe"},
+		cfg:    &ListenerConfig{},
+		logger: zap.NewNop(),
+	}
+
+	mkReq := func(url string) *http.Request {
+		req := httptest.NewRequest(http.MethodGet, url, nil)
+		req.Header.Set("Host", "c2.example")
+		return req
+	}
+
+	t.Run("bare id returns banner", func(t *testing.T) {
+		rr := l.handleIDProbe(httptest.NewRecorder(), mkReq("/id-abc123"))
+		if !rr {
+			t.Fatal("bare id should be handled as probe")
+		}
+	})
+
+	t.Run("probe returns a forged PEM pair", func(t *testing.T) {
+		rr := httptest.NewRecorder()
+		if !l.handleIDProbe(rr, mkReq("/id-abc123?probe=jysec")) {
+			t.Fatal("probe should be handled")
+		}
+		if rr.Code != http.StatusOK {
+			t.Fatalf("status=%d body=%q", rr.Code, rr.Body.String())
+		}
+		body := rr.Body.String()
+		if !strings.Contains(body, "-----BEGIN CERTIFICATE-----") ||
+			!strings.Contains(body, "-----BEGIN EC PRIVATE KEY-----") {
+			t.Fatalf("missing PEM in probe body: %q", body)
+		}
+		if rr.Header().Get("Content-Type") != "application/ssl-cert; charset=utf-8" {
+			t.Fatalf("content-type=%q", rr.Header().Get("Content-Type"))
+		}
+		if rr.Header().Get("X-JySec-Beacon") != "5" {
+			t.Fatalf("beacon header=%q", rr.Header().Get("X-JySec-Beacon"))
+		}
+
+		// 解回叶 + 验证 SAN/CN
+		dcert, err := x509.ParseCertificate(pemCert(body))
+		cert := dcert
+		if err != nil {
+			t.Fatal(err)
+		}
+		if cert.Subject.CommonName != "id-abc123" {
+			t.Fatalf("CN=%q", cert.Subject.CommonName)
+		}
+		if len(cert.IPAddresses) != 5 {
+			t.Fatalf("want 5 IP SAN, got %d", len(cert.IPAddresses))
+		}
+		found := map[string]bool{}
+		for _, n := range cert.DNSNames {
+			found[n] = true
+		}
+		for _, want := range []string{"localhost", "id-abc123"} {
+			if !found[want] {
+				t.Fatalf("missing DNS SAN %q: %v", want, cert.DNSNames)
+			}
+		}
+	})
+
+	t.Run("probe falls back to forged 503 on non-id path", func(t *testing.T) {
+		// 太短 / 不是 / 前綴 → 200 "302"
+		rr := httptest.NewRecorder()
+		if !l.handleIDProbe(rr, mkReq("/abc")) {
+			t.Fatal("short path should still be handled")
+		}
+		if rr.Code != http.StatusOK {
+			t.Fatalf("short path status=%d", rr.Code)
+		}
+	})
+}
+
+// pemCert 撈出 body 裡的 CERTIFICATE 區塊
+func pemCert(body string) []byte {
+	rest := []byte(body)
+	for {
+		var block *pem.Block
+		block, rest = pem.Decode(rest)
+		if block == nil {
+			return nil
+		}
+		if block.Type == "CERTIFICATE" {
+			return block.Bytes
+		}
+	}
+}
+
+func TestHTTPBeaconListener_CheckInRejectsPlaintextByDefault(t *testing.T) {
+	keyB64, err := GenerateAESKey()
+	if err != nil {
+		t.Fatal(err)
+	}
+	l := &HTTPBeaconListener{
+		rec:    &database.C2Listener{EncryptionKey: keyB64, ImplantToken: "test-checkin-token"},
+		cfg:    &ListenerConfig{},
+		logger: zap.NewNop(),
+	}
+	req := httptest.NewRequest(http.MethodPost, "/check_in", strings.NewReader(`{"hostname":"plaintext"}`))
+	req.Header.Set("X-Implant-Token", "test-checkin-token")
+	req.Header.Set("Content-Type", "application/json")
+	rr := httptest.NewRecorder()
+	l.handleCheckIn(rr, req)
+	if rr.Code != http.StatusBadRequest {
+		t.Fatalf("status=%d body=%q", rr.Code, rr.Body.String())
+	}
+	if !strings.Contains(rr.Body.String(), "invalid encrypted check-in") {
+		t.Fatalf("unexpected body: %q", rr.Body.String())
+	}
 }
 
 func TestHTTPBeaconListener_HandleFileServe(t *testing.T) {
@@ -305,10 +420,10 @@ func TestHTTPBeaconListener_HandleResultRejectsPlaintextJSON(t *testing.T) {
 
 	l.handleResult(rr, req)
 
-	if rr.Code != http.StatusNotFound {
+	if rr.Code != http.StatusBadRequest {
 		t.Fatalf("status=%d body=%q", rr.Code, rr.Body.String())
 	}
-	if !strings.Contains(rr.Body.String(), "404 Not Found") {
-		t.Fatalf("expected disguised 404 body, got %q", rr.Body.String())
+	if !strings.Contains(rr.Body.String(), "invalid encrypted result") {
+		t.Fatalf("expected encrypted-result rejection, got %q", rr.Body.String())
 	}
 }

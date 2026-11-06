@@ -1,6 +1,7 @@
 name: "smbmap"
 command: "smbmap"
 enabled: true
+action_class: "bulk_scan"
 short_description: "SMB共享枚举和访问工具"
 description: |
   SMBMap是一个用于枚举SMB共享并提供文件访问功能的工具。
@@ -37,6 +38,8 @@ parameters:
     format: "flag"
   - name: "domain"
     type: "string"
+    target: true
+    target_kind: "host"
     description: "域名"
     required: false
     flag: "-d"

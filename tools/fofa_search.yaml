@@ -10,10 +10,13 @@ args:
     import os
 
     # ==================== FOFA配置 ====================
-    # 请在此处配置您的 FOFA API Key
-    # 您也可以在环境变量中设置：FOFA_API_KEY
-    # enable 默认为 false，需开启才能调用该MCP
-    FOFA_API_KEY = ""  # 请填写您的FOFA API密钥
+    # 密钥机制:本文件不内嵌任何API密钥(密钥不落地,避免随仓库/工具列表泄露)。
+    # 注入方式(二选一):
+    #   1) 环境变量注入(推荐):在平台进程环境设置 FOFA_API_KEY,本脚本运行时经 os.getenv 读取
+    #      (工具执行器以 os.Environ() 传递子进程环境,见 internal/security/executor.go);
+    #   2) 密钥请于 config.yaml 加密存储(enc:cfg:v1,见 internal/config/secret_protection.go),随配置注入。
+    # 注意:tools/*.yaml 加载路径(internal/config.LoadToolsFromDir)不支持 ${VAR} 环境变量展开
+    #      (ExpandConfigEnv 仅作用于 ExternalMCP servers),请勿在本文件使用 ${FOFA_API_KEY} 语法。
     # ==================================================
 
     # FOFA API基础URL
@@ -77,7 +80,7 @@ args:
             sys.exit(1)
 
         # 从配置或环境变量获取 api_key
-        api_key = os.getenv('FOFA_API_KEY', FOFA_API_KEY).strip()
+        api_key = os.getenv('FOFA_API_KEY', '').strip()
         query = config.get('query', '').strip()
 
         if not api_key:
@@ -85,7 +88,7 @@ args:
                 "status": "error",
                 "message": "缺少FOFA配置: api_key（FOFA API密钥）",
                 "required_config": ["api_key"],
-                "note": "请在YAML文件的FOFA_API_KEY配置项中填写您的API密钥，或在环境变量FOFA_API_KEY中设置。API密钥可在FOFA个人中心获取: https://fofa.info/userInfo"
+                "note": "本工具不内嵌密钥:请通过环境变量FOFA_API_KEY注入(平台进程环境或启动脚本设置);密钥请于config.yaml加密存储,勿明文写入本文件。API密钥可在FOFA个人中心获取: https://fofa.info/userInfo"
             }
             print(json.dumps(error_result, ensure_ascii=False, indent=2))
             sys.exit(1)
@@ -192,7 +195,8 @@ args:
         }
         print(json.dumps(error_result, ensure_ascii=False, indent=2))
         sys.exit(1)
-enabled: false
+enabled: true
+action_class: "harmless_request"
 short_description: "FOFA网络空间搜索引擎，支持灵活的查询参数配置"
 description: |
   FOFA是一个网络空间测绘搜索引擎，可以通过多种查询条件搜索互联网资产。
@@ -258,6 +262,11 @@ description: |
 
   **详细语法文档：** 更多语法说明和组件列表请参考FOFA官方文档
 
+
+  **密钥注入方式（密钥不落地）：**
+  - 本文件不内嵌API密钥：请通过环境变量 `FOFA_API_KEY` 注入（平台进程环境或启动脚本设置，脚本运行时 `os.getenv` 读取）
+  - 密钥请于 `config.yaml` 加密存储（`enc:cfg:v1`，见 `internal/config/secret_protection.go`），勿明文写入本文件
+  - 注意：`tools/*.yaml` 加载路径不支持 `${VAR}` 环境变量展开（仅 ExternalMCP servers 支持），勿在本文件使用 `${FOFA_API_KEY}` 语法
 
   **注意事项：**
   - API调用有频率限制，请合理使用

@@ -24,6 +24,42 @@ const (
 
 var httpStatusInErrorPattern = regexp.MustCompile(`(?i)(?:http|status(?:\s+code)?|upstream\s+returned)\s*[:=]?\s*(\d{3})\b`)
 
+// quotaExhaustedMarkers 辨識「上游方案額度已用盡」，與「暫時性速率限制」語意相反。
+// 兩者的 HTTP 狀態碼同樣是 429，但前者重試只會一直燒 token 與日誌，必須讓呼叫端立刻失敗。
+var quotaExhaustedMarkers = []string{
+	"用量上限",
+	"额度已用尽",
+	"额度已用完",
+	"额度不足",
+	"积分不足",
+	"token plan",
+	"insufficient_quota",
+	"insufficient quota",
+	"quota exceeded",
+	"exceeded your current quota",
+	"usage limit reached",
+	"out of credits",
+	"credit balance is too low",
+}
+
+// isEinoQuotaExhaustedError 判斷上游是否「額度／配額用盡」。
+// 命中時應直接失敗並讓上層切換通道，而不是進入退避重試迴圈。
+func isEinoQuotaExhaustedError(err error) bool {
+	if err == nil {
+		return false
+	}
+	msg := strings.ToLower(err.Error())
+	if msg == "" {
+		return false
+	}
+	for _, m := range quotaExhaustedMarkers {
+		if strings.Contains(msg, m) {
+			return true
+		}
+	}
+	return false
+}
+
 // isEinoTransientRunError 是 Eino 运行期「可退避重试 vs 直接失败」的唯一判据。
 // 429/5xx/网络抖动等返回 true；用户取消、超时、迭代上限、鉴权失败等返回 false。
 // 其它模块（run loop、summarization 等）只调用本函数，不在别处维护平行规则。
@@ -32,6 +68,11 @@ func isEinoTransientRunError(err error) bool {
 		return false
 	}
 	if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+		return false
+	}
+	// 額度用盡與速率限制同為 429，但重試語意相反：額度用盡時再退避重試
+	// 只會持續燒 token 與錯誤日誌（批次佇列會每數分鐘重打一次同一個任務）。
+	if isEinoQuotaExhaustedError(err) {
 		return false
 	}
 	if errors.Is(err, adk.ErrExceedMaxRetries) {
@@ -117,6 +158,10 @@ func einoTransientRunErrorUserDetail(err error) (kind, summary string) {
 	}
 	msg := strings.TrimSpace(err.Error())
 	lower := strings.ToLower(msg)
+	// 額度用盡要優先於 429 的「速率限制」分類，否則使用者會以為等一下就好。
+	if isEinoQuotaExhaustedError(err) {
+		return "quota_exhausted", "上游方案額度已用盡，請升級方案或切換至其他 AI 通道"
+	}
 	if status := httpStatusFromErrorText(lower); status > 0 {
 		switch {
 		case status == 429:

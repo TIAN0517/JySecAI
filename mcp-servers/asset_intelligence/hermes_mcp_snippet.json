@@ -1,0 +1,24 @@
+# Hermes MCP 設定片段 — 加入 ~/.claude.json 的 mcpServers 區段
+#
+# 注意:
+# 1. 此片段只新增 jysecai-assets, 不移除既有 MCP (ida / hexstrike-ai / kali-mcp / ida-pro / huggingface)
+# 2. 路徑使用 Windows 絕對路徑 (Cursor 在 Windows 運行)
+# 3. 若 Hermes 在 WSL 內運行, 需改用 WSL 路徑: /mnt/c/Users/Administrator/Desktop/JySecAI/...
+# 4. 環境變數 FOFA_API_KEY / ZOOMEYE_API_KEY 由 Hermes 啟動時注入
+# 5. 回滾: 移除下方 mcpServers 區塊並還原原 .claude.json
+
+{
+  "jysecai-assets": {
+    "command": "C:\\Program Files\\Python311\\python.exe",
+    "args": [
+      "C:\\Users\\Administrator\\Desktop\\JySecAI\\mcp-servers\\asset_intelligence\\scripts\\run_stdio.py"
+    ],
+    "timeout": 120,
+    "env": {
+      "ASSET_INTEL_DB_PATH": "C:\\Users\\Administrator\\AppData\\Local\\JySecAI\\assets\\assets.db",
+      "ASSET_INTEL_SCOPE_FILE": "C:\\Users\\Administrator\\Desktop\\JySecAI\\mcp-servers\\asset_intelligence\\scope.json",
+      "FOFA_API_KEY": "${FOFA_API_KEY}",
+      "ZOOMEYE_API_KEY": "${ZOOMEYE_API_KEY}"
+    }
+  }
+}

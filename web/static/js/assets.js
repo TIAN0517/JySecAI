@@ -1,5 +1,5 @@
-const ASSET_PAGE_SIZE_KEY = 'cyberstrike.asset_page_size';
-const ASSET_SAVED_VIEWS_KEY = 'cyberstrike.asset_saved_views';
+const ASSET_PAGE_SIZE_KEY = 'jysec.asset_page_size';
+const ASSET_SAVED_VIEWS_KEY = 'jysec.asset_saved_views';
 function getAssetPageSize() {
     try {
         const value = Number(localStorage.getItem(ASSET_PAGE_SIZE_KEY));
@@ -445,7 +445,7 @@ function renderAssetRecentSummary(recent, total) {
 function renderAssetTrendCharts(assetTrend, riskTrend) {
     renderAssetLineChart('asset-growth-chart', 'asset-growth-summary', assetTrend, [
         { key: 'added', label: assetT('assets.addedAssets', '新增资产'), color: '#3b82f6', fill: 'rgba(59,130,246,.13)' },
-        { key: 'inactive', label: assetT('assets.inactiveAssets', '停用资产'), color: '#8b5cf6' }
+        { key: 'inactive', label: assetT('assets.inactiveAssets', '停用资产'), color: '#0e9bb8' }
     ]);
     renderAssetLineChart('asset-risk-chart', 'asset-risk-summary', riskTrend, [
         { key: 'discovered', label: assetT('assets.discoveredRisks', '新增漏洞'), color: '#f59e0b', fill: 'rgba(245,158,11,.12)' },
@@ -534,7 +534,7 @@ function renderAssetProtocolChart(items, total) {
     const visibleItems = items.slice(0, 5);
     const max = Math.max(...visibleItems.map(item => Number(item.count || 0)), 1);
     const protocolTotal = items.reduce((sum, item) => sum + Number(item.count || 0), 0);
-    const colors = ['#4f7df3', '#6d5df6', '#13b8a6', '#f59e0b', '#ec4899', '#06b6d4', '#8b5cf6', '#94a3b8'];
+    const colors = ['#0e9bb8', '#35ddff', '#13b8a6', '#f59e0b', '#ec4899', '#06b6d4', '#127a8f', '#94a3b8'];
     root.innerHTML = visibleItems.map((item, index) => {
         const count = Number(item.count || 0);
         const width = Math.max(3, Math.round(count / max * 100));
@@ -1625,7 +1625,7 @@ function fofaResultToAsset(row, fields) {
     return {
         host: firstValue(['host', 'hostname']), ip, port: Number.isFinite(port) ? port : 0, domain,
         protocol: /^[a-z][a-z0-9+.-]{0,31}$/.test(rawProtocol) ? rawProtocol : '', title: firstValue(['title', 'service.http.title']), server: firstValue(['server', 'product']),
-        country: firstValue(['country', 'location.country_cn', 'location.country_name']), province: firstValue(['province', 'location.province_cn']), city: firstValue(['city', 'location.city_cn', 'location.city']),
+        country: firstValue(['country', 'location.country_cn', 'location.country_name']), province: firstValue(['province', 'region', 'location.province_cn']), city: firstValue(['city', 'location.city_cn', 'location.city']),
         source: (window.infoCollectState?.currentPayload?.provider || 'fofa'), status: 'active'
     };
 }

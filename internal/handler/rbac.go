@@ -35,7 +35,13 @@ func (h *RBACHandler) SetAuthManager(m *security.AuthManager) {
 }
 
 func (h *RBACHandler) Me(c *gin.Context) {
-	session, _ := security.CurrentSession(c)
+	// 解析不出 session 时回 401，而不是回一个空身份 + 空 scope：前端会把
+	// 「空 scope」当成合法状态继续渲染，而空 scope 在下游的语义并不统一。
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未授权访问，请先登录"})
+		return
+	}
 	resolvedScope := session.Scope
 	permissionScopes := session.PermissionScopes
 	if principal, ok := authctx.PrincipalFromContext(c.Request.Context()); ok {

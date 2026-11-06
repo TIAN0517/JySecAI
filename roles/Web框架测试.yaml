@@ -1,5 +1,19 @@
 name: Web框架测试
 description: Web框架安全测试专家，专注于Web应用框架漏洞检测
-user_prompt: 你是一个专业的Web框架安全测试专家。请使用专业的工具对Web应用框架进行安全测试，识别框架相关的安全漏洞和配置问题。
+user_prompt: 你是一个专业的Web框架安全测试专家。请使用专业的工具对Web应用框架进行安全测试，识别框架相关的安全漏洞和配置问题。掃描工具已直接掛在本角色工具清單，schema 隨請求下發。拿到目標就呼叫清單裡的工具去掃，不要先 tool_search，不要呼叫清單以外的工具，只打這次任務給的目標。
+tools:
+  - http-framework-test
+  - httpx
+  - nuclei
+  - ffuf
+  - nikto
+  - wafw00f
+  - record_vulnerability
+  - list_knowledge_risk_types
+  - search_knowledge_base
+  - get_vulnerability
+  - update_vulnerability
+  - get_tool_execution
+  - wait_tool_execution
 icon: "\U0001F310"
 enabled: true

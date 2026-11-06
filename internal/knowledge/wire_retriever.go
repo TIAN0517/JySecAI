@@ -69,7 +69,13 @@ func WireRetrieverPipeline(ctx context.Context, r *Retriever, openAI *config.Ope
 	if err != nil {
 		return fmt.Errorf("reranker: %w", err)
 	}
-	r.SetDocumentReranker(reranker)
+	// 精排被明確關閉時 NewHTTPReranker 回傳 typed nil，直接設進 interface 會讓
+	// documentReranker() != nil 成立，pipeline 就會每次查詢都呼叫它並噴警告。
+	// 這裡顯式設成 nil interface，讓 pipeline 的 rr != nil 判斷如實運作。
+	r.SetDocumentReranker(nil)
+	if reranker != nil {
+		r.SetDocumentReranker(reranker)
+	}
 
 	vec := NewVectorEinoRetriever(r)
 	mq, err := multiquery.NewRetriever(ctx, &multiquery.Config{
@@ -83,13 +89,20 @@ func WireRetrieverPipeline(ctx context.Context, r *Retriever, openAI *config.Ope
 
 	r.pipeline = newKnowledgePipelineRetriever(mq, r)
 	if r.logger != nil {
-		provider := r.config.Rerank.ProviderEffective(strings.TrimSpace(openAI.BaseURL))
-		r.logger.Info("知识库检索流水线已启用",
-			zap.String("pipeline", "MultiQuery→Vector→Rerank→PostRetrieve"),
-			zap.Int("multi_query_max", r.config.MultiQuery.MaxQueriesEffective()),
-			zap.String("rerank_provider", provider),
-			zap.String("rerank_model", r.config.Rerank.ModelEffective(provider)),
-		)
+		if r.config.Rerank.RerankDisabled() {
+			r.logger.Info("知识库检索流水线已启用（精排已关闭）",
+				zap.String("pipeline", "MultiQuery→Vector→PostRetrieve"),
+				zap.Int("multi_query_max", r.config.MultiQuery.MaxQueriesEffective()),
+			)
+		} else {
+			provider := r.config.Rerank.ProviderEffective(strings.TrimSpace(openAI.BaseURL))
+			r.logger.Info("知识库检索流水线已启用",
+				zap.String("pipeline", "MultiQuery→Vector→Rerank→PostRetrieve"),
+				zap.Int("multi_query_max", r.config.MultiQuery.MaxQueriesEffective()),
+				zap.String("rerank_provider", provider),
+				zap.String("rerank_model", r.config.Rerank.ModelEffective(provider)),
+			)
+		}
 	}
 	return nil
 }

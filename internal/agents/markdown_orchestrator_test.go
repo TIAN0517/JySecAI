@@ -10,7 +10,7 @@ func TestLoadMarkdownAgentsDir_OrchestratorExcludedFromSubs(t *testing.T) {
 	dir := t.TempDir()
 	orch := filepath.Join(dir, OrchestratorMarkdownFilename)
 	if err := os.WriteFile(orch, []byte(`---
-id: cyberstrike-deep
+id: jy-deep
 name: Main
 description: Test desc
 ---
@@ -34,7 +34,7 @@ Do work
 	if err != nil {
 		t.Fatal(err)
 	}
-	if load.Orchestrator == nil || load.Orchestrator.EinoName != "cyberstrike-deep" {
+	if load.Orchestrator == nil || load.Orchestrator.EinoName != "jy-deep" {
 		t.Fatalf("orchestrator: %+v", load.Orchestrator)
 	}
 	if len(load.SubAgents) != 1 || load.SubAgents[0].ID != "worker" {
@@ -52,6 +52,24 @@ Do work
 	}
 	if orchFile == nil || orchFile.Filename != OrchestratorMarkdownFilename {
 		t.Fatal("missing orchestrator file entry")
+	}
+}
+
+func TestSanitizeEinoAgentID_AliasesLegacyCyberstrike(t *testing.T) {
+	cases := map[string]string{
+		"":                         "jy-deep",
+		"cyberstrike-deep":         "jy-deep",
+		"Cyberstrike-Deep":         "jy-deep",
+		"cyberstrike-plan-execute": "jy-plan-execute",
+		"cyberstrike-supervisor":   "jy-supervisor",
+		"cyberstrike-eino-single":  "jy-eino-single",
+		"jy-deep":                  "jy-deep",
+		"worker":                   "worker",
+	}
+	for in, want := range cases {
+		if got := sanitizeEinoAgentID(in); got != want {
+			t.Fatalf("sanitizeEinoAgentID(%q)=%q want %q", in, got, want)
+		}
 	}
 }
 

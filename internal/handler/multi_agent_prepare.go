@@ -182,6 +182,12 @@ func (h *AgentHandler) prepareMultiAgentSession(req *ChatRequest, c *gin.Context
 		assistantMessageID = assistantMsg.ID
 	}
 
+	ownerUserID := ""
+	if hasSession {
+		ownerUserID = session.UserID
+	}
+	h.attachRedirectScan(req.Message, projectID, conversationID, ownerUserID)
+
 	return &multiAgentPrepared{
 		ConversationID:     conversationID,
 		CreatedNew:         createdNew,

@@ -40,7 +40,7 @@ func (e *einoMainResponseStreamEmitter) EmitDelta(delta, accumulated string) boo
 	}
 	e.emitStart()
 	e.progress("response_delta", delta, openai.WithSSEAccumulated(e.responseData(), accumulated))
-	e.wireAccum, _ = normalizeStreamingDelta(e.wireAccum, delta)
+	e.wireAccum, _ = openai.NormalizeStreamingDelta(e.wireAccum, delta)
 	return true
 }
 
@@ -48,7 +48,7 @@ func (e *einoMainResponseStreamEmitter) EmitTailFromFull(full string) bool {
 	if e == nil || full == "" {
 		return false
 	}
-	_, tail := normalizeStreamingDelta(e.wireAccum, full)
+	_, tail := openai.NormalizeStreamingDelta(e.wireAccum, full)
 	if tail == "" {
 		return false
 	}

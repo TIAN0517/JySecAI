@@ -39,7 +39,7 @@ func (e *einoReasoningStreamEmitter) EmitDelta(reasoningContent string) bool {
 		return false
 	}
 	var rawDelta string
-	e.rawBuf, rawDelta = normalizeStreamingDelta(e.rawBuf, reasoningContent)
+	e.rawBuf, rawDelta = openai.NormalizeStreamingDelta(e.rawBuf, reasoningContent)
 	if rawDelta == "" || e.progress == nil {
 		return false
 	}

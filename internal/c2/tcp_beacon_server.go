@@ -188,7 +188,7 @@ func (l *TCPReverseListener) handleTCPBeaconSession(conn net.Conn, br *bufio.Rea
 			if err := json.Unmarshal(raw, &report); err != nil {
 				return
 			}
-			if err := l.manager.IngestTaskResult(report); err != nil {
+			if err := l.manager.IngestTaskResultForListener(l.rec.ID, report); err != nil {
 				return
 			}
 			resp = map[string]string{"ok": "1"}
@@ -216,7 +216,10 @@ func (l *TCPReverseListener) handleTCPBeaconSession(conn net.Conn, br *bufio.Rea
 			if err := os.MkdirAll(dir, 0o755); err != nil {
 				return
 			}
-			if err := os.WriteFile(dst, plainFile, 0o644); err != nil {
+			if err := ensurePathInDir(dir, dst); err != nil {
+				return
+			}
+			if err := osWriteFileAtomic(dst, plainFile, 0o644); err != nil {
 				return
 			}
 			resp = map[string]interface{}{"ok": 1, "size": len(plainFile)}

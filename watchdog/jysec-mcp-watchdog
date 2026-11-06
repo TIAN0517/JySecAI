@@ -1,0 +1,415 @@
+#!/usr/bin/env bash
+# JySecAi MCP watchdog: disconnect auto-pull.
+# Reads listen ports from production config. Never hardcodes 8080.
+#
+# Layer 1 (inside jysec-core): ExternalMCPManager pings every 15s and
+# reconnects stdio/HTTP clients with backoff.
+# Layer 2 (this script, systemd timer every 2 min):
+#   - keep jysec-core up on the configured port
+#   - keep platform MCP port listening
+#   - start companion HTTP backends if their units exist
+#   - optional: POST /api/external-mcp/:name/start when a token file is present
+set -u
+
+CONFIG="${JYSEC_CORE_CONFIG:-/var/lib/jysecai/core/config.yaml}"
+STATE_DIR="${JYSEC_WATCHDOG_STATE:-/run/jysec-mcp-watchdog}"
+CATALOG_DIR="${JYSEC_MCP_CATALOG_DIR:-/var/lib/jysecai/mcp-catalog}"
+TOKEN_FILE="${JYSEC_WATCHDOG_TOKEN_FILE:-/etc/jysecai/watchdog.token}"
+CORE_UNIT="${JYSEC_CORE_UNIT:-jysec-core.service}"
+FAIL_NEED="${JYSEC_WATCHDOG_FAIL_NEED:-3}"
+COOLDOWN="${JYSEC_WATCHDOG_COOLDOWN:-300}"
+CURL_MAX="${JYSEC_WATCHDOG_CURL_MAX:-5}"
+DRY=0
+[ "${1:-}" = "--dry-run" ] && DRY=1
+
+log() { printf '%s %s\n' "$(date -Is)" "$*"; }
+run() {
+  if [ "$DRY" -eq 1 ]; then
+    log "dry-run: $*"
+    return 0
+  fi
+  "$@"
+}
+
+mkdir -p "$STATE_DIR" 2>/dev/null || STATE_DIR="${TMPDIR:-/tmp}/jysec-mcp-watchdog"
+mkdir -p "$STATE_DIR"
+FAIL_FILE="$STATE_DIR/core-fails"
+LAST_RESTART="$STATE_DIR/core-last-restart"
+MCP_FAIL_FILE="$STATE_DIR/mcp-fails"
+
+yaml_block_port() {
+  local block="$1"
+  awk -v b="$block" '
+    $0 ~ "^" b ":[[:space:]]*$" { s=1; next }
+    s && /^[^[:space:]#]/       { exit }
+    s && $1 == "port:"          { gsub(/[^0-9]/, "", $2); print $2; exit }
+  ' "$CONFIG" 2>/dev/null
+}
+
+CORE_PORT="$(yaml_block_port server)"
+MCP_PORT="$(yaml_block_port mcp)"
+CORE_PORT="${CORE_PORT:-9898}"
+MCP_PORT="${MCP_PORT:-6689}"
+
+if [ "$CORE_PORT" = "8080" ]; then
+  log "warn: config server.port is 8080; live stack historically drifted. probing 8080 as configured."
+fi
+
+probe_http() {
+  local url="$1"
+  curl -sf -o /dev/null --max-time "$CURL_MAX" "$url" 2>/dev/null
+}
+
+probe_tcp() {
+  local host="$1" port="$2"
+  if command -v timeout >/dev/null 2>&1; then
+    timeout 2 bash -c "echo >/dev/tcp/${host}/${port}" 2>/dev/null
+  else
+    bash -c "echo >/dev/tcp/${host}/${port}" 2>/dev/null
+  fi
+}
+
+unit_exists() {
+  systemctl list-unit-files --type=service --no-legend 2>/dev/null | awk '{print $1}' | grep -qx "$1"
+}
+
+ensure_unit() {
+  local unit="$1"
+  unit_exists "$unit" || return 0
+  if systemctl is-active --quiet "$unit"; then
+    return 0
+  fi
+  log "starting inactive unit $unit"
+  run systemctl start "$unit" || log "warn: failed to start $unit"
+}
+
+read_counter() {
+  local f="$1"
+  if [ -r "$f" ]; then
+    local n
+    n="$(tr -cd '0-9' < "$f")"
+    printf '%s' "${n:-0}"
+  else
+    printf '0'
+  fi
+}
+
+# --- 1. core HTTP on configured port ---
+CORE_URL="http://127.0.0.1:${CORE_PORT}/"
+if probe_http "$CORE_URL"; then
+  printf '0' > "$FAIL_FILE"
+  CORE_OK=1
+  log "ok core ${CORE_URL}"
+else
+  CORE_OK=0
+  n="$(read_counter "$FAIL_FILE")"
+  n=$((n + 1))
+  printf '%s' "$n" > "$FAIL_FILE"
+  log "fail core ${CORE_URL} consecutive=${n}/${FAIL_NEED}"
+  now="$(date +%s)"
+  last="$(read_counter "$LAST_RESTART")"
+  if [ "$n" -ge "$FAIL_NEED" ] && [ $((now - last)) -ge "$COOLDOWN" ]; then
+    log "restart ${CORE_UNIT} (port ${CORE_PORT}, ${n} consecutive failures, cooldown ${COOLDOWN}s)"
+    run systemctl restart "$CORE_UNIT" || log "warn: restart ${CORE_UNIT} failed"
+    printf '%s' "$now" > "$LAST_RESTART"
+    printf '0' > "$FAIL_FILE"
+  else
+    log "hold restart: need ${FAIL_NEED} fails and ${COOLDOWN}s cooldown"
+  fi
+fi
+
+# --- 2. platform MCP port ---
+if probe_tcp 127.0.0.1 "$MCP_PORT"; then
+  printf '0' > "$MCP_FAIL_FILE"
+  log "ok mcp :${MCP_PORT}"
+else
+  n="$(read_counter "$MCP_FAIL_FILE")"
+  n=$((n + 1))
+  printf '%s' "$n" > "$MCP_FAIL_FILE"
+  log "fail mcp :${MCP_PORT} consecutive=${n}"
+  # MCP bind is inside jysec-core. Only restart if core HTTP is also dead
+  # (already handled above) or HTTP is up for a long time while MCP stays down.
+  if [ "$CORE_OK" -eq 1 ] && [ "$n" -ge 5 ]; then
+    now="$(date +%s)"
+    last="$(read_counter "$LAST_RESTART")"
+    if [ $((now - last)) -ge "$COOLDOWN" ]; then
+      log "restart ${CORE_UNIT}: HTTP up but MCP :${MCP_PORT} down ${n} ticks"
+      run systemctl restart "$CORE_UNIT" || true
+      printf '%s' "$now" > "$LAST_RESTART"
+      printf '0' > "$MCP_FAIL_FILE"
+    fi
+  fi
+fi
+
+# --- 3. companion HTTP backends (skip missing units; do not invent 8080) ---
+ensure_unit jysec-kali-api.service
+ensure_unit jysec-hexstrike.service
+ensure_unit jysec-anthropic-shim.service
+
+# IDA official MCP is a user unit on 8737.
+if ! probe_tcp 127.0.0.1 8737; then
+  BOSSJY_UID="$(id -u BossJy 2>/dev/null || true)"
+  if [ -n "${BOSSJY_UID:-}" ] && [ -S "/run/user/${BOSSJY_UID}/systemd/private" ]; then
+    if sudo -u BossJy XDG_RUNTIME_DIR="/run/user/${BOSSJY_UID}" \
+         systemctl --user list-unit-files --no-legend 2>/dev/null | awk '{print $1}' | grep -qx jysec-ida-mcp.service; then
+      log "starting user unit jysec-ida-mcp.service (8737 down)"
+      run sudo -u BossJy XDG_RUNTIME_DIR="/run/user/${BOSSJY_UID}" \
+        systemctl --user start jysec-ida-mcp.service || log "warn: ida-mcp user unit start failed"
+    else
+      log "ida :8737 down and no user unit jysec-ida-mcp.service"
+    fi
+  else
+    log "ida :8737 down (no user systemd for BossJy)"
+  fi
+else
+  log "ok ida :8737"
+fi
+
+# Optional HTTP probes: only log. Units above do the pull-up.
+for spec in "kali-api:5000" "hexstrike:8888"; do
+  name="${spec%%:*}"
+  port="${spec##*:}"
+  if probe_tcp 127.0.0.1 "$port"; then
+    log "ok ${name} :${port}"
+  else
+    log "down ${name} :${port}"
+  fi
+done
+
+# --- 4. persist full MCP catalog + gated ready-when (all 23, no secrets) ---
+mkdir -p "$CATALOG_DIR" 2>/dev/null || true
+CATALOG_STATUS="$CATALOG_DIR/status.json"
+ENABLE_LIST="$STATE_DIR/enable-ready.txt"
+: >"$ENABLE_LIST"
+if command -v python3 >/dev/null 2>&1 && [ -r "$CONFIG" ]; then
+  python3 - "$CONFIG" "$CATALOG_STATUS" "$ENABLE_LIST" "$DRY" <<'PY' || log "warn: catalog persist helper failed"
+import json, os, socket, ssl, sys, datetime, urllib.request, urllib.error
+from pathlib import Path
+
+cfg_path, status_path, enable_path, dry = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+GATED = {
+    "cloudflare": "cloudflare token",
+    "huggingface": "huggingface token",
+    "ida-official": "tcp :8737",
+    "zread": "tls api.z.ai",
+}
+
+def tcp(port, host="127.0.0.1", timeout=2.0):
+    s = socket.socket()
+    s.settimeout(timeout)
+    try:
+        s.connect((host, int(port)))
+        return True
+    except Exception:
+        return False
+    finally:
+        s.close()
+
+def has_auth(spec):
+    headers = spec.get("headers") or {}
+    for k, v in headers.items():
+        if "authorization" in str(k).lower() and str(v).strip() and "${" not in str(v):
+            return True
+        if "token" in str(k).lower() and str(v).strip() and "${" not in str(v):
+            return True
+    env = spec.get("env") or {}
+    for k, v in env.items():
+        if any(x in str(k).upper() for x in ("TOKEN", "KEY", "SECRET", "AUTHORIZATION")):
+            if str(v).strip() and not str(v).startswith("enc:cfg:") and "${" not in str(v):
+                return True
+    return False
+
+def tls_ok(url, timeout=5):
+    try:
+        req = urllib.request.Request(url, method="GET")
+        urllib.request.urlopen(req, timeout=timeout)
+        return True
+    except urllib.error.HTTPError:
+        return True  # TCP+TLS worked, HTTP status is separate
+    except Exception:
+        return False
+
+def http_status(url, timeout=5, headers=None):
+    try:
+        req = urllib.request.Request(url, method="GET", headers=headers or {})
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return int(resp.status)
+    except urllib.error.HTTPError as e:
+        return int(e.code)
+    except Exception:
+        return 0
+
+try:
+    import yaml
+    data = yaml.safe_load(Path(cfg_path).read_text(encoding="utf-8")) or {}
+except Exception as e:
+    print(f"catalog yaml load failed: {e}", flush=True)
+    sys.exit(0)
+
+servers = ((data.get("external_mcp") or {}).get("servers")) or {}
+inventory = []
+ready_to_enable = []
+flips = []
+
+for name in sorted(servers):
+    spec = servers[name] if isinstance(servers[name], dict) else {}
+    disabled = spec.get("disabled") is True
+    enable = spec.get("external_mcp_enable")
+    if enable is None:
+        enable = not disabled
+    item = {
+        "name": name,
+        "disabled": disabled,
+        "enable": bool(enable) and not disabled,
+        "reason": spec.get("disabled_reason") or "",
+        "transport": spec.get("type") or ("http" if spec.get("url") else "stdio"),
+        "resident": "when-ready" if name in GATED else "always",
+        "ready": None,
+    }
+    if name == "ida-official":
+        item["ready"] = tcp(8737)
+    elif name == "cloudflare":
+        item["ready"] = has_auth(spec) or bool(os.environ.get("CLOUDFLARE_API_TOKEN"))
+        if item["ready"]:
+            code = http_status(spec.get("url") or "https://mcp.cloudflare.com/mcp")
+            if code == 401:
+                item["ready"] = False
+                item["reason"] = item["reason"] or "token present but Cloudflare still 401"
+    elif name == "huggingface":
+        item["ready"] = has_auth(spec) or bool(os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_TOKEN"))
+    elif name == "zread":
+        item["ready"] = has_auth(spec) and tls_ok(spec.get("url") or "https://api.z.ai/api/mcp/zread/mcp")
+    else:
+        item["ready"] = True
+    if disabled and item["ready"]:
+        ready_to_enable.append(name)
+    inventory.append(item)
+
+# Flip YAML for gated servers that became ready. ruamel keeps secrets.
+if ready_to_enable and dry != "1":
+    try:
+        from ruamel.yaml import YAML
+        y = YAML(); y.preserve_quotes = True; y.width = 4096
+        raw = Path(cfg_path).read_text(encoding="utf-8")
+        doc = y.load(raw)
+        live = doc.setdefault("external_mcp", {}).setdefault("servers", {})
+        changed = False
+        for name in ready_to_enable:
+            cur = live.get(name)
+            if not isinstance(cur, dict):
+                continue
+            if cur.get("disabled") is True:
+                cur["disabled"] = False
+                cur["external_mcp_enable"] = True
+                if "disabled_reason" in cur:
+                    del cur["disabled_reason"]
+                changed = True
+                flips.append(name)
+        if changed:
+            bak = Path(cfg_path).with_name(Path(cfg_path).name + ".bak-mcp-ready")
+            bak.write_text(raw, encoding="utf-8")
+            with Path(cfg_path).open("w", encoding="utf-8") as f:
+                y.dump(doc, f)
+    except Exception as e:
+        print(f"catalog flip failed: {e}", flush=True)
+
+Path(enable_path).write_text("\n".join(flips + ready_to_enable) + ("\n" if (flips or ready_to_enable) else ""), encoding="utf-8")
+
+enabled_n = sum(1 for i in inventory if i["enable"])
+disabled_n = sum(1 for i in inventory if i["disabled"])
+waiting = [i["name"] for i in inventory if i["disabled"] and not i["ready"]]
+doc = {
+    "ts": datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
+    "total": len(inventory),
+    "enabled": enabled_n,
+    "disabled": disabled_n,
+    "waiting": waiting,
+    "flipped_ready": flips,
+    "servers": inventory,
+}
+Path(status_path).parent.mkdir(parents=True, exist_ok=True)
+Path(status_path).write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+print(f"catalog total={len(inventory)} enabled={enabled_n} disabled={disabled_n} waiting={waiting} flipped={flips}", flush=True)
+for name in waiting:
+    print(f"resident-wait {name}", flush=True)
+for name in flips:
+    print(f"resident-ready {name} yaml-enabled", flush=True)
+PY
+fi
+
+# The python above both prints and writes files; capture via a wrapper next.
+# Re-run is avoided: status.json is the persist record.
+
+# --- 5. reconnect disconnected external MCP via API (optional token) ---
+# Never POST /start for gated servers that are still disabled (401/TLS/missing tree).
+if [ "$CORE_OK" -eq 1 ] && [ -r "$TOKEN_FILE" ]; then
+  token="$(tr -d '\r\n' < "$TOKEN_FILE")"
+  if [ -n "$token" ]; then
+    stats="$(curl -sS --max-time 8 -H "Authorization: Bearer ${token}" \
+      "http://127.0.0.1:${CORE_PORT}/api/external-mcp" 2>/dev/null || true)"
+    STATS_JSON="$STATE_DIR/last-stats.json"
+    printf '%s' "$stats" > "$STATS_JSON"
+    READY_JSON="$CATALOG_STATUS"
+    if command -v python3 >/dev/null 2>&1 && [ -s "$STATS_JSON" ]; then
+      python3 - "$CORE_PORT" "$token" "$DRY" "$STATS_JSON" "$READY_JSON" "$ENABLE_LIST" <<'PY' || log "warn: mcp reconnect helper failed"
+import json, sys, urllib.request, urllib.error
+from pathlib import Path
+port, token, dry, stats_path, ready_path, enable_path = sys.argv[1:7]
+try:
+    data = json.loads(Path(stats_path).read_text(encoding="utf-8"))
+except Exception:
+    sys.exit(0)
+ready_names = set()
+try:
+    for line in Path(enable_path).read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            ready_names.add(line.strip())
+except OSError:
+    pass
+servers = data.get("servers") or {}
+# API may return map or wrap
+if not servers and isinstance(data, dict):
+    servers = {k: v for k, v in data.items() if isinstance(v, dict) and "status" in v}
+to_start = []
+for name, rec in servers.items():
+    if not isinstance(rec, dict):
+        continue
+    status = (rec.get("status") or "").lower()
+    cfg = rec.get("config") or {}
+    enabled = cfg.get("external_mcp_enable", True) and not cfg.get("disabled")
+    if name in ready_names:
+        enabled = True
+    if not enabled:
+        continue
+    if status in ("connected", "connecting"):
+        continue
+    to_start.append((name, status))
+for name, status in to_start:
+    print(f"reconnect {name} status={status}", flush=True)
+    if dry == "1":
+        continue
+    req = urllib.request.Request(
+        f"http://127.0.0.1:{port}/api/external-mcp/{name}/start",
+        data=b"{}",
+        method="POST",
+        headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=45) as resp:
+            print(f"start {name} -> {resp.status}", flush=True)
+    except urllib.error.HTTPError as e:
+        print(f"start {name} -> {e.code}", flush=True)
+    except Exception as e:
+        print(f"start {name} -> {e}", flush=True)
+PY
+    fi
+  else
+    log "watchdog.token empty; Layer 2 API reconnect skipped (Layer 1 in-process still owns stdio reconnect)"
+  fi
+else
+  log "no watchdog.token; catalog persisted, Layer 2 API reconnect skipped"
+fi
+
+log "watchdog tick done"
+exit 0
+

@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // 加载token
 async function loadToken() {
     try {
-        const authData = localStorage.getItem('cyberstrike-auth');
+        const authData = localStorage.getItem('jysec-auth');
         if (authData) {
             const parsed = JSON.parse(authData);
             if (parsed && parsed.token) {
@@ -997,25 +997,6 @@ function formatDescription(text) {
     formatted = formatted.replace(/\n(?!<\/?(h[1-6]|ul|ol|li|pre|p|code))/g, '<br>');
     
     return formatted;
-}
-
-// HTML转义
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function escapeJsString(text) {
-    return JSON.stringify(String(text == null ? '' : text));
-}
-
-function escapeAttr(text) {
-    return escapeHtml(text).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-
-function escapeJsStringAttr(text) {
-    return escapeAttr(escapeJsString(text));
 }
 
 // ID转义（用于HTML ID属性）

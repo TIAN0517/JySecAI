@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"jysecai/internal/database"
+	"jysecai/internal/security"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -72,6 +73,70 @@ func (h *OpenAPIHandler) GetOpenAPISpec(c *gin.Context) {
 				},
 			},
 			"schemas": map[string]interface{}{
+				"RedirectVerifyRun": map[string]interface{}{
+					"type":        "object",
+					"description": "批次受控跳轉驗證",
+					"properties": map[string]interface{}{
+						"id":              map[string]interface{}{"type": "string", "description": "批次 ID"},
+						"status":          map[string]interface{}{"type": "string", "description": "批次狀態", "enum": []string{"pending", "running", "completed", "cancelled", "failed"}},
+						"endpoints":       map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string"}, "description": "本次使用的受控端點（跳轉目標）"},
+						"param":           map[string]interface{}{"type": "string", "description": "指定跳轉參數名；空值代表自動逐一試"},
+						"method":          map[string]interface{}{"type": "string", "description": "請求方式"},
+						"concurrency":     map[string]interface{}{"type": "integer", "description": "併發探測數"},
+						"total":           map[string]interface{}{"type": "integer", "description": "目標總數"},
+						"completed":       map[string]interface{}{"type": "integer", "description": "已完成目標數"},
+						"confirmed":       map[string]interface{}{"type": "integer", "description": "確認命中數"},
+						"project_id":      map[string]interface{}{"type": "string", "description": "歸屬專案 ID"},
+						"conversation_id": map[string]interface{}{"type": "string", "description": "歸屬對話 ID"},
+						"owner_user_id":   map[string]interface{}{"type": "string", "description": "建立者使用者 ID"},
+						"auto_record":     map[string]interface{}{"type": "boolean", "description": "確認命中時是否自動建立漏洞紀錄"},
+						"proxy":           map[string]interface{}{"type": "string", "description": "代理出口（帳密已遮蔽）"},
+						"proxy_group":     map[string]interface{}{"type": "string", "description": "平台代理池群組名稱"},
+						"error":           map[string]interface{}{"type": "string", "description": "失敗原因"},
+						"cancel_asked":    map[string]interface{}{"type": "boolean", "description": "是否已請求取消"},
+						"crawl_enabled":   map[string]interface{}{"type": "boolean", "description": "是否先自動巡站再驗證"},
+						"crawl_max_pages": map[string]interface{}{"type": "integer", "description": "每個種子站點的巡站頁數上限"},
+						"crawl_max_depth": map[string]interface{}{"type": "integer", "description": "每個種子站點的巡站深度"},
+						"seed_source":     map[string]interface{}{"type": "string", "description": "種子來源", "enum": []string{"manual", "assets", "vulns"}},
+						"seed_keyword":    map[string]interface{}{"type": "string", "description": "分類關鍵字"},
+						"seed_count":      map[string]interface{}{"type": "integer", "description": "種子站點數"},
+						"crawl_candidates": map[string]interface{}{"type": "integer", "description": "巡站找到的跳轉入口候選數"},
+						"phase":           map[string]interface{}{"type": "string", "description": "目前階段", "enum": []string{"crawl", "verify"}},
+						"encoding":        map[string]interface{}{"type": "string", "description": "受控端點寫入 payload 的編碼方式", "enum": []string{"none", "percent", "double_percent", "base64", "base64url", "hex", "js_unicode"}},
+						"repeat": map[string]interface{}{"type": "integer", "description": "同一個目標重複探測幾次（1 = 不重複，上限 5）。命中一次可能是巧合；重複複測都一致才算可信。", "default": 1},
+						"injection_count": map[string]interface{}{"type": "integer", "description": "巡站時在頁面裡找到的注入點總數"},
+						"third_party_injections": map[string]interface{}{"type": "integer", "description": "其中指向外部主機的（真正的第三方注入）"},
+						"injections": map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "object"}, "description": "巡站找到的注入點（他們塞的外部網址，可直接產生替換片段）"},
+						"created_at":      map[string]interface{}{"type": "string", "format": "date-time"},
+						"updated_at":      map[string]interface{}{"type": "string", "format": "date-time"},
+						"started_at":      map[string]interface{}{"type": "string", "format": "date-time"},
+						"completed_at":    map[string]interface{}{"type": "string", "format": "date-time"},
+					},
+				},
+				"RedirectVerifyResult": map[string]interface{}{
+					"type":        "object",
+					"description": "批次裡單一目標的驗證結果",
+					"properties": map[string]interface{}{
+						"id":               map[string]interface{}{"type": "string"},
+						"run_id":           map[string]interface{}{"type": "string", "description": "所屬批次 ID"},
+						"url":              map[string]interface{}{"type": "string", "description": "目標 URL"},
+						"confirmed":        map[string]interface{}{"type": "boolean", "description": "Location 是否指向受控端點"},
+						"param":            map[string]interface{}{"type": "string", "description": "最後一次探測使用的跳轉參數名"},
+						"own_param":        map[string]interface{}{"type": "string", "description": "目標網址本來就帶著的跳轉參數名（空 = 沒有，該筆是盲試的）"},
+						"params_tried":     map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string"}, "description": "實際送出過的參數名清單"},
+						"request_url":      map[string]interface{}{"type": "string", "description": "實際送出的請求網址"},
+						"status":           map[string]interface{}{"type": "integer", "description": "回應狀態碼"},
+						"location":         map[string]interface{}{"type": "string", "description": "回應的 Location 標頭"},
+						"error":            map[string]interface{}{"type": "string", "description": "錯誤訊息"},
+						"vulnerability_id": map[string]interface{}{"type": "string", "description": "自動上鍊的漏洞紀錄 ID"},
+						"evidence": map[string]interface{}{"type": "string", "description": "證據等級：location（真的 3xx 跳轉）、body_echo（只是本文回顯，偽陽性來源）、none", "enum": []string{"location", "body_echo", "none"}},
+						"body_echo": map[string]interface{}{"type": "boolean", "description": "是否只是回應本文回顯了受控端點（偽陽性來源，不計入 confirmed）"},
+						"own_param_hit": map[string]interface{}{"type": "boolean", "description": "命中的參數是否就是站上本來就有的那一個"},
+						"attempts": map[string]interface{}{"type": "integer", "description": "這個目標實際送出的探測次數"},
+						"stable": map[string]interface{}{"type": "boolean", "description": "重複探測的結果是否一致"},
+						"created_at":       map[string]interface{}{"type": "string", "format": "date-time"},
+					},
+				},
 				"CreateConversationRequest": map[string]interface{}{
 					"type": "object",
 					"properties": map[string]interface{}{
@@ -307,8 +372,14 @@ func (h *OpenAPIHandler) GetOpenAPISpec(c *gin.Context) {
 						},
 						"status": map[string]interface{}{
 							"type":        "string",
-							"description": "状态",
-							"enum":        []string{"open", "confirmed", "fixed", "false_positive", "ignored"},
+							"description": "状态；undetermined = 未判定（拿不到证据通道，不等于安全）",
+							"enum":        []string{"open", "undetermined", "confirmed", "fixed", "false_positive", "ignored"},
+						},
+						"confidence": map[string]interface{}{
+							"type":        "integer",
+							"minimum":     0,
+							"maximum":     100,
+							"description": "证据可信度 0-100；0=未评估。升为 confirmed 需 >= 95",
 						},
 						"target": map[string]interface{}{
 							"type":        "string",
@@ -366,6 +437,35 @@ func (h *OpenAPIHandler) GetOpenAPISpec(c *gin.Context) {
 						"created": map[string]interface{}{"type": "integer", "description": "新建数量", "example": 120},
 						"updated": map[string]interface{}{"type": "integer", "description": "去重合并数量", "example": 8},
 						"skipped": map[string]interface{}{"type": "integer", "description": "跳过数量", "example": 2},
+					},
+				},
+				"ScopeConditions": map[string]interface{}{
+					"type":        "object",
+					"description": "scope_extension 模式的可選授權條件；留空則由後端推導（相鄰授權 → 設定檔預設 → adhoc）。",
+					"properties": map[string]interface{}{
+						"owner": map[string]interface{}{
+							"type":        "string",
+							"description": "新授權的擁有者",
+							"example":     "example-client",
+						},
+						"actionClasses": map[string]interface{}{
+							"type":        "array",
+							"items":       map[string]interface{}{"type": "string"},
+							"description": "新授權容許的動作類別；留空則用本次工具的動作類別",
+							"example":     []string{"harmless_request"},
+						},
+						"maxUses": map[string]interface{}{
+							"type":        "integer",
+							"minimum":     1,
+							"description": "附條件授權的使用次數上限；<= 0 視為 1",
+							"example":     3,
+						},
+						"validUntil": map[string]interface{}{
+							"type":        "string",
+							"format":      "date-time",
+							"description": "有效期限（RFC3339）；留空＝不限",
+							"example":     "2026-12-01T00:00:00Z",
+						},
 					},
 				},
 				"ExecutionResult": map[string]interface{}{
@@ -493,6 +593,18 @@ func (h *OpenAPIHandler) GetOpenAPISpec(c *gin.Context) {
 							"type":        "boolean",
 							"description": "是否创建后立即执行（默认 false）",
 						},
+						"projectId": map[string]interface{}{
+							"type":        "string",
+							"description": "队列内子对话绑定的项目（可选）",
+						},
+						"concurrency": map[string]interface{}{
+							"type":        "integer",
+							"description": "同时执行的子任务数，默认 1，最大 8",
+						},
+						"aiChannelId": map[string]interface{}{
+							"type":        "string",
+							"description": "子对话使用的 AI 通道（仅内存态，不落库）。通道不存在直接返回 400，不静默回退默认通道——工具协议吃力的通道会让派工静默劣化。留空则用 ai.default_channel",
+						},
 					},
 				},
 				"BatchQueue": map[string]interface{}{
@@ -585,8 +697,14 @@ func (h *OpenAPIHandler) GetOpenAPISpec(c *gin.Context) {
 						},
 						"status": map[string]interface{}{
 							"type":        "string",
-							"description": "状态",
-							"enum":        []string{"open", "closed", "fixed"},
+							"description": "状态；undetermined = 未判定（拿不到证据通道，不等于安全）",
+							"enum":        []string{"open", "undetermined", "confirmed", "fixed", "false_positive", "ignored"},
+						},
+						"confidence": map[string]interface{}{
+							"type":        "integer",
+							"minimum":     0,
+							"maximum":     100,
+							"description": "证据可信度 0-100；0=未评估。升为 confirmed 需 >= 95",
 						},
 						"type": map[string]interface{}{
 							"type":        "string",
@@ -628,8 +746,14 @@ func (h *OpenAPIHandler) GetOpenAPISpec(c *gin.Context) {
 						},
 						"status": map[string]interface{}{
 							"type":        "string",
-							"description": "状态",
-							"enum":        []string{"open", "confirmed", "fixed", "false_positive", "ignored"},
+							"description": "状态；undetermined = 未判定（拿不到证据通道，不等于安全）",
+							"enum":        []string{"open", "undetermined", "confirmed", "fixed", "false_positive", "ignored"},
+						},
+						"confidence": map[string]interface{}{
+							"type":        "integer",
+							"minimum":     0,
+							"maximum":     100,
+							"description": "证据可信度 0-100；0=未评估。升为 confirmed 需 >= 95",
 						},
 						"type": map[string]interface{}{
 							"type":        "string",
@@ -1108,6 +1232,530 @@ func (h *OpenAPIHandler) GetOpenAPISpec(c *gin.Context) {
 			},
 		},
 		"paths": map[string]interface{}{
+			"/api/vulnerabilities/rewrite-controlled-endpoints": map[string]interface{}{
+				"post": map[string]interface{}{
+					"tags":        []string{"漏洞管理"},
+					"summary":     "批量改写漏洞记录的回连端点",
+					"description": "把漏洞记录里 payload 位置上的外部回连网址换成操作者自己的受控端点，让整批记录可以用同一组端点复测。目标站自己的网址与描述性字段不动；证据字段（evidence）是逐字抓取的观察结果，默认不动，需要时请显式传 include_evidence=true；已经是受控端点的值不动，因此可以重复执行。",
+					"operationId": "rewriteVulnerabilityControlledEndpoints",
+					"requestBody": map[string]interface{}{
+						"required": true,
+						"content": map[string]interface{}{
+							"application/json": map[string]interface{}{
+								"schema": map[string]interface{}{
+									"type":     "object",
+									"required": []string{"endpoint"},
+									"properties": map[string]interface{}{
+										"endpoint":         map[string]interface{}{"type": "string", "description": "受控端点（回连地址），仅支持 http/https", "example": "https://97y.me/tjneJ"},
+										"dry_run":          map[string]interface{}{"type": "boolean", "description": "true 时只统计会改什么，不写入数据库", "default": false},
+										"limit":            map[string]interface{}{"type": "integer", "description": "单次最多处理笔数（默认 500，上限 5000）", "default": 500},
+										"project_id":       map[string]interface{}{"type": "string", "description": "限定项目范围；留空为全部可见范围"},
+										"conversation_id":  map[string]interface{}{"type": "string", "description": "限定对话范围"},
+										"include_evidence": map[string]interface{}{"type": "boolean", "description": "连证据字段一起改写（默认 false：证据是逐字抓取的观察结果，改掉等于伪造证据）", "default": false},
+									},
+								},
+							},
+						},
+					},
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{
+							"description": "改写結果",
+							"content": map[string]interface{}{
+								"application/json": map[string]interface{}{
+									"schema": map[string]interface{}{
+										"type": "object",
+										"properties": map[string]interface{}{
+											"message":        map[string]interface{}{"type": "string"},
+											"endpoint":       map[string]interface{}{"type": "string"},
+											"dry_run":        map[string]interface{}{"type": "boolean"},
+											"scanned":        map[string]interface{}{"type": "integer", "description": "扫描笔数"},
+											"changed":        map[string]interface{}{"type": "integer", "description": "实际会改动的笔数"},
+											"replaced_total": map[string]interface{}{"type": "integer", "description": "替换掉的网址总笔数"},
+											"failed":         map[string]interface{}{"type": "integer", "description": "写入失败笔数"},
+											"samples": map[string]interface{}{
+												"type":  "array",
+												"items": map[string]interface{}{"type": "object"},
+											},
+										},
+									},
+								},
+							},
+						},
+						"400": map[string]interface{}{"description": "参数无效或缺少 endpoint"},
+						"403": map[string]interface{}{"description": "无权改写漏洞记录"},
+					},
+				},
+			},
+			// ==================== 批次受控跳轉驗證 ====================
+			"/api/redirect-verify/endpoints": map[string]interface{}{
+				"get": map[string]interface{}{
+					"tags":        []string{"批次受控跳轉驗證"},
+					"summary":     "取得受控跳轉端點",
+					"description": "回傳平台設定 redirect.urls 內的受控回連端點（跳轉目標）。控制台會預填第一筆；此清單非空時 redirect_probe 工具才會註冊。",
+					"operationId": "redirectVerifyListEndpoints",
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{
+							"description": "受控端點清單",
+							"content": map[string]interface{}{
+								"application/json": map[string]interface{}{
+									"schema": map[string]interface{}{
+										"type": "object",
+										"properties": map[string]interface{}{
+											"endpoints": map[string]interface{}{
+												"type":        "array",
+												"description": "受控回連端點（跳轉目標）",
+												"items":       map[string]interface{}{"type": "string"},
+											},
+										},
+									},
+								},
+							},
+						},
+						"401": map[string]interface{}{"description": "未授权"},
+					},
+				},
+			},
+			"/api/redirect-verify/crawl": map[string]interface{}{
+				"post": map[string]interface{}{
+					"tags":        []string{"批次受控跳轉驗證"},
+					"summary":     "巡站發掘跳轉參數",
+					"description": "從種子站出發巡站，收集 query 含常見跳轉參數名的 URL 作為候選目標。",
+					"operationId": "redirectVerifyCrawl",
+					"requestBody": map[string]interface{}{
+						"required": true,
+						"content": map[string]interface{}{
+							"application/json": map[string]interface{}{
+								"schema": map[string]interface{}{
+									"type":     "object",
+									"required": []string{"seeds"},
+									"properties": map[string]interface{}{
+										"seeds":           map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string"}, "description": "種子站點清單"},
+										"max_pages":       map[string]interface{}{"type": "integer", "description": "每站頁數上限", "default": 10},
+										"max_depth":       map[string]interface{}{"type": "integer", "description": "走訪深度上限", "default": 1},
+										"same_host_only":  map[string]interface{}{"type": "boolean", "description": "只走訪與種子同主機的頁面", "default": true},
+										"proxy":           map[string]interface{}{"type": "string", "description": "代理出口網址（http/https/socks5/socks4）"},
+										"proxy_group":     map[string]interface{}{"type": "string", "description": "平台代理池群組名稱"},
+										"timeout_seconds": map[string]interface{}{"type": "integer", "description": "單次請求逾時秒數"},
+									},
+								},
+							},
+						},
+					},
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{
+							"description": "巡站結果",
+							"content": map[string]interface{}{
+								"application/json": map[string]interface{}{
+									"schema": map[string]interface{}{
+										"type": "object",
+										"properties": map[string]interface{}{
+											"pages_visited": map[string]interface{}{"type": "integer", "description": "走訪頁數"},
+											"candidates":    map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string"}, "description": "疑似跳轉入口候選 URL"},
+											"visited":       map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string"}, "description": "已走訪頁面"},
+										},
+									},
+								},
+							},
+						},
+						"400": map[string]interface{}{"description": "参数无效或缺少种子站点"},
+					},
+				},
+			},
+
+			"/api/redirect-verify/implant": map[string]interface{}{
+				"get": map[string]interface{}{
+					"tags":        []string{"批次受控跳轉驗證"},
+					"summary":     "植入載荷能力矩陣",
+					"description": "回傳所有載荷型態與編碼方式，以及每個型態實際可行的編碼清單。前端據此停用不相容的組合 —— meta refresh 的網址由瀏覽器直接解析（不會解 base64／hex／unicode 跳脫），query 參數也沒有人會解 unicode 跳脫。規則只存在後端一份。",
+					"operationId": "redirectVerifyImplantCapabilities",
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{
+							"description": "能力矩陣",
+							"content": map[string]interface{}{
+								"application/json": map[string]interface{}{
+									"schema": map[string]interface{}{
+										"type": "object",
+										"properties": map[string]interface{}{
+											"kinds":     map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string"}},
+											"encodings": map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string"}},
+											"encodings_by_kind": map[string]interface{}{
+											"point_kinds": map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string"}},
+											"point_encodings_by_kind": map[string]interface{}{
+												"type": "object",
+												"description": "注入型態 → 該型態可行的編碼清單",
+												"additionalProperties": map[string]interface{}{
+													"type": "array",
+													"items": map[string]interface{}{"type": "string"},
+												},
+												},
+												"type": "object",
+												"description": "型態 → 該型態可行的編碼清單",
+												"additionalProperties": map[string]interface{}{
+													"type": "array",
+													"items": map[string]interface{}{"type": "string"},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+				"post": map[string]interface{}{
+					"tags":        []string{"批次受控跳轉驗證"},
+					"summary":     "產生植入載荷",
+					"description": "把受控端點包成可以直接放進受控頁面的載荷片段，並可選擇把網址編碼。js_unicode 是純跳脫（不需要解碼器）；base64／hex 會自動附上 atob／String.fromCharCode；percent 適合 query 參數位置。編碼只改變字面形式，不改變指向的位址。編碼必須對型態有意義：meta refresh 的網址由瀏覽器直接解析，不接受 base64／hex／js_unicode；url_param 不接受 js_unicode。不相容的組合會回 400。可用組合見 GET 同路徑。",
+					"operationId": "redirectVerifyBuildImplant",
+					"requestBody": map[string]interface{}{
+						"required": false,
+						"content": map[string]interface{}{
+							"application/json": map[string]interface{}{
+								"schema": map[string]interface{}{
+									"type": "object",
+									"properties": map[string]interface{}{
+										"endpoint": map[string]interface{}{"type": "string", "description": "要植入的受控端點；留空時用平台設定 redirect.urls 的第一個"},
+										"encoding": map[string]interface{}{"type": "string", "description": "編碼方式", "enum": []string{"none", "percent", "double_percent", "base64", "base64url", "hex", "js_unicode"}, "default": "none"},
+										"kind":     map[string]interface{}{"type": "string", "description": "載荷型態", "enum": []string{"js_redirect", "js_window_open", "js_location_replace", "meta_refresh", "url_param"}, "default": "js_redirect"},
+										"param":    map[string]interface{}{"type": "string", "description": "url_param 型態的參數名", "default": "url"},
+										"point": map[string]interface{}{
+											"type":        "object",
+											"description": "要替換的既有注入點（來自 GET /api/redirect-verify/injections）。帶了 point 時走「把他們注入的換成我們的」這條路：型態沿用原注入點，編碼受該型態限制。",
+											"properties": map[string]interface{}{
+												"kind":      map[string]interface{}{"type": "string", "description": "注入型態", "enum": []string{"script_src", "iframe_src", "meta_refresh", "js_string", "link_href", "form_action"}},
+												"url":       map[string]interface{}{"type": "string", "description": "他們注入的原始網址"},
+												"page":      map[string]interface{}{"type": "string"},
+												"tag":       map[string]interface{}{"type": "string"},
+												"attr":      map[string]interface{}{"type": "string"},
+												"self_host": map[string]interface{}{"type": "boolean"},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{
+							"description": "產生的載荷",
+							"content": map[string]interface{}{
+								"application/json": map[string]interface{}{
+									"schema": map[string]interface{}{
+										"type": "object",
+										"properties": map[string]interface{}{
+											"implant": map[string]interface{}{
+												"type": "object",
+												"properties": map[string]interface{}{
+													"kind":     map[string]interface{}{"type": "string"},
+													"encoding": map[string]interface{}{"type": "string"},
+													"endpoint": map[string]interface{}{"type": "string", "description": "原樣的受控端點"},
+													"payload":  map[string]interface{}{"type": "string", "description": "實際寫進載荷的字串（可能已編碼）"},
+													"fragment": map[string]interface{}{"type": "string", "description": "可直接貼進目標頁面的完整片段"},
+												},
+											},
+											"encodings": map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string"}},
+											"kinds":     map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string"}},
+											"encodings_by_kind": map[string]interface{}{
+												"type": "object",
+												"description": "型態 → 該型態可行的編碼清單",
+												"additionalProperties": map[string]interface{}{
+													"type": "array",
+													"items": map[string]interface{}{"type": "string"},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						"400": map[string]interface{}{"description": "参数无效或缺少受控端点"},
+					},
+				},
+			},
+			"/api/redirect-verify/injections": map[string]interface{}{
+				"post": map[string]interface{}{
+					"tags":        []string{"批次受控跳轉驗證"},
+					"summary":     "掃描頁面的注入點並產生替換片段",
+					"description": "抓取指定頁面，找出裡面「他們塞的」外部網址（script src／iframe src／meta refresh／inline JS 字串／link href／form action），可一併把每個注入點換成我們的受控端點，產生可直接貼用的替換片段。只讀不改：不會動到目標站的頁面。我們自己的受控端點會被排除（不會被回報成「他們注入的」）。受控端點本身也會被探一次，確認片段配得上這個端點（例如 <script src> 需要對方回 JavaScript）。119／EPCR／消防救護永久禁區目標會被拒絕。",
+					"operationId": "redirectVerifyScanInjections",
+					"requestBody": map[string]interface{}{
+						"required": true,
+						"content": map[string]interface{}{
+							"application/json": map[string]interface{}{
+								"schema": map[string]interface{}{
+									"type":     "object",
+									"required": []string{"url"},
+									"properties": map[string]interface{}{
+										"url":             map[string]interface{}{"type": "string", "description": "要掃描的頁面 URL"},
+										"endpoint":        map[string]interface{}{"type": "string", "description": "我們的受控端點；留空時用平台設定 redirect.urls 的第一個"},
+										"encoding":        map[string]interface{}{"type": "string", "description": "寫入時的編碼方式", "enum": []string{"none", "percent", "double_percent"}, "default": "none"},
+										"with_implant":    map[string]interface{}{"type": "boolean", "description": "是否為每個注入點產生替換片段", "default": false},
+										"verify_endpoint": map[string]interface{}{"type": "boolean", "description": "是否探一次受控端點確認可用性", "default": false},
+										"skip_self_host":  map[string]interface{}{"type": "boolean", "description": "是否略過指向站方自己資源的注入點", "default": false},
+										"timeout_seconds": map[string]interface{}{"type": "integer", "default": 10},
+										"proxy":           map[string]interface{}{"type": "string"},
+										"proxy_group":     map[string]interface{}{"type": "string"},
+									},
+								},
+							},
+						},
+					},
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{
+							"description": "注入點清單與替換片段",
+							"content": map[string]interface{}{
+								"application/json": map[string]interface{}{
+									"schema": map[string]interface{}{
+										"type": "object",
+										"properties": map[string]interface{}{
+											"url":                    map[string]interface{}{"type": "string"},
+											"status":                 map[string]interface{}{"type": "integer"},
+											"injection_count":        map[string]interface{}{"type": "integer"},
+											"third_party_injections": map[string]interface{}{"type": "integer"},
+											"endpoint":               map[string]interface{}{"type": "string"},
+											"injections": map[string]interface{}{
+												"type": "array",
+												"items": map[string]interface{}{
+													"type": "object",
+													"properties": map[string]interface{}{
+														"kind":      map[string]interface{}{"type": "string"},
+														"tag":       map[string]interface{}{"type": "string"},
+														"attr":      map[string]interface{}{"type": "string"},
+														"url":       map[string]interface{}{"type": "string"},
+														"context":   map[string]interface{}{"type": "string"},
+														"page":      map[string]interface{}{"type": "string"},
+														"self_host": map[string]interface{}{"type": "boolean"},
+													},
+												},
+											},
+											"implants": map[string]interface{}{
+												"type": "array",
+												"items": map[string]interface{}{
+													"type": "object",
+													"properties": map[string]interface{}{
+														"kind":     map[string]interface{}{"type": "string"},
+														"original": map[string]interface{}{"type": "string"},
+														"payload":  map[string]interface{}{"type": "string"},
+														"fragment": map[string]interface{}{"type": "string"},
+														"note":     map[string]interface{}{"type": "string"},
+													},
+												},
+											},
+											"endpoint_check": map[string]interface{}{
+												"type": "object",
+												"properties": map[string]interface{}{
+													"reachable":   map[string]interface{}{"type": "boolean"},
+													"status":      map[string]interface{}{"type": "integer"},
+													"content_type": map[string]interface{}{"type": "string"},
+													"script_like": map[string]interface{}{"type": "boolean"},
+													"suitable":    map[string]interface{}{"type": "boolean"},
+													"note":        map[string]interface{}{"type": "string"},
+												},
+											},
+											"point_encodings_by_kind": map[string]interface{}{"type": "object"},
+										},
+									},
+								},
+							},
+						},
+						"400": map[string]interface{}{"description": "参数无效、缺少页面 URL，或目标属于永久禁区"},
+					},
+				},
+			},
+			"/api/redirect-verify/runs": map[string]interface{}{
+				"get": map[string]interface{}{
+					"tags":        []string{"批次受控跳轉驗證"},
+					"summary":     "列出跳轉驗證批次",
+					"description": "依登入者權限範圍列出批次。",
+					"operationId": "redirectVerifyListRuns",
+					"parameters": []map[string]interface{}{
+						{
+							"name":        "limit",
+							"in":          "query",
+							"required":    false,
+							"description": "回傳筆數（預設 50，上限 200）",
+							"schema":      map[string]interface{}{"type": "integer", "default": 50},
+						},
+					},
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{
+							"description": "批次清單",
+							"content": map[string]interface{}{
+								"application/json": map[string]interface{}{
+									"schema": map[string]interface{}{
+										"type": "object",
+										"properties": map[string]interface{}{
+											"runs": map[string]interface{}{
+												"type":  "array",
+												"items": map[string]interface{}{"$ref": "#/components/schemas/RedirectVerifyRun"},
+											},
+										},
+									},
+								},
+							},
+						},
+						"401": map[string]interface{}{"description": "未授权"},
+					},
+				},
+				"post": map[string]interface{}{
+					"tags":        []string{"批次受控跳轉驗證"},
+					"summary":     "建立跳轉驗證批次",
+					"description": "以受控端點批次複測多個目標的開放式跳轉。請求立即回 202，批次在背景執行；進度用 GET /api/redirect-verify/runs/{id} 查詢。受控端點來源順序：請求的 endpoints → 平台設定 redirect.urls → 都沒有則回 400。探測絕不跟隨重新導向，只讀 Location 標頭；主機名需完全相同才算命中。",
+					"operationId": "redirectVerifyCreateRun",
+					"requestBody": map[string]interface{}{
+						"required": true,
+						"content": map[string]interface{}{
+							"application/json": map[string]interface{}{
+								"schema": map[string]interface{}{
+									"type":     "object",
+									"required": []string{"targets"},
+									"properties": map[string]interface{}{
+										"targets":         map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string"}, "description": "要測的目標 URL 清單"},
+										"endpoints":       map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "string"}, "description": "受控端點（跳轉目標）；省略時用平台設定 redirect.urls"},
+										"param":           map[string]interface{}{"type": "string", "description": "跳轉參數名；省略時依常見參數名逐一試並在命中時停止"},
+										"method":          map[string]interface{}{"type": "string", "enum": []string{"GET", "POST"}, "description": "請求方式", "default": "GET"},
+										"project_id":      map[string]interface{}{"type": "string", "description": "歸屬專案 ID（需有該專案存取權）"},
+										"conversation_id": map[string]interface{}{"type": "string", "description": "歸屬對話 ID"},
+										"auto_record":     map[string]interface{}{"type": "boolean", "description": "確認命中時自動建立開放式跳轉漏洞紀錄（需 vulnerability:write）", "default": false},
+										"repeat":         map[string]interface{}{"type": "integer", "description": "同一個目標重複探測幾次（1 = 不重複，上限 5）。命中一次可能是巧合；重複複測都一致才算可信。預設 1，因為每次都會真的送出請求。", "minimum": 1, "maximum": 5, "default": 1},
+										"scan_injections": map[string]interface{}{"type": "boolean", "description": "巡站時一併偵測頁面裡「他們塞的」外部網址（注入點），作為自動植入的替換位置", "default": false},
+										"concurrency":     map[string]interface{}{"type": "integer", "description": "併發探測數"},
+										"timeout_seconds": map[string]interface{}{"type": "integer", "description": "單次探測逾時秒數"},
+										"proxy":           map[string]interface{}{"type": "string", "description": "代理出口網址"},
+										"proxy_group":     map[string]interface{}{"type": "string", "description": "平台代理池群組名稱"},
+										"crawl":           map[string]interface{}{"type": "boolean", "description": "先自動巡站找出站上本來就有的跳轉入口，再代入受控端點驗證", "default": false},
+										"crawl_max_pages": map[string]interface{}{"type": "integer", "description": "每個種子站點的巡站頁數上限"},
+										"crawl_max_depth": map[string]interface{}{"type": "integer", "description": "每個種子站點的巡站深度"},
+										"seed_source":     map[string]interface{}{"type": "string", "description": "種子來源：manual（用本請求的 targets）、assets（資產庫）、vulns（漏洞紀錄）", "enum": []string{"manual", "assets", "vulns"}, "default": "manual"},
+										"seed_keyword":    map[string]interface{}{"type": "string", "description": "分類關鍵字；seed_source 不是 manual 時必填（例如 娛樂城、SEO、現金版）"},
+										"seed_limit":      map[string]interface{}{"type": "integer", "description": "種子站點數上限"},
+										"encoding":        map[string]interface{}{"type": "string", "description": "受控端點寫進 payload 的編碼方式（語意是目標解碼後該看到的值）", "enum": []string{"none", "percent", "double_percent", "base64", "base64url", "hex", "js_unicode"}, "default": "none"},
+									},
+								},
+							},
+						},
+					},
+					"responses": map[string]interface{}{
+						"202": map[string]interface{}{
+							"description": "批次已建立，背景執行中",
+							"content": map[string]interface{}{
+								"application/json": map[string]interface{}{
+									"schema": map[string]interface{}{
+										"type": "object",
+										"properties": map[string]interface{}{
+											"run": map[string]interface{}{"$ref": "#/components/schemas/RedirectVerifyRun"},
+										},
+									},
+								},
+							},
+						},
+						"400": map[string]interface{}{"description": "缺少目標或沒有可用的受控端點"},
+						"403": map[string]interface{}{"description": "无权在该项目或对话下执行"},
+					},
+				},
+			},
+			"/api/redirect-verify/runs/{id}": map[string]interface{}{
+				"get": map[string]interface{}{
+					"tags":        []string{"批次受控跳轉驗證"},
+					"summary":     "查詢批次進度與結果",
+					"description": "回傳批次狀態與每筆目標的驗證結果。",
+					"operationId": "redirectVerifyGetRun",
+					"parameters": []map[string]interface{}{
+						{
+							"name":        "id",
+							"in":          "path",
+							"required":    true,
+							"description": "批次 ID",
+							"schema":      map[string]interface{}{"type": "string"},
+						},
+					},
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{
+							"description": "批次進度與結果",
+							"content": map[string]interface{}{
+								"application/json": map[string]interface{}{
+									"schema": map[string]interface{}{
+										"type": "object",
+										"properties": map[string]interface{}{
+											"run":     map[string]interface{}{"$ref": "#/components/schemas/RedirectVerifyRun"},
+											"results": map[string]interface{}{"type": "array", "items": map[string]interface{}{"$ref": "#/components/schemas/RedirectVerifyResult"}},
+										},
+									},
+								},
+							},
+						},
+						"404": map[string]interface{}{"description": "批次不存在"},
+					},
+				},
+			},
+			"/api/redirect-verify/runs/{id}/cancel": map[string]interface{}{
+				"post": map[string]interface{}{
+					"tags":        []string{"批次受控跳轉驗證"},
+					"summary":     "取消批次",
+					"description": "請求停止背景批次；已在執行的探測會在下一個目標前結束。",
+					"operationId": "redirectVerifyCancelRun",
+					"parameters": []map[string]interface{}{
+						{
+							"name":        "id",
+							"in":          "path",
+							"required":    true,
+							"description": "批次 ID",
+							"schema":      map[string]interface{}{"type": "string"},
+						},
+					},
+					"responses": map[string]interface{}{
+						"202": map[string]interface{}{"description": "已受理取消"},
+						"409": map[string]interface{}{"description": "批次已结束或不存在"},
+					},
+				},
+			},
+			"/api/redirect-verify/runs/{id}/report": map[string]interface{}{
+				"get": map[string]interface{}{
+					"tags":        []string{"批次受控跳轉驗證"},
+					"summary":     "匯出批次報告",
+					"description": "以 Markdown（預設）、CSV 或 JSON 匯出批次結果。",
+					"operationId": "redirectVerifyRunReport",
+					"parameters": []map[string]interface{}{
+						{
+							"name":        "id",
+							"in":          "path",
+							"required":    true,
+							"description": "批次 ID",
+							"schema":      map[string]interface{}{"type": "string"},
+						},
+						{
+							"name":        "format",
+							"in":          "query",
+							"required":    false,
+							"description": "匯出格式",
+							"schema":      map[string]interface{}{"type": "string", "enum": []string{"markdown", "csv", "json"}, "default": "markdown"},
+						},
+					},
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{
+							"description": "報告內容",
+							"content": map[string]interface{}{
+								"text/markdown": map[string]interface{}{
+									"schema": map[string]interface{}{"type": "string"},
+								},
+								"text/csv": map[string]interface{}{
+									"schema": map[string]interface{}{"type": "string"},
+								},
+								"application/json": map[string]interface{}{
+									"schema": map[string]interface{}{
+										"type": "object",
+										"properties": map[string]interface{}{
+											"run":     map[string]interface{}{"$ref": "#/components/schemas/RedirectVerifyRun"},
+											"results": map[string]interface{}{"type": "array", "items": map[string]interface{}{"$ref": "#/components/schemas/RedirectVerifyResult"}},
+										},
+									},
+								},
+							},
+						},
+						"404": map[string]interface{}{"description": "批次不存在"},
+					},
+				},
+			},
 			"/api/auth/login": map[string]interface{}{
 				"post": map[string]interface{}{
 					"tags":        []string{"认证"},
@@ -1243,6 +1891,112 @@ func (h *OpenAPIHandler) GetOpenAPISpec(c *gin.Context) {
 						},
 						"401": map[string]interface{}{
 							"description": "Token无效或已过期",
+						},
+					},
+				},
+			},
+			"/api/hitl/pending": map[string]interface{}{
+				"get": map[string]interface{}{
+					"tags":        []string{"人工審批"},
+					"summary":     "列出待處理的人工審批中斷",
+					"description": "列出目前等待操作者裁決的中斷項目。\n\n中斷有三種模式：\n- `approval`：一次性批准這次工具呼叫。\n- `review_edit`：批准前可修改工具參數。\n- `scope_extension`：授權範圍擴充——這次呼叫要碰的目標不在任何授權範圍內，由操作者裁決要把目標納進授權、只准這一次、附條件批准，還是拒絕。",
+					"operationId": "listHitlPending",
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{
+							"description": "待處理中斷清單",
+							"content": map[string]interface{}{
+								"application/json": map[string]interface{}{
+									"schema": map[string]interface{}{
+										"type": "object",
+										"properties": map[string]interface{}{
+											"items":    map[string]interface{}{"type": "array", "items": map[string]interface{}{"type": "object"}},
+											"page":     map[string]interface{}{"type": "integer"},
+											"pageSize": map[string]interface{}{"type": "integer"},
+											"total":    map[string]interface{}{"type": "integer"},
+										},
+									},
+								},
+							},
+						},
+						"401": map[string]interface{}{"description": "未授权"},
+					},
+				},
+			},
+			"/api/hitl/decision": map[string]interface{}{
+				"post": map[string]interface{}{
+					"tags":        []string{"人工審批"},
+					"summary":     "裁決人工審批中斷",
+					"description": "對一個待處理中斷送出裁決。\n\n**決策詞彙依中斷模式而定**：\n- `approval` / `review_edit` 模式只接受 `approve` 或 `reject`。\n- `scope_extension` 模式只接受下列四個：\n  - `approve_permanent`：寫入常駐授權集（scope_targets），之後同一目標不再打擾。\n  - `approve_once`：發一張只用一次的授權券（scope_grants）。\n  - `approve_conditional`：發一張帶次數／時段／動作類別條件的授權券。\n  - `reject`：記住拒絕（scope_denials），之後同一目標直接拒絕不再詢問。\n\n`scope_extension` 模式可額外帶 `scopeConditions` 與 `scopeTargets`：任意執行類工具（`arbitrary=true`）沒有可驗證的目標參數，**必須**由操作者在 `scopeTargets` 宣告本次會接觸的目標清單，沒宣告就不准批准。\n\n裁決會先寫入授權狀態機，再讓原本被暫停的工具呼叫續跑（順序相反會造成續跑時查不到授權而被擋下）。",
+					"operationId": "decideHitlInterrupt",
+					"requestBody": map[string]interface{}{
+						"required": true,
+						"content": map[string]interface{}{
+							"application/json": map[string]interface{}{
+								"schema": map[string]interface{}{
+									"type":     "object",
+									"required": []string{"interruptId", "decision"},
+									"properties": map[string]interface{}{
+										"interruptId": map[string]interface{}{
+											"type":        "string",
+											"description": "待裁決的中斷 ID",
+										},
+										"decision": map[string]interface{}{
+											"type": "string",
+											"enum": []string{
+												"approve", "reject",
+												"approve_permanent", "approve_once", "approve_conditional",
+											},
+											"description": "裁決詞彙。approval / review_edit 模式只接受 approve / reject；scope_extension 模式只接受 approve_permanent / approve_once / approve_conditional / reject。",
+										},
+										"comment": map[string]interface{}{
+											"type":        "string",
+											"description": "裁決備註（可選）",
+										},
+										"editedArguments": map[string]interface{}{
+											"type":        "object",
+											"description": "review_edit 模式下要替換的工具參數",
+										},
+										"scopeConditions": map[string]interface{}{
+											"$ref": "#/components/schemas/ScopeConditions",
+										},
+										"scopeTargets": map[string]interface{}{
+											"type":        "array",
+											"items":       map[string]interface{}{"type": "string"},
+											"description": "操作者宣告的本次將接觸的目標清單（任意執行類工具必填）",
+										},
+									},
+								},
+							},
+						},
+					},
+					"responses": map[string]interface{}{
+						"200": map[string]interface{}{
+							"description": "裁決完成",
+							"content": map[string]interface{}{
+								"application/json": map[string]interface{}{
+									"schema": map[string]interface{}{
+										"type": "object",
+										"properties": map[string]interface{}{
+											"ok": map[string]interface{}{"type": "boolean"},
+										},
+									},
+								},
+							},
+						},
+						"401": map[string]interface{}{"description": "未授权"},
+						"409": map[string]interface{}{
+							"description": "決策詞彙與中斷模式不符，或中斷不存在／已逾時",
+							"content": map[string]interface{}{
+								"application/json": map[string]interface{}{
+									"schema": map[string]interface{}{
+										"type": "object",
+										"properties": map[string]interface{}{
+											"error":   map[string]interface{}{"type": "string", "example": "scope_decision_invalid"},
+											"message": map[string]interface{}{"type": "string"},
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -6320,6 +7074,20 @@ func (h *OpenAPIHandler) GetOpenAPISpec(c *gin.Context) {
 // 这个端点只是为了提供结果聚合功能
 func (h *OpenAPIHandler) GetConversationResults(c *gin.Context) {
 	conversationID := c.Param("id")
+
+	// 在 handler 内部重验一次归属。middleware 的 resourceAllowed 靠
+	// HasPrefix("/conversations/:id") 匹配，它会因为将来新增一个更长的
+	// 兄弟路径而静默失效；这个端点聚合了整段对话的消息与漏洞，漏掉
+	// 归属检查的代价是整段对话外泄。
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return
+	}
+	if !h.db.UserCanAccessResource(session.UserID, session.Scope, "conversation", conversationID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 
 	// 验证对话是否存在
 	conv, err := h.db.GetConversation(conversationID)

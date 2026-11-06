@@ -1,6 +1,7 @@
 name: "dnsenum"
 command: "dnsenum"
 enabled: true
+action_class: "bulk_scan"
 short_description: "DNS枚举工具"
 description: |
   DNSenum是一个DNS信息收集工具，用于枚举DNS信息。
@@ -25,6 +26,8 @@ parameters:
     format: "positional"
   - name: "dns_server"
     type: "string"
+    target: true
+    target_kind: "host"
     description: "要使用的DNS服务器"
     required: false
     flag: "-n"

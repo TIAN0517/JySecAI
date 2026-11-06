@@ -245,6 +245,12 @@ In **Permission management** (权限管理), enable the following (names and ide
 2. JySecAI → **System settings** → **Robot settings** → **Telegram**.  
 3. Enable, paste the token, optionally allow group @ mentions → **Apply configuration**.
 
+**Quiet mode (it stays silent until you call it):**
+
+- **Only replies when addressed**: send a direct message in a private chat, or @-mention the bot in a group. Group messages are off by default — without "allow group messages" no group traffic triggers a reply.
+- **No proactive pushes**: vulnerability alerts are driven by the vulnerability alert subscriptions. Turn the subscription off in the web UI and the bot stops pinging you on its own.
+- **Restarts do not replay history**: the consumed `update_id` is persisted in the `robot_stream_offsets` table, so a restart resumes where it left off. On the very first start (no cursor yet) the bot starts from the latest update and skips the pre-start backlog instead of re-answering old messages.
+
 ---
 
 ### 3.6 Slack
@@ -474,11 +480,11 @@ You can verify bot logic with the **test API** (no DingTalk/Lark client needed):
 
 ```bash
 # Adjust the URL, username, and password for your deployment
-TOKEN=$(curl -s -X POST "http://localhost:8080/api/auth/login" \
+TOKEN=$(curl -s -X POST "http://localhost:9898/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"YOUR_PASSWORD"}' | jq -r '.token')
 
-curl -X POST "http://localhost:8080/api/robot/test" \
+curl -X POST "http://localhost:9898/api/robot/test" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"platform":"dingtalk","user_id":"test_user","text":"帮助"}'

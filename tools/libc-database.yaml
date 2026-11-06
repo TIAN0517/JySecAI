@@ -34,6 +34,7 @@ args:
         sys.stderr.write(proc.stderr)
     sys.exit(proc.returncode)
 enabled: true
+action_class: "local_analysis"
 short_description: "libc识别和偏移查找工具"
 description: |
   Libc-database是一个用于libc识别和偏移查找的工具。

@@ -10,9 +10,20 @@ import (
 )
 
 const (
-	PackageFormat = "cyberstrikeai.workflow-package"
-	FormatVersion = "1.0"
+	// PackageFormat 是工作流包清單的格式識別；新匯出的包用這個值。
+	PackageFormat = "jytech.workflow-package"
+	// legacyPackageFormat 是更名前的格式識別。
+	//
+	// 已經匯出出去的包，其 manifest 裡仍帶著舊值 —— 讀取時必須兩者都接受，
+	// 否則那些包會被判成「格式不受支援」而打不開。
+	legacyPackageFormat = "cyberstrikeai.workflow-package"
+	FormatVersion       = "1.0"
 )
+
+// supportedPackageFormat 判斷清單的格式識別是否受支援（接受更名前的舊值）。
+func supportedPackageFormat(format string) bool {
+	return format == PackageFormat || format == legacyPackageFormat
+}
 
 // Document is the single non-executable workflow definition carried by a package.
 // Version is the source instance revision and is never applied as a target version.

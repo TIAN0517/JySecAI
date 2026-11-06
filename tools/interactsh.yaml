@@ -1,0 +1,71 @@
+name: "interactsh"
+command: "python3"
+args:
+  - "-c"
+  - |
+    import shlex
+    import subprocess
+    import sys
+
+    duration = 20.0
+    if len(sys.argv) > 1 and sys.argv[1]:
+        try:
+            duration = float(sys.argv[1])
+        except ValueError:
+            sys.stderr.write("duration 参数必须为数字（秒）\n")
+            sys.exit(1)
+
+    extra = sys.argv[2] if len(sys.argv) > 2 else ""
+
+    cmd = ["interactsh-client"]
+    if extra:
+        cmd.extend(shlex.split(extra))
+
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    try:
+        output, _ = proc.communicate(timeout=duration)
+    except subprocess.TimeoutExpired:
+        proc.terminate()
+        output, _ = proc.communicate()
+
+    if output:
+        sys.stdout.write(output)
+    sys.exit(0)
+enabled: true
+action_class: "harmless_request"
+short_description: "interactsh OOB 交互客户端，捕获盲打 SSRF/RCE/Blind XSS 回连"
+description: |
+  interactsh-client 申请 OOB（带外交互）payload 域名并捕获目标的回连请求（DNS/HTTP），用于验证盲打类漏洞（SSRF、Blind RCE、Blind XSS、Log4j 类出网探测），配合 `web-attack-methods` 与 `ai-llm-app-attack` Skill 使用。
+
+  **仅限授权范围内使用**：仅用于已获书面授权（SOW）的目标测试，OOB 域名写入报告前先确认归属记录。
+
+  **主要功能：**
+  - 申请唯一子域名的 OAST URL（如 xxx.oast.pro）
+  - 实时输出目标回连的 DNS/HTTP 交互（来源 IP、协议、payload）
+
+  **使用场景：**
+  - SSRF/盲注 payload 出网确认：把 OAST URL 塞进 payload，观察本工具输出
+  - 与 dnslog 类服务同用途，但自带 TLS 与完整性校验
+
+  **注意事项：**
+  - 本包装为非交互模式：运行 duration 秒后自动终止客户端并回传期间捕获的交互记录（含 payload 域名）
+  - 自建/私有 server 经 additional_args 传 `-s <server>`；默认公共 server 的交互数据对服务方可读，敏感验证用自建
+  - 捕获记录是漏洞证据：截图/文本连同 payload 一起归档进证据目录
+parameters:
+  - name: "duration"
+    type: "int"
+    description: |
+      监听时长（秒，可选，默认 20）。
+      到时自动终止客户端并输出捕获到的交互。
+    required: false
+    position: 0
+    format: "positional"
+    default: 20
+  - name: "additional_args"
+    type: "string"
+    description: |
+      额外的 interactsh-client 参数（追加在命令末尾，按空格解析）。
+      示例：`-s oast.example.com -token <token>`（自建 server）或 `-n 5`（申请多个域名）
+    required: false
+    position: 1
+    format: "positional"

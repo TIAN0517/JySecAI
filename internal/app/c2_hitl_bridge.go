@@ -201,6 +201,8 @@ func taskToAttackPhase(taskType string) string {
 		return "exfiltration"
 	case "screenshot":
 		return "collection"
+	case "cred_dump":
+		return "credential-access"
 	case "kill_proc":
 		return "impact"
 	case "port_fwd", "socks_start":

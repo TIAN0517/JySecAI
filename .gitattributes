@@ -1,0 +1,14 @@
+_archive/binaries/server filter=lfs diff=lfs merge=lfs -text
+_archive/binaries/server.exe.bak-20260908 filter=lfs diff=lfs merge=lfs -text
+_archive/binaries/server.exe.prev-0928 filter=lfs diff=lfs merge=lfs -text
+_archive/binaries/server.exe~ filter=lfs diff=lfs merge=lfs -text
+_archive/installers/OpenCode[[:space:]]Desktop[[:space:]]Installer.exe filter=lfs diff=lfs merge=lfs -text
+jysecai-schema-diag.exe filter=lfs diff=lfs merge=lfs -text
+jysecai.exe filter=lfs diff=lfs merge=lfs -text
+tmp/jysecai-server.exe filter=lfs diff=lfs merge=lfs -text
+.codex/.sandbox-bin/codex.exe filter=lfs diff=lfs merge=lfs -text
+_archive/binaries/cyberstrike-ai filter=lfs diff=lfs merge=lfs -text
+_archive/binaries/jysecai filter=lfs diff=lfs merge=lfs -text
+_archive/binaries/server.exe filter=lfs diff=lfs merge=lfs -text
+_archive/zips/serverall.zip filter=lfs diff=lfs merge=lfs -text
+jysec-core.exe filter=lfs diff=lfs merge=lfs -text

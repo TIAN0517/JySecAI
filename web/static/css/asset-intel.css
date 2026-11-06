@@ -1,0 +1,231 @@
+/* 資產情報 (Asset Intelligence) 頁面樣式 */
+
+.ai-provider-status {
+    margin-bottom: 2rem;
+}
+
+.ai-provider-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.ai-provider-card {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.provider-status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.provider-status-dot.active {
+    background: #10b981; /* green */
+}
+
+.provider-status-dot.inactive {
+    background: #6b7280; /* gray */
+}
+
+.provider-status-text {
+    color: var(--text-muted);
+}
+
+/* 搜尋表單 */
+.ai-search {
+    margin-bottom: 2rem;
+}
+
+.ai-search-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.ai-search-input {
+    flex: 1;
+    min-width: 150px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--input-bg);
+    color: var(--text);
+}
+
+.ai-search-select {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--input-bg);
+    color: var(--text);
+}
+
+.ai-search-results {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+/* 資產總覽 */
+.ai-asset-summary {
+    margin-bottom: 2rem;
+}
+
+.ai-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.ai-summary-card {
+    padding: 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.ai-summary-label {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.ai-summary-card strong {
+    font-size: 1.5rem;
+    color: var(--text);
+}
+
+/* 資料庫表格 */
+.ai-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.ai-data-table th,
+.ai-data-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.ai-data-table th {
+    background: var(--card-bg);
+    font-weight: 600;
+    color: var(--text);
+}
+
+.ai-data-table td {
+    color: var(--text-muted);
+}
+
+.ai-data-table tr:hover {
+    background: var(--hover-bg);
+}
+
+/* 查詢歷史 */
+.ai-history {
+    margin-bottom: 2rem;
+}
+
+.ai-history-list {
+    margin-top: 1rem;
+}
+
+.ai-history-ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ai-history-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+.ai-history-time {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    min-width: 150px;
+}
+
+.ai-history-provider {
+    font-weight: 600;
+    color: var(--accent-color);
+    min-width: 80px;
+}
+
+.ai-history-query {
+    flex: 1;
+    color: var(--text);
+}
+
+.ai-history-results {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    min-width: 100px;
+    text-align: right;
+}
+
+.ai-history-status {
+    font-weight: bold;
+    min-width: 24px;
+}
+
+.ai-history-status.success {
+    color: #10b981; /* green */
+}
+
+.ai-history-status.error {
+    color: #ef4444; /* red */
+}
+
+/* Toast 通知 */
+.ai-toast-container {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 1000;
+}
+
+.ai-toast {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    color: white;
+    min-width: 200px;
+}
+
+.ai-toast-info {
+    background: #3b82f6; /* blue */
+}
+
+.ai-toast-warning {
+    background: #f59e0b; /* amber */
+}
+
+.ai-toast-error {
+    background: #ef4444; /* red */
+}

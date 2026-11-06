@@ -79,7 +79,9 @@ function hitlModeNormalize(m) {
     if (v === 'feedback' || v === 'followup') {
         v = 'approval';
     }
-    const allowed = ['off', 'approval', 'review_edit'];
+    // scope_extension 是授權範圍擴充中斷（裁決「要不要把目標納進授權」），
+    // 不是人工審批模式；別讓它在這裡被降級成 off。
+    const allowed = ['off', 'approval', 'review_edit', 'scope_extension'];
     return allowed.indexOf(v) >= 0 ? v : 'off';
 }
 
@@ -96,9 +98,9 @@ function hitlT(key, fallback, params) {
     return fallback;
 }
 
-const HITL_LOGS_PAGE_SIZE_KEY = 'cyberstrike_hitl_logs_page_size';
-const HITL_PENDING_PAGE_SIZE_KEY = 'cyberstrike_hitl_pending_page_size';
-const HITL_TIMEOUT_DEFAULT_MIGRATION_PREFIX = 'cyberstrike-hitl-timeout-default-v1:';
+const HITL_LOGS_PAGE_SIZE_KEY = 'jysec_hitl_logs_page_size';
+const HITL_PENDING_PAGE_SIZE_KEY = 'jysec_hitl_pending_page_size';
+const HITL_TIMEOUT_DEFAULT_MIGRATION_PREFIX = 'jysec-hitl-timeout-default-v1:';
 const HITL_PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
 const hitlConversationConfigSaveQueues = new Map();
 
@@ -182,7 +184,7 @@ function hitlEffectiveEnabled(cfg) {
 function readHitlLocalStorageConv(conversationId) {
     if (!conversationId) return null;
     try {
-        const key = 'cyberstrike-chat-hitl:' + String(conversationId).trim();
+        const key = 'jysec-chat-hitl:' + String(conversationId).trim();
         const raw = localStorage.getItem(key);
         if (!raw) return null;
         const parsed = JSON.parse(raw);
@@ -592,7 +594,9 @@ async function syncHitlConfigFromServer(conversationId) {
         : function (_g, s) { return typeof s === 'string' ? s.trim() : ''; };
 
     let merged = cfg;
-    if (!hitlEffectiveEnabled(cfg)) {
+    // 全局默认已关闭时，不以 localStorage 旧审查模式覆写服务器，避免「整站 off」被浏览器救活。
+    const serverDefaultOff = hitlModeNormalize(pack.defaultMode) === 'off';
+    if (!hitlEffectiveEnabled(cfg) && !serverDefaultOff) {
         const local = readHitlLocalStorageConv(conversationId);
         const localMode = local && local.mode ? hitlModeNormalize(local.mode) : 'off';
         if (localMode !== 'off') {
@@ -619,6 +623,11 @@ async function syncHitlConfigFromServer(conversationId) {
                 console.warn('HITL 会话配置同步到服务器失败（将仅保留本地 UI）:', err);
             });
         }
+    } else if (!hitlEffectiveEnabled(cfg) && serverDefaultOff) {
+        merged = Object.assign({}, cfg, {
+            enabled: false,
+            mode: 'off'
+        });
     }
     if (shouldMigrateLegacyHitlTimeout(conversationId, merged.timeoutSeconds)) {
         merged = Object.assign({}, merged, { timeoutSeconds: 300 });
@@ -764,10 +773,14 @@ function renderHitlPendingList(items) {
     const list = Array.isArray(items) ? items : [];
     if (!list.length) return '';
     return list.map(function (item) {
+            const mode = String(item.mode || '').trim().toLowerCase();
+            // scope_extension 走獨立卡片（4 種決策 + 條件欄位 + 目標宣告）。
+            if (typeof window.scopeExtIsMode === 'function' && window.scopeExtIsMode(mode)) {
+                return window.renderScopeExtensionPendingItem(item);
+            }
             const payloadObj = hitlParsePayloadObject(item.payload || '');
             const payload = String(item.payload || '');
             const contextHtml = hitlRenderContextBlocks(payloadObj);
-            const mode = String(item.mode || '').trim().toLowerCase();
             const allowEdit = mode === 'review_edit';
             var escId = escapeHtml(String(item.id || ''));
             var qId = JSON.stringify(String(item.id || '')).replace(/"/g, '&quot;');
@@ -974,12 +987,28 @@ async function submitHitlDecision(interruptId, decision, conversationIdOpt) {
     return submitHitlDecisionWithPayload(interruptId, decision, comment, editedArguments, convFollow);
 }
 
-async function submitHitlDecisionWithPayload(interruptId, decision, comment, editedArguments, conversationIdForFollow) {
+async function submitHitlDecisionWithPayload(interruptId, decision, comment, editedArguments, conversationIdForFollow, scopeOptions) {
+    const body = {
+        interruptId: interruptId,
+        decision: decision,
+        comment: comment,
+        editedArguments: editedArguments
+    };
+    // scope_extension 專用：附條件授權欄位與操作者宣告的目標清單。
+    // 其他模式不帶這兩個欄位，既有呼叫端行為完全不變。
+    if (scopeOptions && typeof scopeOptions === 'object') {
+        if (scopeOptions.scopeConditions && typeof scopeOptions.scopeConditions === 'object') {
+            body.scopeConditions = scopeOptions.scopeConditions;
+        }
+        if (Array.isArray(scopeOptions.scopeTargets) && scopeOptions.scopeTargets.length > 0) {
+            body.scopeTargets = scopeOptions.scopeTargets;
+        }
+    }
     const resp = await hitlApiFetch('/api/hitl/decision', {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ interruptId: interruptId, decision: decision, comment: comment, editedArguments: editedArguments })
+        body: JSON.stringify(body)
     });
     if (!resp.ok) {
         const errText = await readHitlApiError(resp);

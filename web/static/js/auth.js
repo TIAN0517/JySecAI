@@ -1,4 +1,4 @@
-const AUTH_STORAGE_KEY = 'cyberstrike-auth';
+const AUTH_STORAGE_KEY = 'jysec-auth';
 let authToken = null;
 let authTokenExpiry = null;
 let authUser = null;
@@ -101,6 +101,11 @@ function showLoginOverlay(message = '') {
         return;
     }
     openAppModal('login-overlay', { focus: false });
+    // 未登入時把整個應用內容收起來：登入閘門變成「全螢幕 + 只有 3D 背景與說明」，
+    // 不會再出現儀表板跟登入卡疊在一起的觀感，也不會在未認證狀態渲染受保護內容。
+    if (document.body) {
+        document.body.classList.add('auth-gate-open');
+    }
     if (errorBox) {
         if (message) {
             errorBox.textContent = message;
@@ -125,6 +130,9 @@ function hideLoginOverlay() {
     const usernameInput = document.getElementById('login-username');
     const passwordInput = document.getElementById('login-password');
     closeAppModal('login-overlay');
+    if (document.body) {
+        document.body.classList.remove('auth-gate-open');
+    }
     if (errorBox) {
         errorBox.textContent = '';
         errorBox.style.display = 'none';
@@ -175,6 +183,73 @@ function handleUnauthorized({ message = null, silent = false } = {}) {
     return false;
 }
 
+// sessionRecheckPromise 是「這次 401 到底是 session 真的死了，還是只有單一端點出狀況」
+// 的確認動作，避免同一時間多個請求各打一次 /api/auth/validate。
+let sessionRecheckPromise = null;
+
+// isAuthValidateEndpoint 判斷這次請求是不是「驗證 session 本身」的那支。
+// 驗證端點自己回 401 就是 session 真的沒了，不需要再問一次。
+function isAuthValidateEndpoint(url) {
+    return /\/api\/auth\/validate(\?|#|$)/.test(String(url || ''));
+}
+
+// confirmSessionAlive 用 /api/auth/validate 確認 session 是否還有效。
+//
+// 為什麼需要：單一 API 回 401 並不代表整個 session 失效 —— 可能是那個端點自己的
+// 權限問題、代理快取、或跨站請求丟了標頭。舊版把任何 401 都當成「session 過期」，
+// 直接把 localStorage 裡的 token 清掉；下一次按重新整理就因為沒有 token 而跳登入閘，
+// 伺服器端的 session 其實還活著。這就是「按重新整理都會跳登入出來」的成因。
+async function confirmSessionAlive() {
+    if (!authToken) {
+        return false;
+    }
+    if (!sessionRecheckPromise) {
+        sessionRecheckPromise = (async () => {
+            try {
+                const res = await fetch('/api/auth/validate', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${authToken}` },
+                    credentials: 'same-origin',
+                });
+                return res.ok;
+            } catch (error) {
+                return false;
+            } finally {
+                sessionRecheckPromise = null;
+            }
+        })();
+    }
+    return sessionRecheckPromise;
+}
+
+async function downloadAuthenticated(path, fallbackName) {
+    const response = await apiFetch(path);
+    if (!response.ok) {
+        const downloadFailed = authT('auth.downloadFailed', '下載失敗');
+        let message = downloadFailed;
+        try {
+            const payload = await response.json();
+            message = payload.message || payload.error || message;
+        } catch (error) {
+            message = downloadFailed;
+        }
+        throw new Error(typeof message === 'string' ? message : downloadFailed);
+    }
+    const blob = await response.blob();
+    const disposition = response.headers.get('Content-Disposition') || '';
+    const match = /filename="([^"]+)"/.exec(disposition);
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = (match && match[1]) || fallbackName || 'download';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    // 不要立刻 revoke：部分瀏覽器在 click 之後仍會非同步讀取 blob，
+    // 立刻撤銷會讓下載變成「失敗」。延後釋放。
+    setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+}
+
 async function apiFetch(url, options = {}) {
     await ensureAuthenticated();
     const opts = { ...options };
@@ -186,7 +261,10 @@ async function apiFetch(url, options = {}) {
 
     const response = await fetch(url, opts);
     if (response.status === 401) {
-        handleUnauthorized();
+        // 只有 session 真的失效才登出；單一端點的 401 不得清掉整個 session。
+        if (isAuthValidateEndpoint(url) || !(await confirmSessionAlive())) {
+            handleUnauthorized();
+        }
         const msg = (typeof window !== 'undefined' && typeof window.t === 'function')
             ? window.t('auth.unauthorized')
             : '未授权访问';
@@ -219,7 +297,11 @@ async function apiUploadWithProgress(url, formData, options = {}) {
         };
         xhr.onload = () => {
             if (xhr.status === 401) {
-                handleUnauthorized();
+                confirmSessionAlive().then(function (alive) {
+                    if (!alive) {
+                        handleUnauthorized();
+                    }
+                });
                 const msg = (typeof window !== 'undefined' && typeof window.t === 'function')
                     ? window.t('auth.unauthorized')
                     : '未授权访问';
@@ -378,6 +460,7 @@ const PAGE_PERMISSION_MAP = {
     workflows: 'workflow:read',
     projects: 'project:read',
     vulnerabilities: 'vulnerability:read',
+    'redirect-verify': 'vulnerability:read',
     'chat-files': 'files:read',
     webshell: 'webshell:read',
     c2: 'c2:read',
@@ -627,38 +710,6 @@ function getStatusText(status) {
     const keyMap = { pending: 'mcpDetailModal.statusPending', queued: 'mcpDetailModal.statusQueued', running: 'mcpDetailModal.statusRunning', background_running: 'timeline.backgroundRunning', completed: 'mcpDetailModal.statusCompleted', failed: 'mcpDetailModal.statusFailed', blocked: 'mcpMonitor.statusBlocked', cancelled: 'mcpDetailModal.statusCancelled', hard_timeout: 'mcpMonitor.statusHardTimeout', orphaned: 'mcpMonitor.statusOrphaned' };
     const key = keyMap[s];
     return key ? window.t(key) : status;
-}
-
-function formatDuration(ms) {
-    const seconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    
-    if (hours > 0) {
-        return `${hours}小时${minutes % 60}分钟`;
-    } else if (minutes > 0) {
-        return `${minutes}分钟${seconds % 60}秒`;
-    } else {
-        return `${seconds}秒`;
-    }
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function escapeJsString(text) {
-    return JSON.stringify(String(text == null ? '' : text));
-}
-
-function escapeAttr(text) {
-    return escapeHtml(text).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-
-function escapeJsStringAttr(text) {
-    return escapeAttr(escapeJsString(text));
 }
 
 /** @param {string} text @param {{ profile?: 'chat'|'timeline' }} [options] */

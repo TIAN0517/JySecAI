@@ -1,6 +1,7 @@
 name: "cloudmapper"
 command: "cloudmapper"
 enabled: true
+action_class: "bulk_scan"
 short_description: "AWS网络可视化和安全分析工具"
 description: |
   CloudMapper是一个AWS网络可视化和安全分析工具。
@@ -26,6 +27,8 @@ parameters:
     format: "positional"
   - name: "account"
     type: "string"
+    target: true
+    target_kind: "host"
     description: "要分析的AWS账户"
     required: false
     flag: "--account"

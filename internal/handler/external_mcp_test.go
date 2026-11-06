@@ -170,6 +170,38 @@ func TestExternalMCPHandler_AddOrUpdateExternalMCP_HTTP(t *testing.T) {
 	}
 }
 
+func TestExternalMCPHandler_AddOrUpdateExternalMCP_DefaultEnabledInManager(t *testing.T) {
+	router, handler, configPath := setupTestRouter()
+	defer cleanupTestConfig(configPath)
+
+	reqBody := AddOrUpdateExternalMCPRequest{
+		Config: config.ExternalMCPServerConfig{
+			Type: "http",
+			URL:  "http://127.0.0.1:1/mcp",
+		},
+	}
+	body, err := json.Marshal(reqBody)
+	if err != nil {
+		t.Fatalf("序列化请求失败: %v", err)
+	}
+	req := httptest.NewRequest("PUT", "/api/external-mcp/default-enabled", bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("期望状态码200，实际%d: %s", w.Code, w.Body.String())
+	}
+
+	runtimeCfg, ok := handler.manager.GetConfigs()["default-enabled"]
+	if !ok {
+		t.Fatal("manager 中缺少新增的 MCP 配置")
+	}
+	if !runtimeCfg.ExternalMCPEnable {
+		t.Fatal("官方 MCP 配置省略 disabled 时应在 manager 中默认启用")
+	}
+}
+
 func TestExternalMCPHandler_AddOrUpdateExternalMCP_InvalidConfig(t *testing.T) {
 	router, _, configPath := setupTestRouter()
 	defer cleanupTestConfig(configPath)

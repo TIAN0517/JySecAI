@@ -38,12 +38,15 @@ func SafeRelPath(root, rel string) (string, error) {
 
 // ListPackageFiles lists files under a skill directory.
 func ListPackageFiles(skillsRoot, skillID string) ([]PackageFileInfo, error) {
-	root := SkillDir(skillsRoot, skillID)
+	root, err := SkillDir(skillsRoot, skillID)
+	if err != nil {
+		return nil, err
+	}
 	if _, err := ResolveSKILLPath(root); err != nil {
 		return nil, fmt.Errorf("skill %q: %w", skillID, err)
 	}
 	var out []PackageFileInfo
-	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
+	err = filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -89,7 +92,15 @@ func ReadPackageFile(skillsRoot, skillID, relPath string, maxBytes int64) ([]byt
 	if maxBytes <= 0 {
 		maxBytes = defaultMaxRead
 	}
-	root := SkillDir(skillsRoot, skillID)
+	root, err := SkillDir(skillsRoot, skillID)
+	if err != nil {
+		return nil, err
+	}
+	// 與 ListPackageFiles / WritePackageFile 對齊：只有真正存在的 skill 套件
+	// 才可讀取。少了這道，讀取路徑就是唯一一條不要求 SKILL.md 的路徑。
+	if _, err := ResolveSKILLPath(root); err != nil {
+		return nil, fmt.Errorf("skill %q: %w", skillID, err)
+	}
 	abs, err := SafeRelPath(root, relPath)
 	if err != nil {
 		return nil, err
@@ -109,7 +120,10 @@ func ReadPackageFile(skillsRoot, skillID, relPath string, maxBytes int64) ([]byt
 
 // WritePackageFile writes a file inside the skill package.
 func WritePackageFile(skillsRoot, skillID, relPath string, content []byte) error {
-	root := SkillDir(skillsRoot, skillID)
+	root, err := SkillDir(skillsRoot, skillID)
+	if err != nil {
+		return err
+	}
 	if _, err := ResolveSKILLPath(root); err != nil {
 		return fmt.Errorf("skill %q: %w", skillID, err)
 	}
@@ -138,7 +152,11 @@ func readFileHead(path string, max int64) ([]byte, error) {
 }
 
 func listScripts(skillsRoot, skillID string) ([]SkillScriptInfo, error) {
-	root := filepath.Join(SkillDir(skillsRoot, skillID), "scripts")
+	skillRoot, err := SkillDir(skillsRoot, skillID)
+	if err != nil {
+		return nil, err
+	}
+	root := filepath.Join(skillRoot, "scripts")
 	st, err := os.Stat(root)
 	if err != nil {
 		if os.IsNotExist(err) {

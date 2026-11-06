@@ -8,7 +8,7 @@ import (
 
 // WebshellSkillHintDefault 对话页 / Eino 单代理共用的 Skills 说明，放在 webshell 上下文末尾，
 // 供 AI 选择 skill 加载入口时参考。
-const WebshellSkillHintDefault = "Skills 包请使用「多代理 / Eino DeepAgent」会话中的内置 `skill` 工具渐进加载。"
+const WebshellSkillHintDefault = "Skills 包请使用「Jy 红队多代理 / Deep」会话中的内置 `skill` 工具渐进加载。"
 
 // WebshellSkillHintMultiAgent 多代理 / Eino 多代理准备阶段使用的 Skills 说明
 const WebshellSkillHintMultiAgent = "Skills 包请使用 Eino 多代理内置 `skill` 工具。"

@@ -32,6 +32,7 @@ JySecAI documentation is organized by user journey. Start with deployment, then 
 - [视觉分析](zh-CN/VISION.md)
 - [WebShell 管理](zh-CN/webshell.md)
 - [C2 使用说明](zh-CN/c2.md)
+- [受控跳转（回连）端点](zh-CN/redirect-endpoints.md)
 
 ### 开发与发布
 
@@ -70,6 +71,7 @@ JySecAI documentation is organized by user journey. Start with deployment, then 
 - [Vision Analysis](en-US/VISION.md)
 - [WebShell Management](en-US/webshell.md)
 - [C2 Guide](en-US/c2.md)
+- [Controlled Redirect Endpoints](en-US/redirect-endpoints.md)
 
 ### Development and release
 

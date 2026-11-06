@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -10,14 +11,19 @@ import (
 	"time"
 
 	"crypto/rand"
+	"strconv"
+
+	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
 	"go.uber.org/zap"
 )
 
 const (
-	// SQLite 在 WAL 模式下建议使用较保守的连接数，降低长读快照导致 checkpoint 饥饿的概率。
-	sqliteMaxOpenConns = 25
-	sqliteMaxIdleConns = 5
+	// WAL 允許並行讀，但同一時間只有一個寫者。連線池過大時，並行寫入會在
+	// DEFERRED 交易升級寫鎖時立刻失敗，busy_timeout 來不及生效。
+	sqliteMaxOpenConns  = 8
+	sqliteMaxIdleConns  = 4
+	sqliteBusyTimeoutMS = 30000
 	// 以页为单位的自动 checkpoint 触发阈值（默认 1000 页，约 4MB @ 4KB/page）。
 	sqliteWALAutoCheckpointPages = 1000
 	// 控制 WAL 目标上限，避免异常场景持续膨胀（256MB）。
@@ -25,6 +31,11 @@ const (
 	// 定时执行 PASSIVE checkpoint，平滑推进 WAL 回收。
 	sqlitePassiveCheckpointInterval = 300 * time.Second
 )
+
+// sqliteOpenDSN 在 Begin 時就預留寫鎖。DEFERRED 升級可能不走 busy_timeout 而直接失敗。
+func sqliteOpenDSN(path string) string {
+	return fmt.Sprintf("%s?_journal_mode=WAL&_foreign_keys=1&_busy_timeout=%d&_synchronous=NORMAL&_txlock=immediate", path, sqliteBusyTimeoutMS)
+}
 
 // configureDBPool 设置 SQLite 连接池参数，提升并发稳定性
 func configureDBPool(db *sql.DB) {
@@ -59,7 +70,28 @@ type DB struct {
 	checkpointDone           chan struct{}
 	closeOnce                sync.Once
 	closeErr                 error
-	vulnerabilityCreatedHook func(*Vulnerability)
+	vulnerabilityWriteMu     sync.Mutex
+	// vulnerabilityCreatedHooks 漏洞寫入後的非同步通知。
+	//
+	// 原本是單一 func，外部接收端要掛上來時會把既有的通知擠掉。
+	// 改成 slice：多個訂閱者可以並存，誰掛誰的，都不影響彼此。
+	vulnerabilityCreatedHooks []func(*Vulnerability)
+	// vulnerabilityPersistedHooks 漏洞記錄「寫入完成後」的非同步通知。
+	//
+	// 為什麼要跟 vulnerabilityCreatedHooks 分開：
+	//   - vulnerabilityCreatedHooks 在呼叫層觸發（REST handler / MCP 工具），
+	//     因為機器人提醒要在資源權限設定完成後才送。它是「業務事件」。
+	//   - vulnerabilityPersistedHooks 在資料庫層觸發，覆蓋每一條寫入路徑。
+	//     外部接收端要的是「記錄落地了」，漏一條就等於漏一份收割成果 ——
+	//     而漏掉的路徑正是沒有人測過的那種（例如 security_ops 的自動建立）。
+	//
+	// 兩份清單各自為政，訂閱者想接哪個接哪個，互不影響。
+	vulnerabilityPersistedHooks []func(*Vulnerability)
+	// projectFactUpsertedHooks 專案事實寫入後的非同步通知。
+	// 專案事實是「利用後數據」的主要載體（黑板 body 記完整攻擊鏈與取到的資料），
+	// 所以外部接收端需要這條鉤子。
+	projectFactUpsertedHooks []func(*ProjectFact)
+	credentialCipher         *credentialCipher
 }
 
 // startPassiveCheckpointLoop 启动后台 PASSIVE checkpoint 循环。
@@ -123,7 +155,11 @@ func (db *DB) runPassiveCheckpoint(trigger string) {
 
 // NewDB 创建数据库连接
 func NewDB(dbPath string, logger *zap.Logger) (*DB, error) {
-	db, err := sql.Open("sqlite3", dbPath+"?_journal_mode=WAL&_foreign_keys=1&_busy_timeout=5000&_synchronous=NORMAL")
+	credentialCipher, err := newCredentialCipher(dbPath)
+	if err != nil {
+		return nil, fmt.Errorf("初始化凭证加密失败: %w", err)
+	}
+	db, err := sql.Open("sqlite3", sqliteOpenDSN(dbPath))
 	if err != nil {
 		return nil, fmt.Errorf("打开数据库失败: %w", err)
 	}
@@ -140,8 +176,9 @@ func NewDB(dbPath string, logger *zap.Logger) (*DB, error) {
 	}
 
 	database := &DB{
-		DB:     db,
-		logger: logger,
+		DB:               db,
+		logger:           logger,
+		credentialCipher: credentialCipher,
 	}
 	// Keep conversation-scoped artifacts near database files, so cleanup can follow conversation lifecycle.
 	baseDir := filepath.Join(filepath.Dir(dbPath), "conversation_artifacts")
@@ -160,9 +197,19 @@ func NewDB(dbPath string, logger *zap.Logger) (*DB, error) {
 		_ = db.Close()
 		return nil, fmt.Errorf("迁移历史安全拦截记录失败: %w", err)
 	}
+	if err := database.migrateCredentialEncryption(); err != nil {
+		_ = db.Close()
+		return nil, fmt.Errorf("迁移数据库凭证加密失败: %w", err)
+	}
 	database.startPassiveCheckpointLoop("conversations")
 
 	return database, nil
+}
+
+// WorkspaceRootDir returns the agent workspace root directory
+// (agent.workspace_root_dir; empty means the built-in tmp/workspace default).
+func (db *DB) WorkspaceRootDir() string {
+	return db.einoWorkspaceRootDir
 }
 
 // SetEinoConversationDirs configures best-effort filesystem cleanup on DeleteConversation.
@@ -345,6 +392,14 @@ func (db *DB) initTables() error {
 		FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE
 	);`
 
+	// 机器人长轮询游标表（记录各平台已消费到的 update_id，避免重启后重放历史消息）
+	createRobotStreamOffsetsTable := `
+	CREATE TABLE IF NOT EXISTS robot_stream_offsets (
+		platform TEXT PRIMARY KEY,
+		update_offset INTEGER NOT NULL DEFAULT 0,
+		updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);`
+
 	// 创建项目表
 	createProjectsTable := `
 	CREATE TABLE IF NOT EXISTS projects (
@@ -405,7 +460,10 @@ func (db *DB) initTables() error {
 		description TEXT,
 		severity TEXT NOT NULL,
 		status TEXT NOT NULL DEFAULT 'open',
+		confidence INTEGER NOT NULL DEFAULT 0,
 		vulnerability_type TEXT,
+		vulnerability_type_code TEXT,
+		vulnerability_type_raw TEXT,
 		target TEXT,
 		preconditions TEXT,
 		reproduction_steps TEXT,
@@ -417,6 +475,27 @@ func (db *DB) initTables() error {
 		updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		project_id TEXT,
 		FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE SET NULL
+	);`
+
+	// 漏洞分流執行紀錄。一次執行一列，proposal_json 存 AI 的完整建議。
+	// 分流本身不動 vulnerabilities.status，套用是另一次明確的動作。
+	createVulnerabilityTriageRunsTable := `
+	CREATE TABLE IF NOT EXISTS vulnerability_triage_runs (
+		id TEXT PRIMARY KEY,
+		scope_label TEXT NOT NULL DEFAULT '',
+		scope_json TEXT NOT NULL DEFAULT '',
+		examined INTEGER NOT NULL DEFAULT 0,
+		group_count INTEGER NOT NULL DEFAULT 0,
+		merged_count INTEGER NOT NULL DEFAULT 0,
+		headline TEXT NOT NULL DEFAULT '',
+		summary TEXT NOT NULL DEFAULT '',
+		proposal_json TEXT NOT NULL DEFAULT '{}',
+		model TEXT NOT NULL DEFAULT '',
+		created_by TEXT NOT NULL DEFAULT '',
+		created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		applied_at DATETIME,
+		applied_by TEXT NOT NULL DEFAULT '',
+		applied_count INTEGER NOT NULL DEFAULT 0
 	);`
 
 	createAssetsTable := `
@@ -666,6 +745,9 @@ func (db *DB) initTables() error {
 		domain_only   INTEGER DEFAULT 0,
 		dns_exfil_domain TEXT,
 		script        TEXT DEFAULT '',
+		one_time     INTEGER NOT NULL DEFAULT 0,
+		expires_at   DATETIME,
+		consumed_at  DATETIME,
 		created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
 		updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
 		created_by    TEXT,
@@ -787,6 +869,8 @@ func (db *DB) initTables() error {
 	CREATE INDEX IF NOT EXISTS idx_vulnerabilities_task_tag ON vulnerabilities(task_tag);
 	CREATE INDEX IF NOT EXISTS idx_vulnerabilities_severity ON vulnerabilities(severity);
 	CREATE INDEX IF NOT EXISTS idx_vulnerabilities_status ON vulnerabilities(status);
+	CREATE INDEX IF NOT EXISTS idx_vulnerabilities_project_status ON vulnerabilities(project_id, status);
+	CREATE INDEX IF NOT EXISTS idx_vulnerabilities_conversation_status ON vulnerabilities(conversation_id, status);
 	CREATE INDEX IF NOT EXISTS idx_vulnerabilities_created_at ON vulnerabilities(created_at);
 	CREATE INDEX IF NOT EXISTS idx_assets_last_seen ON assets(last_seen_at);
 	CREATE INDEX IF NOT EXISTS idx_assets_last_scan ON assets(last_scan_at);
@@ -851,6 +935,12 @@ func (db *DB) initTables() error {
 		return fmt.Errorf("创建conversations表失败: %w", err)
 	}
 
+	// scope registry（授權狀態機的權威來源）：scope_targets / scope_grants / scope_denials
+	// 另開一個檔案（scope.go）維護，表結構與 internal/scope 共用同一份契約。
+	if err := EnsureScopeSchema(db.DB); err != nil {
+		return fmt.Errorf("初始化scope registry表失败: %w", err)
+	}
+
 	if _, err := db.Exec(createMessagesTable); err != nil {
 		return fmt.Errorf("创建messages表失败: %w", err)
 	}
@@ -893,6 +983,9 @@ func (db *DB) initTables() error {
 	if err := db.migrateRobotUserSessionsTable(); err != nil {
 		return fmt.Errorf("迁移robot_user_sessions表失败: %w", err)
 	}
+	if _, err := db.Exec(createRobotStreamOffsetsTable); err != nil {
+		return fmt.Errorf("创建robot_stream_offsets表失败: %w", err)
+	}
 
 	if _, err := db.Exec(createProjectsTable); err != nil {
 		return fmt.Errorf("创建projects表失败: %w", err)
@@ -909,6 +1002,9 @@ func (db *DB) initTables() error {
 	if _, err := db.Exec(createVulnerabilitiesTable); err != nil {
 		return fmt.Errorf("创建vulnerabilities表失败: %w", err)
 	}
+	if _, err := db.Exec(createVulnerabilityTriageRunsTable); err != nil {
+		return fmt.Errorf("创建vulnerability_triage_runs表失败: %w", err)
+	}
 	if _, err := db.Exec(createAssetsTable); err != nil {
 		return fmt.Errorf("创建assets表失败: %w", err)
 	}
@@ -922,6 +1018,10 @@ func (db *DB) initTables() error {
 
 	if _, err := db.Exec(createBatchTasksTable); err != nil {
 		return fmt.Errorf("创建batch_tasks表失败: %w", err)
+	}
+
+	if err := db.initRedirectVerifyTables(); err != nil {
+		return err
 	}
 
 	if _, err := db.Exec(createWebshellConnectionsTable); err != nil {
@@ -972,6 +1072,10 @@ func (db *DB) initTables() error {
 		if _, err := db.Exec(ddl); err != nil {
 			return fmt.Errorf("创建%s表失败: %w", tableName, err)
 		}
+	}
+
+	if _, err := db.Exec(createSecurityOpsRunsTable); err != nil {
+		return fmt.Errorf("创建security_ops_runs表失败: %w", err)
 	}
 
 	// 为已有表添加新字段（如果不存在）- 必须在创建索引之前
@@ -1512,7 +1616,10 @@ func (db *DB) migrateVulnerabilitiesConversationFK() error {
 		description TEXT,
 		severity TEXT NOT NULL,
 		status TEXT NOT NULL DEFAULT 'open',
+		confidence INTEGER NOT NULL DEFAULT 0,
 		vulnerability_type TEXT,
+		vulnerability_type_code TEXT,
+		vulnerability_type_raw TEXT,
 		target TEXT,
 		preconditions TEXT,
 		reproduction_steps TEXT,
@@ -1546,6 +1653,33 @@ func (db *DB) migrateVulnerabilitiesConversationFK() error {
 	if _, err := tx.Exec(copyRows); err != nil {
 		return fmt.Errorf("复制 vulnerabilities 数据失败: %w", err)
 	}
+
+	// 這張表是整張重建的，所以後來新增的欄位必須在這裡一起搬過去 ——
+	// 否則 migrateVulnerabilitiesTable 剛加的 confidence 會被無聲洗掉，
+	// 表現成「遷移有跑過、欄位卻不存在」，而且只在舊資料庫上發生，新庫看不出來。
+	// 受控分類欄位（vulnerability_type_code / vulnerability_type_raw）也一樣：
+	// 漏搬等於把已經算好的分類結果清空。
+	// 來源表可能還沒有這些欄位，用 pragma 決定要不要搬，兩種情況都安全。
+	for _, col := range []struct {
+		name     string
+		fallback string
+	}{
+		{name: "confidence", fallback: "0"},
+		{name: "vulnerability_type_code", fallback: "''"},
+		{name: "vulnerability_type_raw", fallback: "''"},
+	} {
+		var count int
+		if err := tx.QueryRow("SELECT COUNT(*) FROM pragma_table_info('vulnerabilities') WHERE name=?", col.name).Scan(&count); err != nil || count == 0 {
+			continue
+		}
+		stmt := fmt.Sprintf(
+			`UPDATE vulnerabilities_new SET %s = COALESCE((SELECT v.%s FROM vulnerabilities v WHERE v.id = vulnerabilities_new.id), %s)`,
+			col.name, col.name, col.fallback,
+		)
+		if _, err := tx.Exec(stmt); err != nil {
+			return fmt.Errorf("搬迁 vulnerabilities.%s 失败: %w", col.name, err)
+		}
+	}
 	if _, err := tx.Exec(`DROP TABLE vulnerabilities`); err != nil {
 		return fmt.Errorf("删除旧 vulnerabilities 表失败: %w", err)
 	}
@@ -1559,6 +1693,8 @@ func (db *DB) migrateVulnerabilitiesConversationFK() error {
 		`CREATE INDEX IF NOT EXISTS idx_vulnerabilities_task_tag ON vulnerabilities(task_tag)`,
 		`CREATE INDEX IF NOT EXISTS idx_vulnerabilities_severity ON vulnerabilities(severity)`,
 		`CREATE INDEX IF NOT EXISTS idx_vulnerabilities_status ON vulnerabilities(status)`,
+		`CREATE INDEX IF NOT EXISTS idx_vulnerabilities_project_status ON vulnerabilities(project_id, status)`,
+		`CREATE INDEX IF NOT EXISTS idx_vulnerabilities_conversation_status ON vulnerabilities(conversation_id, status)`,
 		`CREATE INDEX IF NOT EXISTS idx_vulnerabilities_created_at ON vulnerabilities(created_at)`,
 		`CREATE INDEX IF NOT EXISTS idx_vulnerabilities_project_id ON vulnerabilities(project_id)`,
 	}
@@ -1615,6 +1751,14 @@ func (db *DB) migrateVulnerabilitiesTable() error {
 		{name: "reproduction_steps", stmt: "ALTER TABLE vulnerabilities ADD COLUMN reproduction_steps TEXT"},
 		{name: "evidence", stmt: "ALTER TABLE vulnerabilities ADD COLUMN evidence TEXT"},
 		{name: "retest_notes", stmt: "ALTER TABLE vulnerabilities ADD COLUMN retest_notes TEXT"},
+		// 證據可信度（0-100）。既有資料一律回填 0 = 未設定。
+		// 刻意不回填任何預設信心值：0 讓 UI 與報告能誠實顯示「未評分」，
+		// 而不是讓幾百筆沒有 confidence 來源的舊紀錄看起來像通過了閘門。
+		{name: "confidence", stmt: "ALTER TABLE vulnerabilities ADD COLUMN confidence INTEGER NOT NULL DEFAULT 0"},
+		// 受控漏洞分類：type_code 是機器可讀代碼（例：sql-injection），
+		// type_raw 保留模型原始填入的型別文字，方便回溯被正規化成什麼。
+		{name: "vulnerability_type_code", stmt: "ALTER TABLE vulnerabilities ADD COLUMN vulnerability_type_code TEXT"},
+		{name: "vulnerability_type_raw", stmt: "ALTER TABLE vulnerabilities ADD COLUMN vulnerability_type_raw TEXT"},
 	}
 
 	for _, col := range columns {
@@ -1676,7 +1820,7 @@ func (db *DB) migrateC2ListenersTable() error {
 
 // NewKnowledgeDB 创建知识库数据库连接（只包含知识库相关的表）
 func NewKnowledgeDB(dbPath string, logger *zap.Logger) (*DB, error) {
-	sqlDB, err := sql.Open("sqlite3", dbPath+"?_journal_mode=WAL&_foreign_keys=1&_busy_timeout=5000&_synchronous=NORMAL")
+	sqlDB, err := sql.Open("sqlite3", sqliteOpenDSN(dbPath))
 	if err != nil {
 		return nil, fmt.Errorf("打开知识库数据库失败: %w", err)
 	}
@@ -1816,7 +1960,7 @@ func (db *DB) migrateKnowledgeEmbeddingsColumns() error {
 
 // XssPayload represents a stored XSS payload used for cookie harvesting.
 type XssPayload struct {
-	ID             int64
+	ID             string
 	Token          string
 	Name           string
 	Type           string
@@ -1828,6 +1972,9 @@ type XssPayload struct {
 	Domain         string
 	DomainOnly     int
 	DNSExfilDomain string
+	OneTime        int
+	ExpiresAt      *time.Time
+	ConsumedAt     *time.Time
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	CreatedBy      string
@@ -1838,7 +1985,7 @@ type XssPayload struct {
 // XssCapture represents a captured cookie / data from an XSS hit.
 type XssCapture struct {
 	ID        int64
-	PayloadID int64
+	PayloadID string
 	Token     string
 	Cookie    string
 	URL       string
@@ -1849,8 +1996,20 @@ type XssCapture struct {
 	CreatedAt time.Time
 }
 
+// xssPayloadIDsAreText reports whether an existing table uses text IDs.
+// Production rows are UUIDs. A fresh database still uses INTEGER AUTOINCREMENT.
+func (db *DB) xssPayloadIDsAreText() bool {
+	var typ string
+	err := db.QueryRow(`SELECT type FROM pragma_table_info('xss_payloads') WHERE name = 'id'`).Scan(&typ)
+	if err != nil {
+		return false
+	}
+	upper := strings.ToUpper(typ)
+	return strings.Contains(upper, "TEXT") || strings.Contains(upper, "CHAR")
+}
+
 // CreateXssPayload stores a new XSS payload and returns its database ID.
-func (db *DB) CreateXssPayload(p *XssPayload) (int64, error) {
+func (db *DB) CreateXssPayload(p *XssPayload) (string, error) {
 	var projectID interface{} = nil
 	if p.ProjectID != "" {
 		projectID = p.ProjectID
@@ -1859,19 +2018,36 @@ func (db *DB) CreateXssPayload(p *XssPayload) (int64, error) {
 	if p.OwnerUserID != "" {
 		ownerUserID = p.OwnerUserID
 	}
+	if db.xssPayloadIDsAreText() {
+		id := uuid.NewString()
+		_, err := db.Exec(
+			`INSERT INTO xss_payloads (id, token, name, type, payload, config, project_id, enabled, description, domain, domain_only, dns_exfil_domain, script, one_time, expires_at, created_by, owner_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', ?, ?, ?, ?)`,
+			id, p.Token, p.Name, p.Type, p.Payload, p.Config, projectID, p.Enabled, p.Description, p.Domain, p.DomainOnly, p.DNSExfilDomain, p.OneTime, p.ExpiresAt, p.CreatedBy, ownerUserID,
+		)
+		if err != nil {
+			return "", err
+		}
+		p.ID = id
+		return id, nil
+	}
 	result, err := db.Exec(
-		`INSERT INTO xss_payloads (token, name, type, payload, config, project_id, enabled, description, domain, domain_only, dns_exfil_domain, script, created_by, owner_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', ?, ?)`,
-		p.Token, p.Name, p.Type, p.Payload, p.Config, projectID, p.Enabled, p.Description, p.Domain, p.DomainOnly, p.DNSExfilDomain, p.CreatedBy, ownerUserID,
+		`INSERT INTO xss_payloads (token, name, type, payload, config, project_id, enabled, description, domain, domain_only, dns_exfil_domain, script, one_time, expires_at, created_by, owner_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', ?, ?, ?, ?)`,
+		p.Token, p.Name, p.Type, p.Payload, p.Config, projectID, p.Enabled, p.Description, p.Domain, p.DomainOnly, p.DNSExfilDomain, p.OneTime, p.ExpiresAt, p.CreatedBy, ownerUserID,
 	)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
-	return result.LastInsertId()
+	n, err := result.LastInsertId()
+	if err != nil {
+		return "", err
+	}
+	p.ID = strconv.FormatInt(n, 10)
+	return p.ID, nil
 }
 
 // ListXssPayloads returns all XSS payloads, most recent first, with capture counts.
 func (db *DB) ListXssPayloads() ([]*XssPayload, error) {
-	rows, err := db.Query(`SELECT p.id, p.token, COALESCE(p.name,''), COALESCE(p.type,'image'), p.payload, COALESCE(p.config,'{}'), COALESCE(p.project_id,''), p.enabled, COALESCE(p.description,''), COALESCE(p.domain,''), COALESCE(p.domain_only,0), COALESCE(p.dns_exfil_domain,''), p.created_at, p.updated_at, COALESCE(p.created_by,''), COUNT(c.id) as capture_count FROM xss_payloads p LEFT JOIN xss_captures c ON c.payload_id = p.id GROUP BY p.id ORDER BY p.created_at DESC`)
+	rows, err := db.Query(`SELECT p.id, COALESCE(p.token,''), COALESCE(p.name,''), COALESCE(p.type,'image'), COALESCE(p.payload,''), COALESCE(p.config,'{}'), COALESCE(p.project_id,''), COALESCE(p.enabled,0), COALESCE(p.description,''), COALESCE(p.domain,''), COALESCE(p.domain_only,0), COALESCE(p.dns_exfil_domain,''), COALESCE(p.one_time,0), p.expires_at, p.consumed_at, p.created_at, p.updated_at, COALESCE(p.created_by,''), COUNT(c.id) as capture_count FROM xss_payloads p LEFT JOIN xss_captures c ON c.payload_id = p.id GROUP BY p.id ORDER BY p.created_at DESC`)
 	if err != nil {
 		return nil, err
 	}
@@ -1883,8 +2059,10 @@ func (db *DB) ListXssPayloads() ([]*XssPayload, error) {
 		var configVal []byte
 		var nameVal, typeVal, projVal, descVal, domainVal, createdByVal, dnsExfilVal string
 		var domainOnlyVal, enabledVal int
+		var oneTimeVal int
+		var expiresAt, consumedAt sql.NullTime
 		var createdAt, updatedAt time.Time
-		if err := rows.Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &dnsExfilVal, &createdAt, &updatedAt, &createdByVal, &p.CaptureCount); err != nil {
+		if err := rows.Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &dnsExfilVal, &oneTimeVal, &expiresAt, &consumedAt, &createdAt, &updatedAt, &createdByVal, &p.CaptureCount); err != nil {
 			return nil, err
 		}
 		p.Name = nameVal
@@ -1896,6 +2074,13 @@ func (db *DB) ListXssPayloads() ([]*XssPayload, error) {
 		p.Domain = domainVal
 		p.DomainOnly = domainOnlyVal
 		p.DNSExfilDomain = dnsExfilVal
+		p.OneTime = oneTimeVal
+		if expiresAt.Valid {
+			p.ExpiresAt = &expiresAt.Time
+		}
+		if consumedAt.Valid {
+			p.ConsumedAt = &consumedAt.Time
+		}
 		p.CreatedAt = createdAt
 		p.UpdatedAt = updatedAt
 		p.CreatedBy = createdByVal
@@ -1904,18 +2089,20 @@ func (db *DB) ListXssPayloads() ([]*XssPayload, error) {
 	return payloads, rows.Err()
 }
 
-// GetXssPayload retrieves a payload by its numeric ID.
-func (db *DB) GetXssPayload(id int64) (*XssPayload, error) {
+// GetXssPayload retrieves a payload by its ID. Production IDs are UUID text.
+func (db *DB) GetXssPayload(id string) (*XssPayload, error) {
 	var p XssPayload
 	var nameVal, typeVal, projVal, descVal, domainVal, createdByVal, dnsExfilVal string
 	var domainOnlyVal, enabledVal int
+	var oneTimeVal int
+	var expiresAt, consumedAt sql.NullTime
 	var configVal []byte
 	var createdAt, updatedAt time.Time
 	var captureCount int
 	err := db.QueryRow(
-		`SELECT p.id, p.token, COALESCE(p.name,''), COALESCE(p.type,'image'), p.payload, COALESCE(p.config,'{}'), COALESCE(p.project_id,''), p.enabled, COALESCE(p.description,''), COALESCE(p.domain,''), COALESCE(p.domain_only,0), COALESCE(p.dns_exfil_domain,''), p.created_at, p.updated_at, COALESCE(p.created_by,''), COUNT(c.id) as capture_count FROM xss_payloads p LEFT JOIN xss_captures c ON c.payload_id = p.id WHERE p.id = ? GROUP BY p.id`,
+		`SELECT p.id, COALESCE(p.token,''), COALESCE(p.name,''), COALESCE(p.type,'image'), COALESCE(p.payload,''), COALESCE(p.config,'{}'), COALESCE(p.project_id,''), COALESCE(p.enabled,0), COALESCE(p.description,''), COALESCE(p.domain,''), COALESCE(p.domain_only,0), COALESCE(p.dns_exfil_domain,''), COALESCE(p.one_time,0), p.expires_at, p.consumed_at, p.created_at, p.updated_at, COALESCE(p.created_by,''), COUNT(c.id) as capture_count FROM xss_payloads p LEFT JOIN xss_captures c ON c.payload_id = p.id WHERE p.id = ? GROUP BY p.id`,
 		id,
-	).Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &dnsExfilVal, &createdAt, &updatedAt, &createdByVal, &captureCount)
+	).Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &dnsExfilVal, &oneTimeVal, &expiresAt, &consumedAt, &createdAt, &updatedAt, &createdByVal, &captureCount)
 	if err != nil {
 		return nil, err
 	}
@@ -1928,6 +2115,13 @@ func (db *DB) GetXssPayload(id int64) (*XssPayload, error) {
 	p.Domain = domainVal
 	p.DomainOnly = domainOnlyVal
 	p.DNSExfilDomain = dnsExfilVal
+	p.OneTime = oneTimeVal
+	if expiresAt.Valid {
+		p.ExpiresAt = &expiresAt.Time
+	}
+	if consumedAt.Valid {
+		p.ConsumedAt = &consumedAt.Time
+	}
 	p.CreatedAt = createdAt
 	p.UpdatedAt = updatedAt
 	p.CreatedBy = createdByVal
@@ -1940,12 +2134,14 @@ func (db *DB) GetXssPayloadByToken(token string) (*XssPayload, error) {
 	var p XssPayload
 	var nameVal, typeVal, projVal, descVal, domainVal, createdByVal, dnsExfilVal string
 	var domainOnlyVal, enabledVal int
+	var oneTimeVal int
+	var expiresAt, consumedAt sql.NullTime
 	var configVal []byte
 	var createdAt, updatedAt time.Time
 	err := db.QueryRow(
-		`SELECT id, token, COALESCE(name,''), COALESCE(type,'image'), payload, COALESCE(config,'{}'), COALESCE(project_id,''), enabled, COALESCE(description,''), COALESCE(domain,''), COALESCE(domain_only,0), COALESCE(dns_exfil_domain,''), created_at, updated_at, COALESCE(created_by,'') FROM xss_payloads WHERE token = ?`,
+		`SELECT id, COALESCE(token,''), COALESCE(name,''), COALESCE(type,'image'), COALESCE(payload,''), COALESCE(config,'{}'), COALESCE(project_id,''), COALESCE(enabled,0), COALESCE(description,''), COALESCE(domain,''), COALESCE(domain_only,0), COALESCE(dns_exfil_domain,''), COALESCE(one_time,0), expires_at, consumed_at, created_at, updated_at, COALESCE(created_by,'') FROM xss_payloads WHERE token = ?`,
 		token,
-	).Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &dnsExfilVal, &createdAt, &updatedAt, &createdByVal)
+	).Scan(&p.ID, &p.Token, &nameVal, &typeVal, &p.Payload, &configVal, &projVal, &enabledVal, &descVal, &domainVal, &domainOnlyVal, &dnsExfilVal, &oneTimeVal, &expiresAt, &consumedAt, &createdAt, &updatedAt, &createdByVal)
 	if err != nil {
 		return nil, err
 	}
@@ -1958,6 +2154,13 @@ func (db *DB) GetXssPayloadByToken(token string) (*XssPayload, error) {
 	p.Domain = domainVal
 	p.DomainOnly = domainOnlyVal
 	p.DNSExfilDomain = dnsExfilVal
+	p.OneTime = oneTimeVal
+	if expiresAt.Valid {
+		p.ExpiresAt = &expiresAt.Time
+	}
+	if consumedAt.Valid {
+		p.ConsumedAt = &consumedAt.Time
+	}
 	p.CreatedAt = createdAt
 	p.UpdatedAt = updatedAt
 	p.CreatedBy = createdByVal
@@ -1965,21 +2168,61 @@ func (db *DB) GetXssPayloadByToken(token string) (*XssPayload, error) {
 }
 
 // DeleteXssPayload removes a payload and all associated captures.
-func (db *DB) DeleteXssPayload(id int64) error {
+func (db *DB) DeleteXssPayload(id string) error {
 	_, err := db.Exec(`DELETE FROM xss_payloads WHERE id = ?`, id)
 	return err
 }
 
-// CreateXssCapture stores a cookie capture from a victim and returns its ID.
-func (db *DB) CreateXssCapture(payloadID int64, token, cookie, url, domain, userAgent, ip, extra string) (int64, error) {
-	result, err := db.Exec(
+// CreateXssCaptureIfAvailable atomically stores a callback only while the
+// payload is enabled, unexpired and (for one-time probes) not yet consumed.
+// The boolean is false when the callback is no longer eligible.
+func (db *DB) CreateXssCaptureIfAvailable(payloadID string, token, cookie, url, domain, userAgent, ip, extra string) (int64, bool, error) {
+	tx, err := db.Begin()
+	if err != nil {
+		return 0, false, err
+	}
+	defer func() { _ = tx.Rollback() }()
+
+	result, err := tx.Exec(
+		`UPDATE xss_payloads SET consumed_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND token = ? AND enabled = 1 AND COALESCE(one_time,0) = 1 AND consumed_at IS NULL AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)`,
+		payloadID, token,
+	)
+	if err != nil {
+		return 0, false, err
+	}
+	claimed, err := result.RowsAffected()
+	if err != nil {
+		return 0, false, err
+	}
+	if claimed == 0 {
+		var reusable int
+		err = tx.QueryRow(
+			`SELECT 1 FROM xss_payloads WHERE id = ? AND token = ? AND enabled = 1 AND COALESCE(one_time,0) = 0 AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)`,
+			payloadID, token,
+		).Scan(&reusable)
+		if errors.Is(err, sql.ErrNoRows) {
+			return 0, false, nil
+		}
+		if err != nil {
+			return 0, false, err
+		}
+	}
+
+	result, err = tx.Exec(
 		`INSERT INTO xss_captures (payload_id, token, cookie, url, domain, user_agent, ip, extra) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
 		payloadID, token, cookie, url, domain, userAgent, ip, extra,
 	)
 	if err != nil {
-		return 0, err
+		return 0, false, err
 	}
-	return result.LastInsertId()
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, false, err
+	}
+	if err := tx.Commit(); err != nil {
+		return 0, false, err
+	}
+	return id, true, nil
 }
 
 // ListXssCaptures returns all captures, most recent first.
@@ -2002,7 +2245,7 @@ func (db *DB) ListXssCaptures() ([]*XssCapture, error) {
 }
 
 // ListXssCapturesByPayload returns captures for a specific payload, most recent first.
-func (db *DB) ListXssCapturesByPayload(payloadID int64) ([]*XssCapture, error) {
+func (db *DB) ListXssCapturesByPayload(payloadID string) ([]*XssCapture, error) {
 	rows, err := db.Query(`SELECT id, payload_id, token, cookie, url, domain, user_agent, ip, extra, created_at FROM xss_captures WHERE payload_id = ? ORDER BY created_at DESC`, payloadID)
 	if err != nil {
 		return nil, err
@@ -2020,8 +2263,40 @@ func (db *DB) ListXssCapturesByPayload(payloadID int64) ([]*XssCapture, error) {
 	return captures, rows.Err()
 }
 
+// ListXssCapturesForUser returns captures whose owning payload is visible to
+// userID. XSS captures carry the victim's stolen cookie and token, so listing
+// them must honour the caller's scope rather than returning the whole table.
+// An empty payloadID lists every visible payload; otherwise only that payload.
+func (db *DB) ListXssCapturesForUser(userID string, payloadID string) ([]*XssCapture, error) {
+	query := `SELECT c.id, c.payload_id, c.token, c.cookie, c.url, c.domain, c.user_agent, c.ip, c.extra, c.created_at
+	          FROM xss_captures c
+	          JOIN xss_payloads p ON p.id = c.payload_id
+	          WHERE (p.owner_user_id = ? OR p.created_by = ?)`
+	args := []interface{}{userID, userID}
+	if strings.TrimSpace(payloadID) != "" {
+		query += ` AND c.payload_id = ?`
+		args = append(args, payloadID)
+	}
+	query += ` ORDER BY c.created_at DESC`
+	rows, err := db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var captures []*XssCapture
+	for rows.Next() {
+		var c XssCapture
+		if err := rows.Scan(&c.ID, &c.PayloadID, &c.Token, &c.Cookie, &c.URL, &c.Domain, &c.UserAgent, &c.IP, &c.Extra, &c.CreatedAt); err != nil {
+			return nil, err
+		}
+		captures = append(captures, &c)
+	}
+	return captures, rows.Err()
+}
+
 // GetPayloadCaptureCount returns the number of captures for a given payload.
-func (db *DB) GetPayloadCaptureCount(payloadID int64) (int, error) {
+func (db *DB) GetPayloadCaptureCount(payloadID string) (int, error) {
 	var count int
 	err := db.QueryRow(`SELECT COUNT(*) FROM xss_captures WHERE payload_id = ?`, payloadID).Scan(&count)
 	return count, err
@@ -2066,6 +2341,9 @@ func (db *DB) migrateXssPayloadsTable() error {
 		{"domain_only", "ALTER TABLE xss_payloads ADD COLUMN domain_only INTEGER DEFAULT 0"},
 		{"dns_exfil_domain", "ALTER TABLE xss_payloads ADD COLUMN dns_exfil_domain TEXT"},
 		{"script", "ALTER TABLE xss_payloads ADD COLUMN script TEXT DEFAULT ''"},
+		{"one_time", "ALTER TABLE xss_payloads ADD COLUMN one_time INTEGER NOT NULL DEFAULT 0"},
+		{"expires_at", "ALTER TABLE xss_payloads ADD COLUMN expires_at DATETIME"},
+		{"consumed_at", "ALTER TABLE xss_payloads ADD COLUMN consumed_at DATETIME"},
 	} {
 		if err := db.addColumnIfMissing("xss_payloads", col.name, col.stmt); err != nil {
 			return err

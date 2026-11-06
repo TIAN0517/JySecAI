@@ -1,0 +1,183 @@
+/* 提取記錄管理主控台 —— 分類頁籤、分類維度、欄位開關、可捲動資料表 */
+
+.records-page .loan-panel {
+    margin-top: 12px;
+}
+
+.records-types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0 6px;
+    padding: 10px;
+    border: 1px solid var(--border-color, rgba(255, 255, 255, .12));
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .03);
+}
+
+.records-type-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color, rgba(255, 255, 255, .16));
+    background: rgba(255, 255, 255, .04);
+    color: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+}
+
+.records-type-tab:hover {
+    background: rgba(255, 255, 255, .09);
+}
+
+.records-type-tab.active {
+    border-color: #f97316;
+    background: rgba(249, 115, 22, .18);
+    font-weight: 600;
+}
+
+.records-type-icon {
+    font-size: 15px;
+}
+
+.records-type-label {
+    white-space: nowrap;
+}
+
+.records-facet {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color, rgba(255, 255, 255, .12));
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .02);
+}
+
+.records-facet-title,
+.records-columns-title {
+    font-size: 12px;
+    opacity: .7;
+    margin-right: 4px;
+}
+
+.records-facet-select {
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color, rgba(255, 255, 255, .16));
+    background: rgba(0, 0, 0, .25);
+    color: inherit;
+    font-size: 13px;
+}
+
+.records-facet-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.records-facet-chip {
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color, rgba(255, 255, 255, .14));
+    background: transparent;
+    color: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.records-facet-chip:hover {
+    background: rgba(255, 255, 255, .08);
+}
+
+.records-facet-chip.active {
+    border-color: #f97316;
+    background: rgba(249, 115, 22, .16);
+}
+
+.records-columns {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0;
+}
+
+.records-col-toggle {
+    padding: 3px 9px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color, rgba(255, 255, 255, .14));
+    background: rgba(255, 255, 255, .05);
+    color: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.records-col-toggle:hover {
+    background: rgba(255, 255, 255, .1);
+}
+
+.records-col-toggle.off {
+    opacity: .42;
+    text-decoration: line-through;
+}
+
+.records-col-toggle.reset {
+    border-style: dashed;
+}
+
+/* 欄位名後面的有值率：讓「這個欄位有多少筆真的有值」直接看得到 */
+.records-col-pct {
+    margin-left: 5px;
+    font-size: 10px;
+    opacity: .72;
+    font-variant-numeric: tabular-nums;
+}
+
+.records-col-toggle.off .records-col-pct {
+    opacity: .55;
+}
+
+.records-facet-select {
+    margin-left: 8px;
+}
+
+.records-table-scroll {
+    overflow-x: auto;
+    max-width: 100%;
+    border: 1px solid var(--border-color, rgba(255, 255, 255, .1));
+    border-radius: 8px;
+}
+
+.records-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.records-table th,
+.records-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, .08));
+    white-space: nowrap;
+    vertical-align: top;
+}
+
+.records-table th {
+    position: sticky;
+    top: 0;
+    background: rgba(20, 20, 24, .96);
+    backdrop-filter: blur(6px);
+    text-align: left;
+    font-weight: 600;
+    z-index: 1;
+}
+
+.records-table tbody tr:hover {
+    background: rgba(249, 115, 22, .08);
+}

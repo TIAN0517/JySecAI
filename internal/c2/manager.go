@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -31,6 +32,7 @@ type Manager struct {
 	registry *ListenerRegistry
 
 	mu               sync.RWMutex
+	resultMu         sync.Mutex          // serialize result acceptance so a task can only complete once
 	runningListeners map[string]Listener // listener_id → 已 Start 的 listener 实例
 	storageDir       string              // 大结果（截图/下载）落盘根目录
 
@@ -43,8 +45,7 @@ type Manager struct {
 const MCPToolC2Task = "c2_task"
 
 var (
-	resultBlobSuffixPattern = regexp.MustCompile(`^\.[A-Za-z0-9][A-Za-z0-9_-]{0,31}$`)
-	uploadTaskIDPattern     = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$`)
+	uploadTaskIDPattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$`)
 )
 
 // HITLBridge 把"危险任务"桥到现有 internal/handler/hitl 审批流的接口。
@@ -174,6 +175,11 @@ func (m *Manager) CreateListener(in CreateListenerInput) (*database.C2Listener, 
 	bindHost := strings.TrimSpace(in.BindHost)
 	if bindHost == "" {
 		bindHost = "127.0.0.1" // 默认绑定环回，需要外网时操作员显式改
+	}
+	// 在写入点就拒绝：bind_host 会流进 beacon 模板的 Go 源码与 oneliner 的
+	// shell 字符串，存进资料库等于把一个已知的注入载荷持久化。
+	if err := validateBeaconHost(bindHost); err != nil {
+		return nil, &CommonError{Code: "invalid_bind_host", Message: fmt.Sprintf("非法的 bind_host %q: %v", bindHost, err), HTTP: 400}
 	}
 	cfg := in.Config
 	if cfg == nil {
@@ -358,6 +364,11 @@ func (m *Manager) IngestCheckIn(listenerID string, req ImplantCheckInRequest) (*
 	existing, err := m.db.GetC2SessionByImplantUUID(req.ImplantUUID)
 	if err != nil {
 		return nil, err
+	}
+	// implant_uuid is self-reported. Never let a beacon authenticated to one
+	// listener refresh or take over a session that belongs to another listener.
+	if existing != nil && existing.ListenerID != listenerID {
+		return nil, &CommonError{Code: "implant_listener_mismatch", Message: "implant UUID 已属于其他监听器", HTTP: 409}
 	}
 	now := time.Now()
 	isFirstSeen := existing == nil
@@ -658,17 +669,59 @@ func (m *Manager) PopTasksForBeacon(sessionID string, limit int) ([]TaskEnvelope
 	return out, nil
 }
 
-// IngestTaskResult beacon 回传任务结果的统一入口
-func (m *Manager) IngestTaskResult(report TaskResultReport) error {
+// IngestTaskResultForSession accepts a result only from the session that owns
+// the task. Transports with an authenticated session (WebSocket/TCP reverse)
+// must use this entry point.
+func (m *Manager) IngestTaskResultForSession(sessionID string, report TaskResultReport) error {
+	sessionID = strings.TrimSpace(sessionID)
+	if sessionID == "" {
+		return ErrInvalidInput
+	}
+	return m.ingestTaskResult(report, sessionID, "")
+}
+
+// IngestTaskResultForListener accepts a result only when the task's session is
+// owned by the authenticated listener. Beacon transports that authenticate at
+// listener scope must use this entry point.
+func (m *Manager) IngestTaskResultForListener(listenerID string, report TaskResultReport) error {
+	listenerID = strings.TrimSpace(listenerID)
+	if listenerID == "" {
+		return ErrInvalidInput
+	}
+	return m.ingestTaskResult(report, "", listenerID)
+}
+
+func (m *Manager) ingestTaskResult(report TaskResultReport, expectedSessionID, expectedListenerID string) error {
 	if strings.TrimSpace(report.TaskID) == "" {
 		return ErrInvalidInput
 	}
+	// Status validation and update are kept in one process-level critical
+	// section. This prevents concurrent replay requests from both observing the
+	// same sent/running state and completing a task twice.
+	m.resultMu.Lock()
+	defer m.resultMu.Unlock()
+
 	t, err := m.db.GetC2Task(report.TaskID)
 	if err != nil {
 		return err
 	}
 	if t == nil {
 		return ErrTaskNotFound
+	}
+	if expectedSessionID != "" && t.SessionID != expectedSessionID {
+		return &CommonError{Code: "task_session_mismatch", Message: "任务不属于当前会话", HTTP: 404}
+	}
+	if expectedListenerID != "" {
+		session, err := m.db.GetC2Session(t.SessionID)
+		if err != nil {
+			return err
+		}
+		if session == nil || session.ListenerID != expectedListenerID {
+			return &CommonError{Code: "task_listener_mismatch", Message: "任务不属于当前监听器", HTTP: 404}
+		}
+	}
+	if t.Status != string(TaskSent) && t.Status != string(TaskRunning) {
+		return &CommonError{Code: "invalid_task_state", Message: "仅 sent 或 running 状态的任务可接收结果", HTTP: 409}
 	}
 
 	startedAt := time.Unix(0, report.StartedAt*int64(time.Millisecond))
@@ -705,11 +758,11 @@ func (m *Manager) IngestTaskResult(report TaskResultReport) error {
 	// blob（如截图）落盘
 	if len(report.BlobBase64) > 0 {
 		blobPath, err := m.saveResultBlob(t.ID, report.BlobBase64, report.BlobSuffix)
-		if err == nil {
-			upd.ResultBlobPath = &blobPath
-		} else {
+		if err != nil {
 			m.logger.Warn("结果 blob 落盘失败", zap.Error(err), zap.String("task_id", t.ID))
+			return &CommonError{Code: "invalid_result_blob", Message: "结果附件无效或无法安全落盘", HTTP: 400}
 		}
+		upd.ResultBlobPath = &blobPath
 	}
 
 	if err := m.db.UpdateC2Task(t.ID, upd); err != nil {
@@ -742,8 +795,7 @@ func (m *Manager) IngestTaskResult(report TaskResultReport) error {
 
 func (m *Manager) saveResultBlob(taskID, b64Content, suffix string) (string, error) {
 	taskID = strings.TrimSpace(taskID)
-	if taskID == "" || taskID == "." || taskID == ".." ||
-		strings.ContainsAny(taskID, `/\`) {
+	if !uploadTaskIDPattern.MatchString(taskID) {
 		return "", fmt.Errorf("invalid task_id")
 	}
 
@@ -763,7 +815,10 @@ func (m *Manager) saveResultBlob(taskID, b64Content, suffix string) (string, err
 	if err != nil {
 		return "", err
 	}
-	if err := osWriteFile(path, data, 0o644); err != nil {
+	// Write a temporary sibling and atomically rename it into place. This never
+	// follows the destination symlink/hardlink and still permits a legitimate
+	// retry after a transient database failure.
+	if err := osWriteFileAtomic(path, data, 0o644); err != nil {
 		return "", err
 	}
 	return path, nil
@@ -783,17 +838,19 @@ func uploadPathForTask(storageDir, taskID string) (dir, path string, err error) 
 }
 
 func normalizeResultBlobSuffix(suffix string) (string, error) {
-	suffix = strings.TrimSpace(suffix)
+	suffix = strings.ToLower(strings.TrimSpace(suffix))
 	if suffix == "" {
 		return ".bin", nil
 	}
 	if !strings.HasPrefix(suffix, ".") {
 		suffix = "." + suffix
 	}
-	if !resultBlobSuffixPattern.MatchString(suffix) {
+	switch suffix {
+	case ".bin", ".png", ".jpg", ".jpeg":
+		return suffix, nil
+	default:
 		return "", fmt.Errorf("invalid blob suffix")
 	}
-	return suffix, nil
 }
 
 func ensurePathInDir(dir, path string) error {
@@ -811,6 +868,47 @@ func ensurePathInDir(dir, path string) error {
 	}
 	if rel == "." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) || rel == ".." || filepath.IsAbs(rel) {
 		return fmt.Errorf("path escapes result directory")
+	}
+
+	// When the directory exists, reject symlinked containers and verify the
+	// resolved parent as well as the lexical path. This blocks a results ->
+	// outside symlink from turning an otherwise safe filename into traversal.
+	dirInfo, err := os.Lstat(absDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+	if dirInfo.Mode()&os.ModeSymlink != 0 || !dirInfo.IsDir() {
+		return fmt.Errorf("result directory must be a real directory")
+	}
+	resolvedDir, err := filepath.EvalSymlinks(absDir)
+	if err != nil {
+		return err
+	}
+	resolvedParent, err := filepath.EvalSymlinks(filepath.Dir(absPath))
+	if err != nil {
+		return err
+	}
+	resolvedRel, err := filepath.Rel(resolvedDir, resolvedParent)
+	if err != nil || resolvedRel == ".." || strings.HasPrefix(resolvedRel, ".."+string(filepath.Separator)) || filepath.IsAbs(resolvedRel) {
+		return fmt.Errorf("resolved path escapes result directory")
+	}
+	if info, err := os.Lstat(absPath); err == nil {
+		if info.Mode()&os.ModeSymlink != 0 {
+			return fmt.Errorf("result path must not be a symlink")
+		}
+		resolvedPath, err := filepath.EvalSymlinks(absPath)
+		if err != nil {
+			return err
+		}
+		resolvedRel, err := filepath.Rel(resolvedDir, resolvedPath)
+		if err != nil || resolvedRel == "." || resolvedRel == ".." || strings.HasPrefix(resolvedRel, ".."+string(filepath.Separator)) || filepath.IsAbs(resolvedRel) {
+			return fmt.Errorf("resolved path escapes result directory")
+		}
+	} else if !os.IsNotExist(err) {
+		return err
 	}
 	return nil
 }

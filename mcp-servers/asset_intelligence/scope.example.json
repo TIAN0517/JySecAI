@@ -1,0 +1,9 @@
+{
+  "_comment": "授權範圍範本 — 複製為 scope.json 並填入實際授權目標。此檔為 RFC 5737 文件範圍,非真實目標。",
+  "default": {
+    "scope_id": "default",
+    "cidrs": ["203.0.113.0/24"],
+    "domains": ["example.com", "*.example.com"],
+    "ips": ["198.51.100.7"]
+  }
+}

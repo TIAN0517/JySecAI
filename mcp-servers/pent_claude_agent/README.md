@@ -83,3 +83,26 @@ The process talks MCP over stdio; JySecAI starts it the same way when using Exte
 
 - Use only in authorized, isolated test environments.
 - API keys in config should be kept secure; prefer environment variables for production.
+
+## Model backend: Anthropic-format shim
+
+The Claude Agent SDK only speaks the Anthropic Messages API (`POST /v1/messages`), but the
+platform's model relays expose the OpenAI format (`/v1/chat/completions`). `anthropic_shim.py`
+bridges the two so the pentest agent can reuse the relays that are already configured and
+already have quota — no extra paid API key required.
+
+- Runs as `jysec-anthropic-shim.service` on `127.0.0.1:18790`; reads its upstream from
+  `ai.channels` in the platform `config.yaml` (no secrets are stored in this module).
+- Upstream candidates are tried in order with retries, so a single unhealthy upstream
+  account in the relay pool does not fail the request.
+- `pent_claude_agent_config.yaml` points `ANTHROPIC_BASE_URL` at the shim and
+  `ANTHROPIC_MODEL` at the upstream model.
+
+```bash
+systemctl status jysec-anthropic-shim.service
+curl -s http://127.0.0.1:18790/health
+```
+
+The agent works in its own `workspace/` directory (cwd), so task output never lands in the
+project tree. `setting_sources` is limited to `project` on purpose: a user-level
+`~/.claude/settings.json` would override the `ANTHROPIC_*` variables above.

@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+# JySecAi log watch: scan core/companion journals, record alerts.
+# Does NOT restart jysec-core (watchdog owns restarts; 8080 storms taught that).
+set -u
+
+STATE_DIR="${JYSEC_LOGWATCH_STATE:-/var/lib/jysecai/logwatch}"
+UNITS="${JYSEC_LOGWATCH_UNITS:-jysec-core.service jysec-kali-api.service jysec-hexstrike.service jysec-mcp-watchdog.service}"
+CORE_UNIT="${JYSEC_CORE_UNIT:-jysec-core.service}"
+CONFIG="${JYSEC_CORE_CONFIG:-/var/lib/jysecai/core/config.yaml}"
+mkdir -p "$STATE_DIR"
+chmod 755 "$STATE_DIR" 2>/dev/null || true
+
+CURSOR_FILE="$STATE_DIR/journal.cursor"
+STATUS_FILE="$STATE_DIR/status.json"
+ALERTS_FILE="$STATE_DIR/alerts.log"
+SEEN_FILE="$STATE_DIR/seen.hashes"
+TMP="$(mktemp)"
+trap 'rm -f "$TMP"' EXIT
+
+log() { printf '%s %s\n' "$(date -Is)" "$*"; }
+
+# Expected noise — do not page on these.
+# Scan-time 工具執行失敗 / 系统命令執行失敗 are the agent working; MCP/skill-load/fatal still alert.
+ignore_line() {
+  printf '%s' "$1" | grep -Eq 'ida :8737 down|MCP rules.items schema diagnostic|hexstrike-ai::http_set_rules|工具執行失敗|系统命令執行失敗'
+}
+
+is_alert() {
+  local line="$1"
+  ignore_line "$line" && return 1
+  printf '%s' "$line" | grep -Eq '初始化外部MCP客户端失敗|啟動外部MCP客户端失敗|MCP 命令不在|"level":"error"|"level":"fatal"|"level":"panic"|:8080/|[[:space:]]8080|Unauthorized|TLS handshake timeout|Failed to start|Main process exited|core dumped'
+}
+
+extract_name() {
+  local line="$1"
+  if [[ "$line" =~ \"name\":\"([^\"]+)\" ]]; then
+    printf '%s' "${BASH_REMATCH[1]}"
+    return
+  fi
+  printf '%s' "-"
+}
+
+hash_line() {
+  printf '%s' "$1" | sha256sum | awk '{print $1}'
+}
+
+ARGS=(-u)
+# shellcheck disable=SC2086
+for u in $UNITS; do
+  ARGS+=(-u "$u")
+done
+# first -u is dummy; drop it
+ARGS=("${ARGS[@]:1}")
+
+JOURNAL_ARGS=(--no-pager --output=short-iso)
+if [ -s "$CURSOR_FILE" ]; then
+  JOURNAL_ARGS+=(--after-cursor="$(tr -d ' \n' < "$CURSOR_FILE")")
+else
+  START="$(systemctl show "$CORE_UNIT" -p ActiveEnterTimestamp --value 2>/dev/null || true)"
+  if [ -n "$START" ]; then
+    JOURNAL_ARGS+=(--since="$START")
+  else
+    JOURNAL_ARGS+=(--since="5 min ago")
+  fi
+fi
+
+journalctl "${ARGS[@]}" "${JOURNAL_ARGS[@]}" --show-cursor >"$TMP" 2>/dev/null || true
+
+NEW_CURSOR=""
+ALERT_N=0
+NEW_ALERTS=0
+: >"$STATE_DIR/this-tick.txt"
+touch "$SEEN_FILE"
+
+while IFS= read -r line || [ -n "$line" ]; do
+  if [[ "$line" == --\ cursor:* ]]; then
+    NEW_CURSOR="${line#-- cursor: }"
+    continue
+  fi
+  [ -z "$line" ] && continue
+  is_alert "$line" || continue
+  ALERT_N=$((ALERT_N + 1))
+  h="$(hash_line "$line")"
+  if grep -qx "$h" "$SEEN_FILE" 2>/dev/null; then
+    continue
+  fi
+  echo "$h" >>"$SEEN_FILE"
+  NEW_ALERTS=$((NEW_ALERTS + 1))
+  name="$(extract_name "$line")"
+  short="$(printf '%s' "$line" | sed 's/.*"msg":"\([^"]*\)".*/\1/' | cut -c1-180)"
+  printf '%s name=%s %s\n' "$(date -Is)" "$name" "$short" | tee -a "$ALERTS_FILE" >>"$STATE_DIR/this-tick.txt"
+done <"$TMP"
+
+# cap seen file
+if [ "$(wc -l < "$SEEN_FILE" 2>/dev/null || echo 0)" -gt 4000 ]; then
+  tail -n 2000 "$SEEN_FILE" >"$SEEN_FILE.tmp" && mv "$SEEN_FILE.tmp" "$SEEN_FILE"
+fi
+
+[ -n "$NEW_CURSOR" ] && printf '%s\n' "$NEW_CURSOR" >"$CURSOR_FILE"
+
+CORE_ACTIVE="$(systemctl is-active "$CORE_UNIT" 2>/dev/null || echo unknown)"
+HTTP_CODE="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 4 http://127.0.0.1:9898/ 2>/dev/null || echo 000)"
+BOOT_SINCE="$(systemctl show "$CORE_UNIT" -p ActiveEnterTimestamp --value 2>/dev/null || true)"
+ERR_SINCE_BOOT="$(journalctl -u "$CORE_UNIT" --since "${BOOT_SINCE:-5 min ago}" --no-pager 2>/dev/null \
+  | grep -E '初始化外部MCP客户端失敗|啟動外部MCP客户端失敗|MCP 命令不在|"level":"fatal"|"level":"panic"|failed to list skills|failed to load skill|Failed to start|Main process exited' \
+  | grep -vE 'ida :8737 down|http_set_rules|工具執行失敗|系统命令執行失敗' \
+  | grep -c . || true)"
+
+python3 - "$STATUS_FILE" "$CORE_ACTIVE" "$HTTP_CODE" "$ERR_SINCE_BOOT" "$ALERT_N" "$NEW_ALERTS" "$CONFIG" <<'PY'
+import json, sys, datetime
+path, active, http, err, alert_n, new_n, cfg_path = sys.argv[1:8]
+tick=[]
+p = path.rsplit("/",1)[0] + "/this-tick.txt"
+try:
+    tick = [ln.strip() for ln in open(p, encoding="utf-8", errors="replace") if ln.strip()]
+except OSError:
+    tick = []
+disabled=[]
+try:
+    import yaml
+    data=yaml.safe_load(open(cfg_path, encoding="utf-8"))
+    servers=(data.get("external_mcp") or {}).get("servers") or {}
+    for name, s in sorted(servers.items()):
+        if not isinstance(s, dict):
+            continue
+        if s.get("disabled") is True:
+            disabled.append({
+                "name": name,
+                "reason": s.get("disabled_reason") or s.get("description") or "",
+            })
+except Exception:
+    pass
+doc = {
+    "ts": datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
+    "core_active": active,
+    "http_9898": http,
+    "error_lines_since_boot": int(err or 0),
+    "alert_lines_this_scan": int(alert_n or 0),
+    "new_alerts": int(new_n or 0),
+    "new_alert_preview": tick[:8],
+    "ok": active == "active" and http == "200" and int(new_n or 0) == 0,
+    "mcp_disabled": disabled,
+    "mcp_disabled_count": len(disabled),
+}
+open(path, "w", encoding="utf-8").write(json.dumps(doc, ensure_ascii=False, indent=2) + "\n")
+PY
+chmod 644 "$STATUS_FILE" "$ALERTS_FILE" 2>/dev/null || true
+
+if [ "$NEW_ALERTS" -gt 0 ]; then
+  log "ALERT new=$NEW_ALERTS core=$CORE_ACTIVE http=$HTTP_CODE"
+  cat "$STATE_DIR/this-tick.txt"
+  exit 0
+fi
+log "ok core=$CORE_ACTIVE http=$HTTP_CODE errors_since_boot=$ERR_SINCE_BOOT"
+exit 0

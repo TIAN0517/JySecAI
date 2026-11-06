@@ -255,6 +255,12 @@
 
 **使用：** 与机器人私聊直接发消息；群聊需 @ 机器人（且已勾选允许群聊）。
 
+**安静模式（没人呼叫就不回话）：**
+
+- **被叫才回**：私聊直接发消息、群聊必须 @ 机器人；群组消息默认关闭，不勾「允许群聊」时群里任何消息都不会触发回复。
+- **不主动推播**：漏洞告警这类主动推送走「漏洞告警订阅」，在 Web 端把订阅关掉，机器人就不会再主动 @ 你。
+- **重启不重播**：已消费的 `update_id` 会记在 `robot_stream_offsets` 表，重启后从上次位置继续；首次启用（还没有游标）时以「最后一条更新」为起点，启动前的消息积压直接跳过，不会把旧消息逐条重答。
+
 ---
 
 ### 3.6 Slack
@@ -511,11 +517,11 @@ robots:
 
 ```bash
 # 先登录；请按实际地址、用户名和密码修改
-TOKEN=$(curl -s -X POST "http://localhost:8080/api/auth/login" \
+TOKEN=$(curl -s -X POST "http://localhost:9898/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"YOUR_PASSWORD"}' | jq -r '.token')
 
-curl -X POST "http://localhost:8080/api/robot/test" \
+curl -X POST "http://localhost:9898/api/robot/test" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"platform":"dingtalk","user_id":"test_user","text":"帮助"}'

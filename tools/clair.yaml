@@ -1,6 +1,7 @@
 name: "clair"
 command: "clair"
 enabled: false
+action_class: "local_analysis"
 short_description: "容器漏洞分析工具"
 description: |
   Clair是一个容器漏洞分析工具，用于扫描容器镜像中的漏洞。

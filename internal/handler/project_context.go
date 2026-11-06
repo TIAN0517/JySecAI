@@ -3,8 +3,8 @@ package handler
 import (
 	"strings"
 
-	"jysecai/internal/project"
 	"go.uber.org/zap"
+	"jysecai/internal/project"
 )
 
 // agentSessionContextBlock 注入会话工作目录与项目黑板（用于 system prompt 追加块）。
@@ -41,7 +41,7 @@ func (h *AgentHandler) buildWorkspaceBlock(conversationID string) string {
 		}
 		return ""
 	}
-	return project.BuildWorkspaceBlock(abs)
+	return project.BuildWorkspaceBlock(abs) + "\n\n" + project.BuildWorkspaceInventoryBlock(abs)
 }
 
 // projectBlackboardBlock 根据对话 ID 构建项目事实索引块（用于注入 system prompt）。

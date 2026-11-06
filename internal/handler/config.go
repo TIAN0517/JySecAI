@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"sort"
@@ -22,6 +23,7 @@ import (
 	"jysecai/internal/mcp"
 	"jysecai/internal/mcp/builtin"
 	"jysecai/internal/openai"
+	"jysecai/internal/proxypool"
 	"jysecai/internal/security"
 	"jysecai/internal/toolguard"
 
@@ -39,6 +41,9 @@ type VulnerabilityToolRegistrar func() error
 
 // WebshellToolRegistrar WebShell 工具注册器接口（ApplyConfig 时重新注册）
 type WebshellToolRegistrar func() error
+
+// RedirectToolRegistrar 受控跳转工具注册器接口（端点清单变更或 ApplyConfig 时重新注册）
+type RedirectToolRegistrar func() error
 
 // SkillsToolRegistrar Skills工具注册器接口
 type SkillsToolRegistrar func() error
@@ -84,6 +89,7 @@ type ConfigHandler struct {
 	knowledgeToolRegistrar     KnowledgeToolRegistrar     // 知识库工具注册器（可选）
 	vulnerabilityToolRegistrar VulnerabilityToolRegistrar // 漏洞工具注册器（可选）
 	webshellToolRegistrar      WebshellToolRegistrar      // WebShell 工具注册器（可选）
+	redirectToolRegistrar      RedirectToolRegistrar      // 受控跳转工具注册器（可选）
 	skillsToolRegistrar        SkillsToolRegistrar        // Skills工具注册器（可选）
 	batchTaskToolRegistrar     BatchTaskToolRegistrar     // 批量任务 MCP 工具（可选）
 	c2ToolRegistrar            C2ToolRegistrar            // C2 MCP 工具（可选）
@@ -92,6 +98,7 @@ type ConfigHandler struct {
 	knowledgeInitializer       KnowledgeInitializer       // 知识库初始化器（可选）
 	appUpdater                 AppUpdater                 // App更新器（可选）
 	robotRestarter             RobotRestarter             // 机器人连接重启器（可选），ApplyConfig 时重启钉钉/飞书
+	proxyPool                  *proxypool.Manager
 	audit                      *audit.Service
 	db                         *database.DB
 	logger                     *zap.Logger
@@ -100,8 +107,224 @@ type ConfigHandler struct {
 	lastEmbeddingConfig        *config.EmbeddingConfig // 上一次的嵌入模型配置（用于检测变更）
 }
 
+const maskedConfigSecret = "********"
+
+func maskRobotSecrets(in config.RobotsConfig) config.RobotsConfig {
+	out := in
+	mask := func(value string) string {
+		if strings.TrimSpace(value) == "" {
+			return ""
+		}
+		return maskedConfigSecret
+	}
+	out.Wechat.BotToken = mask(out.Wechat.BotToken)
+	out.Wecom.Token = mask(out.Wecom.Token)
+	out.Wecom.EncodingAESKey = mask(out.Wecom.EncodingAESKey)
+	out.Wecom.Secret = mask(out.Wecom.Secret)
+	out.Dingtalk.ClientSecret = mask(out.Dingtalk.ClientSecret)
+	out.Lark.AppSecret = mask(out.Lark.AppSecret)
+	out.Lark.VerifyToken = mask(out.Lark.VerifyToken)
+	out.Telegram.BotToken = mask(out.Telegram.BotToken)
+	out.Slack.BotToken = mask(out.Slack.BotToken)
+	out.Slack.AppToken = mask(out.Slack.AppToken)
+	out.Discord.BotToken = mask(out.Discord.BotToken)
+	out.QQ.ClientSecret = mask(out.QQ.ClientSecret)
+	return out
+}
+
+func mergeRobotSecrets(in, current config.RobotsConfig) config.RobotsConfig {
+	out := in
+	preserve := func(value, old string) string {
+		if strings.TrimSpace(value) == "" || value == maskedConfigSecret {
+			return old
+		}
+		return value
+	}
+	out.Wechat.BotToken = preserve(out.Wechat.BotToken, current.Wechat.BotToken)
+	out.Wecom.Token = preserve(out.Wecom.Token, current.Wecom.Token)
+	out.Wecom.EncodingAESKey = preserve(out.Wecom.EncodingAESKey, current.Wecom.EncodingAESKey)
+	out.Wecom.Secret = preserve(out.Wecom.Secret, current.Wecom.Secret)
+	out.Dingtalk.ClientSecret = preserve(out.Dingtalk.ClientSecret, current.Dingtalk.ClientSecret)
+	out.Lark.AppSecret = preserve(out.Lark.AppSecret, current.Lark.AppSecret)
+	out.Lark.VerifyToken = preserve(out.Lark.VerifyToken, current.Lark.VerifyToken)
+	out.Telegram.BotToken = preserve(out.Telegram.BotToken, current.Telegram.BotToken)
+	out.Slack.BotToken = preserve(out.Slack.BotToken, current.Slack.BotToken)
+	out.Slack.AppToken = preserve(out.Slack.AppToken, current.Slack.AppToken)
+	out.Discord.BotToken = preserve(out.Discord.BotToken, current.Discord.BotToken)
+	out.QQ.ClientSecret = preserve(out.QQ.ClientSecret, current.QQ.ClientSecret)
+	return out
+}
+
 func (h *ConfigHandler) SetDB(db *database.DB) {
 	h.db = db
+}
+
+func (h *ConfigHandler) SetProxyPoolManager(manager *proxypool.Manager) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	h.proxyPool = manager
+}
+
+// maskProviderSecrets blanks every third-party credential in a config response.
+// GetConfig is reachable with only config:read, so without this any user in a
+// settings-viewing role receives every LLM channel key, the search-provider
+// keys, and the MCP service credential in the response body.
+// maskProxyPoolCredentials replaces the userinfo of every SOCKS5 URL with the
+// standard mask. GET /api/config is readable by any authenticated operator, and
+// pool entries carry provider credentials (socks5://user:pass@host:port), so
+// the raw URL must never leave the process.
+//
+// The slice is copied before masking: publicCfg is a shallow copy of the live
+// config, so writing through it would replace the real credentials in
+// h.config and break every outbound request through the pool.
+func maskProxyPoolCredentials(cfg *config.Config) {
+	if cfg == nil || len(cfg.ProxyPool.Proxies) == 0 {
+		return
+	}
+	masked := make([]config.SOCKS5ProxyConfig, len(cfg.ProxyPool.Proxies))
+	copy(masked, cfg.ProxyPool.Proxies)
+	for i := range masked {
+		raw := strings.TrimSpace(masked[i].URL)
+		if raw == "" {
+			continue
+		}
+		parsed, err := url.Parse(raw)
+		if err != nil || parsed.User == nil {
+			continue
+		}
+		parsed.User = url.User(maskedConfigSecret)
+		masked[i].URL = parsed.String()
+	}
+	cfg.ProxyPool.Proxies = masked
+}
+
+// restoreProxyPoolCredentials 把被遮蔽的 SOCKS5 代理憑證還原回來。
+//
+// 代理 URL 的 userinfo 會在 GET /api/config 時被遮蔽成 ******（見
+// maskProxyPoolCredentials）。設定頁再把整份 proxy_pool 原樣送回來，所以這裡
+// 必須把 userinfo 換回儲存值 —— 否則任何一次無關的設定存檔都會把真實密碼
+// 洗掉，代理池會用 "********" 當帳密去連線，然後整池失效。
+//
+// 只有「userinfo 仍等於遮蔽佔位符」的項目才會被還原：使用者真的改過帳密時，
+// 送來的就是新值，必須保留。
+func restoreProxyPoolCredentials(next []config.SOCKS5ProxyConfig, current []config.SOCKS5ProxyConfig) []config.SOCKS5ProxyConfig {
+	if len(next) == 0 || len(current) == 0 {
+		return next
+	}
+	stored := make(map[string]*url.Userinfo, len(current))
+	for _, p := range current {
+		parsed, err := url.Parse(strings.TrimSpace(p.URL))
+		if err != nil || parsed.User == nil {
+			continue
+		}
+		stored[proxyEndpointKey(parsed)] = parsed.User
+	}
+	for i := range next {
+		parsed, err := url.Parse(strings.TrimSpace(next[i].URL))
+		if err != nil || parsed.User == nil {
+			continue
+		}
+		if parsed.User.Username() != maskedConfigSecret {
+			continue
+		}
+		if user, ok := stored[proxyEndpointKey(parsed)]; ok {
+			parsed.User = user
+			next[i].URL = parsed.String()
+		}
+	}
+	return next
+}
+
+// proxyEndpointKey 以 scheme://host:port 作為代理身分，比對時不含 userinfo。
+func proxyEndpointKey(u *url.URL) string {
+	port := u.Port()
+	if port == "" {
+		port = "1080"
+	}
+	return strings.ToLower(u.Scheme) + "://" + strings.ToLower(u.Hostname()) + ":" + port
+}
+
+func maskProviderSecrets(cfg *config.Config) {
+	mask := func(value string) string {
+		if strings.TrimSpace(value) == "" {
+			return ""
+		}
+		return maskedConfigSecret
+	}
+	// MCP.AuthHeaderValue is the static global service credential. It is the
+	// single most sensitive field here: app.go turns it into a principal holding
+	// every permission in the catalog at RBACScopeAll.
+	cfg.MCP.AuthHeaderValue = mask(cfg.MCP.AuthHeaderValue)
+	cfg.OpenAI.APIKey = mask(cfg.OpenAI.APIKey)
+	if cfg.Vision.APIKey != "" {
+		cfg.Vision.APIKey = mask(cfg.Vision.APIKey)
+	}
+	if cfg.FOFA.APIKey != "" {
+		cfg.FOFA.APIKey = mask(cfg.FOFA.APIKey)
+	}
+	for name, ch := range cfg.AI.Channels {
+		if strings.TrimSpace(ch.APIKey) == "" {
+			continue
+		}
+		ch.APIKey = mask(ch.APIKey)
+		cfg.AI.Channels[name] = ch
+	}
+	for _, sc := range []*config.SpaceSearchConfig{
+		&cfg.ZoomEye, &cfg.Quake, &cfg.Shodan,
+	} {
+		if sc != nil && sc.APIKey != "" {
+			sc.APIKey = mask(sc.APIKey)
+		}
+	}
+	if cfg.Knowledge.Embedding.APIKey != "" {
+		cfg.Knowledge.Embedding.APIKey = mask(cfg.Knowledge.Embedding.APIKey)
+	}
+}
+
+// mergeProviderSecretsInto restores credentials that the client echoed back as
+// the mask placeholder, field by field, on a partial update request. Masking a
+// response without this counterpart would let a plain save overwrite every
+// stored key with the literal "********".
+func mergeProviderSecretsInto(req *UpdateConfigRequest, current *config.Config) {
+	preserve := func(value, old string) string {
+		if strings.TrimSpace(value) == "" || value == maskedConfigSecret {
+			return old
+		}
+		return value
+	}
+	if req.MCP != nil {
+		req.MCP.AuthHeaderValue = preserve(req.MCP.AuthHeaderValue, current.MCP.AuthHeaderValue)
+	}
+	if req.OpenAI != nil {
+		req.OpenAI.APIKey = preserve(req.OpenAI.APIKey, current.OpenAI.APIKey)
+	}
+	if req.Vision != nil {
+		req.Vision.APIKey = preserve(req.Vision.APIKey, current.Vision.APIKey)
+	}
+	if req.FOFA != nil {
+		req.FOFA.APIKey = preserve(req.FOFA.APIKey, current.FOFA.APIKey)
+	}
+	for _, pair := range [][2]*config.SpaceSearchConfig{
+		{req.ZoomEye, &current.ZoomEye},
+		{req.Quake, &current.Quake},
+		{req.Shodan, &current.Shodan},
+	} {
+		if pair[0] != nil {
+			pair[0].APIKey = preserve(pair[0].APIKey, pair[1].APIKey)
+		}
+	}
+	if req.AI != nil && len(req.AI.Channels) > 0 {
+		for name, ch := range req.AI.Channels {
+			if old, ok := current.AI.Channels[name]; ok {
+				ch.APIKey = preserve(ch.APIKey, old.APIKey)
+				req.AI.Channels[name] = ch
+			}
+		}
+	}
+	if req.Knowledge != nil && current.Knowledge.Embedding.APIKey != "" {
+		req.Knowledge.Embedding.APIKey = preserve(
+			req.Knowledge.Embedding.APIKey, current.Knowledge.Embedding.APIKey)
+	}
 }
 
 func (h *ConfigHandler) validateRobotServiceAccounts(robots config.RobotsConfig) error {
@@ -176,6 +399,13 @@ func (h *ConfigHandler) SetWebshellToolRegistrar(registrar WebshellToolRegistrar
 	h.mu.Lock()
 	defer h.mu.Unlock()
 	h.webshellToolRegistrar = registrar
+}
+
+// SetRedirectToolRegistrar 设置受控跳转工具注册器
+func (h *ConfigHandler) SetRedirectToolRegistrar(registrar RedirectToolRegistrar) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	h.redirectToolRegistrar = registrar
 }
 
 // SetSkillsToolRegistrar 设置Skills工具注册器
@@ -269,6 +499,7 @@ type GetConfigResponse struct {
 	ZoomEye    config.SpaceSearchConfig `json:"zoomeye"`
 	Quake      config.SpaceSearchConfig `json:"quake"`
 	Shodan     config.SpaceSearchConfig `json:"shodan"`
+	ProxyPool  config.ProxyPoolConfig   `json:"proxy_pool"`
 	MCP        config.MCPConfig         `json:"mcp"`
 	Tools      []ToolConfigInfo         `json:"tools"`
 	Agent      config.AgentConfig       `json:"agent"`
@@ -371,21 +602,38 @@ func (h *ConfigHandler) GetConfig(c *gin.Context) {
 		),
 	}
 
+	// 遮蔽必須作用在副本上：h.config 是 live 設定，直接改會把真正的
+	// 憑證換成 "********"，後續所有模型呼叫都會拿到無效的 key。
+	publicCfg := *h.config
+	publicCfg.AI.Channels = make(map[string]config.AIChannelConfig, len(h.config.AI.Channels))
+	for k, v := range h.config.AI.Channels {
+		publicCfg.AI.Channels[k] = v
+	}
+	publicCfg.ZoomEye = h.config.ZoomEye
+	publicCfg.Quake = h.config.Quake
+	publicCfg.Shodan = h.config.Shodan
+	maskProviderSecrets(&publicCfg)
+	maskProxyPoolCredentials(&publicCfg)
+
+	// 憑證不應被快取或留在瀏覽器紀錄中
+	c.Header("Cache-Control", "no-store")
+
 	c.JSON(http.StatusOK, GetConfigResponse{
-		AI:         h.config.AI,
-		OpenAI:     h.config.OpenAI,
-		Vision:     h.config.Vision,
-		FOFA:       h.config.FOFA,
-		ZoomEye:    h.config.ZoomEye,
-		Quake:      h.config.Quake,
-		Shodan:     h.config.Shodan,
-		MCP:        h.config.MCP,
+		AI:         publicCfg.AI,
+		OpenAI:     publicCfg.OpenAI,
+		Vision:     publicCfg.Vision,
+		FOFA:       publicCfg.FOFA,
+		ZoomEye:    publicCfg.ZoomEye,
+		Quake:      publicCfg.Quake,
+		Shodan:     publicCfg.Shodan,
+		ProxyPool:  publicCfg.ProxyPool,
+		MCP:        publicCfg.MCP,
 		Tools:      tools,
-		Agent:      h.config.Agent,
+		Agent:      publicCfg.Agent,
 		Hitl:       h.config.Hitl,
-		Knowledge:  h.config.Knowledge,
+		Knowledge:  publicCfg.Knowledge,
 		C2:         h.config.C2.Public(),
-		Robots:     h.config.Robots,
+		Robots:     maskRobotSecrets(h.config.Robots),
 		MultiAgent: multiPub,
 	})
 }
@@ -724,6 +972,7 @@ type UpdateConfigRequest struct {
 	Quake      *config.SpaceSearchConfig   `json:"quake,omitempty"`
 	Shodan     *config.SpaceSearchConfig   `json:"shodan,omitempty"`
 	MCP        *config.MCPConfig           `json:"mcp,omitempty"`
+	ProxyPool  *config.ProxyPoolConfig     `json:"proxy_pool,omitempty"`
 	Tools      []ToolEnableStatus          `json:"tools,omitempty"`
 	Agent      *AgentConfigUpdate          `json:"agent,omitempty"`
 	Hitl       *config.HitlConfig          `json:"hitl,omitempty"`
@@ -731,6 +980,7 @@ type UpdateConfigRequest struct {
 	Robots     *config.RobotsConfig        `json:"robots,omitempty"`
 	MultiAgent *config.MultiAgentAPIUpdate `json:"multi_agent,omitempty"`
 	C2         *config.C2APIUpdate         `json:"c2,omitempty"`
+	Redirect   *config.RedirectConfig      `json:"redirect,omitempty"`
 }
 
 // AgentConfigUpdate 用于 PATCH /api/config 的 agent 段：仅 JSON 中出现的字段（指针非 nil）覆盖内存配置。
@@ -744,6 +994,25 @@ type AgentConfigUpdate struct {
 	ExternalMCPCircuitFailureThreshold *int    `json:"external_mcp_circuit_failure_threshold,omitempty"`
 	ExternalMCPCircuitCooldownSeconds  *int    `json:"external_mcp_circuit_cooldown_seconds,omitempty"`
 	SystemPromptPath                   *string `json:"system_prompt_path,omitempty"`
+	SystemPromptPreset                 *string `json:"system_prompt_preset,omitempty"`
+}
+
+// ValidSystemPromptPresets 是允許的內建系統提示預設。
+// 未知值一律拒絕（不是靜默回退）—— 打錯字時靜默換成別的 Agent 最難察覺。
+var ValidSystemPromptPresets = []string{config.SystemPromptPresetDefault, config.SystemPromptPresetAggressive}
+
+func validateAgentConfigUpdate(src *AgentConfigUpdate) error {
+	if src == nil || src.SystemPromptPreset == nil {
+		return nil
+	}
+	p := strings.ToLower(strings.TrimSpace(*src.SystemPromptPreset))
+	for _, valid := range ValidSystemPromptPresets {
+		if p == valid {
+			return nil
+		}
+	}
+	return fmt.Errorf("system_prompt_preset 只支持 %s，当前值: %s",
+		strings.Join(ValidSystemPromptPresets, "、"), *src.SystemPromptPreset)
 }
 
 func applyAgentConfigUpdate(dst *config.AgentConfig, src *AgentConfigUpdate) {
@@ -774,6 +1043,9 @@ func applyAgentConfigUpdate(dst *config.AgentConfig, src *AgentConfigUpdate) {
 	if src.SystemPromptPath != nil {
 		dst.SystemPromptPath = *src.SystemPromptPath
 	}
+	if src.SystemPromptPreset != nil {
+		dst.SystemPromptPreset = strings.ToLower(strings.TrimSpace(*src.SystemPromptPreset))
+	}
 }
 
 // ToolEnableStatus 工具启用状态
@@ -794,6 +1066,12 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 
 	h.mu.Lock()
 	defer h.mu.Unlock()
+
+	// GetConfig 現在會把憑證遮蔽成 "********"；前端讀取後原樣送回時，
+	// 那些遮蔽值必須還原成現有真實憑證，否則一次 innocuous 的儲存
+	// 就會把所有 API key 覆蓋成字面值。
+	currentSnapshot := *h.config
+	mergeProviderSecretsInto(&req, &currentSnapshot)
 
 	// 更新OpenAI配置
 	if req.AI != nil {
@@ -843,6 +1121,33 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 	}
 
 	// 更新MCP配置
+
+	if req.ProxyPool != nil {
+		next := *req.ProxyPool
+		// 設定頁會把整份 proxy_pool 原樣送回來，而代理 URL 的 userinfo 在
+		// GET /api/config 時已被遮蔽成 ****** —— 不還原的話，任何一次無關的
+		// 設定存檔都會把真實的 SOCKS5 密碼洗掉，代理池直接失效。
+		next.Proxies = restoreProxyPoolCredentials(next.Proxies, h.config.ProxyPool.Proxies)
+		if err := next.NormalizeAndValidate(); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		if h.proxyPool != nil {
+			if err := h.proxyPool.Update(next); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+		}
+		h.config.ProxyPool = next
+		h.logger.Info("更新 SOCKS5 代理池配置",
+			zap.Bool("enabled", next.Enabled),
+			zap.String("strategy", next.Strategy),
+			zap.Int("proxies", len(next.Proxies)),
+		)
+	}
+
+	// 更新MCP配置
+
 	if req.MCP != nil {
 		h.config.MCP = *req.MCP
 		h.logger.Info("更新MCP配置",
@@ -854,6 +1159,10 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 
 	// 更新Agent配置（按字段合并，避免部分 JSON 把未出现的字段写成 0）
 	if req.Agent != nil {
+		if err := validateAgentConfigUpdate(req.Agent); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 		applyAgentConfigUpdate(&h.config.Agent, req.Agent)
 		h.logger.Info("更新Agent配置",
 			zap.Int("max_iterations", h.config.Agent.MaxIterations),
@@ -939,19 +1248,20 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 
 	// 更新机器人配置
 	if req.Robots != nil {
-		if err := config.ValidateWecomConfig(req.Robots.Wecom); err != nil {
+		robots := mergeRobotSecrets(*req.Robots, h.config.Robots)
+		if err := config.ValidateWecomConfig(robots.Wecom); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		if err := config.ValidateRobotsAuthorization(*req.Robots); err != nil {
+		if err := config.ValidateRobotsAuthorization(robots); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		if err := h.validateRobotServiceAccounts(*req.Robots); err != nil {
+		if err := h.validateRobotServiceAccounts(robots); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		h.config.Robots = *req.Robots
+		h.config.Robots = robots
 		h.logger.Info("更新机器人配置",
 			zap.Bool("wechat_enabled", h.config.Robots.Wechat.Enabled),
 			zap.Bool("wecom_enabled", h.config.Robots.Wecom.Enabled),
@@ -968,6 +1278,26 @@ func (h *ConfigHandler) UpdateConfig(c *gin.Context) {
 		v := req.C2.Enabled
 		h.config.C2.Enabled = &v
 		h.logger.Info("更新C2配置", zap.Bool("enabled", v))
+	}
+
+	// 受控跳转（回连）端点清单：先正规化再写入内存，随后由注册器重新注册工具。
+	if req.Redirect != nil {
+		next := *req.Redirect
+		next.Normalize()
+		h.config.Redirect = next
+		h.logger.Info("更新受控跳转端点配置",
+			zap.Bool("enabled", next.Enabled),
+			zap.Int("urls", len(next.URLs)),
+		)
+		// 端点清单变了就要立刻反映到工具注册上：清空后重新注册，
+		// 这样关掉清单时工具会下架、打开时工具会重新出现，不必等重启。
+		if h.redirectToolRegistrar != nil {
+			if err := h.redirectToolRegistrar(); err != nil {
+				h.logger.Error("重新注册受控跳转工具失败", zap.Error(err))
+			} else {
+				h.logger.Info("受控跳转工具已重新注册")
+			}
+		}
 	}
 
 	// 多代理标量（sub_agents 等仍由 config.yaml 维护）
@@ -1194,6 +1524,55 @@ type TestOpenAIRequest struct {
 	Model    string `json:"model"`
 }
 
+// resolveTestAPIKey restores the live credential when the settings UI echoes
+// GetConfig's "********" mask into /api/config/test-openai. Without this, a
+// probe that looks identical to a real channel sends the literal mask and the
+// upstream returns 401 Invalid token — exactly what the operator sees after
+// opening the AI channel form and clicking 测试连接 without retyping the key.
+//
+// Match order: base_url+model channel → base_url-only channel → default
+// channel → openai.api_key.
+func (h *ConfigHandler) resolveTestAPIKey(apiKey, baseURL, model string) string {
+	apiKey = strings.TrimSpace(apiKey)
+	if apiKey != "" && apiKey != maskedConfigSecret {
+		return apiKey
+	}
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+	if h.config == nil {
+		return ""
+	}
+	normBase := strings.TrimSuffix(strings.TrimSpace(baseURL), "/")
+	model = strings.TrimSpace(model)
+	baseOnly := ""
+	for _, ch := range h.config.AI.Channels {
+		chBase := strings.TrimSuffix(strings.TrimSpace(ch.BaseURL), "/")
+		if normBase == "" || chBase != normBase {
+			continue
+		}
+		key := strings.TrimSpace(ch.APIKey)
+		if key == "" {
+			continue
+		}
+		if model != "" && strings.TrimSpace(ch.Model) == model {
+			return key
+		}
+		if baseOnly == "" {
+			baseOnly = key
+		}
+	}
+	if baseOnly != "" {
+		return baseOnly
+	}
+	// 刻意不做「預設通道」或 openai.api_key 的 fallback。
+	//
+	// 呼叫端給的 base_url 若跟任何已儲存通道對不上，把金鑰送過去就等於把平台
+	// 的生產金鑰送給第三方端點 —— 而 maskProviderSecrets 刻意把這把金鑰藏起來
+	// 就是為了不外流。base_url 對不上就是沒有可還原的金鑰：讓呼叫端重打一次
+	// （400）比外洩金鑰安全，而且這也讓「測試通過」真正代表測到的那個通道。
+	return ""
+}
+
 // TestOpenAI 测试OpenAI API连接是否可用
 func (h *ConfigHandler) TestOpenAI(c *gin.Context) {
 	var req TestOpenAIRequest
@@ -1202,10 +1581,6 @@ func (h *ConfigHandler) TestOpenAI(c *gin.Context) {
 		return
 	}
 
-	if strings.TrimSpace(req.APIKey) == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "API Key 不能为空"})
-		return
-	}
 	if strings.TrimSpace(req.Model) == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "模型不能为空"})
 		return
@@ -1218,6 +1593,12 @@ func (h *ConfigHandler) TestOpenAI(c *gin.Context) {
 		} else {
 			baseURL = "https://api.openai.com/v1"
 		}
+	}
+
+	apiKey := h.resolveTestAPIKey(req.APIKey, baseURL, req.Model)
+	if apiKey == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "API Key 不能为空（Base URL 与已保存通道不匹配时，请重新输入 API Key）"})
+		return
 	}
 
 	// 构造一个最小的 chat completion 请求
@@ -1233,7 +1614,7 @@ func (h *ConfigHandler) TestOpenAI(c *gin.Context) {
 	tmpCfg := &config.OpenAIConfig{
 		Provider: req.Provider,
 		BaseURL:  baseURL,
-		APIKey:   strings.TrimSpace(req.APIKey),
+		APIKey:   apiKey,
 		Model:    req.Model,
 	}
 	client := openai.NewClient(tmpCfg, nil, h.logger)
@@ -1345,20 +1726,23 @@ func (h *ConfigHandler) ListModels(c *gin.Context) {
 		return
 	}
 
-	if strings.TrimSpace(req.APIKey) == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "API Key 不能为空"})
-		return
-	}
-
 	baseURL := strings.TrimSuffix(strings.TrimSpace(req.BaseURL), "/")
 	if baseURL == "" {
 		baseURL = "https://api.openai.com/v1"
 	}
 
+	// Same mask round-trip as TestOpenAI: the settings form echoes
+	// GetConfig's "********" into api_key when the operator clicks 获取列表.
+	apiKey := h.resolveTestAPIKey(req.APIKey, baseURL, "")
+	if apiKey == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "API Key 不能为空"})
+		return
+	}
+
 	tmpCfg := &config.OpenAIConfig{
 		Provider: provider,
 		BaseURL:  baseURL,
-		APIKey:   strings.TrimSpace(req.APIKey),
+		APIKey:   apiKey,
 	}
 	client := openai.NewClient(tmpCfg, nil, h.logger)
 
@@ -1423,6 +1807,14 @@ func (h *ConfigHandler) TestVision(c *gin.Context) {
 		}
 	}
 
+	// Same mask round-trip as TestOpenAI. The settings form echoes "********";
+	// restore the stored channel key for that base_url. A typed key is kept.
+	apiKey := h.resolveTestAPIKey(oa.APIKey, baseURL, oa.Model)
+	if apiKey == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "API Key 不能为空（可填写 vision.api_key 或 openai.api_key）"})
+		return
+	}
+
 	payload := map[string]interface{}{
 		"model": oa.Model,
 		"messages": []map[string]string{
@@ -1434,7 +1826,7 @@ func (h *ConfigHandler) TestVision(c *gin.Context) {
 	tmpCfg := &config.OpenAIConfig{
 		Provider: oa.Provider,
 		BaseURL:  baseURL,
-		APIKey:   strings.TrimSpace(oa.APIKey),
+		APIKey:   apiKey,
 		Model:    oa.Model,
 	}
 	client := openai.NewClient(tmpCfg, nil, h.logger)
@@ -1485,6 +1877,51 @@ func (h *ConfigHandler) TestVision(c *gin.Context) {
 }
 
 // ApplyConfig 应用配置（重新加载并重启相关服务）
+
+// TestProxyPool checks every configured SOCKS5 endpoint with a bounded HTTPS
+// request. The request body may contain an unsaved draft from the settings UI.
+func (h *ConfigHandler) TestProxyPool(c *gin.Context) {
+	var draft config.ProxyPoolConfig
+	if err := c.ShouldBindJSON(&draft); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid proxy pool config: " + err.Error()})
+		return
+	}
+	if err := draft.NormalizeAndValidate(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	results, err := proxypool.CheckAll(c.Request.Context(), draft)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	healthy := 0
+	for _, result := range results {
+		if result.Healthy {
+			healthy++
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": healthy == len(results) && len(results) > 0,
+		"healthy": healthy,
+		"total":   len(results),
+		"results": results,
+	})
+}
+
+func (h *ConfigHandler) GetProxyPoolStatus(c *gin.Context) {
+	h.mu.RLock()
+	manager := h.proxyPool
+	enabled := h.config.ProxyPool.Enabled
+	strategy := h.config.ProxyPool.Strategy
+	h.mu.RUnlock()
+	if manager == nil {
+		c.JSON(http.StatusOK, gin.H{"enabled": enabled, "strategy": strategy, "results": []proxypool.EndpointStatus{}})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"enabled": enabled, "strategy": strategy, "results": manager.Status()})
+}
+
 func (h *ConfigHandler) ApplyConfig(c *gin.Context) {
 	// 先检查是否需要动态初始化知识库（在锁外执行，避免阻塞其他请求）
 	var needInitKnowledge bool
@@ -1618,6 +2055,16 @@ func (h *ConfigHandler) ApplyConfig(c *gin.Context) {
 			h.logger.Error("重新注册 WebShell 工具失败", zap.Error(err))
 		} else {
 			h.logger.Info("WebShell 工具已重新注册")
+		}
+	}
+
+	// 重新注册受控跳转工具（依端点清单决定是否提供）
+	if h.redirectToolRegistrar != nil {
+		h.logger.Info("重新注册受控跳转工具")
+		if err := h.redirectToolRegistrar(); err != nil {
+			h.logger.Error("重新注册受控跳转工具失败", zap.Error(err))
+		} else {
+			h.logger.Info("受控跳转工具已重新注册")
 		}
 	}
 
@@ -1758,13 +2205,17 @@ func (h *ConfigHandler) saveConfig() error {
 		return fmt.Errorf("读取配置文件失败: %w", err)
 	}
 
-	if err := os.WriteFile(h.configPath+".backup", data, 0644); err != nil {
+	if err := os.WriteFile(h.configPath+".backup", data, 0600); err != nil {
 		h.logger.Warn("创建配置备份失败", zap.Error(err))
 	}
 
 	root, err := loadYAMLDocument(h.configPath)
 	if err != nil {
 		return fmt.Errorf("解析配置文件失败: %w", err)
+	}
+	protectedRobots, protectedExternalMCP, err := config.ProtectSensitiveConfig(h.configPath, h.config.Robots, h.config.ExternalMCP)
+	if err != nil {
+		return fmt.Errorf("加密配置凭证失败: %w", err)
 	}
 
 	updateAgentConfig(root, h.config.Agent)
@@ -1778,11 +2229,12 @@ func (h *ConfigHandler) saveConfig() error {
 	updateSpaceSearchConfig(root, "shodan", h.config.Shodan)
 	updateKnowledgeConfig(root, h.config.Knowledge)
 	updateC2Config(root, h.config.C2)
-	updateRobotsConfig(root, h.config.Robots)
+	updateRedirectConfig(root, h.config.Redirect)
+	updateRobotsConfig(root, protectedRobots)
 	updateHitlConfig(root, h.config.Hitl)
 	updateMultiAgentConfig(root, h.config.MultiAgent)
 	// 更新外部MCP配置（使用external_mcp.go中的函数，同一包中可直接调用）
-	updateExternalMCPConfig(root, h.config.ExternalMCP)
+	updateExternalMCPConfig(root, protectedExternalMCP)
 
 	if err := writeYAMLDocument(h.configPath, root); err != nil {
 		return fmt.Errorf("保存配置文件失败: %w", err)
@@ -1888,6 +2340,7 @@ func updateAgentConfig(doc *yaml.Node, agent config.AgentConfig) {
 	setIntInMap(agentNode, "external_mcp_circuit_failure_threshold", agent.ExternalMCPCircuitFailureThreshold)
 	setIntInMap(agentNode, "external_mcp_circuit_cooldown_seconds", agent.ExternalMCPCircuitCooldownSeconds)
 	setStringInMap(agentNode, "system_prompt_path", agent.SystemPromptPath)
+	setStringInMap(agentNode, "system_prompt_preset", agent.SystemPromptPreset)
 }
 
 func updateMCPConfig(doc *yaml.Node, cfg config.MCPConfig) {
@@ -2098,6 +2551,16 @@ func updateC2Config(doc *yaml.Node, cfg config.C2Config) {
 	setBoolInMap(c2Node, "enabled", cfg.EnabledEffective())
 }
 
+// updateRedirectConfig 把受控跳转端点清单写回 config.yaml。
+// 端点是操作者自己的回连地址，不是凭证，但必须落在配置文件里才能在重启后存活。
+func updateRedirectConfig(doc *yaml.Node, cfg config.RedirectConfig) {
+	root := doc.Content[0]
+	redirectNode := ensureMap(root, "redirect")
+	setBoolInMap(redirectNode, "enabled", cfg.Enabled)
+	setStringSliceInMap(redirectNode, "urls", cfg.URLs)
+	setBoolInMap(redirectNode, "attach_scan", cfg.AttachScanEffective())
+}
+
 func mergeHitlToolWhitelistSlice(existing, add []string) []string {
 	seen := make(map[string]struct{})
 	out := make([]string, 0, len(existing)+len(add))
@@ -2217,6 +2680,11 @@ func updateRobotsConfig(doc *yaml.Node, cfg config.RobotsConfig) {
 	if cfg.Session.StrictUserIdentity != nil {
 		sessionNode := ensureMap(robotsNode, "session")
 		setBoolInMap(sessionNode, "strict_user_identity", *cfg.Session.StrictUserIdentity)
+	}
+	if cfg.Session.RateLimitPerMinute > 0 || cfg.Session.RateLimitBurst > 0 {
+		sessionNode := ensureMap(robotsNode, "session")
+		setIntInMap(sessionNode, "rate_limit_per_minute", cfg.Session.RateLimitPerMinute)
+		setIntInMap(sessionNode, "rate_limit_burst", cfg.Session.RateLimitBurst)
 	}
 
 	wechatNode := ensureMap(robotsNode, "wechat")

@@ -51,6 +51,11 @@ func (h *ConfigHandler) UpdateToolGuard(c *gin.Context) {
 	var req struct {
 		Enabled *bool             `json:"enabled"`
 		Rules   *[]toolguard.Rule `json:"rules"`
+		// Scope is optional. Omitting it clears the authorization scope, which
+		// restores the conservative default where every government target is
+		// blocked. Present it to run an authorized engagement against exactly
+		// the hosts named in the engagement letter.
+		Scope *toolguard.Scope `json:"scope"`
 	}
 	if err := decodeToolGuardRequest(c, &req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "无效的调用拦截配置: " + err.Error()})
@@ -60,7 +65,7 @@ func (h *ConfigHandler) UpdateToolGuard(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "必须明确提供 enabled 和 rules；清空规则请提供空数组"})
 		return
 	}
-	cfg := toolguard.Config{Enabled: *req.Enabled, Rules: *req.Rules}
+	cfg := toolguard.Config{Enabled: *req.Enabled, Rules: *req.Rules, Scope: req.Scope}
 	if _, err := toolguard.Compile(cfg); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

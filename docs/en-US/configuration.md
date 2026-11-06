@@ -9,7 +9,7 @@ The main configuration file is `config.yaml`. Many fields are editable through t
 ```yaml
 server:
   host: 0.0.0.0
-  port: 8080
+  port: 9898
   tls_enabled: true
   # Optional: other trusted Web integrations; Chromium extensions need no entry.
   # cors_allowed_origins:
@@ -98,7 +98,21 @@ Common Web UI operations:
 | `knowledge.embedding` | updates retriever/indexer config | rebuild index for existing vectors |
 | `robots` | restarts long-lived connections | platform callback settings must still match |
 | `c2.enabled` | reconciles C2 runtime | verify existing listeners/sessions manually |
+| `redirect.enabled` / `redirect.urls` | re-registers the `redirect_probe` tool | stored payloads still have to be re-tested against the new endpoints |
 | `server.port/tls` | usually needs process restart | listener settings are not ordinary hot state |
+
+## Controlled Redirect Endpoints
+
+`redirect` holds the callback endpoints used when re-testing open redirects. Stored findings usually embed the attacker's own domain; configuring your endpoints once lets every payload be swapped for a target you control.
+
+```yaml
+redirect:
+  enabled: true
+  urls:
+    - https://97y.me/tjneJ
+```
+
+The list is active when `enabled` is `true` or `urls` is non-empty; entries without an `http`/`https` scheme are dropped and duplicates removed. The `redirect_probe` MCP tool is registered only while the list is active. See [Controlled Redirect Endpoints](redirect-endpoints.md) for the tool's parameters and the write-back behaviour.
 
 ## Fallback Relationships
 

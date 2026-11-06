@@ -259,7 +259,6 @@
         cy = cytoscape({
             container,
             elements: [],
-            wheelSensitivity: 0.18,
             style: [
                 {
                     selector: 'node',
@@ -269,7 +268,7 @@
                         'height': 52,
                         'background-color': '#1d4ed8',
                         'border-width': 1,
-                        'border-color': '#60a5fa',
+                        'border-color': '#35ddff',
                         'label': 'data(label)',
                         'color': '#e5edff',
                         'font-size': 13,
@@ -281,8 +280,8 @@
                     }
                 },
                 { selector: 'node[type="start"]', style: { 'background-color': '#047857', 'border-color': '#34d399' } },
-                { selector: 'node[type="tool"]', style: { 'background-color': '#1d4ed8', 'border-color': '#60a5fa' } },
-                { selector: 'node[type="agent"]', style: { 'background-color': '#7c3aed', 'border-color': '#c4b5fd' } },
+                { selector: 'node[type="tool"]', style: { 'background-color': '#0e9bb8', 'border-color': '#35ddff' } },
+                { selector: 'node[type="agent"]', style: { 'background-color': '#127a8f', 'border-color': '#7aebff' } },
                 { selector: 'node[type="condition"]', style: { 'shape': 'diamond', 'background-color': '#b45309', 'border-color': '#fbbf24', 'width': 118, 'height': 86 } },
                 { selector: 'node[type="hitl"]', style: { 'background-color': '#0f766e', 'border-color': '#5eead4' } },
                 { selector: 'node[type="output"]', style: { 'background-color': '#4338ca', 'border-color': '#a5b4fc' } },

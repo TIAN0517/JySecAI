@@ -32,8 +32,8 @@ test('超长人工审批内容在限高区域内滚动且操作按钮始终可�
     assert.match(monitor, /while \(dock\.firstChild && dock\.firstChild !== actions\)/);
     assert.match(monitor, /wrapChatHitlApprovalScrollRegion\(dock\);/);
     assert.match(monitor, /url\.length > 160[\s\S]*?requestVisitLongUrl/);
-    assert.equal(zh.hitl.requestVisitLongUrl, '允许 CyberStrikeAI 访问此地址？');
-    assert.equal(en.hitl.requestVisitLongUrl, 'Allow CyberStrikeAI to visit this address?');
+    assert.equal(zh.hitl.requestVisitLongUrl, '允许 JySecAI 访问此地址？');
+    assert.equal(en.hitl.requestVisitLongUrl, 'Allow JySecAI to visit this address?');
 });
 
 test('刷新恢复会话时先完成权威审批配置同步再允许发送', () => {
@@ -41,7 +41,7 @@ test('刷新恢复会话时先完成权威审批配置同步再允许发送', ()
     assert.match(chat, /await waitForHitlConfigReady\(hitlConversationAtSendStart\)/);
     assert.match(chat, /hitlConfigSyncConversationId = conversationId;[\s\S]{0,240}await hitlConfigSyncPromise;/);
     assert.match(chat, /await hitlConfigSyncPromise;[\s\S]{0,220}seq !== loadConversationRequestSeq/);
-    assert.match(fs.readFileSync('web/static/js/hitl.js', 'utf8'), /window\.csaiHitlDefaultReviewerReady = initHitlDefaultReviewerFromServer\(\)/);
+    assert.match(fs.readFileSync('web/static/js/hitl.js', 'utf8'), /window\.csaiHitlDefaultReviewerReady = window\.csaiHitlDefaultConfigReady/);
 });
 
 test('同一会话的审批配置写入串行化以防止旧请求后到覆盖新选择', () => {
@@ -291,10 +291,10 @@ test('多对话并发时释放隐藏主流且旧请求不能覆盖新对话状�
     assert.match(chat, /let loadConversationAbortController = null/);
     assert.match(chat, /cancelPendingConversationLoad\(\);[\s\S]{0,900}const conversationLoadController = new AbortController\(\)/);
     assert.match(chat, /signal: conversationLoadController\.signal/);
-    assert.match(template, /monitor\.js\?v=20260907-blocked-1/);
-    assert.match(template, /chat-scroll\.js\?v=20260815-1/);
-    assert.match(template, /chat\.js\?v=20260907-blocked-1/);
-    assert.match(template, /style\.css\?v=20260907-blocked-1/);
+    assert.match(template, /monitor\.js\?v=20261027-jyrt3/);
+    assert.match(template, /chat-scroll\.js\?v=20261027-jyrt3/);
+    assert.match(template, /chat\.js\?v=20261027-jyrt3/);
+    assert.match(template, /style\.css\?v=20261027-jyrt3/);
 });
 
 test('彻底停止始终使用弹窗锁定的会话且状态刷新后仍会取消', () => {
@@ -351,7 +351,7 @@ test('审批状态主动轮询并在服务不可用时立即关闭旧审批', ()
     assert.match(monitor, /renderActiveTasks\(\[\]\);[\s\S]{0,260}hitlPendingInterruptTracker\.update\(\[\]\)/);
     assert.match(projects, /function syncProjectConversationApprovalStatuses\(items\)/);
     assert.match(projects, /window\.syncProjectConversationApprovalStatuses/);
-    assert.match(template, /projects\.js\?v=20260819-1/);
+    assert.match(template, /projects\.js\?v=20261022-report/);
 });
 
 test('旧会话首次升级到五分钟默认审批时限，仍允许用户之后主动选择不限时', () => {

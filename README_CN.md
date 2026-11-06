@@ -6,11 +6,11 @@
 
 [中文](README_CN.md) | [English](README.md)
 
-**AI 原生资安作战台——让意图成为受治理的执行，让证据成为可重播的运营记忆，并让每一次行动优化下一次。**
+**JySecAI 是 AI 原生网络安全的智能执行中枢——让意图转化为受治理的行动，让证据沉淀为运营记忆，并让每次行动优化下一次行动。**
 
-JySecAI 把规划、执行、人机协同监督、证据与复盘收拢在同一个可审计的工作空间中。项目以 Go 编写，融合 Eino 智能体、MCP 原生工具、RAG 知识、可视化工作流编排与攻击链建模能力，专供已获得明确授权的安全任务。本次版本新增 developer mode 与共用拒绝侦测模块、部署收据化，以及可重复执行的发布前闸门。
+JySecAI 将规划、执行、人工监督、证据与复盘连接在同一个可审计工作空间中。项目基于 Go 构建，融合 Eino 智能体、MCP 原生工具、RAG 知识、可视化工作流以及攻击链建模与分析能力，面向已获得明确授权的安全任务。
 
-**从这里开始：** [快速上手](#快速上手一条命令部署) · [中文文档](docs/zh-CN/README.md) · [安全加固](docs/zh-CN/security-hardening.md) · [开发者模式评测](docs/dev-mode-eval.md)
+**从这里开始：** [快速上手](#快速上手一条命令部署) · [中文文档](docs/zh-CN/README.md) · [安全加固](docs/zh-CN/security-hardening.md)
 
 > [!IMPORTANT]
 > 仅可对自有系统或已获得明确授权的目标使用 JySecAI。在共享或生产环境启用高风险工具、WebShell 或 C2 前，请先阅读[安全模型](docs/zh-CN/security-model.md)和[安全加固指南](docs/zh-CN/security-hardening.md)。
@@ -150,14 +150,14 @@ JySecAI 把规划、执行、人机协同监督、证据与复盘收拢在同一
 
 可选集成在 `plugins/` 目录下。
 
-- **Burp Suite 插件**：`plugins/burp-suite/cyberstrikeai-burp-extension/`  
-  构建产物：`plugins/burp-suite/cyberstrikeai-burp-extension/dist/cyberstrikeai-burp-extension.jar`  
-  说明文档：`plugins/burp-suite/cyberstrikeai-burp-extension/README.zh-CN.md`
-- **浏览器扩展（Chrome / Edge）**：`plugins/browser-extension/cyberstrikeai-browser-extension/`  
+- **Burp Suite 插件**：`plugins/burp-suite/jytech-burp-extension/`  
+  构建产物：`plugins/burp-suite/jytech-burp-extension/dist/jytech-burp-extension.jar`  
+  说明文档：`plugins/burp-suite/jytech-burp-extension/README.zh-CN.md`
+- **浏览器扩展（Chrome / Edge）**：`plugins/browser-extension/jytech-browser-extension/`  
   在 DevTools 中捕获 Network 流量并发送到 JySecAI 进行 AI 辅助安全测试，能力与 Burp 插件对齐。  
   安装：`chrome://extensions/` → 加载已解压 → F12 → **JySecAI** 标签页  
-  打包产物：`plugins/browser-extension/cyberstrikeai-browser-extension/dist/cyberstrikeai-browser-extension.zip`  
-  说明文档：`plugins/browser-extension/cyberstrikeai-browser-extension/README.zh-CN.md`
+  打包产物：`plugins/browser-extension/jytech-browser-extension/dist/jytech-browser-extension.zip`  
+  说明文档：`plugins/browser-extension/jytech-browser-extension/README.zh-CN.md`
 
 ## 工具概览
 
@@ -215,7 +215,7 @@ chmod +x run.sh && ./run.sh
 2. 打开该地址；默认 HTTPS 使用本地自签证书，首次访问需接受一次浏览器证书提示。
 3. 全新安装时，妥善保存 `ADMIN SETUP REQUIRED` 下仅展示一次的 `admin` 密码，登录后立即修改。
 
-**网络默认：** `run.sh` 会以 **`--https`** 并传入项目根 **`config.yaml`** 启动（本机自签证书，多路流式场景更稳）。只要明文 HTTP 用 **`./run.sh --http`**。生产环境在 **`config.yaml`** 的 **`server.tls_cert_path` / `server.tls_key_path`** 配正式证书（见文件内注释）。手动启动可加 **`--https`** 或环境变量 **`CYBERSTRIKE_HTTPS=1`**；`-config` 写错时程序会在终端提示正确写法。
+**网络默认：** `run.sh` 会以 **`--https`** 并传入项目根 **`config.yaml`** 启动（本机自签证书，多路流式场景更稳）。只要明文 HTTP 用 **`./run.sh --http`**。生产环境在 **`config.yaml`** 的 **`server.tls_cert_path` / `server.tls_key_path`** 配正式证书（见文件内注释）。手动启动可加 **`--https`** 或环境变量 **`JY_TECH_HTTPS=1`**（旧名 `CYBERSTRIKE_HTTPS` 仍相容）；`-config` 写错时程序会在终端提示正确写法。
 
 **首次配置：**
 1. **配置 AI 通道**（首次使用前必填）
@@ -322,7 +322,7 @@ JySecAI/
 ├── web/                 # 前端静态资源与模板
 ├── tools/               # YAML 工具目录（含 100+ 示例）
 ├── roles/               # 角色配置文件目录（含 12+ 预设安全测试角色）
-├── skills/              # Agent Skills 目录（SKILL.md + 可选文件；示例 cyberstrike-eino-demo）
+├── skills/              # Agent Skills 目录（SKILL.md + 可选文件；示例 jytech-eino-demo）
 ├── agents/              # 多代理 Markdown（orchestrator.md + 子代理 *.md）
 ├── docs/                # 专题文档（部署、配置、安全、API、知识库、C2、WebShell 等）
 ├── images/              # 文档配图
@@ -351,17 +351,13 @@ JySecAI/
 构建最新一次测试的攻击链，只导出风险 >= 高的节点列表。
 ```
 
-## 404星链计划 
-<img src="./images/404StarLinkLogo.png" width="30%">
+## Jy技术团队
 
-JySecAI 现已加入 [404星链计划](https://github.com/knownsec/404StarLink)
-
-## TCH Top-Ranked Intelligent Pentest Project  
 <div align="left">
-  <a href="https://zc.tencent.com/competition/competitionHackathon?code=cha004" target="_blank">
-    <img src="./images/tch.png" alt="TCH Top-Ranked Intelligent Pentest Project" width="30%">
-  </a>
+  <img src="./images/logo.png" alt="JySecAI" width="120">
 </div>
+
+JySecAI 由 **Jy技术团队** 打造与维护——一支专注于 AI 原生安全运营与 adversary emulation 工程的团队。
 
 
 ---
@@ -373,7 +369,7 @@ JySecAI 现已加入 [404星链计划](https://github.com/knownsec/404StarLink)
 <details>
 <summary><strong>微信群</strong></summary>
 
-<img src="./images/wechat-group-cyberstrikeai-qr.jpg" alt="JySecAI 微信群二维码" width="280">
+<img src="./images/wechat-group-jytech-qr.jpg" alt="JySecAI 微信群二维码" width="280">
 
 </details>
 

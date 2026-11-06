@@ -1,0 +1,16 @@
+P1: hex 8: None
+P2: hex 8 + dash: <re.Match object; span=(0, 9), match='0F4f3724-'>
+P3: hex 8-4: <re.Match object; span=(0, 13), match='0F4f3724-F434'>
+P4: hex 8-4-4: <re.Match object; span=(0, 18), match='0F4f3724-F434-7741'>
+P5: hex 8-4-4-4: None
+P6: full uuid: None
+P7: uuid ignorecase: None
+\n--- With literal chars ---\n  char='0' in [0-9A-Fa-f]? True
+  char='F' in [0-9A-Fa-f]? True
+  char='4' in [0-9A-Fa-f]? True
+  char='f' in [0-9A-Fa-f]? True
+  char='3' in [0-9A-Fa-f]? True
+  char='7' in [0-9A-Fa-f]? True
+  char='2' in [0-9A-Fa-f]? True
+  char='4' in [0-9A-Fa-f]? True
+  char='-' in [0-9A-Fa-f]? False

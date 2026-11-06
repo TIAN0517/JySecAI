@@ -1,0 +1,106 @@
+.dbadmin-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.dbadmin-banner {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(56, 225, 255, 0.28);
+    background: linear-gradient(135deg, rgba(56, 225, 255, 0.10), rgba(56, 225, 255, 0.03));
+    color: var(--text-primary, #e8f1ff);
+    font-size: 13px;
+    line-height: 1.7;
+}
+.dbadmin-banner.warn {
+    border-color: rgba(255, 210, 74, 0.42);
+    background: linear-gradient(135deg, rgba(255, 210, 74, 0.12), rgba(255, 210, 74, 0.03));
+}
+.dbadmin-section h3 {
+    margin: 0 0 12px;
+    font-size: 15px;
+}
+.dbadmin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+}
+.dbadmin-card {
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(94, 160, 255, 0.18);
+    background: var(--card-bg, rgba(12, 18, 32, 0.62));
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.dbadmin-card-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+}
+.dbadmin-card-head h3 {
+    margin: 0;
+    font-size: 16px;
+}
+.dbadmin-card-head p {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: var(--text-secondary, #8ea4c4);
+}
+.dbadmin-path {
+    font-size: 12px;
+    word-break: break-all;
+    color: var(--text-secondary, #8ea4c4);
+}
+.dbadmin-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-secondary, #8ea4c4);
+}
+.dbadmin-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.dbadmin-chip {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(56, 225, 255, 0.22);
+    font-size: 12px;
+}
+.dbadmin-chip b {
+    color: var(--text-primary, #eaf4ff);
+}
+.dbadmin-badge {
+    flex: none;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+.dbadmin-badge.ok {
+    color: #7dffc3;
+    border: 1px solid rgba(125, 255, 195, 0.35);
+}
+.dbadmin-badge.warn {
+    color: #ffd24a;
+    border: 1px solid rgba(255, 210, 74, 0.4);
+}
+.dbadmin-card-actions {
+    margin-top: auto;
+}
+.dbadmin-empty,
+.dbadmin-muted,
+.dbadmin-error {
+    font-size: 12px;
+    color: var(--text-secondary, #8ea4c4);
+}
+.dbadmin-error {
+    color: #ff8f8f;
+}

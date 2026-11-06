@@ -8,9 +8,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"jysecai/internal/database"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"jysecai/internal/database"
+	"jysecai/internal/security"
 )
 
 func TestAssetListPaginatesWithinProject(t *testing.T) {
@@ -49,8 +50,13 @@ func TestAssetListPaginatesWithinProject(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	// List 现在要求可解析的 session（requireAssetAccess 在 !ok 时回 401），
+	// 权限用 all 范围以聚焦在分页行为本身。
 	router := gin.New()
-	router.GET("/api/assets", NewAssetHandler(db, zap.NewNop()).List)
+	router.GET("/api/assets", func(c *gin.Context) {
+		c.Set(security.ContextSessionKey, security.Session{UserID: "admin", Scope: database.RBACScopeAll})
+		NewAssetHandler(db, zap.NewNop()).List(c)
+	})
 	request := httptest.NewRequest(http.MethodGet, "/api/assets?project_id="+project.ID+"&page=2&page_size=3", nil)
 	response := httptest.NewRecorder()
 	router.ServeHTTP(response, request)

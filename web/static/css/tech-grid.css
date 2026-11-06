@@ -1,0 +1,478 @@
+/* ==========================================================================
+   tech-grid.css — 科技感 3D 立體格子背景
+   --------------------------------------------------------------------------
+   純 CSS（只用 transform / opacity 動畫），不影響內容互動：
+     · 透視地板 + 天花板網格（repeating-linear-gradient + rotateX）
+     · 地平線輝光 + 掃描光帶
+     · 跟隨淺色 / 深色主題切換配色
+   用法：<div class="tech-grid-bg" aria-hidden="true"></div>（放在 body 最前）
+   ========================================================================== */
+
+.tech-grid-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background: var(--bg-secondary);
+    opacity: 1;
+}
+
+/* ---- 地平線 ---- */
+.tech-grid-bg::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 220px;
+    transform: translateY(-50%);
+    background:
+        radial-gradient(ellipse 60% 100% at 50% 50%,
+            rgba(56, 225, 255, 0.16) 0%,
+            rgba(56, 225, 255, 0.05) 45%,
+            transparent 72%);
+    filter: blur(2px);
+}
+
+/* ---- 地板 + 天花板 ---- */
+.tech-grid-bg::after {
+    content: "";
+    position: absolute;
+    left: -60%;
+    right: -60%;
+    top: 0;
+    bottom: 0;
+    background-image:
+        repeating-linear-gradient(to right,
+            rgba(80, 170, 255, 0.22) 0 1px,
+            transparent 1px 64px),
+        repeating-linear-gradient(to bottom,
+            rgba(80, 170, 255, 0.20) 0 1px,
+            transparent 1px 64px);
+    transform-origin: 50% 50%;
+    animation: tech-grid-drift 14s linear infinite;
+}
+
+/* 地板：從地平線往下透視 */
+.tech-grid-bg .tech-grid-floor,
+.tech-grid-bg .tech-grid-ceil {
+    position: absolute;
+    left: -80%;
+    right: -80%;
+    height: 62vh;
+    background-image:
+        repeating-linear-gradient(to right,
+            rgba(90, 200, 255, 0.30) 0 1px,
+            transparent 1px 70px),
+        repeating-linear-gradient(to bottom,
+            rgba(90, 200, 255, 0.26) 0 1px,
+            transparent 1px 70px);
+    transform-style: preserve-3d;
+    opacity: 0.75;
+}
+
+/* 地板（位於下半部，往內收） */
+.tech-grid-bg .tech-grid-floor {
+    bottom: -62vh;
+    transform: perspective(340px) rotateX(76deg);
+    transform-origin: 50% 0;
+    animation: tech-grid-floor-run 3.4s linear infinite;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 72%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 72%, transparent 100%);
+}
+
+/* 天花板（位於上半部，往內收） */
+.tech-grid-bg .tech-grid-ceil {
+    top: -62vh;
+    transform: perspective(340px) rotateX(-76deg);
+    transform-origin: 50% 100%;
+    animation: tech-grid-floor-run 4.1s linear infinite reverse;
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 18%, #000 72%, transparent 100%);
+    mask-image: linear-gradient(to top, transparent 0%, #000 18%, #000 72%, transparent 100%);
+}
+
+/* ---- 掃描光帶 ---- */
+.tech-grid-bg .tech-grid-scan {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 180px;
+    top: -180px;
+    background: linear-gradient(to bottom,
+            transparent 0%,
+            rgba(56, 225, 255, 0.07) 45%,
+            rgba(56, 225, 255, 0.14) 50%,
+            rgba(56, 225, 255, 0.07) 55%,
+            transparent 100%);
+    animation: tech-grid-scan 7s linear infinite;
+}
+
+/* ---- 網格節點光點 ---- */
+.tech-grid-bg .tech-grid-stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(1.4px 1.4px at 12% 22%, rgba(160, 235, 255, 0.85), transparent 60%),
+        radial-gradient(1.2px 1.2px at 78% 14%, rgba(160, 235, 255, 0.65), transparent 60%),
+        radial-gradient(1.6px 1.6px at 34% 72%, rgba(160, 235, 255, 0.60), transparent 60%),
+        radial-gradient(1.2px 1.2px at 62% 84%, rgba(160, 235, 255, 0.55), transparent 60%),
+        radial-gradient(1.3px 1.3px at 88% 58%, rgba(160, 235, 255, 0.70), transparent 60%),
+        radial-gradient(1.1px 1.1px at 22% 46%, rgba(160, 235, 255, 0.50), transparent 60%);
+    animation: tech-grid-twinkle 5.5s ease-in-out infinite;
+}
+
+@keyframes tech-grid-drift {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(64px, 0, 0); }
+}
+
+@keyframes tech-grid-floor-run {
+    from { background-position: 0 0, 0 0; }
+    to   { background-position: 0 0, 0 70px; }
+}
+
+@keyframes tech-grid-scan {
+    0%   { top: -180px; opacity: 0; }
+    12%  { opacity: 1; }
+    88%  { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+
+@keyframes tech-grid-twinkle {
+    0%, 100% { opacity: 0.35; }
+    50%      { opacity: 0.85; }
+}
+
+/* ---- 淺色主題：降低亮度、換成藍灰配色，避免影響文字閱讀 ---- */
+html[data-theme="light"] .tech-grid-bg {
+    opacity: 0.5;
+}
+
+html[data-theme="light"] .tech-grid-bg::before {
+    background:
+        radial-gradient(ellipse 60% 100% at 50% 50%,
+            rgba(37, 116, 169, 0.12) 0%,
+            rgba(37, 116, 169, 0.04) 45%,
+            transparent 72%);
+}
+
+html[data-theme="light"] .tech-grid-bg::after {
+    background-image:
+        repeating-linear-gradient(to right,
+            rgba(37, 116, 169, 0.20) 0 1px,
+            transparent 1px 64px),
+        repeating-linear-gradient(to bottom,
+            rgba(37, 116, 169, 0.16) 0 1px,
+            transparent 1px 64px);
+}
+
+html[data-theme="light"] .tech-grid-bg .tech-grid-floor,
+html[data-theme="light"] .tech-grid-bg .tech-grid-ceil {
+    background-image:
+        repeating-linear-gradient(to right,
+            rgba(37, 116, 169, 0.26) 0 1px,
+            transparent 1px 70px),
+        repeating-linear-gradient(to bottom,
+            rgba(37, 116, 169, 0.22) 0 1px,
+            transparent 1px 70px);
+}
+
+html[data-theme="light"] .tech-grid-bg .tech-grid-stars {
+    opacity: 0.35;
+}
+
+/* ---- 使用者偏好：減少動態效果時關閉動畫 ---- */
+@media (prefers-reduced-motion: reduce) {
+    .tech-grid-bg::after,
+    .tech-grid-bg .tech-grid-floor,
+    .tech-grid-bg .tech-grid-ceil,
+    .tech-grid-bg .tech-grid-scan,
+    .tech-grid-bg .tech-grid-stars {
+        animation: none !important;
+    }
+}
+
+/* ---- 內容永遠在背景之上 ---- */
+.main-layout {
+    position: relative;
+    z-index: 1;
+}
+
+/* .login-overlay 必須維持 style.css 的 position: fixed（inset:0 / z-index:1200）。
+   這裡原本把它一起設成 position: relative，導致登入閘門掉回文件流：
+   卡片排在頁面最上方、整個儀表板露在外面而且可互動
+   （2026-11-01 實測：https://jysecai.utown.cc.cd/#dashboard 外觀重疊且閘門失效）。
+   這裡只補 z-index，不要動 position。 */
+.login-overlay {
+    z-index: 1201;
+}
+
+/* ==========================================================================
+   登入閘門（未登入狀態）
+   --------------------------------------------------------------------------
+   外部開無痕時應該看到的是「3D 立體格子背景 + 說明 + 登入卡」的全螢幕閘門，
+   而不是儀表板跟登入卡疊在一起。
+   做法：未登入時不渲染受保護內容（.container），遮罩改成半透明讓 3D 格子透出來。
+   auth.js 會在 showLoginOverlay / hideLoginOverlay 切換 body.auth-gate-open。
+   ========================================================================== */
+
+/* 未登入：受保護內容不渲染（儀表板、側邊欄、header） */
+body.auth-gate-open .container {
+    display: none !important;
+}
+
+/* 未登入：遮罩半透明 + 收窄模糊，讓底下的 3D 立體格子背景看得出來。
+   用 #login-overlay 提高優先度，蓋掉 style.css 後面的
+   `html[data-theme="dark"] #login-overlay { background: rgba(2,6,23,0.72) }`。 */
+body.auth-gate-open #login-overlay {
+    background:
+        radial-gradient(42rem 30rem at 18% 12%, rgba(14, 155, 184, 0.20), transparent 62%),
+        radial-gradient(38rem 28rem at 82% 88%, rgba(53, 221, 255, 0.18), transparent 62%),
+        radial-gradient(30rem 22rem at 78% 16%, rgba(56, 189, 248, 0.10), transparent 65%),
+        rgba(3, 7, 18, 0.55);
+    backdrop-filter: blur(2px) saturate(1.05);
+    -webkit-backdrop-filter: blur(2px) saturate(1.05);
+}
+
+/* 未登入：3D 格子背景本來就在 .container 之下，現在容器收起來了，
+   把它提到閘門之下、內容之上，確保看得到。 */
+body.auth-gate-open .tech-grid-bg {
+    z-index: 0;
+    opacity: 1;
+}
+
+/* ==========================================================================
+   貸款案件主檔頁面
+   ========================================================================== */
+.loan-cases-page .page-header h2 {
+    background: linear-gradient(90deg, var(--text-primary, #eaf4ff), var(--accent-color, #38e1ff));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.5px;
+}
+
+.loan-source-banner {
+    margin: 12px 0 16px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.75;
+    border: 1px solid rgba(56, 225, 255, 0.28);
+    background: linear-gradient(135deg, rgba(56, 225, 255, 0.10), rgba(56, 225, 255, 0.03));
+    color: var(--text-primary, #e8f1ff);
+    box-shadow: 0 0 24px rgba(56, 225, 255, 0.10) inset;
+}
+
+.loan-source-banner.warn {
+    border-color: rgba(255, 210, 74, 0.42);
+    background: linear-gradient(135deg, rgba(255, 210, 74, 0.12), rgba(255, 210, 74, 0.03));
+}
+
+.loan-banner-note {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--text-secondary, #8ea4c4);
+    line-height: 1.7;
+}
+
+.loan-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.loan-kpi {
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(94, 160, 255, 0.20);
+    background: var(--card-bg, rgba(12, 18, 32, 0.72));
+    position: relative;
+    overflow: hidden;
+}
+
+.loan-kpi::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(56, 225, 255, 0.75), transparent);
+}
+
+.loan-kpi-label {
+    font-size: 12px;
+    color: var(--text-secondary, #8ea4c4);
+    margin-bottom: 6px;
+}
+
+.loan-kpi-value {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-primary, #eaf4ff);
+    text-shadow: 0 0 18px rgba(56, 225, 255, 0.35);
+    word-break: break-all;
+}
+
+.loan-panels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 16px;
+}
+
+.loan-panel {
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(94, 160, 255, 0.18);
+    background: var(--card-bg, rgba(12, 18, 32, 0.62));
+}
+
+.loan-panel h3 {
+    margin: 0 0 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary, #eaf4ff);
+}
+
+.loan-panel h4 {
+    margin: 18px 0 8px;
+    font-size: 13px;
+    color: var(--accent-color, #38e1ff);
+}
+
+.loan-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.loan-toolbar input,
+.loan-toolbar select {
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, rgba(94, 160, 255, 0.24));
+    background: var(--input-bg, rgba(10, 17, 32, 0.8));
+    color: var(--text-primary, #e8f1ff);
+    font-size: 13px;
+    min-width: 150px;
+}
+
+.loan-total {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--text-secondary, #8ea4c4);
+}
+
+.loan-table-wrap {
+    overflow: auto;
+    max-height: 460px;
+    border-radius: 8px;
+    border: 1px solid rgba(94, 160, 255, 0.12);
+}
+
+.loan-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+}
+
+.loan-table th {
+    position: sticky;
+    top: 0;
+    background: var(--bg-tertiary, #141b2d);
+    color: var(--text-primary, #eaf4ff);
+    text-align: left;
+    padding: 9px 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border-color, rgba(94, 160, 255, 0.22));
+}
+
+.loan-table td {
+    padding: 8px 11px;
+    border-bottom: 1px solid rgba(94, 160, 255, 0.08);
+    color: var(--text-primary, #e8f1ff);
+    white-space: nowrap;
+}
+
+.loan-table tbody tr:hover td {
+    background: rgba(56, 225, 255, 0.06);
+}
+
+.loan-empty {
+    padding: 26px 14px;
+    text-align: center;
+    color: var(--text-secondary, #8ea4c4);
+    font-size: 13px;
+}
+
+.loan-empty.warn { color: var(--warning-color, #ffd24a); }
+
+.loan-link {
+    color: var(--accent-color, #38e1ff);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.loan-link:hover { text-decoration: underline; }
+
+.loan-sha {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    color: var(--text-secondary, #8ea4c4);
+}
+
+.loan-ok { color: #3ef2a0; font-weight: 600; }
+.loan-bad { color: #ff6b7a; font-weight: 600; }
+
+.loan-pageinfo {
+    margin: 0 10px;
+    font-size: 12px;
+    color: var(--text-secondary, #8ea4c4);
+}
+
+.loan-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(3, 6, 14, 0.72);
+    z-index: 9999;
+    backdrop-filter: blur(3px);
+}
+
+.loan-modal-box {
+    position: relative;
+    width: min(1080px, 92vw);
+    max-height: 86vh;
+    overflow: auto;
+    padding: 22px;
+    border-radius: 14px;
+    border: 1px solid rgba(56, 225, 255, 0.30);
+    background: var(--bg-primary, #0c1220);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+}
+
+.loan-modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--accent-color, #38e1ff);
+}
+
+.loan-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--text-secondary, #8ea4c4);
+}
+
+.loan-modal-close:hover { color: var(--text-primary, #e8f1ff); }

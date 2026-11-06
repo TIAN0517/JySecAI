@@ -19,7 +19,7 @@ import (
 )
 
 // einoSingleAgentName 与 ChatModelAgent.Name 一致，供流式事件映射主对话区。
-const einoSingleAgentName = "cyberstrike-eino-single"
+const einoSingleAgentName = "jy-eino-single"
 
 // RunEinoSingleChatModelAgent 使用 Eino TypedChatModelAgent[*schema.AgenticMessage] + adk.NewRunner.Run（官方 Quick Start 的 Query 同属 Runner API；此处用历史 + 用户消息切片等价于多轮 Query）。
 // 与 RunDeepAgent 共享 runEinoADKAgentLoop 的 SSE 映射与 MCP 桥。
@@ -231,6 +231,6 @@ func RunEinoSingleChatModelAgent(
 		ModelName:               appCfg.OpenAI.Model,
 		MiddlewareConfig:        &ma.EinoMiddleware,
 		EmptyResponseMessage: "(Eino ADK single-agent session completed but no assistant text was captured. Check process details or logs.) " +
-			"（Eino ADK 单代理会话已完成，但未捕获到助手文本输出。请查看过程详情或日志。）",
+			"（Jy 红队 · 单代理会话已完成，但未捕获到助手文本输出。请查看过程详情或日志。）",
 	}, baseMsgs)
 }

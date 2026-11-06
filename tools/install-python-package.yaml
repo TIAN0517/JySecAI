@@ -9,9 +9,17 @@ args:
     ENV_NAME="${2:-default}"
     ADDITIONAL_ARGS="${3:-}"
 
-    BASE_DIR="${HOME}/.cyberstrike/venvs"
+    # venv 根目錄：新名 JY_TECH_HOME；舊版 ~/.cyberstrike/venvs 仍相容（存在就沿用）
+    BASE_DIR="${JY_TECH_HOME:-$HOME/.jytech}/venvs"
+    if [ ! -d "$BASE_DIR" ] && [ -d "${HOME}/.cyberstrike/venvs" ]; then
+      BASE_DIR="${HOME}/.cyberstrike/venvs"
+    fi
 
     detect_project_root() {
+      if [ -n "${JY_TECH_ROOT:-}" ] && [ -d "${JY_TECH_ROOT}" ]; then
+        printf '%s\n' "${JY_TECH_ROOT}"
+        return
+      fi
       if [ -n "${CYBERSTRIKE_ROOT:-}" ] && [ -d "${CYBERSTRIKE_ROOT}" ]; then
         printf '%s\n' "${CYBERSTRIKE_ROOT}"
         return
@@ -57,6 +65,7 @@ args:
     fi
   - "_"
 enabled: true
+action_class: "arbitrary"
 short_description: "在指定虚拟环境中创建/激活并安装Python依赖"
 description: |
   在虚拟环境中安装Python包。

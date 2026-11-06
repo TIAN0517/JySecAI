@@ -101,7 +101,7 @@
     // 从本地存储中获取当前登录 token（与 auth.js 使用的结构保持一致）
     function getStoredAuthToken() {
         try {
-            var raw = localStorage.getItem('cyberstrike-auth');
+            var raw = localStorage.getItem('jysec-auth');
             if (!raw) return null;
             var o = JSON.parse(raw);
             if (o && o.token) return o.token;
@@ -451,14 +451,6 @@
             currentTabId = terminals[switchToIndex].id;
             switchTerminalTab(currentTabId);
         }
-    }
-
-    function escapeHtml(s) {
-        return String(s)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
     }
 
     function refreshTerminalI18n() {

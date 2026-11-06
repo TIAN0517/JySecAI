@@ -1,6 +1,7 @@
 name: "waybackurls"
 command: "waybackurls"
 enabled: true
+action_class: "bulk_scan"
 short_description: "从Wayback Machine获取历史URL"
 description: |
   Waybackurls从Wayback Machine获取目标域名的历史URL。

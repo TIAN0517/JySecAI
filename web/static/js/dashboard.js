@@ -13,7 +13,7 @@
 var DASHBOARD_POLL_INTERVAL_MS = 60 * 1000;
 var DASHBOARD_STALE_THRESHOLD_MS = 5 * 60 * 1000;
 var DASHBOARD_STALE_CHECK_INTERVAL_MS = 30 * 1000;
-var DASHBOARD_SEVERITY_STATUS_FILTER_STORAGE_KEY = 'cyberstrike.dashboard.severityStatusFilter';
+var DASHBOARD_SEVERITY_STATUS_FILTER_STORAGE_KEY = 'jysec.dashboard.severityStatusFilter';
 var DASHBOARD_SEVERITY_STATUS_FILTER_VALUES = ['', 'open', 'confirmed', 'fixed', 'ignored', 'false_positive'];
 
 var dashboardState = {
@@ -901,6 +901,7 @@ function renderExternalMcpHealth(stats) {
     }
     var total = Number(stats.total ?? stats.Total ?? 0) || 0;
     var enabled = Number(stats.enabled ?? stats.Enabled ?? 0) || 0;
+    var disabled = Number(stats.disabled ?? stats.Disabled ?? 0) || 0;
     // 后端用 connected 表示已连接数；兼容旧字段 running
     var connected = Number(stats.connected ?? stats.Connected ??
         stats.running ?? stats.Running ?? 0) || 0;
@@ -916,6 +917,9 @@ function renderExternalMcpHealth(stats) {
     var down = Math.max(0, enabled - connected);
     row.hidden = false;
     textEl.textContent = formatNumber(connected) + ' / ' + formatNumber(enabled);
+    if (disabled > 0) {
+        textEl.textContent += ' · ' + formatNumber(disabled) + ' ' + dt('mcp.disabledCount', null, '已停用');
+    }
     if (healthEl) {
         healthEl.classList.remove('is-ok', 'is-warning', 'is-danger');
         if (down === 0) {
@@ -1523,11 +1527,11 @@ function updateProgressBar(id, percentage) {
 
 // Top 30 工具执行次数柱状图颜色（30 色不重复，柔和、易区分）
 var DASHBOARD_BAR_COLORS = [
-    '#93c5fd', '#a78bfa', '#6ee7b7', '#fde047', '#fda4af',
+    '#7aebff', '#35ddff', '#6ee7b7', '#fde047', '#fda4af',
     '#7dd3fc', '#a5b4fc', '#5eead4', '#fdba74', '#e9d5ff',
-    '#67e8f9', '#c4b5fd', '#86efac', '#fcd34d', '#f9a8d4',
+    '#67e8f9', '#7aebff', '#86efac', '#fcd34d', '#f9a8d4',
     '#bae6fd', '#c7d2fe', '#99f6e4', '#fed7aa', '#ddd6fe',
-    '#22d3ee', '#8b5cf6', '#4ade80', '#fbbf24', '#fb7185',
+    '#22d3ee', '#0e9bb8', '#4ade80', '#fbbf24', '#fb7185',
     '#38bdf8', '#818cf8', '#2dd4bf', '#fb923c', '#e0e7ff'
 ];
 
@@ -1925,7 +1929,7 @@ var SEVERITY_DONUT_GRADIENTS = {
     high: ['#fed7aa', '#fb923c', '#ea580c'],
     medium: ['#fef08a', '#facc15', '#ca8a04'],
     low: ['#99f6e4', '#2dd4bf', '#0f766e'],
-    info: ['#bfdbfe', '#60a5fa', '#2563eb']
+    info: ['#cffafe', '#35ddff', '#0e9bb8']
 };
 
 var severityDonutCenterDisplayed = { total: null, hoverCount: null };

@@ -70,7 +70,7 @@ Permissions use `module:action`. Common actions are `read`, `write`, `delete`, a
 | HITL | `hitl:read`, `hitl:write` |
 | Tasks | `tasks:read`, `tasks:write`, `tasks:delete` |
 | Projects | `project:read`, `project:write`, `project:delete` |
-| Vulnerabilities | `vulnerability:read`, `vulnerability:write`, `vulnerability:delete` |
+| Vulnerabilities | `vulnerability:read`, `vulnerability:write`, `vulnerability:delete`, `vulnerability:export` |
 | WebShell | `webshell:read`, `webshell:write`, `webshell:delete` |
 | C2 | `c2:read`, `c2:write`, `c2:delete` |
 | MCP | `mcp:read`, `mcp:execute`, `mcp:write`, `mcp:external:execute` |
@@ -225,6 +225,7 @@ agent:execute
 chat:read / chat:write
 project:read / project:write
 vulnerability:read / vulnerability:write
+vulnerability:export
 tasks:read / tasks:write
 files:read / files:write
 hitl:read / hitl:write
@@ -293,7 +294,7 @@ Management routes require `rbac:read` or `rbac:write`; the resource picker requi
 Create a user:
 
 ```bash
-curl -X POST http://localhost:8080/api/rbac/users \
+curl -X POST http://localhost:9898/api/rbac/users \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -308,7 +309,7 @@ curl -X POST http://localhost:8080/api/rbac/users \
 Create a custom role:
 
 ```bash
-curl -X POST http://localhost:8080/api/rbac/roles \
+curl -X POST http://localhost:9898/api/rbac/roles \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -322,7 +323,7 @@ curl -X POST http://localhost:8080/api/rbac/roles \
 Assign projects:
 
 ```bash
-curl -X POST http://localhost:8080/api/rbac/resource-assignments \
+curl -X POST http://localhost:9898/api/rbac/resource-assignments \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{

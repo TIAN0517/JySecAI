@@ -1,0 +1,241 @@
+.xss-page .page-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.xss-status-bar {
+    padding: 10px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.xss-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.xss-section-head,
+.xss-capture-toolbar,
+.xss-modal-head,
+.xss-modal-actions,
+.xss-row-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.xss-section-head h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.xss-count-badge {
+    display: inline-flex;
+    min-width: 1.4em;
+    justify-content: center;
+    margin-left: 6px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: rgba(37, 99, 235, 0.15);
+    color: var(--accent-color);
+    font-size: 12px;
+}
+
+.xss-capture-toolbar {
+    justify-content: flex-start;
+    margin: 12px 0;
+}
+
+.xss-capture-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.xss-capture-field .form-control {
+    min-width: 180px;
+}
+
+.xss-table-wrap {
+    overflow-x: auto;
+}
+
+.xss-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.xss-table th,
+.xss-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+    vertical-align: middle;
+}
+
+.xss-table th {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.xss-table-wrap.is-empty .xss-table {
+    display: none;
+}
+
+.xss-clip {
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.xss-empty {
+    padding: 28px 12px;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.xss-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    background: rgba(37, 99, 235, 0.12);
+}
+
+.xss-badge--ok {
+    background: rgba(16, 185, 129, 0.16);
+}
+
+.xss-badge--used,
+.xss-badge--probe {
+    background: rgba(245, 158, 11, 0.16);
+}
+
+.xss-badge--expired,
+.xss-badge--muted {
+    background: rgba(107, 114, 128, 0.2);
+}
+
+.xss-row-actions {
+    justify-content: flex-start;
+    white-space: nowrap;
+}
+
+.xss-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.55);
+}
+
+.xss-modal {
+    width: min(640px, 100%);
+    max-height: min(86vh, 820px);
+    overflow: auto;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--card-bg, var(--bg-secondary));
+}
+
+.xss-modal-lg {
+    width: min(820px, 100%);
+}
+
+.xss-modal-head h3 {
+    margin: 0;
+}
+
+.xss-modal-close {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.xss-modal-hint,
+.xss-form-group {
+    margin-top: 12px;
+}
+
+.xss-modal-hint {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.xss-form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.xss-toggle-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.xss-script-text {
+    width: 100%;
+    min-height: 140px;
+    box-sizing: border-box;
+    margin-top: 8px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    resize: vertical;
+}
+
+.xss-modal-actions {
+    justify-content: flex-end;
+    margin-top: 14px;
+}
+
+.xss-detail-list {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 8px 12px;
+    margin: 12px 0 0;
+}
+
+.xss-detail-list dt {
+    color: var(--text-muted);
+}
+
+.xss-detail-list dd {
+    margin: 0;
+    word-break: break-word;
+}
+
+@media (max-width: 720px) {
+    .xss-section-head,
+    .xss-capture-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .xss-detail-list {
+        grid-template-columns: 1fr;
+    }
+}

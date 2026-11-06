@@ -27,6 +27,12 @@ func NewAssetHandler(db *database.DB, logger *zap.Logger) *AssetHandler {
 	return &AssetHandler{db: db, logger: logger}
 }
 
+// assetAccess / assetAccessForPermission 解析调用者的资产访问范围。
+//
+// 解析不出 session 时返回零值，DB 层现在会把它解释为「看不到任何资产」
+// （appendAssetAccess 会加 AND 1=0）。但对写操作来说，零值意味着
+// 「操作静默无效」而不是「拒绝」—— 调用方会以为成功了。资产相关的
+// handler 应该用 requireAssetAccess，它会直接返回 401。
 func assetAccess(c *gin.Context) database.RBACListAccess {
 	if session, ok := security.CurrentSession(c); ok {
 		return database.RBACListAccess{UserID: session.UserID, Scope: session.Scope}
@@ -39,6 +45,25 @@ func assetAccessForPermission(c *gin.Context, permission string) database.RBACLi
 		return database.RBACListAccess{UserID: session.UserID, Scope: session.ScopeFor(permission)}
 	}
 	return database.RBACListAccess{}
+}
+
+// requireAssetAccess 解析范围，解析不出 session 时中止请求。
+func requireAssetAccess(c *gin.Context) (database.RBACListAccess, bool) {
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return database.RBACListAccess{}, false
+	}
+	return database.RBACListAccess{UserID: session.UserID, Scope: session.Scope}, true
+}
+
+func requireAssetAccessForPermission(c *gin.Context, permission string) (database.RBACListAccess, bool) {
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return database.RBACListAccess{}, false
+	}
+	return database.RBACListAccess{UserID: session.UserID, Scope: session.ScopeFor(permission)}, true
 }
 
 type importAssetsRequest struct {
@@ -145,7 +170,11 @@ func (h *AssetHandler) List(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	assets, total, err := h.db.ListAssets(pageSize, (page-1)*pageSize, filter, assetAccess(c))
+	access, ok := requireAssetAccess(c)
+	if !ok {
+		return
+	}
+	assets, total, err := h.db.ListAssets(pageSize, (page-1)*pageSize, filter, access)
 	if err != nil {
 		h.logger.Error("加载资产失败", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -222,7 +251,11 @@ func (h *AssetHandler) Selection(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	assets, total, err := h.db.ListAssetsForOperation(maxAssetOperationBatch, filter, assetAccess(c))
+	access, ok := requireAssetAccess(c)
+	if !ok {
+		return
+	}
+	assets, total, err := h.db.ListAssetsForOperation(maxAssetOperationBatch, filter, access)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "total": total})
 		return
@@ -259,7 +292,11 @@ func (h *AssetHandler) Stats(c *gin.Context) {
 		}
 		days = parsed
 	}
-	stats, err := h.db.GetAssetStats(assetAccess(c), days)
+	access, ok := requireAssetAccess(c)
+	if !ok {
+		return
+	}
+	stats, err := h.db.GetAssetStats(access, days)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -278,7 +315,10 @@ func (h *AssetHandler) RecordScans(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "scans 数量必须在 1-10000 之间"})
 		return
 	}
-	access := assetAccess(c)
+	access, ok := requireAssetAccess(c)
+	if !ok {
+		return
+	}
 	for _, scan := range req.Scans {
 		conversationID := strings.TrimSpace(scan.ConversationID)
 		queueID := strings.TrimSpace(scan.QueueID)
@@ -328,11 +368,15 @@ func (h *AssetHandler) Update(c *gin.Context) {
 			return
 		}
 	}
-	if err := h.db.UpdateAsset(c.Param("id"), &asset, assetAccess(c)); err != nil {
+	access, ok := requireAssetAccess(c)
+	if !ok {
+		return
+	}
+	if err := h.db.UpdateAsset(c.Param("id"), &asset, access); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	updated, err := h.db.GetAsset(c.Param("id"), assetAccess(c))
+	updated, err := h.db.GetAsset(c.Param("id"), access)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "资产不存在"})
 		return
@@ -362,7 +406,11 @@ func (h *AssetHandler) UpdateProjectBinding(c *gin.Context) {
 			return
 		}
 	}
-	updated, err := h.db.UpdateAssetsProject(req.AssetIDs, req.ProjectID, assetAccess(c))
+	access, ok := requireAssetAccess(c)
+	if !ok {
+		return
+	}
+	updated, err := h.db.UpdateAssetsProject(req.AssetIDs, req.ProjectID, access)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -380,11 +428,15 @@ func (h *AssetHandler) BulkUpdate(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "asset_ids 数量必须在 1-10000 之间"})
 		return
 	}
+	access, ok := requireAssetAccess(c)
+	if !ok {
+		return
+	}
 	updated, err := h.db.UpdateAssetsBulk(req.AssetIDs, database.AssetBulkPatch{
 		Status: req.Status, ResponsiblePerson: req.ResponsiblePerson, Department: req.Department,
 		BusinessSystem: req.BusinessSystem, Environment: req.Environment, Criticality: req.Criticality,
 		AddTags: req.AddTags, RemoveTags: req.RemoveTags,
-	}, assetAccess(c))
+	}, access)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -402,7 +454,11 @@ func (h *AssetHandler) BatchDelete(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "asset_ids 数量必须在 1-10000 之间"})
 		return
 	}
-	deleted, err := h.db.DeleteAssets(req.AssetIDs, assetAccess(c))
+	access, ok := requireAssetAccess(c)
+	if !ok {
+		return
+	}
+	deleted, err := h.db.DeleteAssets(req.AssetIDs, access)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -444,8 +500,14 @@ func (h *AssetHandler) Merge(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "合并资产数量必须在 2-100 之间"})
 		return
 	}
-	writeAccess := assetAccessForPermission(c, "asset:write")
-	deleteAccess := assetAccessForPermission(c, "asset:delete")
+	writeAccess, ok := requireAssetAccessForPermission(c, "asset:write")
+	if !ok {
+		return
+	}
+	deleteAccess, ok := requireAssetAccessForPermission(c, "asset:delete")
+	if !ok {
+		return
+	}
 	primaryID := strings.TrimSpace(req.PrimaryID)
 	if primaryID == "" {
 		primaryID = strings.TrimSpace(req.AssetIDs[0])
@@ -532,7 +594,11 @@ func (h *AssetHandler) Merge(c *gin.Context) {
 }
 
 func (h *AssetHandler) Delete(c *gin.Context) {
-	if err := h.db.DeleteAsset(c.Param("id"), assetAccess(c)); err != nil {
+	access, ok := requireAssetAccess(c)
+	if !ok {
+		return
+	}
+	if err := h.db.DeleteAsset(c.Param("id"), access); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "资产不存在或无权删除"})
 		return
 	}

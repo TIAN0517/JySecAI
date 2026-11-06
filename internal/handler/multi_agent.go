@@ -153,7 +153,7 @@ func (h *AgentHandler) MultiAgentLoopStream(c *gin.Context) {
 		}
 	}()
 
-	sendEvent("progress", "正在启动 Eino 多代理...", map[string]interface{}{
+	sendEvent("progress", "正在启动 Jy 红队多代理...", map[string]interface{}{
 		"conversationId": conversationID,
 	})
 
@@ -287,12 +287,13 @@ func (h *AgentHandler) MultiAgentLoopStream(c *gin.Context) {
 				autoCancelledPendingExecutionIDs = mergeMCPExecutionIDLists(autoCancelledPendingExecutionIDs, cancelled)
 				decision = h.decideAgentRunForDeliveryWithPolicy(conversationID, assistantMessageID, agentMode, result, cumulativeMCPExecutionIDs, requestRequiresExecutionEvidence(&req))
 			}
-			if h.tryAutoContinueAfterFinalization(taskCtx, conversationID, result, decision, &finalizationAutoContinueAttempt, &curHistory, &curFinalMessage, progressCallback) {
+			if h.tryAutoContinueAfterFinalization(taskCtx, conversationID, result, decision, cumulativeMCPExecutionIDs, &finalizationAutoContinueAttempt, &curHistory, &curFinalMessage, progressCallback) {
 				mainIterationOffset += segmentMainIterationMax
 				timeoutCancel()
 				baseCtx, cancelWithCause, taskCtx, timeoutCancel = h.rebindEinoRunningTask(taskCtx, conversationID, timeoutCancel)
 				continue
 			}
+			decision = h.finalizeExhaustedFailedExecutions(decision, finalizationAutoContinueAttempt, cumulativeMCPExecutionIDs, result)
 			timeoutCancel()
 			break
 		}
@@ -364,7 +365,7 @@ func (h *AgentHandler) MultiAgentLoopStream(c *gin.Context) {
 			return
 		}
 
-		if errors.Is(runErr, context.DeadlineExceeded) || errors.Is(context.Cause(taskCtx), context.DeadlineExceeded) {
+		if taskDeadlineExceeded(taskCtx) {
 			taskStatus = "timeout"
 			h.tasks.UpdateTaskStatus(conversationID, taskStatus)
 			timeoutMsg := "任务执行超时，已自动终止。"
@@ -534,9 +535,10 @@ func (h *AgentHandler) MultiAgentLoop(c *gin.Context) {
 			autoCancelledPendingExecutionIDs = mergeMCPExecutionIDLists(autoCancelledPendingExecutionIDs, cancelled)
 			decision = h.decideAgentRunForDeliveryWithPolicy(prep.ConversationID, prep.AssistantMessageID, agentMode, result, result.MCPExecutionIDs, requestRequiresExecutionEvidence(&req))
 		}
-		if h.tryAutoContinueAfterFinalization(taskCtx, prep.ConversationID, result, decision, &finalizationAutoContinueAttempt, &curHist, &curMsg, progressCallback) {
+		if h.tryAutoContinueAfterFinalization(taskCtx, prep.ConversationID, result, decision, result.MCPExecutionIDs, &finalizationAutoContinueAttempt, &curHist, &curMsg, progressCallback) {
 			continue
 		}
+		decision = h.finalizeExhaustedFailedExecutions(decision, finalizationAutoContinueAttempt, result.MCPExecutionIDs, result)
 		break
 	}
 

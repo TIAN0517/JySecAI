@@ -21,6 +21,7 @@ require (
 	github.com/disintegration/imaging v1.6.2
 	github.com/eino-contrib/jsonschema v1.0.3
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-sql-driver/mysql v1.9.3
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
 	github.com/larksuite/oapi-sdk-go/v3 v3.4.22
@@ -50,6 +51,7 @@ require (
 	cloud.google.com/go/auth v0.7.2 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.3 // indirect
 	cloud.google.com/go/compute/metadata v0.9.0 // indirect
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.17.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.10.0 // indirect
 	github.com/anthropics/anthropic-sdk-go v1.56.0 // indirect

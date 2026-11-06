@@ -631,17 +631,6 @@
         return v.toFixed(digits) + ' ' + units[i];
     }
 
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    function escapeAttr(text) {
-        return escapeHtml(text).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-    }
-
     /** 任务列表操作按钮（查看/取消/删除）— 事件委托 */
     function bindC2TaskActionDelegation() {
         if (document.documentElement.dataset.c2TaskActionsBound === '1') return;
@@ -2791,7 +2780,7 @@
             payload: { path: path }
         }).then(data => {
             if (data.error) {
-                if (container) container.innerHTML = `<div class="c2-error">${data.error}</div>`;
+                if (container) container.innerHTML = `<div class="c2-error">${escapeHtml(data.error)}</div>`;
                 return;
             }
             C2.waitForFileList(data.task?.id || data.task_id, sessionId, path);

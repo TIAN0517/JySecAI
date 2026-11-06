@@ -1,6 +1,7 @@
 name: "trivy"
 command: "trivy"
 enabled: true
+action_class: "local_analysis"
 short_description: "容器和文件系统漏洞扫描器"
 description: |
   Trivy是一个简单而全面的容器和文件系统漏洞扫描器。
@@ -26,6 +27,8 @@ parameters:
     format: "positional"
   - name: "target"
     type: "string"
+    target: true
+    target_kind: "host"
     description: "扫描目标（镜像名、目录、仓库）"
     required: true
     position: 1

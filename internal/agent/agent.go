@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	gopath "path"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -281,19 +282,111 @@ func (fc *FunctionCall) UnmarshalJSON(data []byte) error {
 type ProgressCallback func(eventType, message string, data interface{})
 
 // EinoSingleAgentSystemInstruction 供 Eino adk.ChatModelAgent.Instruction 使用（含 system_prompt_path）。
+// slashNormalized 把路徑分隔符統一成 '/'，讓路徑結構的判斷不受主機 OS 影響。
+//
+// filepath 的 Clean/Abs 在非 Windows 主機上不認得反斜線，於是 `..\..\config.yaml`
+// 這種 Windows 形式的逃逸路徑會被當成一個「檔名很怪的相對路徑」而通過檢查。
+// 部署主機是 Windows，但同一份程式也會在 Linux 上跑，判斷必須一致。
+func slashNormalized(p string) string {
+	return strings.ReplaceAll(p, `\`, "/")
+}
+
+// isWindowsVolumePath 判斷是否為 Windows 磁碟機絕對路徑（C:\... / c:/...）。
+func isWindowsVolumePath(p string) bool {
+	if len(p) < 2 || p[1] != ':' {
+		return false
+	}
+	c := p[0]
+	return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
+}
+
+// isRootedOrAbsolutePath 判斷是否為「根起始」或絕對路徑（含 Windows 磁碟機與 UNC）。
+// 在任何平台上都視為絕對路徑：主機不是 Windows 時，這些字串其實讀不到目標檔案，
+// 但把它們當成相對檔名會讓「任意檔案讀取」的檢查形同虛設。
+func isRootedOrAbsolutePath(p string) bool {
+	return isWindowsVolumePath(p) ||
+		strings.HasPrefix(p, "/") ||
+		strings.HasPrefix(p, `\`) ||
+		strings.HasPrefix(p, `\\`)
+}
+
+// resolveWithinPromptBase resolves a configured prompt file path and confirms
+// it stays inside base. An empty base means no confinement is configured, in
+// which case only a relative path is accepted — an absolute path would
+// otherwise be a direct read of any file on the host.
+func resolveWithinPromptBase(base, path string) (string, error) {
+	trimmed := strings.TrimSpace(path)
+	if trimmed == "" {
+		return "", errors.New("提示詞路徑為空")
+	}
+	if strings.TrimSpace(base) == "" {
+		// 没有根目录时，唯一的依据就是“它必须是干净的相对路径”。
+		// 不能只靠 filepath.IsAbs：Windows 上它是 volume-aware 的，
+		// IsAbs(`\Windows\System32\config\SAM`) 为 false，但 filepath.Abs 会
+		// 解析成 `C:\Windows\System32\config\SAM` 而成功读出 SAM。
+		// 同样不能只在 Windows 上才认得 C:\ 与 ..\ —— 判定必须与主机 OS 无关。
+		if isRootedOrAbsolutePath(trimmed) {
+			return "", errors.New("未配置提示词根目录，拒绝读取根路径或绝对路径")
+		}
+		cleaned := gopath.Clean(slashNormalized(trimmed))
+		if cleaned == ".." || strings.HasPrefix(cleaned, "../") {
+			return "", fmt.Errorf("路径 %s 越出当前目录", path)
+		}
+		abs, err := filepath.Abs(filepath.FromSlash(cleaned))
+		if err != nil {
+			return "", err
+		}
+		return abs, nil
+	}
+	baseAbs, err := filepath.Abs(base)
+	if err != nil {
+		return "", err
+	}
+	candidate := trimmed
+	if isRootedOrAbsolutePath(trimmed) {
+		// 已经是绝对路径（Windows 磁碟機 / UNC / 根起始），不要再拼到 base 底下。
+		candidate = trimmed
+	} else if !filepath.IsAbs(candidate) {
+		candidate = filepath.Join(baseAbs, candidate)
+	}
+	// EvalSymlinks defeats a symlink planted inside base that points outward.
+	if resolved, evalErr := filepath.EvalSymlinks(candidate); evalErr == nil {
+		candidate = resolved
+	}
+	if resolvedBase, evalErr := filepath.EvalSymlinks(baseAbs); evalErr == nil {
+		baseAbs = resolvedBase
+	}
+	candidate = filepath.Clean(candidate)
+	// 包含判斷一律以 '/' 為準：Windows 形式的 `..\..\` 在非 Windows 主機上
+	// 不會被 filepath.Clean 展開，會讓逃逸路徑混進 base 目錄。
+	baseNorm := gopath.Clean(slashNormalized(baseAbs))
+	candNorm := gopath.Clean(slashNormalized(candidate))
+	if candNorm != baseNorm && !strings.HasPrefix(candNorm, baseNorm+"/") {
+		return "", fmt.Errorf("路径 %s 不在提示词根目录内", path)
+	}
+	return candidate, nil
+}
+
 func (a *Agent) EinoSingleAgentSystemInstruction() string {
 	systemPrompt := DefaultSingleAgentSystemPrompt()
 	if a.agentConfig != nil {
+		// preset 先选内置提示（default / aggressive）；文件路径优先级最高，读取成功即覆盖。
+		systemPrompt = SingleAgentSystemPromptForPreset(a.agentConfig.SystemPromptPreset)
 		if p := strings.TrimSpace(a.agentConfig.SystemPromptPath); p != "" {
-			path := p
 			a.mu.RLock()
 			base := a.promptBaseDir
 			a.mu.RUnlock()
-			if !filepath.IsAbs(path) && base != "" {
-				path = filepath.Join(base, path)
-			}
-			if b, err := os.ReadFile(path); err != nil {
-				a.logger.Warn("读取单代理 system_prompt_path 失败，使用内置提示", zap.String("path", path), zap.Error(err))
+
+			// system_prompt_path 可由 PUT /api/config 写入，其内容会成为 LLM
+			// 系统提示并可经对话回显。绝对路径原本直接读取，等于把「更新设置」
+			// 变成「读取主机上任意文件」（含 ~/.ssh/id_rsa 等）。要求解析后的
+			// 路径仍位于提示词根目录内。
+			path, err := resolveWithinPromptBase(base, p)
+			if err != nil {
+				a.logger.Warn("拒绝读取提示词目录之外的文件，使用内置提示",
+					zap.String("path", p), zap.Error(err))
+			} else if b, readErr := os.ReadFile(path); readErr != nil {
+				a.logger.Warn("读取单代理 system_prompt_path 失败，使用内置提示", zap.String("path", path), zap.Error(readErr))
 			} else if s := strings.TrimSpace(string(b)); s != "" {
 				systemPrompt = s
 			}

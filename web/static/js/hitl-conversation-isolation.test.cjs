@@ -25,7 +25,7 @@ test('已有会话缺少本地配置时不会继承其他会话的最近审批�
 test('服务端默认审批人只更新默认值，不覆盖最近会话选择', () => {
     const source = functionSource(hitl, 'applyHitlDefaultReviewerFromServer', 'fetchHitlDefaultReviewer');
 
-    assert.match(source, /window\.csaiHitlDefaultReviewer = v/);
+    assert.match(source, /window\.csaiHitlDefaultReviewer = reviewer/);
     assert.doesNotMatch(source, /saveHitlLastGlobalConfig/);
 });
 
@@ -36,6 +36,15 @@ test('恢复会话审批配置时保留该会话自己的审批人', () => {
     assert.match(source, /merged = \{[\s\S]*?reviewer: localReviewer/);
     assert.match(source, /saveHitlConversationConfig\(conversationId, \{[\s\S]*?reviewer: localReviewer/);
     assert.doesNotMatch(source, /getHitlLastGlobalConfig/);
+});
+
+test('全局默认关闭时不以 localStorage 旧审查模式覆写服务器', () => {
+    const source = functionSource(hitl, 'syncHitlConfigFromServer', 'syncHitlConfigToServerByCurrentConversation');
+
+    assert.match(source, /serverDefaultOff/);
+    assert.match(source, /!hitlEffectiveEnabled\(cfg\) && !serverDefaultOff/);
+    assert.match(source, /!hitlEffectiveEnabled\(cfg\) && serverDefaultOff/);
+    assert.match(source, /mode: 'off'/);
 });
 
 test('异步同步只能刷新仍处于当前会话的审批界面', () => {

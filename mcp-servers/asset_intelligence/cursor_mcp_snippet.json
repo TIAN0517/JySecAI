@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "jysecai-assets": {
+      "command": "C:\\Program Files\\Python311\\python.exe",
+      "args": [
+        "C:\\Users\\Administrator\\Desktop\\JySecAI\\mcp-servers\\asset_intelligence\\scripts\\run_stdio.py"
+      ],
+      "timeout": 120,
+      "env": {
+        "ASSET_INTEL_DB_PATH": "C:\\Users\\Administrator\\AppData\\Local\\JySecAI\\assets\\assets.db",
+        "ASSET_INTEL_SCOPE_FILE": "C:\\Users\\Administrator\\Desktop\\JySecAI\\mcp-servers\\asset_intelligence\\scope.json",
+        "FOFA_API_KEY": "${FOFA_API_KEY}",
+        "ZOOMEYE_API_KEY": "${ZOOMEYE_API_KEY}"
+      }
+    }
+  }
+}

@@ -13,6 +13,20 @@ import (
 	"go.uber.org/zap"
 )
 
+// setAuthCookie 寫入驗證 cookie。
+//
+// 安全設定：HttpOnly（前端讀不到，避免 XSS 竊取）、SameSite=Lax（防 CSRF 跨站帶 cookie）、
+// Secure 只在確定是 https 時才開（區網內的 http 部署會讓 cookie 被瀏覽器丟棄）。
+func setAuthCookie(c *gin.Context, token string, expiresAt time.Time) {
+	secure := c.Request.TLS != nil || strings.EqualFold(c.GetHeader("X-Forwarded-Proto"), "https")
+	maxAge := int(time.Until(expiresAt).Seconds())
+	if maxAge <= 0 {
+		maxAge = 1
+	}
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("auth_token", token, maxAge, "/", "", secure, true)
+}
+
 // AuthHandler handles authentication-related endpoints.
 type AuthHandler struct {
 	manager    *security.AuthManager
@@ -86,6 +100,32 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		})
 	}
 
+	// 直接用連結開啟的下載（<a download>、貼到瀏覽器網址列）不會帶
+	// Authorization 標頭，而 token 只存在 localStorage —— 這條路徑會拿到 401，
+	// 使用者看到的就是「下載失敗」。補一個 HttpOnly cookie，讓非 fetch 的
+	// 取用路徑也能通過驗證；Bearer 標頭仍然優先。
+	// 直接用連結開啟的下載（<a download>、貼到瀏覽器網址列）不會帶
+	// Authorization 標頭，而 token 只存在 localStorage —— 這條路徑會拿到 401，
+	// 使用者看到的就是「下載失敗」。補一個 HttpOnly cookie，讓非 fetch 的
+	// 取用路徑也能通過驗證；Bearer 標頭仍然優先。
+	// 直接用連結開啟的下載（<a download>、貼到瀏覽器網址列）不會帶
+	// Authorization 標頭，而 token 只存在 localStorage —— 這條路徑會拿到 401，
+	// 使用者看到的就是「下載失敗」。補一個 HttpOnly cookie，讓非 fetch 的
+	// 取用路徑也能通過驗證；Bearer 標頭仍然優先。
+	// 直接用連結開啟的下載（<a download>、貼到瀏覽器網址列）不會帶
+	// Authorization 標頭，而 token 只存在 localStorage —— 這條路徑會拿到 401，
+	// 使用者看到的就是「下載失敗」。補一個 HttpOnly cookie，讓非 fetch 的
+	// 取用路徑也能通過驗證；Bearer 標頭仍然優先。
+	// 直接用連結開啟的下載（<a download>、貼到瀏覽器網址列）不會帶
+	// Authorization 標頭，而 token 只存在 localStorage —— 這條路徑會拿到 401，
+	// 使用者看到的就是「下載失敗」。補一個 HttpOnly cookie，讓非 fetch 的
+	// 取用路徑也能通過驗證；Bearer 標頭仍然優先。
+	// 直接用連結開啟的下載（<a download>、貼到瀏覽器網址列）不會帶
+	// Authorization 標頭，而 token 只存在 localStorage —— 這條路徑會拿到 401，
+	// 使用者看到的就是「下載失敗」。補一個 HttpOnly cookie，讓非 fetch 的
+	// 取用路徑也能通過驗證；Bearer 標頭仍然優先。
+	setAuthCookie(c, token, expiresAt)
+
 	c.JSON(http.StatusOK, gin.H{
 		"token":               token,
 		"expires_at":          expiresAt.UTC().Format(time.RFC3339),
@@ -115,6 +155,24 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 	}
 
 	h.manager.RevokeToken(token)
+	// 同一組憑證也要讓 cookie 失效，否則已登入的瀏覽器仍能用 cookie 存取。
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("auth_token", "", -1, "/", "", false, true)
+	// 同一組憑證也要讓 cookie 失效，否則已登入的瀏覽器仍能用 cookie 存取。
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("auth_token", "", -1, "/", "", false, true)
+	// 同一組憑證也要讓 cookie 失效，否則已登入的瀏覽器仍能用 cookie 存取。
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("auth_token", "", -1, "/", "", false, true)
+	// 同一組憑證也要讓 cookie 失效，否則已登入的瀏覽器仍能用 cookie 存取。
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("auth_token", "", -1, "/", "", false, true)
+	// 同一組憑證也要讓 cookie 失效，否則已登入的瀏覽器仍能用 cookie 存取。
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("auth_token", "", -1, "/", "", false, true)
+	// 同一組憑證也要讓 cookie 失效，否則已登入的瀏覽器仍能用 cookie 存取。
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("auth_token", "", -1, "/", "", false, true)
 	if h.audit != nil {
 		h.audit.Record(c, audit.Entry{
 			Category: "auth",
@@ -152,9 +210,15 @@ func (h *AuthHandler) ChangePassword(c *gin.Context) {
 		return
 	}
 
-	session, _ := security.CurrentSession(c)
-	if session.Username == "" {
-		session.Username = "admin"
+	// 解析不出 session 就拒絕，不要退化成 admin：原本的
+	// `session.Username == "" → "admin"` 讓這條路徑在沒有 session 時
+	// 變成「攻擊者指定要改哪個帳號的密碼」。AuthMiddleware 目前擋住了
+	// 無 session 的請求，所以這是預設值本身的問題：安全預設應該是
+	// 拒絕，而不是猜。
+	session, ok := security.CurrentSession(c)
+	if !ok || session.Username == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未授权访问，请先登录"})
+		return
 	}
 	if !h.manager.CheckUserPassword(session.Username, oldPassword) {
 		if h.audit != nil {
@@ -171,7 +235,9 @@ func (h *AuthHandler) ChangePassword(c *gin.Context) {
 	}
 
 	if session.UserID == "" {
-		session.UserID = "admin"
+		// 与上面同理：没有 user id 就没有身份，猜一个等于授权给猜测。
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未授权访问，请先登录"})
+		return
 	}
 	if err := h.manager.UpdateUserPassword(session.UserID, newPassword); err != nil {
 		if h.logger != nil {

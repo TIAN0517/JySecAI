@@ -1,6 +1,7 @@
 name: "fierce"
 command: "fierce"
 enabled: true
+action_class: "bulk_scan"
 short_description: "DNS侦察工具"
 description: |
   Fierce是一个DNS侦察工具，用于发现目标域名的子域名。
@@ -25,6 +26,8 @@ parameters:
     format: "flag"
   - name: "dns_server"
     type: "string"
+    target: true
+    target_kind: "host"
     description: "要使用的DNS服务器"
     required: false
     flag: "-dnsserver"

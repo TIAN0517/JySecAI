@@ -90,7 +90,7 @@
         chain: {
             typeLabel: '攻击链',
             typeEn: 'CHAIN',
-            accent: { light: '#7C3AED', dark: '#a78bfa' },
+            accent: { light: '#0e9bb8', dark: '#35ddff' },
             bgEnd: { light: '#F5F3FF', dark: '#2e1065' },
             icon: 'vulnerability',
         },
@@ -411,7 +411,7 @@
     function refreshTheme() {
         rebuildNodeCards();
         if (!_cy) return;
-        const accent = isDarkTheme() ? '#60a5fa' : '#4F46E5';
+        const accent = isDarkTheme() ? '#35ddff' : '#0e9bb8';
         _cy.style()
             .selector('edge:selected')
             .style({
@@ -684,15 +684,15 @@
                     style: {
                         width: 3.5,
                         opacity: 1,
-                        'line-color': isDarkTheme() ? '#60a5fa' : '#4F46E5',
-                        'target-arrow-color': isDarkTheme() ? '#60a5fa' : '#4F46E5',
+                        'line-color': isDarkTheme() ? '#35ddff' : '#0e9bb8',
+                        'target-arrow-color': isDarkTheme() ? '#35ddff' : '#0e9bb8',
                     },
                 },
                 {
                     selector: 'node:selected',
                     style: {
                         'border-width': 3,
-                        'border-color': isDarkTheme() ? '#60a5fa' : '#4F46E5',
+                        'border-color': isDarkTheme() ? '#35ddff' : '#0e9bb8',
                         'border-opacity': 1,
                     },
                 },
@@ -814,5 +814,5 @@
         resolveGraphNodeType,
     };
 
-    document.addEventListener('cyberstrike-themechange', refreshTheme);
+    document.addEventListener('jysec-themechange', refreshTheme);
 })(typeof window !== 'undefined' ? window : globalThis);

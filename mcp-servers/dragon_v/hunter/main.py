@@ -10,6 +10,7 @@ import os
 import json
 import time
 import logging
+import aiohttp
 from typing import Dict, List, Optional, Any
 from pathlib import Path
 
@@ -467,8 +468,6 @@ async def main():
         sys.exit(1)
 
 if __name__ == "__main__":
-    # 添加必要的导入
-    import aiohttp
     import asyncio
 
     asyncio.run(main())

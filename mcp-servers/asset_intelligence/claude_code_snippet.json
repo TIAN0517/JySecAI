@@ -1,0 +1,24 @@
+# Claude Code MCP 設定片段 — 加入 .mcp.json (專案層) 或 ~/.claude.json (全域)
+#
+# 注意:
+# 1. 此片段只新增 jysecai-assets, 不移除既有 MCP
+# 2. 使用 Windows 絕對路徑
+# 3. 金鑰由環境變數注入 (勿寫入 .mcp.json)
+
+{
+  "mcpServers": {
+    "jysecai-assets": {
+      "command": "C:\\Program Files\\Python311\\python.exe",
+      "args": [
+        "C:\\Users\\Administrator\\Desktop\\JySecAI\\mcp-servers\\asset_intelligence\\scripts\\run_stdio.py"
+      ],
+      "timeout": 120,
+      "env": {
+        "ASSET_INTEL_DB_PATH": "C:\\Users\\Administrator\\AppData\\Local\\JySecAI\\assets\\assets.db",
+        "ASSET_INTEL_SCOPE_FILE": "C:\\Users\\Administrator\\Desktop\\JySecAI\\mcp-servers\\asset_intelligence\\scope.json",
+        "FOFA_API_KEY": "${FOFA_API_KEY}",
+        "ZOOMEYE_API_KEY": "${ZOOMEYE_API_KEY}"
+      }
+    }
+  }
+}

@@ -135,6 +135,10 @@ func (h *C2Handler) CreateListener(c *gin.Context) {
 // GetListener 获取单个监听器
 func (h *C2Handler) GetListener(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_listener", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	listener, err := h.mgr().DB().GetC2Listener(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -152,6 +156,10 @@ func (h *C2Handler) GetListener(c *gin.Context) {
 // UpdateListener 更新监听器
 func (h *C2Handler) UpdateListener(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_listener", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	listener, err := h.mgr().DB().GetC2Listener(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -187,7 +195,13 @@ func (h *C2Handler) UpdateListener(c *gin.Context) {
 
 	listener.Name = req.Name
 	listener.ProjectID = strings.TrimSpace(req.ProjectID)
-	listener.BindHost = req.BindHost
+	// bind_host 与 callback_host 都会流进 beacon 模板的 Go 源码与 oneliner 的
+	// shell 字符串，UpdateListener 原本连 TrimSpace 都没有，更没有校验。
+	if err := c2.ValidateBeaconHost(strings.TrimSpace(req.BindHost)); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("非法的 bind_host %q: %v", req.BindHost, err)})
+		return
+	}
+	listener.BindHost = strings.TrimSpace(req.BindHost)
 	listener.BindPort = req.BindPort
 	listener.ProfileID = req.ProfileID
 	listener.Remark = req.Remark
@@ -200,13 +214,21 @@ func (h *C2Handler) UpdateListener(c *gin.Context) {
 		return
 	}
 	if req.CallbackHost != nil {
+		callbackHost := strings.TrimSpace(*req.CallbackHost)
+		// 允许留空（表示「回落到 bind_host」），但非空时必须合法。
+		if callbackHost != "" {
+			if err := c2.ValidateBeaconHost(callbackHost); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("非法的 callback_host %q: %v", callbackHost, err)})
+				return
+			}
+		}
 		cfg := &c2.ListenerConfig{}
 		raw := strings.TrimSpace(listener.ConfigJSON)
 		if raw == "" {
 			raw = "{}"
 		}
 		_ = json.Unmarshal([]byte(raw), cfg)
-		cfg.CallbackHost = strings.TrimSpace(*req.CallbackHost)
+		cfg.CallbackHost = callbackHost
 		cfg.ApplyDefaults()
 		cfgJSON, err := json.Marshal(cfg)
 		if err != nil {
@@ -228,6 +250,10 @@ func (h *C2Handler) UpdateListener(c *gin.Context) {
 // DeleteListener 删除监听器
 func (h *C2Handler) DeleteListener(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_listener", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	if err := h.mgr().DeleteListener(id); err != nil {
 		code := http.StatusInternalServerError
 		if e, ok := err.(*c2.CommonError); ok {
@@ -245,6 +271,10 @@ func (h *C2Handler) DeleteListener(c *gin.Context) {
 // StartListener 启动监听器
 func (h *C2Handler) StartListener(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_listener", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	listener, err := h.mgr().StartListener(id)
 	if err != nil {
 		code := http.StatusInternalServerError
@@ -265,6 +295,10 @@ func (h *C2Handler) StartListener(c *gin.Context) {
 // StopListener 停止监听器
 func (h *C2Handler) StopListener(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_listener", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	if err := h.mgr().StopListener(id); err != nil {
 		code := http.StatusInternalServerError
 		if e, ok := err.(*c2.CommonError); ok {
@@ -312,6 +346,10 @@ func (h *C2Handler) ListSessions(c *gin.Context) {
 // GetSession 获取单个会话
 func (h *C2Handler) GetSession(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_session", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	session, err := h.mgr().DB().GetC2Session(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -337,6 +375,10 @@ func (h *C2Handler) GetSession(c *gin.Context) {
 // DeleteSession 删除会话
 func (h *C2Handler) DeleteSession(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_session", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	if err := h.mgr().DB().DeleteC2Session(id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -380,6 +422,10 @@ func (h *C2Handler) DeleteSessions(c *gin.Context) {
 // SetSessionSleep 设置会话的 sleep/jitter，并下发 sleep 任务到植入体
 func (h *C2Handler) SetSessionSleep(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_session", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	var req struct {
 		SleepSeconds  int `json:"sleep_seconds"`
 		JitterPercent int `json:"jitter_percent"`
@@ -420,6 +466,10 @@ func (h *C2Handler) SetSessionSleep(c *gin.Context) {
 // SetSessionNote 更新会话备注（仅服务端元数据，不下发植入体）
 func (h *C2Handler) SetSessionNote(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_session", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	var req struct {
 		Note string `json:"note"`
 	}
@@ -571,6 +621,10 @@ func (h *C2Handler) DeleteTasks(c *gin.Context) {
 // GetTask 获取单个任务
 func (h *C2Handler) GetTask(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_task", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	task, err := h.mgr().DB().GetC2Task(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -641,6 +695,10 @@ func (h *C2Handler) CreateTask(c *gin.Context) {
 // CancelTask 取消任务
 func (h *C2Handler) CancelTask(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_task", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	if err := h.mgr().CancelTask(id); err != nil {
 		code := http.StatusInternalServerError
 		if e, ok := err.(*c2.CommonError); ok {
@@ -658,6 +716,10 @@ func (h *C2Handler) CancelTask(c *gin.Context) {
 // WaitTask 等待任务完成
 func (h *C2Handler) WaitTask(c *gin.Context) {
 	id := c.Param("id")
+	if !h.c2ResourceAllowed(c, "c2_task", id) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	timeout := 60 * time.Second
 	if t := c.Query("timeout"); t != "" {
 		if n, err := strconv.Atoi(t); err == nil && n > 0 {
@@ -724,18 +786,36 @@ func (h *C2Handler) PayloadOneliner(c *gin.Context) {
 		for i, k := range compatible {
 			names[i] = string(k)
 		}
+		// 兼容清單是空的時候，原先那句「请选择兼容的类型」是骗人的 —— 根本没有
+		// 类型可选，调用方只会反复重试同一条路。这种监听器要走交叉编译 beacon，
+		// 不是 oneliner 能表达的协议。
+		msg := fmt.Sprintf("监听器类型 %s 不支持 %s 类型的 oneliner，请选择兼容的类型", listener.Type, req.Kind)
+		if len(names) == 0 {
+			msg = fmt.Sprintf("监听器类型 %s 不支持任何 oneliner 类型（%s 需要 WebSocket 传输，oneliner 只能走 tcp/HTTP）"+
+				"；请改用交叉编译 beacon（payload_build），它支持该类型", listener.Type, req.Kind)
+		}
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":            fmt.Sprintf("监听器类型 %s 不支持 %s 类型的 oneliner，请选择兼容的类型", listener.Type, req.Kind),
+			"error":            msg,
 			"compatible_kinds": names,
 		})
 		return
+	}
+
+	if err := c2.ValidateOnelinerForListener(listener, kind); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	scheme := "http"
+	if c2.ListenerType(listener.Type) == c2.ListenerTypeHTTPSBeacon {
+		scheme = "https"
 	}
 
 	input := c2.OnelinerInput{
 		Kind:         kind,
 		Host:         host,
 		Port:         listener.BindPort,
-		HTTPBaseURL:  fmt.Sprintf("http://%s:%d", host, listener.BindPort),
+		HTTPBaseURL:  fmt.Sprintf("%s://%s:%d", scheme, host, listener.BindPort),
 		ImplantToken: listener.ImplantToken,
 	}
 
@@ -940,10 +1020,33 @@ func (h *C2Handler) DeleteEvents(c *gin.Context) {
 }
 
 // EventStream SSE 实时事件流
+// sseHeartbeatInterval 决定 SSE 心跳间隔。
+//
+// 为什么需要心跳：Cloudflare 等反向代理对「已建立连接但长时间没有任何字节流出」的响应
+// 会触发读超时并返回 524。原实现在没有事件时整条连接零输出，代理必然超时。
+// 心跳让代理在超时窗口内持续看到字节，长连接才能稳定存活。
+//
+// 可用 JYSEAI_SSE_HEARTBEAT_SEC 覆写，默认 20 秒（远小于 Cloudflare 100 秒读超时）。
+func sseHeartbeatInterval() time.Duration {
+	const def = 20 * time.Second
+	raw := strings.TrimSpace(os.Getenv("JYSEAI_SSE_HEARTBEAT_SEC"))
+	if raw == "" {
+		return def
+	}
+	sec, err := strconv.Atoi(raw)
+	if err != nil || sec <= 0 {
+		return def
+	}
+	return time.Duration(sec) * time.Second
+}
+
+// EventStream 以 SSE 推送 C2 事件。
 func (h *C2Handler) EventStream(c *gin.Context) {
 	c.Header("Content-Type", "text/event-stream")
 	c.Header("Cache-Control", "no-cache")
 	c.Header("Connection", "keep-alive")
+	// 明确关闭中间层缓冲：nginx/部分代理默认会攒住事件一起送出，heartbeat 会被一起缓冲而失效。
+	c.Header("X-Accel-Buffering", "no")
 
 	sessionFilter := c.Query("session_id")
 	categoryFilter := c.Query("category")
@@ -958,6 +1061,15 @@ func (h *C2Handler) EventStream(c *gin.Context) {
 	)
 	defer h.mgr().EventBus().Unsubscribe(sub.ID)
 
+	// 立刻写一行 SSE comment 与 retry 提示：
+	//   1. 让 response header 马上落地，浏览器 EventSource 才算连线成功；
+	//   2. 让代理在第一个真实事件之前就收到字节，不会一上来就撞读超时。
+	fmt.Fprint(c.Writer, "retry: 3000\n: connected\n\n")
+	c.Writer.Flush()
+
+	heartbeat := time.NewTicker(sseHeartbeatInterval())
+	defer heartbeat.Stop()
+
 	c.Stream(func(w io.Writer) bool {
 		select {
 		case e, ok := <-sub.Ch:
@@ -969,6 +1081,10 @@ func (h *C2Handler) EventStream(c *gin.Context) {
 			}
 			data, _ := json.Marshal(e)
 			fmt.Fprintf(w, "data: %s\n\n", data)
+			return true
+		case <-heartbeat.C:
+			// 心跳用 SSE 注释行：客户端 EventSource 会忽略，但代理看得到字节。
+			fmt.Fprint(w, ": ping\n\n")
 			return true
 		case <-c.Request.Context().Done():
 			return false

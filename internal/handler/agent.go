@@ -188,6 +188,7 @@ type AgentHandler struct {
 	tasks            *AgentTaskManager
 	taskEventBus     *TaskEventBus // 镜像 SSE 事件，供刷新后订阅同一运行中任务
 	batchTaskManager *BatchTaskManager
+	batchGlobalSem   chan struct{} // 批量队列全局并发预算（跨队列限制同时运行的子任务数）
 	hitlManager      *HITLManager
 	config           *config.Config // 配置引用，用于获取角色信息
 	knowledgeManager interface {    // 知识库管理器接口
@@ -201,11 +202,38 @@ type AgentHandler struct {
 	hitlDefaultReviewerSaver HitlDefaultReviewerSaver
 	auditLLM                 *openai.Client
 	audit                    *audit.Service
+	redirectVerify           *RedirectVerifyHandler
 }
 
 // SetAudit wires platform audit logging.
 func (h *AgentHandler) SetAudit(s *audit.Service) {
 	h.audit = s
+}
+
+// SetRedirectVerifyHandler 讓掃描（對話／批量／機器人）啟動時同步巡站並植入受控短鏈。
+func (h *AgentHandler) SetRedirectVerifyHandler(v *RedirectVerifyHandler) {
+	h.redirectVerify = v
+}
+
+func (h *AgentHandler) attachRedirectScan(text, projectID, conversationID, ownerUserID string) {
+	if h == nil || h.redirectVerify == nil {
+		return
+	}
+	run, err := h.redirectVerify.StartAttachedFromScan(ScanAttachedRedirectRequest{
+		Text:           text,
+		ProjectID:      projectID,
+		ConversationID: conversationID,
+		OwnerUserID:    ownerUserID,
+	})
+	if err != nil {
+		if h.logger != nil {
+			h.logger.Warn("掃描附帶跳轉植入失敗", zap.Error(err), zap.String("conversationId", conversationID))
+		}
+		return
+	}
+	if run != nil && h.logger != nil {
+		h.logger.Info("掃描已附帶跳轉植入", zap.String("run_id", run.ID), zap.String("conversationId", conversationID))
+	}
 }
 
 // TaskManager 返回 Agent 任务管理器（供 MCP 监控页终止 Eino execute 等）。
@@ -290,6 +318,11 @@ func NewAgentHandler(agent *agent.Agent, db *database.DB, cfg *config.Config, lo
 		batchCronParser:  cron.NewParser(cron.Minute | cron.Hour | cron.Dom | cron.Month | cron.Dow | cron.Descriptor),
 		auditLLM:         openai.NewClient(llmCfg, llmHTTP, logger),
 	}
+	semSize := 8
+	if cfg != nil && cfg.Agent.BatchMaxGlobalConcurrency > 0 {
+		semSize = cfg.Agent.BatchMaxGlobalConcurrency
+	}
+	handler.batchGlobalSem = make(chan struct{}, semSize)
 	tm.SetToolCanceler(handler.cancelRunningMCPToolsForConversation)
 	if err := handler.hitlManager.EnsureSchema(); err != nil {
 		logger.Warn("初始化 HITL 表失败", zap.Error(err))
@@ -411,6 +444,11 @@ type ChatRequest struct {
 func (h *AgentHandler) configForAIChannel(channelID string) (*config.Config, string, error) {
 	if h == nil || h.config == nil {
 		return nil, "", fmt.Errorf("服务器配置未加载")
+	}
+	if strings.TrimSpace(channelID) == "" {
+		if id, ok := h.config.NextRotateChannel(); ok {
+			channelID = id
+		}
 	}
 	oa, resolvedID, ok := h.config.ResolveAIChannel(channelID)
 	if !ok {
@@ -850,6 +888,7 @@ func (h *AgentHandler) ProcessMessageForRobot(ctx context.Context, platform stri
 			return "", "", fmt.Errorf("对话不存在")
 		}
 	}
+	h.attachRedirectScan(message, effectiveProjectID(h.config, ""), conversationID, ownerUserID)
 
 	agentHistoryMessages, err := h.loadHistoryFromAgentTrace(conversationID)
 	if err != nil {
@@ -1858,6 +1897,9 @@ type BatchTaskRequest struct {
 	ExecuteNow   bool     `json:"executeNow,omitempty"`     // 创建后是否立即执行（默认 false）
 	ProjectID    string   `json:"projectId,omitempty"`      // 队列内子对话绑定的项目（可选）
 	Concurrency  int      `json:"concurrency,omitempty"`    // 同时执行的子任务数，默认 1，最大 8
+	// AIChannelID 会话级 AI 通道覆盖（仅内存态，不落库）：工具协议吃力的
+	// flash 级通道跑不动複測，verify-drain 这类程序化派工靠它固定用强通道。
+	AIChannelID string `json:"aiChannelId,omitempty"`
 }
 
 // batchQueueWantsEino 队列是否配置为走 Eino 多代理。
@@ -1928,6 +1970,21 @@ func (h *AgentHandler) CreateBatchQueue(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": createErr.Error()})
 		return
 	}
+
+	// AI 通道覆蓋必須在啟動前設定：batchRunConfig 是在子任務真正執行時才讀它。
+	// 通道不存在就直接拒絕——靜默回退預設通道會讓「指定強通道」這件事看起來生效
+	// 實際沒有，而複測失敗（工具不可用）正是這個回退最典型的後果。
+	if channelID := strings.TrimSpace(req.AIChannelID); channelID != "" {
+		if h.config == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "服务器配置未加载"})
+			return
+		}
+		if _, _, ok := h.config.AI.ResolveChannel(channelID); !ok {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "AI 通道不存在: " + channelID})
+			return
+		}
+		queue.AIChannelID = channelID
+	}
 	if session, ok := security.CurrentSession(c); ok && h.db != nil {
 		_ = h.db.SetResourceOwner("batch_task", queue.ID, session.UserID)
 		_ = h.db.AssignResourceToUser(session.UserID, "batch_task", queue.ID)
@@ -1963,6 +2020,10 @@ func (h *AgentHandler) CreateBatchQueue(c *gin.Context) {
 // GetBatchQueue 获取批量任务队列
 func (h *AgentHandler) GetBatchQueue(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	queue, exists := h.batchTaskManager.GetBatchQueue(queueID)
 	if !exists {
 		c.JSON(http.StatusNotFound, gin.H{"error": "队列不存在"})
@@ -2019,7 +2080,14 @@ func (h *AgentHandler) ListBatchQueues(c *gin.Context) {
 	}
 
 	// 获取队列列表和总数
-	session, _ := security.CurrentSession(c)
+	// 解析不出 session 时返回 401，而不是把零值 userID 传下去：RBAC 过滤
+	// 收到空 userID 只能选择「看不到任何资料」或「看到全部」，这里显式拒绝，
+	// 免得将来过滤条件一改就变成越权。
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return
+	}
 	queues, total, err := h.batchTaskManager.ListQueuesForAccess(limit, offset, status, keyword, session.UserID, session.Scope)
 	if err != nil {
 		h.logger.Error("获取批量任务队列列表失败", zap.Error(err))
@@ -2052,6 +2120,10 @@ func (h *AgentHandler) ListBatchQueues(c *gin.Context) {
 // StartBatchQueue 开始执行批量任务队列
 func (h *AgentHandler) StartBatchQueue(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	h.batchTaskManager.ClearSingleRunTask(queueID)
 	ok, err := h.startBatchQueueExecution(queueID, false)
 	if err != nil {
@@ -2071,6 +2143,10 @@ func (h *AgentHandler) StartBatchQueue(c *gin.Context) {
 // RerunBatchQueue 重跑批量任务队列（重置所有子任务后重新执行）
 func (h *AgentHandler) RerunBatchQueue(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	queue, exists := h.batchTaskManager.GetBatchQueue(queueID)
 	if !exists {
 		c.JSON(http.StatusNotFound, gin.H{"error": "队列不存在"})
@@ -2103,6 +2179,10 @@ func (h *AgentHandler) RerunBatchQueue(c *gin.Context) {
 // PauseBatchQueue 暂停批量任务队列
 func (h *AgentHandler) PauseBatchQueue(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	success := h.batchTaskManager.PauseQueue(queueID)
 	if !success {
 		c.JSON(http.StatusNotFound, gin.H{"error": "队列不存在或无法暂停"})
@@ -2117,6 +2197,10 @@ func (h *AgentHandler) PauseBatchQueue(c *gin.Context) {
 // UpdateBatchQueueMetadata 修改批量任务队列的标题、角色和代理模式
 func (h *AgentHandler) UpdateBatchQueueMetadata(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	var req struct {
 		Title       string `json:"title"`
 		Role        string `json:"role"`
@@ -2138,6 +2222,10 @@ func (h *AgentHandler) UpdateBatchQueueMetadata(c *gin.Context) {
 // UpdateBatchQueueSchedule 修改批量任务队列的调度配置（scheduleMode / cronExpr）
 func (h *AgentHandler) UpdateBatchQueueSchedule(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	queue, exists := h.batchTaskManager.GetBatchQueue(queueID)
 	if !exists {
 		c.JSON(http.StatusNotFound, gin.H{"error": "队列不存在"})
@@ -2180,6 +2268,10 @@ func (h *AgentHandler) UpdateBatchQueueSchedule(c *gin.Context) {
 // SetBatchQueueScheduleEnabled 开启/关闭 Cron 自动调度（手工执行不受影响）
 func (h *AgentHandler) SetBatchQueueScheduleEnabled(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	if _, exists := h.batchTaskManager.GetBatchQueue(queueID); !exists {
 		c.JSON(http.StatusNotFound, gin.H{"error": "队列不存在"})
 		return
@@ -2202,6 +2294,10 @@ func (h *AgentHandler) SetBatchQueueScheduleEnabled(c *gin.Context) {
 // DeleteBatchQueue 删除批量任务队列
 func (h *AgentHandler) DeleteBatchQueue(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 	if err := h.batchTaskManager.DeleteQueue(queueID); err != nil {
 		switch {
 		case errors.Is(err, ErrBatchQueueNotFound):
@@ -2232,6 +2328,10 @@ func (h *AgentHandler) DeleteBatchQueue(c *gin.Context) {
 func (h *AgentHandler) UpdateBatchTask(c *gin.Context) {
 	queueID := c.Param("queueId")
 	taskID := c.Param("taskId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 
 	var req struct {
 		Message string `json:"message" binding:"required"`
@@ -2264,6 +2364,10 @@ func (h *AgentHandler) UpdateBatchTask(c *gin.Context) {
 // AddBatchTask 添加任务到批量任务队列
 func (h *AgentHandler) AddBatchTask(c *gin.Context) {
 	queueID := c.Param("queueId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 
 	var req struct {
 		Message string `json:"message" binding:"required"`
@@ -2297,6 +2401,10 @@ func (h *AgentHandler) AddBatchTask(c *gin.Context) {
 func (h *AgentHandler) RunSingleBatchTask(c *gin.Context) {
 	queueID := c.Param("queueId")
 	taskID := c.Param("taskId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 
 	if err := h.batchTaskManager.PrepareSingleTaskRun(queueID, taskID); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -2344,6 +2452,10 @@ func (h *AgentHandler) RunSingleBatchTask(c *gin.Context) {
 func (h *AgentHandler) DeleteBatchTask(c *gin.Context) {
 	queueID := c.Param("queueId")
 	taskID := c.Param("taskId")
+	if !h.batchQueueResourceAllowed(c, queueID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
 
 	err := h.batchTaskManager.DeleteTask(queueID, taskID)
 	if err != nil {
@@ -2363,6 +2475,14 @@ func (h *AgentHandler) DeleteBatchTask(c *gin.Context) {
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "任务已删除", "queue": queue})
+}
+
+func (h *AgentHandler) batchQueueResourceAllowed(c *gin.Context, queueID string) bool {
+	if h.db == nil {
+		return false
+	}
+	session, ok := security.CurrentSession(c)
+	return ok && h.db.UserCanAccessResource(session.UserID, session.Scope, "batch_task", strings.TrimSpace(queueID))
 }
 
 func (h *AgentHandler) nextBatchQueueRunAt(cronExpr string, from time.Time) (*time.Time, error) {

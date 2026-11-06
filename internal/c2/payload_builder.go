@@ -1,7 +1,9 @@
 package c2
 
 import (
+	"embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -14,6 +16,59 @@ import (
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
+
+// payloadTemplates 内嵌 beacon 模板与两个辅助文件。模板原本只存在于源码树里，
+// 构建器用相对路径 "internal/c2/payload_templates" 去读 —— 那是相对于进程工作
+// 目录的，而不是相对于可执行文件。所以从服务目录、计划任务或 systemd 启动时就
+// 会报 "read template: ... no such file or directory"。内嵌之后路径不再有任何作用。
+//
+// 三个文件都要内嵌：只嵌 beacon 的话，辅助文件仍会在磁盘上找不到时让整次构建失败。
+//
+//go:embed payload_templates/beacon.go.tmpl payload_templates/proc_hide_windows.go.tmpl payload_templates/proc_hide_unix.go.tmpl
+var payloadTemplates embed.FS
+
+// readTemplate 优先用磁盘上的模板，方便开发时改完立即生效；磁盘上没有
+// （发行版只带二进制、模板被裁掉）就退回内嵌的那份。两者都拿不到才算失败。
+func (b *PayloadBuilder) readTemplate(name string) ([]byte, error) {
+	path := filepath.Join(b.tmplDir, name+".tmpl")
+	if data, err := os.ReadFile(path); err == nil {
+		return data, nil
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return nil, fmt.Errorf("read template: %w", err)
+	}
+	data, err := payloadTemplates.ReadFile("payload_templates/" + name + ".tmpl")
+	if err != nil {
+		return nil, fmt.Errorf("read template: %w", err)
+	}
+	return data, nil
+}
+
+// numericTemplateFields are the only placeholders that must be emitted
+// verbatim. Everything else is a Go string literal and goes through %q.
+var numericTemplateFields = map[string]bool{
+	"SleepSeconds":          true,
+	"JitterPercent":         true,
+	"TLSInsecureSkipVerify": true,
+}
+
+// quoteTemplateData prepares the placeholder map for beacon.go.tmpl.
+//
+// 这个模板生成的是要被 go build 编译的 Go 源码，不是文本。text/template
+// 不会转义任何内容，因此所有插入 Go 字符串字面量的值必须自行用 %q 变成
+// 合法的 Go 字面值（模板内已不含外层引号）。未转义的 Host/ImplantToken
+// 其中的引号会闭合字符串，让后续内容成为可编译的代码。
+// 数值与布尔字段保持原样：它们已经过 %d / %t 格式化，本身是安全的。
+func quoteTemplateData(data map[string]string) map[string]string {
+	renderData := make(map[string]string, len(data))
+	for k, v := range data {
+		if numericTemplateFields[k] {
+			renderData[k] = v
+			continue
+		}
+		renderData[k] = fmt.Sprintf("%q", v)
+	}
+	return renderData
+}
 
 // PayloadBuilderInput 构建 beacon 的输入参数
 type PayloadBuilderInput struct {
@@ -91,10 +146,9 @@ func (b *PayloadBuilder) BuildBeacon(in PayloadBuilderInput) (*BuildResult, erro
 	}
 
 	// 读取模板
-	tmplPath := filepath.Join(b.tmplDir, "beacon.go.tmpl")
-	tmplData, err := os.ReadFile(tmplPath)
+	tmplData, err := b.readTemplate("beacon.go")
 	if err != nil {
-		return nil, fmt.Errorf("read template: %w", err)
+		return nil, err
 	}
 
 	// 模板参数：请求 Host > 监听器 callback_host > bind 推导（见 ResolveBeaconDialHost）
@@ -120,20 +174,21 @@ func (b *PayloadBuilder) BuildBeacon(in PayloadBuilderInput) (*BuildResult, erro
 	}
 
 	data := map[string]string{
-		"Transport":         transport,
-		"TCPDialAddr":       tcpDialAddr,
-		"TransportMetadata": transportMeta,
-		"ServerURL":         serverURL,
-		"ImplantToken":      listener.ImplantToken,
-		"AESKeyB64":         listener.EncryptionKey,
-		"SleepSeconds":      fmt.Sprintf("%d", firstPositive(in.SleepSeconds, cfg.DefaultSleep, 5)),
-		"JitterPercent":     fmt.Sprintf("%d", clamp(in.JitterPercent, 0, 100)),
-		"CheckInPath":       cfg.BeaconCheckInPath,
-		"TasksPath":         cfg.BeaconTasksPath,
-		"ResultPath":        cfg.BeaconResultPath,
-		"UploadPath":        cfg.BeaconUploadPath,
-		"FilePath":          cfg.BeaconFilePath,
-		"UserAgent":         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+		"Transport":             transport,
+		"TCPDialAddr":           tcpDialAddr,
+		"TransportMetadata":     transportMeta,
+		"ServerURL":             serverURL,
+		"ImplantToken":          listener.ImplantToken,
+		"AESKeyB64":             listener.EncryptionKey,
+		"SleepSeconds":          fmt.Sprintf("%d", firstPositive(in.SleepSeconds, cfg.DefaultSleep, 5)),
+		"JitterPercent":         fmt.Sprintf("%d", clamp(in.JitterPercent, 0, 100)),
+		"CheckInPath":           cfg.BeaconCheckInPath,
+		"TasksPath":             cfg.BeaconTasksPath,
+		"ResultPath":            cfg.BeaconResultPath,
+		"UploadPath":            cfg.BeaconUploadPath,
+		"FilePath":              cfg.BeaconFilePath,
+		"UserAgent":             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+		"TLSInsecureSkipVerify": fmt.Sprintf("%t", cfg.TLSInsecureSkipVerify),
 	}
 
 	// 执行模板
@@ -154,7 +209,7 @@ func (b *PayloadBuilder) BuildBeacon(in PayloadBuilderInput) (*BuildResult, erro
 	if err != nil {
 		return nil, fmt.Errorf("create source: %w", err)
 	}
-	if err := tmpl.Execute(f, data); err != nil {
+	if err := tmpl.Execute(f, quoteTemplateData(data)); err != nil {
 		f.Close()
 		return nil, fmt.Errorf("execute template: %w", err)
 	}
@@ -162,8 +217,7 @@ func (b *PayloadBuilder) BuildBeacon(in PayloadBuilderInput) (*BuildResult, erro
 
 	// 平台相关辅助源文件（如无窗口子进程）
 	for _, name := range []string{"proc_hide_windows.go", "proc_hide_unix.go"} {
-		helperSrc := filepath.Join(b.tmplDir, name+".tmpl")
-		helperData, readErr := os.ReadFile(helperSrc)
+		helperData, readErr := b.readTemplate(strings.TrimSuffix(name, ".go"))
 		if readErr != nil {
 			return nil, fmt.Errorf("read helper %s: %w", name, readErr)
 		}

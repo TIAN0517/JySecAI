@@ -55,6 +55,7 @@ type Server struct {
 	httpToolTimeoutMu      sync.RWMutex
 	toolAuthorizer         func(context.Context, string, map[string]interface{}) error
 	toolGuard              *toolguard.Manager
+	projectScopeResolver   ScopeResolver
 	executionService       *ExecutionService
 	toolWaitTimeout        time.Duration
 	toolResultMaxBytes     int
@@ -84,11 +85,32 @@ func (s *Server) SetToolGuard(guard *toolguard.Manager) {
 	s.mu.Unlock()
 }
 
-func (s *Server) checkToolGuard(toolName string, args map[string]interface{}) *ToolResult {
+// SetProjectScopeResolver installs the per-conversation project scope resolver.
+//
+// The resolver is consulted for every guarded call, so the effective authorization
+// scope follows the conversation rather than the process.
+func (s *Server) SetProjectScopeResolver(resolver ScopeResolver) {
+	if s == nil {
+		return
+	}
+	s.mu.Lock()
+	s.projectScopeResolver = resolver
+	s.mu.Unlock()
+}
+
+func (s *Server) checkToolGuard(ctx context.Context, toolName string, args map[string]interface{}) *ToolResult {
 	s.mu.RLock()
 	guard := s.toolGuard
+	resolver := s.projectScopeResolver
 	s.mu.RUnlock()
-	return toolGuardBlockedResult(guard, toolName, args)
+	if guard == nil {
+		return nil
+	}
+	var scope *toolguard.TargetScope
+	if resolver != nil {
+		scope = resolver(ctx)
+	}
+	return toolGuardBlockedResult(guard, toolName, args, scope)
 }
 
 type sseClient struct {
@@ -248,6 +270,23 @@ func (s *Server) ClearTools() {
 		}
 	}
 	s.resources = newResources
+}
+
+// UnregisterTool 移除單一已註冊的工具（用於依設定開關的工具在熱套用後下架）。
+//
+// ClearTools 會清掉全部工具，粒度太粗；某些工具是跟著設定條件註冊的
+// （例如受控跳轉端點清單關掉就不再提供），這時只需要移除那一个。
+func (s *Server) UnregisterTool(name string) {
+	toolName := strings.TrimSpace(name)
+	if toolName == "" {
+		return
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	delete(s.tools, toolName)
+	delete(s.toolDefs, toolName)
+	delete(s.resources, fmt.Sprintf("tool://%s", toolName))
 }
 
 // HandleHTTP 处理HTTP请求
@@ -609,7 +648,7 @@ func (s *Server) handleCallTool(requestCtx context.Context, msg *Message) *Messa
 		zap.Any("arguments", req.Arguments),
 	)
 
-	result := s.checkToolGuard(req.Name, req.Arguments)
+	result := s.checkToolGuard(execCtx, req.Name, req.Arguments)
 	var err error
 	if result == nil {
 		result, err = handler(execCtx, req.Arguments)
@@ -951,7 +990,7 @@ func (s *Server) CallTool(ctx context.Context, toolName string, args map[string]
 			if !exists {
 				return nil, fmt.Errorf("工具 %s 未找到", toolName)
 			}
-			if blocked := s.checkToolGuard(toolName, args); blocked != nil {
+			if blocked := s.checkToolGuard(runCtx, toolName, args); blocked != nil {
 				return blocked, nil
 			}
 			return handler(runCtx, args)
@@ -974,7 +1013,7 @@ func (s *Server) CallTool(ctx context.Context, toolName string, args map[string]
 	}
 	snapshot, waitErr := s.executionService.Wait(ctx, handle.ID, waitTimeout)
 	if errors.Is(waitErr, ErrExecutionWaitTimeout) {
-		return internalMCPWaitTimeoutResult(snapshot, waitTimeout), handle.ID, nil
+		return mcpWaitTimeoutResult(snapshot, waitTimeout), handle.ID, nil
 	}
 	if waitErr != nil {
 		return nil, handle.ID, waitErr
@@ -991,7 +1030,10 @@ func (s *Server) CallTool(ctx context.Context, toolName string, args map[string]
 	return &ToolResult{Content: []Content{{Type: "text", Text: "工具执行完成，但未返回结果"}}, IsError: false}, handle.ID, nil
 }
 
-func internalMCPWaitTimeoutResult(snapshot *ExecutionSnapshot, waitTimeout time.Duration) *ToolResult {
+// mcpWaitTimeoutResult 組裝「等待工具執行逾時」的統一回應。
+//
+// 內部 MCP 與外部 MCP 共用同一份文案，避免兩邊訊息分歧。
+func mcpWaitTimeoutResult(snapshot *ExecutionSnapshot, waitTimeout time.Duration) *ToolResult {
 	execID := ""
 	status := ToolExecutionStatusRunning
 	toolName := ""

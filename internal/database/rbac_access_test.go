@@ -120,14 +120,24 @@ func TestSystemRoleBootstrapDoesNotLeakManagementReadPermissions(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !operatorAccess.Permissions["mcp:execute"] || operatorAccess.Permissions["mcp:write"] || operatorAccess.Permissions["mcp:external:execute"] {
+	// mcp:execute routes /api/mcp, which reaches the exec tool: it runs
+	// args["command"] under args["shell"] with an unrestricted workdir. That is
+	// the same capability as terminal:execute, which this bootstrap
+	// deliberately withholds from Operator, so neither mcp:execute nor
+	// agent:local-execute may fall through to the default grant.
+	if operatorAccess.Permissions["mcp:execute"] || operatorAccess.Permissions["mcp:write"] || operatorAccess.Permissions["mcp:external:execute"] {
 		t.Fatalf("unexpected operator MCP permissions: %#v", operatorAccess.Permissions)
 	}
 	if !operatorAccess.Permissions["workflow:execute"] || operatorAccess.Permissions["workflow:write"] || operatorAccess.Permissions["knowledge:write"] {
 		t.Fatalf("operator received global definition mutation permissions: %#v", operatorAccess.Permissions)
 	}
-	if !operatorAccess.Permissions["agent:local-execute"] {
-		t.Fatalf("operator is missing explicit local tool permission: %#v", operatorAccess.Permissions)
+	if operatorAccess.Permissions["agent:local-execute"] {
+		t.Fatalf("operator received arbitrary local command execution: %#v", operatorAccess.Permissions)
+	}
+	// Omitting connection_id bypasses the per-connection ownership ACL and
+	// targets an operator-supplied URL, so it is admin-only too.
+	if operatorAccess.Permissions["webshell:connect-unsaved"] {
+		t.Fatalf("operator received unsaved webshell connect: %#v", operatorAccess.Permissions)
 	}
 }
 

@@ -1,6 +1,7 @@
 name: "ghidra"
 command: "analyzeHeadless"
 enabled: true
+action_class: "local_analysis"
 short_description: "高级二进制分析和逆向工程工具"
 description: |
   Ghidra是NSA开发的免费二进制分析和逆向工程工具。
@@ -28,7 +29,7 @@ parameters:
     type: "string"
     description: "Ghidra项目名称"
     required: false
-    default: "cyberstrike_analysis"
+    default: "jytech_analysis"
     position: 1
     format: "positional"
   - name: "binary"

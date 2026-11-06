@@ -16,9 +16,14 @@ import (
 // GetTokenUsageStats returns model token usage aggregates for dashboard views.
 func (h *ConversationHandler) GetTokenUsageStats(c *gin.Context) {
 	filter := tokenUsageFilterFromQuery(c)
-	if session, ok := security.CurrentSession(c); ok {
-		filter.Access = database.RBACListAccess{UserID: session.UserID, Scope: session.Scope}
+	// 解析不出 session 时返回 401，而不是让 filter.Access 保持零值：
+	// 零值在过濾层是「看不到任何资料」，会把一次认证失败伪装成「用量为零」。
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return
 	}
+	filter.Access = database.RBACListAccess{UserID: session.UserID, Scope: session.Scope}
 	stats, err := h.db.GetModelTokenUsageStats(filter)
 	if err != nil {
 		h.logger.Error("获取Token用量统计失败", zap.Error(err))
@@ -32,9 +37,14 @@ func (h *ConversationHandler) GetTokenUsageStats(c *gin.Context) {
 func (h *ConversationHandler) GetConversationTokenUsageStats(c *gin.Context) {
 	filter := tokenUsageFilterFromQuery(c)
 	filter.ConversationID = strings.TrimSpace(c.Param("id"))
-	if session, ok := security.CurrentSession(c); ok {
-		filter.Access = database.RBACListAccess{UserID: session.UserID, Scope: session.Scope}
+	// 解析不出 session 时返回 401，而不是让 filter.Access 保持零值：
+	// 零值在过濾层是「看不到任何资料」，会把一次认证失败伪装成「用量为零」。
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return
 	}
+	filter.Access = database.RBACListAccess{UserID: session.UserID, Scope: session.Scope}
 	stats, err := h.db.GetModelTokenUsageStats(filter)
 	if err != nil {
 		h.logger.Error("获取对话Token用量统计失败", zap.Error(err), zap.String("conversationId", filter.ConversationID))

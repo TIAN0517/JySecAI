@@ -83,7 +83,7 @@ func runWechatPoll(ctx context.Context, cfg config.RobotWechatConfig, h MessageH
 			if userID == "" {
 				continue
 			}
-			logger.Info("微信收到消息", zap.String("from", userID), zap.String("content", text))
+			logger.Info("微信收到消息", zap.String("from", userID), zap.Int("content_bytes", len(text)))
 			reply := h.HandleMessage(wechatPlatform, userID, text)
 			if strings.TrimSpace(reply) == "" {
 				continue

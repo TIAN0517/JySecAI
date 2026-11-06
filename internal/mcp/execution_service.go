@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"jysecai/internal/authctx"
+	"jysecai/internal/toolguard"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"
@@ -265,7 +266,7 @@ func (s *ExecutionService) finishEntry(ctx context.Context, entry *executionEntr
 		}
 	} else if result != nil && result.Blocked {
 		entry.exec.Status = ToolExecutionStatusBlocked
-		entry.exec.Error = firstToolResultText(result, "工具调用已被安全规则拦截")
+		entry.exec.Error = firstToolResultText(result, toolguard.BlockedPrefix)
 		entry.exec.Result = result
 	} else if result != nil && result.IsError {
 		if cancelledWithUserNote {

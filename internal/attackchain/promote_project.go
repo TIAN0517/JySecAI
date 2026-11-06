@@ -13,13 +13,24 @@ import (
 
 var promoteSlugSanitizer = regexp.MustCompile(`[^a-z0-9._/-]+`)
 
+// promoteSlugDashRuns 收斂連續破折號。
+//
+// sanitizer 把非 ASCII 字元整段換成 "-"，而空白先前已被換成 "-" ，
+// 兩者相鄰就會留下 "---"。名稱要讀得懂才有價值：
+// "example.com api 端點 SQL 注入" 應該是 "example.com-api-sql" 而不是
+// "example.com-api---sql"。
+var promoteSlugDashRuns = regexp.MustCompile(`-{2,}`)
+
 // PromoteToProjectResult 攻击链沉淀结果。
 type PromoteToProjectResult struct {
-	FactsCreated int                         `json:"facts_created"`
-	FactsUpdated int                         `json:"facts_updated"`
-	EdgesCreated int                         `json:"edges_created"`
-	FactKeys     []string                    `json:"fact_keys"`
-	Graph        *database.ProjectFactGraph  `json:"graph,omitempty"`
+	FactsCreated int      `json:"facts_created"`
+	FactsUpdated int      `json:"facts_updated"`
+	EdgesCreated int      `json:"edges_created"`
+	FactKeys     []string `json:"fact_keys"`
+	// TargetDNS 是本次沉淀的命名錨點：所有 fact_key 都掛在它下面。
+	// 空字串代表沒解析到 DNS，此時退回只用 slug 的舊命名。
+	TargetDNS string                     `json:"target_dns,omitempty"`
+	Graph     *database.ProjectFactGraph `json:"graph,omitempty"`
 }
 
 // PromoteToProject 将对话攻击链沉淀为项目事实与边。
@@ -59,8 +70,13 @@ func PromoteToProject(db *database.DB, projectID, conversationID string) (*Promo
 	nodeToKey := make(map[string]string, len(nodes))
 	usedKeys := map[string]int{}
 
+	// 建立的名一律掛在目標 DNS 下。解析不到就退回舊行為（只用 slug），
+	// 命名不統一是問題，寫不進資料是更大的問題。
+	targetDNS := resolvePromoteTargetDNS(db, projectID, conversationID, nodes)
+	res.TargetDNS = targetDNS
+
 	for _, node := range nodes {
-		key := allocatePromoteFactKey(node, usedKeys)
+		key := allocatePromoteFactKey(node, usedKeys, targetDNS)
 		nodeToKey[node.ID] = key
 		category := mapPromoteNodeCategory(node.Type)
 		existing, getErr := db.GetProjectFactByKey(projectID, key)
@@ -153,9 +169,14 @@ func mapPromoteEdgeType(t string) string {
 	}
 }
 
-func allocatePromoteFactKey(node Node, used map[string]int) string {
+// allocatePromoteFactKey 依節點類型配出 fact_key。
+//
+// targetDNS 非空時，key 一律掛在目標 DNS 的命名空間下（target/<dns>、
+// finding/<dns>-<slug>、chain/<dns>-<slug>）。理由見 target_dns.go。
+func allocatePromoteFactKey(node Node, used map[string]int, targetDNS string) string {
 	prefix := "chain/"
-	switch strings.ToLower(strings.TrimSpace(node.Type)) {
+	nodeType := strings.ToLower(strings.TrimSpace(node.Type))
+	switch nodeType {
 	case "target":
 		prefix = "target/"
 	case "vulnerability":
@@ -169,6 +190,13 @@ func allocatePromoteFactKey(node Node, used map[string]int) string {
 	}
 	if base == "" {
 		base = uuid.New().String()[:8]
+	}
+	dns := strings.Trim(strings.TrimSpace(targetDNS), "-")
+	if nodeType == "target" && dns != "" {
+		// 目標節點的 key 就是 DNS 本身，不加 slug —— target/example.com。
+		base = dns
+	} else {
+		base = namespaceSlugByDNS(base, dns)
 	}
 	key := prefix + base
 	if n, ok := used[key]; ok {
@@ -185,6 +213,7 @@ func promoteSlugify(s string) string {
 	s = strings.ToLower(strings.TrimSpace(s))
 	s = strings.NewReplacer(" ", "-", "—", "-", "–", "-", "/", "-").Replace(s)
 	s = promoteSlugSanitizer.ReplaceAllString(s, "-")
+	s = promoteSlugDashRuns.ReplaceAllString(s, "-")
 	s = strings.Trim(s, "-")
 	if len(s) > 64 {
 		s = s[:64]

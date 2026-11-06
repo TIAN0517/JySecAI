@@ -1,6 +1,7 @@
 name: "kube-hunter"
 command: "kube-hunter"
 enabled: true
+action_class: "bulk_scan"
 short_description: "Kubernetes渗透测试工具"
 description: |
   Kube-hunter是一个Kubernetes渗透测试工具，用于发现Kubernetes集群中的安全问题。
@@ -25,6 +26,8 @@ parameters:
     format: "flag"
   - name: "cidr"
     type: "string"
+    target: true
+    target_kind: "cidr"
     description: "CIDR范围扫描"
     required: false
     flag: "--cidr"

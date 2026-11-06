@@ -16,11 +16,33 @@ import (
 	"go.uber.org/zap"
 )
 
+// auditAgentFallbackDecision 审批链异常时的裁决。
+//
+// 默认 fail-closed：审批链一坏（模型没配置、调用失败、回应解析不出来）就一律拒绝。
+// 闸门失效时「拦住」才是安全的一侧 —— 把「闸门故障」当成「闸门不存在」会让
+// 模型一挂就被自动放行所有工具调用。
+//
+// 确实需要 fail-open 的环境（例如长时间自动扫描、宁可跑完也不要中断）可以显式
+// 打开 hitl.audit_agent_fail_open，但那是把审批闸门整个拿掉，必须由人决定。
+func (h *AgentHandler) auditAgentFallbackDecision(reason string) hitlDecision {
+	if h != nil && h.config != nil && h.config.Hitl.AuditAgentFailOpen {
+		return hitlDecision{
+			Decision: "approve",
+			Comment:  "audit agent: " + reason + "，自动授权放行（audit_agent_fail_open 已开启）",
+		}
+	}
+	return hitlDecision{
+		Decision: "reject",
+		Comment:  "audit agent: " + reason + "，保守拒绝",
+	}
+}
+
 // auditAgentReview 在 reviewer=audit_agent 时由 LLM 代行审批。
 // 白名单工具在 shouldInterrupt 阶段已跳过，到达此处的一律需要裁决。
+// LLM / 解析失败时默认 fail-closed（reject）；可用 hitl.audit_agent_fail_open 显式改为放行。
 func (h *AgentHandler) auditAgentReview(ctx context.Context, hitlMode, toolName string, payload map[string]interface{}) hitlDecision {
 	if h == nil {
-		return hitlDecision{Decision: "reject", Comment: "audit agent: handler unavailable"}
+		return h.auditAgentFallbackDecision("handler unavailable")
 	}
 	mode := normalizeHitlMode(hitlMode)
 	prompt := config.DefaultHitlAuditAgentPrompt()
@@ -29,7 +51,7 @@ func (h *AgentHandler) auditAgentReview(ctx context.Context, hitlMode, toolName 
 	}
 	llmCfg := h.auditLLMConfig()
 	if strings.TrimSpace(llmCfg.APIKey) == "" || strings.TrimSpace(llmCfg.Model) == "" {
-		return hitlDecision{Decision: "reject", Comment: "audit agent: LLM 未配置"}
+		return h.auditAgentFallbackDecision("LLM 未配置")
 	}
 	if ctx == nil {
 		ctx = context.Background()
@@ -38,56 +60,116 @@ func (h *AgentHandler) auditAgentReview(ctx context.Context, hitlMode, toolName 
 	defer cancel()
 
 	userContent := buildAuditAgentReviewInput(mode, toolName, payload)
+
+	// 输出额度必须够大：审计模型多半是会先思考的模型（MiniMax-M3.1 系列会回
+	// reasoning_content），思考 token 与正文共用同一份额度。额度太小（例如旧版
+	// 写死的 1024）会让模型在正文输出前就被截断，响应只剩 reasoning、没有可解析
+	// 的决策 JSON → 解析失败 → fail-closed 拒绝，等于把 nmap/sqlmap/execute 这类
+	// 正常工具调用全部挡掉。这里改用配置额度（hitl.audit_model.max_completion_tokens
+	// 或通道默认值 config.DefaultMaxCompletionTokens）。
+	maxTokens := llmCfg.MaxCompletionTokensEffective()
+
+	raw, finishReason, err := h.auditAgentCallLLM(callCtx, llmCfg, prompt, userContent, maxTokens)
+	if err != nil {
+		if errors.Is(err, errAuditAgentNoChoices) {
+			return h.auditAgentFallbackDecision("LLM 无有效响应")
+		}
+		h.logger.Warn("审计 Agent LLM 调用失败，按 fail-closed 拒绝", zap.Error(err), zap.String("tool", toolName))
+		return h.auditAgentFallbackDecision("LLM 调用失败")
+	}
+
+	dec, parseErr := parseAuditAgentLLMContent(raw)
+	if parseErr != nil {
+		// 第一次解析失败就拒绝，会把「模型只是没按格式回」变成任务中断。
+		// 这里用更严格的输出指示重试一次；重试仍失败才 fail-closed。
+		h.logger.Warn("审计 Agent 响应解析失败，重试一次",
+			zap.Error(parseErr),
+			zap.String("tool", toolName),
+			zap.String("mode", mode),
+			zap.String("finish_reason", finishReason),
+		)
+		retryCtx, cancelRetry := context.WithTimeout(ctx, 60*time.Second)
+		defer cancelRetry()
+		retryRaw, retryFinish, retryErr := h.auditAgentCallLLM(
+			retryCtx, llmCfg, prompt+auditAgentStrictJSONInstruction, userContent, maxTokens)
+		if retryErr == nil {
+			if retryDec, retryParseErr := parseAuditAgentLLMContent(retryRaw); retryParseErr == nil {
+				return h.auditAgentFinalizeDecision(retryDec, mode, toolName)
+			}
+		}
+		snippet := raw
+		if len(snippet) > 240 {
+			snippet = snippet[:240] + "..."
+		}
+		h.logger.Warn("审计 Agent 响应解析失败，按 fail-closed 拒绝",
+			zap.Error(parseErr),
+			zap.String("tool", toolName),
+			zap.String("mode", mode),
+			zap.String("finish_reason", finishReason),
+			zap.String("retry_finish_reason", retryFinish),
+			zap.String("retry_error", retryErrString(retryErr)),
+			zap.String("snippet", snippet),
+		)
+		return h.auditAgentFallbackDecision("响应无法解析")
+	}
+	return h.auditAgentFinalizeDecision(dec, mode, toolName)
+}
+
+// errAuditAgentNoChoices 表示供应商回了 200 但没有任何 choice。
+var errAuditAgentNoChoices = errors.New("audit agent LLM 无有效响应")
+
+// auditAgentStrictJSONInstruction 用于解析失败后的重试，压掉模型的思考与说明。
+const auditAgentStrictJSONInstruction = "\n\n【输出格式要求（务必遵守）】只输出且只输出一行 JSON 物件，格式为 {\"decision\":\"approve\",\"comment\":\"理由\"}（decision 只能是 approve 或 reject）。不要输出思考过程、不要用 markdown 程式码区块、不要有任何前后说明文字。"
+
+// auditAgentCallLLM 调用审计模型，返回可解析的正文与供应商给出的 finish_reason。
+//
+// content 为空时回退到 reasoning_content：会思考的模型（例如 MiniMax-M3.1）
+// 把思考放在 reasoning_content，正文才在 content；正文被截断而思考还没结束
+// 时 content 会是空的，此时剩下的 reasoning 也解析不出决策。
+func (h *AgentHandler) auditAgentCallLLM(ctx context.Context, llmCfg config.OpenAIConfig, systemPrompt, userContent string, maxTokens int) (string, string, error) {
 	requestBody := map[string]interface{}{
 		"model": strings.TrimSpace(llmCfg.Model),
 		"messages": []map[string]interface{}{
-			{"role": "system", "content": prompt},
+			{"role": "system", "content": systemPrompt},
 			{"role": "user", "content": userContent},
 		},
 		"temperature":           0.1,
-		"max_completion_tokens": 1024,
-		// 审计裁决需要结构化 JSON；关闭 thinking 避免 Qwen 等把正文放进 reasoning_content 导致解析失败。
-		"thinking": map[string]interface{}{"type": "disabled"},
+		"max_completion_tokens": maxTokens,
+		// 不要在这里发送 thinking / reasoning 控制参数。
+		// 这里原本固定送 thinking.type=disabled，目的是避免 Qwen 等把正文放进
+		// reasoning_content 导致解析失败。但 MiniMax-M3.1 这类强制 adaptive thinking
+		// 的模型会直接返回 400（"model requires adaptive thinking; thinking.type=
+		// disabled is not allowed"）。该场景改由下方 msg.Content 为空时回退
+		// reasoning_content 的既有逻辑处理 —— 不需要靠 fail-open 来绕过。
 	}
 
 	var apiResponse struct {
 		Choices []struct {
-			Message struct {
+			FinishReason string `json:"finish_reason"`
+			Message      struct {
 				Content          string `json:"content"`
 				ReasoningContent string `json:"reasoning_content"`
 			} `json:"message"`
 		} `json:"choices"`
 	}
 	client := openai.NewClient(&llmCfg, nil, h.logger)
-	if err := client.ChatCompletion(callCtx, requestBody, &apiResponse); err != nil {
-		h.logger.Warn("审计 Agent LLM 调用失败", zap.Error(err), zap.String("tool", toolName))
-		return hitlDecision{
-			Decision: "reject",
-			Comment:  "audit agent: LLM 调用失败，保守拒绝",
-		}
+	if err := client.ChatCompletion(ctx, requestBody, &apiResponse); err != nil {
+		return "", "", err
 	}
 	if len(apiResponse.Choices) == 0 {
-		return hitlDecision{Decision: "reject", Comment: "audit agent: LLM 无有效响应，保守拒绝"}
+		return "", "", errAuditAgentNoChoices
 	}
 	msg := apiResponse.Choices[0].Message
 	raw := strings.TrimSpace(msg.Content)
 	if raw == "" {
 		raw = strings.TrimSpace(msg.ReasoningContent)
 	}
-	dec, err := parseAuditAgentLLMContent(raw)
-	if err != nil {
-		snippet := raw
-		if len(snippet) > 240 {
-			snippet = snippet[:240] + "..."
-		}
-		h.logger.Warn("审计 Agent 响应解析失败",
-			zap.Error(err),
-			zap.String("tool", toolName),
-			zap.String("mode", mode),
-			zap.String("snippet", snippet),
-		)
-		return hitlDecision{Decision: "reject", Comment: "audit agent: 响应无法解析，保守拒绝"}
-	}
+	return raw, apiResponse.Choices[0].FinishReason, nil
+}
+
+// auditAgentFinalizeDecision 收斂審計裁決：忽略審批模式下的 editedArguments，
+// 並統一補上 audit agent 前綴。
+func (h *AgentHandler) auditAgentFinalizeDecision(dec hitlDecision, mode, toolName string) hitlDecision {
 	if mode != "review_edit" && len(dec.EditedArguments) > 0 {
 		h.logger.Warn("审计 Agent 在审批模式下返回 editedArguments，已忽略",
 			zap.String("tool", toolName),
@@ -100,6 +182,13 @@ func (h *AgentHandler) auditAgentReview(ctx context.Context, hitlMode, toolName 
 		dec.Comment = "audit agent: " + dec.Comment
 	}
 	return dec
+}
+
+func retryErrString(err error) string {
+	if err == nil {
+		return ""
+	}
+	return err.Error()
 }
 
 func (h *AgentHandler) auditLLMConfig() config.OpenAIConfig {

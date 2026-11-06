@@ -6,6 +6,8 @@ The standalone `cmd/mcp-stdio` service also loads these rules. As a separate pro
 
 Government-domain protection is enabled by default, including when an older config omits `tool_guard`. The default rule matches government-domain forms such as `.gov`, `.gov.cn`, and wildcards, ignoring case. Add, edit, enable, or delete rules on the new page. Test an unsaved configuration with a tool name and JSON arguments before saving; testing never executes tools or updates the active policy.
 
+Put formally authorized targets in `tool_guard.scope`. It supports exact domains, domain suffixes, single-label wildcards, and CIDRs. A scoped host bypasses only the built-in `government-domains` target rule; other rules continue to apply. Mixed-target requests are evaluated match by match, so one scoped host cannot release another out-of-scope host in the same request. Loading and saving rules in the UI preserves the scope.
+
 **Add rule** opens a dialog with an independent draft and its own test inputs and results. **Add to list** checks the rule's RE2 syntax before adding it to the page draft; canceling leaves the list unchanged. Use the page's save button to apply the added rule.
 
 Use **Test all rules** in the page header to check the configured order and enabled states. **Test this rule** inside an expanded rule opens a test area directly below that editor. Single-rule tests ignore the global and individual enable switches so disabled drafts can be checked; other rules cannot claim the match first. Each test area keeps separate inputs and displays its own matched text and rendered reminder.
@@ -20,8 +22,56 @@ Viewing and testing require `config:read`. Saving requires `config:write` with g
 
 Text matching cannot establish target ownership from IP addresses, DNS aliases, redirects, file contents, or arbitrary obfuscation. Independent execution paths such as direct terminals and optional agent local tools are outside the MCP guard. Benign references to a protected domain in parameter text may also be blocked. Retain HITL and maintain rules against the actual authorized scope.
 
+## Project test scope (`scope_json`)
+
+A project's test scope (`projects.scope_json`) can also feed the blocking layer, not just the prompt.
+
+The switch lives in the config file and is **off by default**:
+
+```yaml
+project:
+  enabled: true
+  scope_guard_enabled: true
+```
+
+`scope_guard_enabled` can only be changed in `config.yaml`: the settings API rewrites specific sections and never touches `project:`, so "widening an exemption" always stays an administrator's decision in the file — no API call and no agent can flip it.
+
+Once enabled:
+
+- Hosts in the project's `targets` are exempt from the built-in `government-domains` rule (other rules are still evaluated).
+- Hosts in the project's `exclude` are blocked outright; they are blocked even when they also appear in `targets` (deny wins).
+- It applies **only to conversations bound to that project**. A conversation with no project, a project that cannot be found, or a `scope_json` that is not valid JSON all mean "no project scope applies" — neither relaxed nor blocked.
+- The project's `exclude` list is enforced **independently of `tool_guard.enabled`**: even with the global blocking layer turned off, the exclude list still applies (fail-closed); only the exemption half stops working.
+
+The `scope_json` format:
+
+```json
+{
+  "targets": ["https://app.example.com", "*.cdn.example.com"],
+  "exclude": ["legacy.gov.tw"],
+  "notes": "notes for this engagement",
+  "scope": {
+    "allow": {
+      "domains": ["portal.agency.gov.tw"],
+      "domain_suffixes": [".city.gov.tw"],
+      "wildcards": ["*.cdn.example.com"],
+      "cidrs": ["192.0.2.0/24"]
+    },
+    "deny": {
+      "domains": ["legacy.gov.tw"]
+    }
+  }
+}
+```
+
+`targets` holds authorized targets (free text) and exempts a hit from the built-in government rule; `exclude` holds explicitly excluded targets (free text) and blocks a hit; `notes` is prompt-layer only. `scope.allow` and `scope.deny` are the structured lists and take **priority over** `targets` and `exclude` respectively.
+
+Free-text entries are classified automatically: a valid CIDR (contains `/`) becomes a `cidrs` entry; something containing `*` or `?` becomes a `wildcards` entry; a leading `.` becomes a `domain_suffixes` entry; otherwise the scheme, userinfo, path and port are stripped and the remainder becomes a `domains` entry (IPs included). Entries that cannot be read as a host, such as "n/a", are ignored instead of invalidating the whole scope.
+
+`GET /api/tool-guard` and `PUT /api/tool-guard` still handle the `tool_guard` section only. The project scope travels with the project record (`projects.scope_json`) and is unaffected by them.
+
 API endpoints:
 
-- `GET /api/tool-guard`: active `{enabled, rules}` configuration.
-- `PUT /api/tool-guard`: save that structure, explicitly providing both fields. Rules contain `id`, `name`, `enabled`, `pattern`, and `message`.
+- `GET /api/tool-guard`: active `{enabled, rules, scope?}` configuration.
+- `PUT /api/tool-guard`: save that structure, explicitly providing `enabled` and `rules`; `scope` is optional. Rules contain `id`, `name`, `enabled`, `pattern`, and `message`.
 - `POST /api/tool-guard/test`: accepts `{config, toolName, arguments}` and returns `{blocked, match?}`. Match fields are `ruleId`, `ruleName`, `matchedText`, and `message`.

@@ -22,6 +22,9 @@ import (
 
 const batchQueueWorkerIdlePoll = 200 * time.Millisecond
 
+// batchGlobalConcurrencyWait 全局并发预算满时的最长等待；超时判失败，避免 worker 无限滞留。
+const batchGlobalConcurrencyWait = 15 * time.Minute
+
 // executeBatchQueue 使用并发 worker 池执行批量任务队列。
 func (h *AgentHandler) executeBatchQueue(queueID string) {
 	defer h.batchTaskManager.UnmarkQueueExecutor(queueID)
@@ -111,6 +114,19 @@ func (h *AgentHandler) tryFinalizeBatchQueue(queueID string) {
 
 // executeOneBatchSubTask 执行单条批量子任务（各自独立会话）。
 func (h *AgentHandler) executeOneBatchSubTask(queueID string, queue *BatchTaskQueue, task *BatchTask) {
+	if h.batchGlobalSem != nil {
+		select {
+		case h.batchGlobalSem <- struct{}{}:
+			defer func() { <-h.batchGlobalSem }()
+		case <-time.After(batchGlobalConcurrencyWait):
+			h.batchTaskManager.UpdateTaskStatus(queueID, task.ID, BatchTaskStatusFailed, "", "批量任务全局并发预算已满（等待超时），可调大 batch_max_global_concurrency 或降低各队列并发")
+			return
+		}
+		// 等待期间队列可能已被停止/删除，拿到预算后复核一次
+		if q, ok := h.batchTaskManager.GetBatchQueue(queueID); !ok || q == nil || batchQueueExecutionShouldStop(q, ok) {
+			return
+		}
+	}
 	ownerUserID := h.db.GetResourceOwner("batch_task", queueID)
 	access, accessErr := h.db.ResolveRBACAccess(ownerUserID)
 	if accessErr != nil || access == nil || !access.User.Enabled {
@@ -165,6 +181,7 @@ func (h *AgentHandler) executeOneBatchSubTask(queueID string, queue *BatchTaskQu
 	}
 
 	h.logger.Info("执行批量任务", zap.String("queueId", queueID), zap.String("taskId", task.ID), zap.String("message", task.Message), zap.String("role", queue.Role), zap.String("conversationId", conversationID))
+	h.attachRedirectScan(task.Message, effectiveProjectID(h.config, ""), conversationID, access.User.ID)
 
 	principalCtx := authctx.WithPrincipal(context.Background(), principal)
 	baseCtx, cancelWithCause := context.WithCancelCause(principalCtx)
@@ -224,6 +241,9 @@ func (h *AgentHandler) executeOneBatchSubTask(queueID string, queue *BatchTaskQu
 	taskCtx = mcp.WithMCPConversationID(taskCtx, conversationID)
 	taskCtx = mcp.WithToolRunRegistry(taskCtx, h.tasks)
 	taskCtx = mcp.WithEinoExecuteRunRegistry(taskCtx, h.tasks)
+	taskCtx = multiagent.WithHITLToolInterceptor(taskCtx, func(ctx context.Context, toolName, arguments string) (string, error) {
+		return h.interceptHITLForEinoTool(ctx, cancelWithCause, conversationID, assistantMessageID, sendEvent, toolName, arguments)
+	})
 
 	useBatchMulti := false
 	batchOrch := "deep"
@@ -246,14 +266,15 @@ func (h *AgentHandler) executeOneBatchSubTask(queueID string, queue *BatchTaskQu
 
 	var resultMA *multiagent.RunResult
 	var runErr error
+	runCfg := h.batchRunConfig(queue)
 	switch {
 	case useBatchMulti:
-		resultMA, runErr = multiagent.RunDeepAgent(taskCtx, h.config, &h.config.MultiAgent, h.agent, h.db, h.logger, conversationID, h.conversationProjectID(conversationID), finalMessage, []agent.ChatMessage{}, roleTools, progressCallback, h.agentsMarkdownDir, batchOrch, nil, h.agentSessionContextBlock(conversationID))
+		resultMA, runErr = multiagent.RunDeepAgent(taskCtx, runCfg, &h.config.MultiAgent, h.agent, h.db, h.logger, conversationID, h.conversationProjectID(conversationID), finalMessage, []agent.ChatMessage{}, roleTools, progressCallback, h.agentsMarkdownDir, batchOrch, nil, h.agentSessionContextBlock(conversationID))
 	default:
 		if h.config == nil {
 			runErr = fmt.Errorf("服务器配置未加载")
 		} else {
-			resultMA, runErr = multiagent.RunEinoSingleChatModelAgent(taskCtx, h.config, &h.config.MultiAgent, h.agent, h.db, h.logger, conversationID, h.conversationProjectID(conversationID), finalMessage, []agent.ChatMessage{}, roleTools, progressCallback, nil, h.agentSessionContextBlock(conversationID))
+			resultMA, runErr = multiagent.RunEinoSingleChatModelAgent(taskCtx, runCfg, &h.config.MultiAgent, h.agent, h.db, h.logger, conversationID, h.conversationProjectID(conversationID), finalMessage, []agent.ChatMessage{}, roleTools, progressCallback, nil, h.agentSessionContextBlock(conversationID))
 		}
 	}
 
@@ -327,6 +348,39 @@ func (h *AgentHandler) executeOneBatchSubTask(queueID string, queue *BatchTaskQu
 	h.batchTaskManager.UpdateTaskStatusWithConversationID(queueID, task.ID, BatchTaskStatusCompleted, resText, "", conversationID)
 }
 
+// batchRunConfig 若队列绑定了 AI 通道（AIChannelID），返回换成该通道的配置副本；
+// 否则原样返回共享配置。与交互路径的 configForAIChannel 同一套解析，副本只换 OpenAI 段。
+// 注意：解析失败时 configForAIChannel 会静默回退默认通道——这里对「请求了 A
+// 却落到 B」的情况记 warn，否则派工质量劣化完全不可见。
+func (h *AgentHandler) batchRunConfig(queue *BatchTaskQueue) *config.Config {
+	if h == nil || h.config == nil {
+		return nil
+	}
+	if queue == nil {
+		return h.config
+	}
+	channelID := strings.TrimSpace(queue.AIChannelID)
+	if channelID == "" && len(h.config.AI.RotateChannels) < 2 {
+		return h.config
+	}
+	cfgCopy, resolvedID, err := h.configForAIChannel(channelID)
+	if err != nil {
+		h.logger.Warn("批量队列 AI 通道无效，回退默认通道",
+			zap.String("queueId", queue.ID),
+			zap.String("channel", queue.AIChannelID),
+			zap.Error(err))
+		return h.config
+	}
+	if channelID != "" && config.NormalizeAIChannelID(resolvedID) != config.NormalizeAIChannelID(channelID) {
+		h.logger.Warn("批量队列 AI 通道解析结果与请求不符（可能通道名填错，已回退默认通道）",
+			zap.String("queueId", queue.ID),
+			zap.String("requestedChannel", queue.AIChannelID),
+			zap.String("resolvedChannel", resolvedID),
+			zap.String("model", cfgCopy.OpenAI.Model))
+	}
+	return cfgCopy
+}
+
 func batchSubTaskConversationMeta(cfg *config.Config, queue *BatchTaskQueue) database.ConversationCreateMeta {
 	meta := audit.ConversationCreateMeta("batch_task")
 	if queue == nil {
@@ -360,7 +414,7 @@ func (h *AgentHandler) handleBatchSubTaskRunError(
 		strings.Contains(strings.ToLower(errStr), "context canceled") ||
 		strings.Contains(strings.ToLower(errStr), "context cancelled") ||
 		(partialResp != "" && (strings.Contains(partialResp, "任务已被取消") || strings.Contains(partialResp, "任务执行中断")))
-	isTimeout := errors.Is(runErr, context.DeadlineExceeded) || errors.Is(context.Cause(taskCtx), context.DeadlineExceeded)
+	isTimeout := taskDeadlineExceeded(taskCtx)
 
 	if isTimeout {
 		*finishStatus = "timeout"

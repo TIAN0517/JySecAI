@@ -1,6 +1,7 @@
 name: "ropper"
 command: "ropper"
 enabled: true
+action_class: "local_analysis"
 short_description: "高级ROP/JOP gadget搜索工具"
 description: |
   Ropper是一个高级ROP/JOP gadget搜索工具，用于漏洞利用开发。

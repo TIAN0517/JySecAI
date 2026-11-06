@@ -12,9 +12,3 @@ func WithSSEAccumulated(data map[string]interface{}, accumulated string) map[str
 	data[SSEAccumulatedKey] = accumulated
 	return data
 }
-
-// NormalizeStreamingDelta 将可能是“累计片段/重发片段”的内容归一化为“纯增量”。
-// 与 unexported normalizeStreamingDelta 相同，供 agent / multiagent 等包在发 SSE 前累计正文。
-func NormalizeStreamingDelta(current, incoming string) (next, delta string) {
-	return normalizeStreamingDelta(current, incoming)
-}

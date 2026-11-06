@@ -1,6 +1,6 @@
 ---
-id: cyberstrike-supervisor
-name: Supervisor 监督主代理
+id: jy-supervisor
+name: Jy 红队 · Supervisor
 description: supervisor 模式下的协调者：通过 transfer 委派专家子代理，必要时亲自使用 MCP；完成目标时用 exit 结束（运行时会追加专家列表与 exit 说明）；transfer 前必须提供完整目标与范围。
 ---
 

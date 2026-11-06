@@ -2,14 +2,14 @@ package main
 
 import (
 	"context"
+	"flag"
+	"fmt"
 	"jysecai/internal/app"
 	"jysecai/internal/config"
 	"jysecai/internal/database"
 	"jysecai/internal/logger"
 	"jysecai/internal/security"
 	"jysecai/internal/termout"
-	"flag"
-	"fmt"
 	"os"
 	"os/signal"
 	"strings"
@@ -32,7 +32,12 @@ func main() {
 		os.Exit(2)
 	}
 	if !*httpsBootstrap && !*httpBootstrap {
-		v := strings.TrimSpace(os.Getenv("CYBERSTRIKE_HTTPS"))
+		// 新名 JY_TECH_HTTPS；舊名 CYBERSTRIKE_HTTPS 仍要能生效，
+		// 既有 systemd/docker 部署還在用那一個。
+		v := strings.TrimSpace(os.Getenv("JY_TECH_HTTPS"))
+		if v == "" {
+			v = strings.TrimSpace(os.Getenv("CYBERSTRIKE_HTTPS"))
+		}
 		if v == "1" || strings.EqualFold(v, "true") || strings.EqualFold(v, "yes") {
 			*httpsBootstrap = true
 		}
@@ -50,13 +55,16 @@ func main() {
 	localConfig, err := config.EnsureLocalConfig(cp)
 	if err != nil {
 		fmt.Printf("Failed to load config: %v\n", err)
-		return
+		// 必須以非 0 結束：設定載入失敗時若回傳 0，systemd 會把這次啟動視為
+		// 「成功」，Restart=always 不會重新啟動，服務會卡在 start-post 的
+		// 健康等待裡整整一輪 timeout——外部看起來就是「站台無故消失」。
+		os.Exit(1)
 	}
 
 	cfg, err := config.Load(cp)
 	if err != nil {
 		fmt.Printf("Failed to load config: %v\n", err)
-		return
+		os.Exit(1)
 	}
 	if localConfig.Created {
 		termout.PrintConfigCreated()
@@ -78,7 +86,7 @@ func main() {
 
 	port := cfg.Server.Port
 	if port <= 0 {
-		port = 8080
+		port = 9898
 	}
 	scheme := "http"
 	if config.MainWebUIUsesHTTPS(&cfg.Server) {

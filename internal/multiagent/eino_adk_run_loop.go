@@ -8,7 +8,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"unicode/utf8"
 
 	"jysecai/internal/agent"
 	"jysecai/internal/config"
@@ -21,26 +20,8 @@ import (
 	"go.uber.org/zap"
 )
 
-// normalizeStreamingDelta 将可能是“累计片段”的 chunk 归一化为“纯增量”。
-// 一些模型/桥接层在流式过程中会重复发送已输出前缀，前端若直接 buffer+=chunk 会出现重复文本。
-//
-// 注意：与 internal/openai.normalizeStreamingDelta 保持一致。
-func normalizeStreamingDelta(current, incoming string) (next, delta string) {
-	if incoming == "" {
-		return current, ""
-	}
-	if current == "" {
-		return incoming, incoming
-	}
-	if strings.HasPrefix(incoming, current) && len(incoming) > len(current) {
-		return incoming, incoming[len(current):]
-	}
-	if incoming == current && utf8.RuneCountInString(current) > 1 {
-		return current, ""
-	}
-	return current + incoming, incoming
-}
-
+// normalizeStreamingDelta 的唯一實作在 internal/openai（openai.NormalizeStreamingDelta）。
+// multiagent 直接 import 使用，不再維護副本，避免兩份實作漂移。
 func isInterruptContinue(ctx context.Context) bool {
 	if ctx == nil {
 		return false

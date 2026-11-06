@@ -8,6 +8,7 @@ import (
 	"crypto/rand"
 	"crypto/sha1"
 	"crypto/sha256"
+	"crypto/subtle"
 	"encoding/base32"
 	"encoding/base64"
 	"encoding/binary"
@@ -17,6 +18,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"sort"
 	"strconv"
 	"strings"
@@ -75,6 +77,25 @@ type robotPendingConfirmation struct {
 	ExpiresAt time.Time
 }
 
+type robotRateBucket struct {
+	tokens   float64
+	lastSeen time.Time
+}
+
+func safeRobotOutboundError(err error) string {
+	if err == nil {
+		return ""
+	}
+	var urlErr *url.Error
+	if errors.As(err, &urlErr) {
+		if urlErr.Err != nil {
+			return urlErr.Err.Error()
+		}
+		return "outbound request failed"
+	}
+	return err.Error()
+}
+
 // RobotHandler 企业微信/钉钉/飞书等机器人回调处理
 type RobotHandler struct {
 	config               *config.Config
@@ -89,6 +110,8 @@ type RobotHandler struct {
 	runningCancels       map[string]context.CancelFunc // key: "platform_userID", 用于停止命令中断任务
 	wecomReplay          map[string]time.Time
 	pendingConfirmations map[string]robotPendingConfirmation
+	rateMu               sync.Mutex
+	rateBuckets          map[string]robotRateBucket
 	alertWake            chan struct{}
 	audit                *audit.Service
 }
@@ -106,8 +129,53 @@ func NewRobotHandler(cfg *config.Config, db *database.DB, agentHandler *AgentHan
 		runningCancels:       make(map[string]context.CancelFunc),
 		wecomReplay:          make(map[string]time.Time),
 		pendingConfirmations: make(map[string]robotPendingConfirmation),
+		rateBuckets:          make(map[string]robotRateBucket),
 		alertWake:            make(chan struct{}, 1),
 	}
+}
+
+func (h *RobotHandler) allowRobotMessage(platform, userID string) bool {
+	return h.allowRobotMessageAt(platform, userID, time.Now())
+}
+
+func (h *RobotHandler) allowRobotMessageAt(platform, userID string, now time.Time) bool {
+	perMinute, burst := h.config.Robots.Session.EffectiveRateLimit()
+	key := h.sessionKey(platform, userID)
+	h.rateMu.Lock()
+	defer h.rateMu.Unlock()
+	bucket, ok := h.rateBuckets[key]
+	if !ok {
+		bucket = robotRateBucket{tokens: float64(burst), lastSeen: now}
+	} else if now.After(bucket.lastSeen) {
+		bucket.tokens += now.Sub(bucket.lastSeen).Minutes() * float64(perMinute)
+		if bucket.tokens > float64(burst) {
+			bucket.tokens = float64(burst)
+		}
+		bucket.lastSeen = now
+	}
+	if bucket.tokens < 1 {
+		h.rateBuckets[key] = bucket
+		return false
+	}
+	bucket.tokens--
+	h.rateBuckets[key] = bucket
+	return true
+}
+
+func (h *RobotHandler) checkRobotRateLimit(platform, userID, text string) (string, bool) {
+	isEmergencyControl := text == robotCmdStop || strings.EqualFold(text, "stop") || text == robotCmdCancel || strings.EqualFold(text, "cancel")
+	if isEmergencyControl || h.allowRobotMessage(platform, userID) {
+		return "", true
+	}
+	if h.audit != nil {
+		hint := sha256.Sum256([]byte(userID))
+		h.audit.RecordSystem(audit.Entry{
+			Category: "robot", Action: "rate_limit", Result: "blocked",
+			ResourceType: "robot_sender", ResourceID: platform + ":" + fmt.Sprintf("%x", hint[:4]),
+			Message: "机器人发送者请求超过速率限制",
+		})
+	}
+	return "请求过于频繁，请稍后再试。", false
 }
 
 func (h *RobotHandler) SetAudit(s *audit.Service) {
@@ -381,6 +449,10 @@ func (h *RobotHandler) clearConversation(platform, userID string, access *databa
 
 // HandleMessage 处理用户输入，返回回复文本（供各平台 webhook 调用）
 func (h *RobotHandler) HandleMessage(platform, userID, text string) (reply string) {
+	return h.handleMessage(platform, userID, text, false)
+}
+
+func (h *RobotHandler) handleMessage(platform, userID, text string, rateLimitChecked bool) (reply string) {
 	platform = strings.TrimSpace(platform)
 	userID = strings.TrimSpace(userID)
 	text = strings.TrimSpace(text)
@@ -393,6 +465,11 @@ func (h *RobotHandler) HandleMessage(platform, userID, text string) (reply strin
 	}
 	if text == "" {
 		return "请输入内容或发送「帮助」/ help 查看命令。"
+	}
+	if !rateLimitChecked {
+		if rateReply, allowed := h.checkRobotRateLimit(platform, userID, text); !allowed {
+			return rateReply
+		}
 	}
 
 	// 先尝试作为命令处理（支持中英文）
@@ -1427,8 +1504,8 @@ func (h *RobotHandler) HandleWecomGET(c *gin.Context) {
 
 	// 验证签名：将 token、timestamp、nonce、echostr 四个参数排序后拼接计算 SHA1
 	signature := h.signWecomRequest(token, timestamp, nonce, echostr)
-	if signature != msgSignature {
-		h.logger.Warn("企业微信 URL 验证签名失败", zap.String("expected", msgSignature), zap.String("got", signature))
+	if subtle.ConstantTimeCompare([]byte(signature), []byte(msgSignature)) != 1 {
+		h.logger.Warn("企业微信 URL 验证签名失败", zap.Bool("signature_present", msgSignature != ""))
 		c.String(http.StatusBadRequest, "invalid signature")
 		return
 	}
@@ -1565,7 +1642,7 @@ func (h *RobotHandler) HandleWecomPOST(c *gin.Context) {
 		c.String(http.StatusOK, "")
 		return
 	}
-	h.logger.Debug("企业微信 POST 收到请求", zap.String("body", string(bodyRaw)))
+	h.logger.Debug("企业微信 POST 收到请求", zap.Int("body_bytes", len(bodyRaw)))
 
 	// 验证请求签名防止伪造。企业微信签名算法同 URL 验证，使用 token、timestamp、nonce、 Encrypt 四个字段。
 	// 启用企业微信时必须配置 token 并校验签名，避免未授权请求触发 Agent。
@@ -1585,8 +1662,8 @@ func (h *RobotHandler) HandleWecomPOST(c *gin.Context) {
 		return
 	}
 	expected := h.signWecomRequest(token, timestamp, nonce, tmp.Encrypt)
-	if expected != msgSignature {
-		h.logger.Warn("企业微信 POST 签名验证失败", zap.String("expected", expected), zap.String("got", msgSignature))
+	if subtle.ConstantTimeCompare([]byte(expected), []byte(msgSignature)) != 1 {
+		h.logger.Warn("企业微信 POST 签名验证失败", zap.Bool("signature_present", msgSignature != ""))
 		c.String(http.StatusOK, "")
 		return
 	}
@@ -1602,7 +1679,7 @@ func (h *RobotHandler) HandleWecomPOST(c *gin.Context) {
 		c.String(http.StatusOK, "")
 		return
 	}
-	h.logger.Debug("企业微信 XML 解析成功", zap.String("ToUserName", body.ToUserName), zap.String("FromUserName", body.FromUserName), zap.String("MsgType", body.MsgType), zap.String("Content", body.Content), zap.String("Encrypt", body.Encrypt))
+	h.logger.Debug("企业微信 XML 解析成功", zap.String("ToUserName", body.ToUserName), zap.String("FromUserName", body.FromUserName), zap.String("MsgType", body.MsgType), zap.Int("content_bytes", len(body.Content)), zap.Bool("encrypted", body.Encrypt != ""))
 
 	// 保存企业 ID（用于明文模式回复）
 	enterpriseID := body.ToUserName
@@ -1623,13 +1700,13 @@ func (h *RobotHandler) HandleWecomPOST(c *gin.Context) {
 			c.String(http.StatusOK, "")
 			return
 		}
-		h.logger.Debug("企业微信解密成功", zap.String("decrypted", string(decrypted)))
+		h.logger.Debug("企业微信解密成功", zap.Int("decrypted_bytes", len(decrypted)))
 		if err := xml.Unmarshal(decrypted, &body); err != nil {
 			h.logger.Warn("企业微信解密后 XML 解析失败", zap.Error(err))
 			c.String(http.StatusOK, "")
 			return
 		}
-		h.logger.Debug("企业微信内层 XML 解析成功", zap.String("FromUserName", body.FromUserName), zap.String("Content", body.Content))
+		h.logger.Debug("企业微信内层 XML 解析成功", zap.String("FromUserName", body.FromUserName), zap.Int("content_bytes", len(body.Content)))
 	}
 
 	tenantKey := strings.TrimSpace(enterpriseID)
@@ -1666,15 +1743,19 @@ func (h *RobotHandler) HandleWecomPOST(c *gin.Context) {
 		h.sendWecomReply(c, replyUserID, enterpriseID, limitReply("暂仅支持文本消息，请发送文字。"), timestamp, nonce)
 		return
 	}
+	if rateReply, allowed := h.checkRobotRateLimit("wecom", userID, text); !allowed {
+		h.sendWecomReply(c, replyUserID, enterpriseID, limitReply(rateReply), timestamp, nonce)
+		return
+	}
 
 	// 文本消息：先判断是否为内置命令（如 帮助/列表/新对话 等），这类命令处理很快，可以直接走被动回复，避免依赖主动发送 API。
 	if cmdReply, ok := h.handleRobotCommand("wecom", userID, text); ok {
-		h.logger.Debug("企业微信收到命令消息，走被动回复", zap.String("userID", userID), zap.String("text", text))
+		h.logger.Debug("企业微信收到命令消息，走被动回复", zap.String("userID", userID), zap.Int("content_bytes", len(text)))
 		h.sendWecomReply(c, replyUserID, enterpriseID, limitReply(cmdReply), timestamp, nonce)
 		return
 	}
 
-	h.logger.Debug("企业微信开始处理消息（异步 AI）", zap.String("userID", userID), zap.String("text", text))
+	h.logger.Debug("企业微信开始处理消息（异步 AI）", zap.String("userID", userID), zap.Int("content_bytes", len(text)))
 
 	// 企业微信被动回复有 5 秒超时限制，而 AI 调用通常超过该时长。
 	// 这里采用推荐做法：立即返回 success（或空串），然后通过主动发送接口推送完整回复。
@@ -1682,9 +1763,9 @@ func (h *RobotHandler) HandleWecomPOST(c *gin.Context) {
 
 	// 异步处理消息并通过企业微信主动消息接口发送结果
 	go func() {
-		reply := h.HandleMessage("wecom", userID, text)
+		reply := h.handleMessage("wecom", userID, text, true)
 		reply = limitReply(reply)
-		h.logger.Debug("企业微信消息处理完成", zap.String("userID", userID), zap.String("reply", reply))
+		h.logger.Debug("企业微信消息处理完成", zap.String("userID", userID), zap.Int("reply_bytes", len(reply)))
 		// 调用企业微信 API 主动发送消息
 		h.sendWecomMessageViaAPI(rawUserID, enterpriseID, reply)
 	}()
@@ -1722,19 +1803,17 @@ func (h *RobotHandler) sendWecomReply(c *gin.Context, toUser, fromUser, content,
 		msgSignature := h.signWecomRequest(h.config.Robots.Wecom.Token, timestamp, nonce, encrypted)
 
 		h.logger.Debug("企业微信发送加密回复",
-			zap.String("Encrypt", encrypted[:50]+"..."),
-			zap.String("MsgSignature", msgSignature),
+			zap.Int("encrypted_bytes", len(encrypted)),
+			zap.Bool("signature_present", msgSignature != ""),
 			zap.String("TimeStamp", timestamp),
 			zap.String("Nonce", nonce))
 
 		// 加密模式仅返回 4 个核心字段（企业微信官方要求）
 		xmlResp := fmt.Sprintf(`<xml><Encrypt><![CDATA[%s]]></Encrypt><MsgSignature><![CDATA[%s]]></MsgSignature><TimeStamp><![CDATA[%s]]></TimeStamp><Nonce><![CDATA[%s]]></Nonce></xml>`, encrypted, msgSignature, timestamp, nonce)
-		// also log the final response body so we can cross-check with the
-		// network traffic or developer console
-		h.logger.Debug("企业微信加密回复包", zap.String("xml", xmlResp))
-		// for additional confidence, decrypt the payload ourselves and log it
+		// Verify the generated envelope without writing plaintext or ciphertext
+		// into application logs.
 		if dec, err2 := wecomDecrypt(h.config.Robots.Wecom.EncodingAESKey, encrypted); err2 == nil {
-			h.logger.Debug("企业微信加密回复解密检查", zap.String("plain", string(dec)))
+			h.logger.Debug("企业微信加密回复解密检查", zap.Int("plain_bytes", len(dec)))
 		} else {
 			h.logger.Warn("企业微信加密回复解密检查失败", zap.Error(err2))
 		}
@@ -1749,7 +1828,7 @@ func (h *RobotHandler) sendWecomReply(c *gin.Context, toUser, fromUser, content,
 	}
 
 	// 明文模式
-	h.logger.Debug("企业微信发送明文回复", zap.String("ToUserName", toUser), zap.String("FromUserName", fromUser), zap.String("Content", content[:50]+"..."))
+	h.logger.Debug("企业微信发送明文回复", zap.String("ToUserName", toUser), zap.String("FromUserName", fromUser), zap.Int("content_bytes", len(content)))
 
 	// 手动构造 XML 响应（使用 CDATA 包裹所有字段，并包含 AgentID）
 	xmlResp := fmt.Sprintf(`<xml>
@@ -1761,7 +1840,7 @@ func (h *RobotHandler) sendWecomReply(c *gin.Context, toUser, fromUser, content,
 </xml>`, toUser, fromUser, time.Now().Unix(), content)
 
 	// log the exact plaintext response for debugging
-	h.logger.Debug("企业微信明文回复包", zap.String("xml", xmlResp))
+	h.logger.Debug("企业微信明文回复包", zap.Int("xml_bytes", len(xmlResp)))
 
 	// use text/xml as recommended by WeCom docs
 	c.Header("Content-Type", "text/xml; charset=utf-8")
@@ -1884,7 +1963,7 @@ func (h *RobotHandler) sendWecomMessageViaAPI(toUser, toParty, content string) {
 	tokenURL := fmt.Sprintf("https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s", corpID, secret)
 	resp, err := http.Get(tokenURL)
 	if err != nil {
-		h.logger.Warn("企业微信获取 token 失败", zap.Error(err))
+		h.logger.Warn("企业微信获取 token 失败", zap.String("error", safeRobotOutboundError(err)))
 		return
 	}
 	defer resp.Body.Close()
@@ -1923,7 +2002,7 @@ func (h *RobotHandler) sendWecomMessageViaAPI(toUser, toParty, content string) {
 	sendURL := fmt.Sprintf("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=%s", tokenResp.AccessToken)
 	msgResp, err := http.Post(sendURL, "application/json", bytes.NewReader(msgBody))
 	if err != nil {
-		h.logger.Warn("企业微信主动发送消息失败", zap.Error(err))
+		h.logger.Warn("企业微信主动发送消息失败", zap.String("error", safeRobotOutboundError(err)))
 		return
 	}
 	defer msgResp.Body.Close()

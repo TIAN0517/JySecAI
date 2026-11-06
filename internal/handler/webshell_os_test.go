@@ -184,9 +184,19 @@ func TestBuildFileCommand_LinuxBranch(t *testing.T) {
 	in = base
 	in.Action = "upload"
 	in.Path = "/tmp/bin"
-	in.Content = "YWJjZA==" // base64 of "abcd"
+	in.Content = "YWJjZA=="
 	cmd, _ = h.buildFileCommand(in)
-	mustContain(t, cmd, "echo 'YWJjZA=='", "| base64 -d", "> '/tmp/bin'")
+	// upload 与 write 一样由服务器端 base64 编码：直接把 content 拼进 '...'
+	// 会让其中的单引号闭合引号并在其后内容于目标主机上执行。
+	mustContain(t, cmd, "echo '"+base64.StdEncoding.EncodeToString([]byte("YWJjZA=="))+"'", "| base64 -d", "> '/tmp/bin'")
+
+	// upload 中含单引号的 content 不得逃逸出引号
+	in.Content = "x' ; echo PWNED ; #"
+	cmd, _ = h.buildFileCommand(in)
+	if strings.Contains(cmd, "echo 'x' ; echo PWNED") {
+		t.Fatalf("upload left content unescaped inside shell quotes: %s", cmd)
+	}
+	mustContain(t, cmd, "echo '"+base64.StdEncoding.EncodeToString([]byte(in.Content))+"'")
 
 	// upload oversized content → error
 	in.Content = strings.Repeat("A", 513*1024)
@@ -297,7 +307,8 @@ func TestBuildFileCommand_WindowsBranch(t *testing.T) {
 	in.Path = `C:\bin\f`
 	in.Content = "YWJjZA=="
 	cmd, _ = h.buildFileCommand(in)
-	mustContain(t, cmd, "WriteAllBytes('C:\\bin\\f'", "FromBase64String('YWJjZA==')")
+	uploadB64 := base64.StdEncoding.EncodeToString([]byte("YWJjZA=="))
+	mustContain(t, cmd, "WriteAllBytes('C:\\bin\\f'", "FromBase64String('"+uploadB64+"')")
 
 	// upload_chunk index=0 → WriteAllBytes
 	in.Action = "upload_chunk"
@@ -309,7 +320,7 @@ func TestBuildFileCommand_WindowsBranch(t *testing.T) {
 	// upload_chunk index>0 → append (Open with Append mode)
 	in.ChunkIndex = 1
 	cmd, _ = h.buildFileCommand(in)
-	mustContain(t, cmd, "[IO.FileMode]::Append", "FromBase64String('YWJjZA==')")
+	mustContain(t, cmd, "[IO.FileMode]::Append", "FromBase64String('"+uploadB64+"')")
 }
 
 // TestBuildFileCommand_AutoFallbackMatchesLegacyBehavior 确保 os=auto 时与旧版 shellType 判定行为完全一致

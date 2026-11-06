@@ -8,14 +8,14 @@ JySecAI 当前仓库中的插件主要位于 `plugins/`，已有 **Burp Suite �
 plugins/
   README.md
   burp-suite/
-    cyberstrikeai-burp-extension/
+    jytech-burp-extension/
       src/main/java/burp/
       README.md
       README.zh-CN.md
       build.gradle
       pom.xml
   browser-extension/
-    cyberstrikeai-browser-extension/
+    jytech-browser-extension/
       manifest.json
       devtools.js
       background/service-worker.js
@@ -53,7 +53,7 @@ Burp 插件目录包含 Java 源码和构建脚本。典型能力：
 
 ## 浏览器扩展（Chromium DevTools）
 
-浏览器扩展目录为 MV3 DevTools 扩展，与 Burp 插件能力对齐：捕获 HTTP 流量 → 格式化 Prompt → SSE 流式输出 AI 结果。完整安装与 UI 说明见 `plugins/browser-extension/cyberstrikeai-browser-extension/README.zh-CN.md`。
+浏览器扩展目录为 MV3 DevTools 扩展，与 Burp 插件能力对齐：捕获 HTTP 流量 → 格式化 Prompt → SSE 流式输出 AI 结果。完整安装与 UI 说明见 `plugins/browser-extension/jytech-browser-extension/README.zh-CN.md`。
 
 典型能力：
 
@@ -64,8 +64,8 @@ Burp 插件目录包含 Java 源码和构建脚本。典型能力：
 
 构建与加载：
 
-- 无需编译：`chrome://extensions/` → 加载已解压 → 选择 `cyberstrikeai-browser-extension/`。
-- 打包：`bash package.sh` → `dist/cyberstrikeai-browser-extension.zip`。
+- 无需编译：`chrome://extensions/` → 加载已解压 → 选择 `jytech-browser-extension/`。
+- 打包：`bash package.sh` → `dist/jytech-browser-extension.zip`。
 
 ### 浏览器插件认证最佳实践
 
@@ -206,8 +206,8 @@ schema 越具体，HITL 越容易判断风险，Agent 也越不容易发散。
 
 ## 源码锚点
 
-- Burp 插件 Java 代码：`plugins/burp-suite/cyberstrikeai-burp-extension/src/main/java/burp/`
-- 浏览器扩展：`plugins/browser-extension/cyberstrikeai-browser-extension/`
+- Burp 插件 Java 代码：`plugins/burp-suite/jytech-burp-extension/src/main/java/burp/`
+- 浏览器扩展：`plugins/browser-extension/jytech-browser-extension/`
   - 认证：`lib/auth-session.js`、`lib/api.js`、`lib/storage.js`
   - 主 UI：`panel/panel.js`
   - 捕获：`devtools.js`、`background/service-worker.js`

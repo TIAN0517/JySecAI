@@ -831,7 +831,7 @@
         updateTurnRailState();
     }
 
-    window.CyberStrikeChatScroll = {
+    window.JysecChatScroll = {
         init: initChatScroll,
         onUserSendMessage: onUserSendMessage,
         onStreamEnd: onStreamEnd,

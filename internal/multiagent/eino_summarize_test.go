@@ -397,7 +397,7 @@ func TestEinoSummarizationMiddlewareRetriesWhenSummaryModelReturnsEmpty(t *testi
 	appCfg := &config.Config{}
 	appCfg.OpenAI.Model = "gpt-4o"
 	appCfg.OpenAI.MaxTotalTokens = 5000
-	appCfg.Database.Path = filepath.Join(t.TempDir(), "cyberstrike.db")
+	appCfg.Database.Path = filepath.Join(t.TempDir(), "jysec.db")
 	mwCfg := &config.MultiAgentEinoMiddlewareConfig{
 		SummarizationEmitInternalEvents:  &emit,
 		SummarizationOutputReserveTokens: 1024,

@@ -77,7 +77,7 @@ AI 测试角色不是安全授权边界。即使选择了“渗透测试”角�
 | HITL | `hitl:read`、`hitl:write` |
 | 任务 | `tasks:read`、`tasks:write`、`tasks:delete` |
 | 项目 | `project:read`、`project:write`、`project:delete` |
-| 漏洞 | `vulnerability:read`、`vulnerability:write`、`vulnerability:delete` |
+| 漏洞 | `vulnerability:read`、`vulnerability:write`、`vulnerability:delete`、`vulnerability:export` |
 | WebShell | `webshell:read`、`webshell:write`、`webshell:delete` |
 | C2 | `c2:read`、`c2:write`、`c2:delete` |
 | MCP | `mcp:read`、`mcp:execute`、`mcp:write`、`mcp:external:execute` |
@@ -236,12 +236,15 @@ agent:execute
 chat:read / chat:write
 project:read / project:write
 vulnerability:read / vulnerability:write
+vulnerability:export
 tasks:read / tasks:write
 files:read / files:write
 hitl:read / hitl:write
 ```
 
 只有确实需要本机命令时才增加 `agent:local-execute` 或 `terminal:execute`；需要删除时再增加对应 `:delete`。
+
+`vulnerability:export` 是「把漏洞资料搬出去」的权限，与 `vulnerability:read` 分开：能看列表不等于能把整包记录（目标、证据、复现步骤）带走，需要单独授予、也可以单独撤销。
 
 ### 机器人专用账号
 
@@ -306,7 +309,7 @@ Authorization: Bearer <token>
 创建用户示例：
 
 ```bash
-curl -X POST http://localhost:8080/api/rbac/users \
+curl -X POST http://localhost:9898/api/rbac/users \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -321,7 +324,7 @@ curl -X POST http://localhost:8080/api/rbac/users \
 创建自定义角色示例：
 
 ```bash
-curl -X POST http://localhost:8080/api/rbac/roles \
+curl -X POST http://localhost:9898/api/rbac/roles \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -335,7 +338,7 @@ curl -X POST http://localhost:8080/api/rbac/roles \
 批量授权项目示例：
 
 ```bash
-curl -X POST http://localhost:8080/api/rbac/resource-assignments \
+curl -X POST http://localhost:9898/api/rbac/resource-assignments \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{

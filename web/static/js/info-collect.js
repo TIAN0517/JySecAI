@@ -19,7 +19,7 @@ const INFO_COLLECT_PROVIDERS = {
             label: '完整模式',
             hint: '向 FOFA 传 full=true，返回更完整/更实时的数据，可能消耗更多额度。'
         },
-        fields: 'host,ip,port,domain,title,protocol,country,province,city,server',
+        fields: 'host,ip,port,domain,title,protocol,country,region,city,server',
         presets: [
             ['Apache + 中国', 'app="Apache" && country="CN"'],
             ['登录页 + 中国', 'title="登录" && country="CN"'],
@@ -28,8 +28,8 @@ const INFO_COLLECT_PROVIDERS = {
         ],
         fieldPresets: [
             ['最小字段', 'host,ip,port,domain'],
-            ['Web 常用', 'host,title,ip,port,domain,protocol,server,icp,country,province,city'],
-            ['情报增强', 'host,ip,port,domain,title,protocol,country,province,city,server,as_number,as_organization,icp,header,banner']
+            ['Web 常用', 'host,title,ip,port,domain,protocol,server,icp,country,region,city'],
+            ['情报增强', 'host,ip,port,domain,title,protocol,country,region,city,server,as_number,as_organization,icp,header,banner']
         ],
         syntaxGuide: {
             summary: 'FOFA 使用 field="value" 精确匹配，支持 &&、||、! 和括号组合；字符串建议用双引号包裹。',
@@ -155,20 +155,6 @@ const infoCollectState = {
 let fofaParseAbortController = null;
 let fofaParseSlowTimer = null;
 let fofaParseToastHandle = null;
-
-// HTML转义（如果未定义）
-if (typeof escapeHtml === 'undefined') {
-    function escapeHtml(text) {
-        if (text == null) return '';
-        const div = document.createElement('div');
-        div.textContent = String(text);
-        return div.innerHTML;
-    }
-}
-
-function escapeAttr(text) {
-    return escapeHtml(text).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
 
 function getFofaFormElements() {
     return {

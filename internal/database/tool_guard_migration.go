@@ -2,34 +2,20 @@ package database
 
 import (
 	"encoding/json"
-	"strconv"
-	"strings"
 
 	"jysecai/internal/mcp"
+	"jysecai/internal/toolguard"
 )
 
-const legacyToolGuardPrefix = "工具调用已被安全规则拦截"
+// legacyToolGuardPrefix 是舊版攔截回執的前綴。定義在 toolguard 套件，
+// 與實際產生回執的 mcp 層共用同一份來源，避免兩邊各寫一份字面值而漂移。
+const legacyToolGuardPrefix = toolguard.BlockedPrefix
 
 // Only the exact envelope emitted by the old local guard is recognized here.
 // New executions use the structured marker and never infer policy from text.
 func isLegacyToolGuardRefusal(text string) bool {
-	if !strings.HasPrefix(text, legacyToolGuardPrefix+"：") && !strings.HasPrefix(text, legacyToolGuardPrefix+"\n规则: ") {
-		return false
-	}
-	matchIndex := strings.LastIndex(text, "\n匹配内容: ")
-	if matchIndex < 0 {
-		return false
-	}
-	if _, err := strconv.Unquote(text[matchIndex+len("\n匹配内容: "):]); err != nil {
-		return false
-	}
-	ruleIndex := strings.LastIndex(text[:matchIndex], "\n规则: ")
-	if ruleIndex < 0 {
-		return false
-	}
-	rule := text[ruleIndex+len("\n规则: ") : matchIndex]
-	idIndex := strings.LastIndex(rule, " (")
-	return idIndex > 0 && strings.HasSuffix(rule, ")") && len(rule[idIndex+2:len(rule)-1]) > 0 && !strings.Contains(rule, "\n")
+	_, _, _, ok := toolguard.ParseRefusal(text)
+	return ok
 }
 
 // migrateLegacyToolGuardBlocks is idempotent because only failed records qualify.

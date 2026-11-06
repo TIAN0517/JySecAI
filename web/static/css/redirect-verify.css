@@ -1,0 +1,316 @@
+/* 批次受控跳轉驗證控制台 */
+
+.redirect-verify-layout {
+    display: grid;
+    grid-template-columns: minmax(320px, 420px) 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+@media (max-width: 1080px) {
+    .redirect-verify-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.redirect-verify-card {
+    background: var(--bg-card, #16181d);
+    border: 1px solid var(--border-color, #2a2e37);
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.redirect-verify-card + .redirect-verify-card {
+    margin-top: 16px;
+}
+
+.redirect-verify-field {
+    display: block;
+    margin-bottom: 12px;
+}
+
+.redirect-verify-field > span {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: var(--text-secondary, #9aa3b2);
+}
+
+.redirect-verify-field textarea {
+    min-height: 120px;
+    resize: vertical;
+    width: 100%;
+}
+
+.redirect-verify-field input,
+.redirect-verify-field select {
+    width: 100%;
+}
+
+.redirect-verify-hint {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--text-secondary, #9aa3b2);
+    word-break: break-all;
+}
+
+.redirect-verify-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.redirect-verify-row .redirect-verify-field {
+    flex: 1 1 120px;
+    margin-bottom: 0;
+}
+
+.redirect-verify-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+}
+
+.redirect-verify-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.redirect-verify-progress {
+    margin-bottom: 12px;
+}
+
+.redirect-verify-progress-track {
+    height: 8px;
+    border-radius: 999px;
+    background: var(--border-color, #2a2e37);
+    overflow: hidden;
+}
+
+.redirect-verify-progress-bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #3b82f6, #22d3ee);
+    transition: width 0.25s ease;
+}
+
+.redirect-verify-progress-text {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--text-secondary, #9aa3b2);
+}
+
+.redirect-verify-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.redirect-verify-table th,
+.redirect-verify-table td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-color, #2a2e37);
+    vertical-align: top;
+}
+
+.redirect-verify-cell-url {
+    word-break: break-all;
+    max-width: 320px;
+}
+
+.redirect-verify-cell-loc {
+    word-break: break-all;
+    max-width: 260px;
+}
+
+.redirect-verify-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color, #2a2e37);
+    font-size: 12px;
+    color: var(--text-secondary, #9aa3b2);
+}
+
+.redirect-verify-badge--hit {
+    border-color: #16a34a;
+    color: #4ade80;
+}
+
+/* 偽陽性／不穩定的警示標籤（本文回顯、重複複測不一致）。 */
+.redirect-verify-badge--warn {
+    border-color: #d97706;
+    color: #fbbf24;
+}
+
+/* 注入點型態標籤（script src／iframe src…）。 */
+.redirect-verify-badge--kind {
+    border-color: #3b82f6;
+    color: #93c5fd;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* 精準度摘要：六格指標磚。
+   用 grid 而不是 inline-block —— 內容長度不一（數字、百分比、說明），
+   inline-flex 會讓每格寬度跟著內容跑，看起來像亂的。 */
+.redirect-verify-accuracy {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.redirect-verify-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, #2a2e37);
+    background: var(--bg-secondary, #11141a);
+    min-width: 0;
+}
+
+.redirect-verify-tile-label {
+    font-size: 12px;
+    color: var(--text-secondary, #9aa3b2);
+}
+
+.redirect-verify-tile-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary, #e6e9ef);
+    font-variant-numeric: tabular-nums;
+    word-break: break-all;
+}
+
+.redirect-verify-tile-note {
+    font-size: 11px;
+    color: var(--text-secondary, #9aa3b2);
+    overflow-wrap: anywhere;
+}
+
+/* 注入點清單：每個注入點一塊，含原始網址、上下文與替換片段。 */
+.redirect-verify-injections {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.redirect-verify-injection {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, #2a2e37);
+    background: var(--bg-secondary, #11141a);
+    min-width: 0;
+}
+
+.redirect-verify-injection-head {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+
+.redirect-verify-injection-url {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    word-break: break-all;
+    color: var(--text-primary, #e6e9ef);
+}
+
+.redirect-verify-injection-context {
+    margin-top: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px;
+    color: var(--text-secondary, #9aa3b2);
+    overflow-wrap: anywhere;
+}
+
+/* 受控端點自我驗證結果。 */
+.redirect-verify-injection-check {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #16a34a;
+    font-size: 12px;
+    color: var(--text-secondary, #9aa3b2);
+    overflow-wrap: anywhere;
+}
+
+.redirect-verify-injection-check--bad {
+    border-color: #d97706;
+}
+
+.redirect-verify-empty {
+    padding: 16px;
+    text-align: center;
+    color: var(--text-secondary, #9aa3b2);
+    font-size: 13px;
+}
+
+/* 站上原有跳轉參數為空時顯示的破折號（沒有任何跳轉參數可代入）。 */
+.redirect-verify-muted {
+    color: var(--text-secondary, #9aa3b2);
+}
+
+/* 植入載荷輸出框：載荷常常很長而且要看清楚跳脫序列，所以等寬字型、
+   保留空白、允許換行，且一定要能複製整段（不截斷）。 */
+.redirect-verify-implant-out {
+    margin: 10px 0 0;
+    padding: 10px 12px;
+    min-height: 20px;
+    max-height: 220px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    background: var(--bg-secondary, #11141a);
+    border: 1px solid var(--border-color, #2a2e37);
+    border-radius: 8px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-primary, #e6e9ef);
+}
+
+.redirect-verify-implant-out:empty {
+    display: none;
+}
+
+.redirect-verify-runs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.redirect-verify-run {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, #2a2e37);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font-size: 12px;
+    text-align: left;
+}
+
+.redirect-verify-run:hover {
+    border-color: #3b82f6;
+}
+
+.redirect-verify-run-time {
+    flex: 1 1 auto;
+    color: var(--text-secondary, #9aa3b2);
+}

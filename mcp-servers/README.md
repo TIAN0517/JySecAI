@@ -11,6 +11,8 @@ This directory contains **standalone MCP (Model Context Protocol) servers**. The
 | Server | Description |
 |--------|-------------|
 | [reverse_shell](reverse_shell/) | Reverse shell listener: start/stop listener, send commands to connected targets, full interactive workflow. |
+| [redteam_skills](redteam_skills/) | Offensive methodology library: merges the upstream Claude-Red skills (MIT, 78 skills / 23 categories) with the local `skills/` library (131 skills) and matches them by trigger phrase. **Read-only — it never touches a target.** |
+| [kali_gpt](kali_gpt/) | Kali GPT-style pentest reasoning: tool→ATT&CK mapping, finding-driven tool-chain suggestions, PTES phase plans, engagement memory. **Planning only — it never executes**; any real action still goes through JySecAI's HITL gate and the scope registry. |
 
 ## How to use
 

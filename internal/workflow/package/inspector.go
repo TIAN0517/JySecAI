@@ -177,7 +177,7 @@ func parseManifest(raw []byte) (Manifest, error) {
 	if err := dec.Decode(&manifest); err != nil {
 		return Manifest{}, packageError("WFPKG_INVALID_MANIFEST", "工作流包清单格式无效")
 	}
-	if err := consumeJSONEnd(dec); err != nil || manifest.PackageFormat != PackageFormat || manifest.FormatVersion != FormatVersion || strings.TrimSpace(manifest.PackageID) == "" || len(manifest.Items) == 0 {
+	if err := consumeJSONEnd(dec); err != nil || !supportedPackageFormat(manifest.PackageFormat) || manifest.FormatVersion != FormatVersion || strings.TrimSpace(manifest.PackageID) == "" || len(manifest.Items) == 0 {
 		return Manifest{}, packageError("WFPKG_INVALID_MANIFEST", "工作流包清单格式不受支持")
 	}
 	return manifest, nil

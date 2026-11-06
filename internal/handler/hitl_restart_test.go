@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"jysecai/internal/database"
 
@@ -100,6 +101,27 @@ func TestEnsureSchemaFinalizesOnlyHistoricalPlaceholdersWithTerminalEvidence(t *
 	}
 	if _, err := db.AddMessage(supersededConversation.ID, "user", "继续", nil); err != nil {
 		t.Fatalf("create later message: %v", err)
+	}
+	// EnsureSchema 靠 created_at 嚴格大於來判定「被後續訊息取代」。
+	// Windows 的系統時鐘粒度約 15ms，連續兩次 AddMessage 會取得完全相同的
+	// 時戳（Linux 為奈秒精度，不會），使這條判斷在 Windows 上失效。
+	// 這裡把後續訊息的時戳用同一套格式往後推，讓測試不依賴平台時鐘精度。
+	// 註：不能寫成 SQL 的 datetime(...,'+1 second')，那會轉成 UTC 且用空格
+	// 分隔，與驅動程式寫入的 T 分隔格式字串比較時排序相反，反而更糟。
+	var supersededLaterID string
+	var assistantCreatedAt time.Time
+	if err := db.QueryRow(
+		`SELECT id FROM messages WHERE conversation_id = ? AND role = 'user'`,
+		supersededConversation.ID).Scan(&supersededLaterID); err != nil {
+		t.Fatalf("find later message: %v", err)
+	}
+	if err := db.QueryRow(`SELECT created_at FROM messages WHERE id = ?`,
+		superseded.ID).Scan(&assistantCreatedAt); err != nil {
+		t.Fatalf("read assistant created_at: %v", err)
+	}
+	if _, err := db.Exec(`UPDATE messages SET created_at = ? WHERE id = ?`,
+		assistantCreatedAt.Add(time.Second), supersededLaterID); err != nil {
+		t.Fatalf("advance later message timestamp: %v", err)
 	}
 
 	timeoutConversation, err := db.CreateConversation("timeout placeholder", database.ConversationCreateMeta{})

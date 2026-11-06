@@ -187,7 +187,10 @@ func (db *DB) ListBatchQueuesForAccess(limit, offset int, status, keyword, userI
 		args = append(args, "%"+keyword+"%", "%"+keyword+"%")
 	}
 	userID = strings.TrimSpace(userID)
-	if userID != "" && scope != RBACScopeAll {
+	if scope != RBACScopeAll && userID == "" {
+		// fail-closed：解析不出呼叫者时看不到任何资料，而不是无条件返回全部。
+		query += " AND 1=0"
+	} else if scope != RBACScopeAll {
 		query += ` AND (
 			owner_user_id = ?
 			OR EXISTS (
@@ -259,7 +262,10 @@ func (db *DB) CountBatchQueuesForAccess(status, keyword, userID, scope string) (
 		args = append(args, "%"+keyword+"%", "%"+keyword+"%")
 	}
 	userID = strings.TrimSpace(userID)
-	if userID != "" && scope != RBACScopeAll {
+	if scope != RBACScopeAll && userID == "" {
+		// fail-closed：解析不出呼叫者时看不到任何资料，而不是无条件返回全部。
+		query += " AND 1=0"
+	} else if scope != RBACScopeAll {
 		query += ` AND (
 			owner_user_id = ?
 			OR EXISTS (

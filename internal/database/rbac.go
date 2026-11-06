@@ -372,15 +372,93 @@ func grantSystemRolePermissions(tx *sql.Tx, permissions map[string]string) error
 			if _, err := tx.Exec(`INSERT OR IGNORE INTO rbac_role_permissions (role_id, permission_key, created_at) VALUES (?, ?, ?)`, RBACSystemRoleAuditor, key, now); err != nil {
 				return err
 			}
+		case key == "records:export":
+			// 提取記錄的匯出等同把整包靶站資料搬走：給 operator 與 auditor，
+			// viewer 只看列表。與 vulnerability:export 同一組原則。
+			for _, roleID := range []string{RBACSystemRoleOperator, RBACSystemRoleAuditor} {
+				if _, err := tx.Exec(`INSERT OR IGNORE INTO rbac_role_permissions (role_id, permission_key, created_at) VALUES (?, ?, ?)`, roleID, key, now); err != nil {
+					return err
+				}
+			}
+		case key == "records:export":
+			// 提取記錄的匯出等同把整包靶站資料搬走：給 operator 與 auditor，
+			// viewer 只看列表。與 vulnerability:export 同一組原則。
+			for _, roleID := range []string{RBACSystemRoleOperator, RBACSystemRoleAuditor} {
+				if _, err := tx.Exec(`INSERT OR IGNORE INTO rbac_role_permissions (role_id, permission_key, created_at) VALUES (?, ?, ?)`, roleID, key, now); err != nil {
+					return err
+				}
+			}
+		case key == "records:export":
+			// 提取記錄的匯出等同把整包靶站資料搬走：給 operator 與 auditor，
+			// viewer 只看列表。與 vulnerability:export 同一組原則。
+			for _, roleID := range []string{RBACSystemRoleOperator, RBACSystemRoleAuditor} {
+				if _, err := tx.Exec(`INSERT OR IGNORE INTO rbac_role_permissions (role_id, permission_key, created_at) VALUES (?, ?, ?)`, roleID, key, now); err != nil {
+					return err
+				}
+			}
+		case key == "records:export":
+			// 提取記錄的匯出等同把整包靶站資料搬走：給 operator 與 auditor，
+			// viewer 只看列表。與 vulnerability:export 同一組原則。
+			for _, roleID := range []string{RBACSystemRoleOperator, RBACSystemRoleAuditor} {
+				if _, err := tx.Exec(`INSERT OR IGNORE INTO rbac_role_permissions (role_id, permission_key, created_at) VALUES (?, ?, ?)`, roleID, key, now); err != nil {
+					return err
+				}
+			}
+		case key == "records:export":
+			// 提取記錄的匯出等同把整包靶站資料搬走：給 operator 與 auditor，
+			// viewer 只看列表。與 vulnerability:export 同一組原則。
+			for _, roleID := range []string{RBACSystemRoleOperator, RBACSystemRoleAuditor} {
+				if _, err := tx.Exec(`INSERT OR IGNORE INTO rbac_role_permissions (role_id, permission_key, created_at) VALUES (?, ?, ?)`, roleID, key, now); err != nil {
+					return err
+				}
+			}
+		case key == "records:export":
+			// 提取記錄的匯出等同把整包靶站資料搬走：給 operator 與 auditor，
+			// viewer 只看列表。與 vulnerability:export 同一組原則。
+			for _, roleID := range []string{RBACSystemRoleOperator, RBACSystemRoleAuditor} {
+				if _, err := tx.Exec(`INSERT OR IGNORE INTO rbac_role_permissions (role_id, permission_key, created_at) VALUES (?, ?, ?)`, roleID, key, now); err != nil {
+					return err
+				}
+			}
+		case key == "vulnerability:export":
+			// 漏洞資料提取：可把整包記錄（目標／證據／完整描述）匯出或入庫。
+			// 給 operator 與 auditor；viewer 只看列表，不給 —— 匯出是可被搬走的資料，
+			// 權限必須能單獨撤銷，不能跟漏洞檢視綁在一起。
+			for _, roleID := range []string{RBACSystemRoleOperator, RBACSystemRoleAuditor} {
+				if _, err := tx.Exec(`INSERT OR IGNORE INTO rbac_role_permissions (role_id, permission_key, created_at) VALUES (?, ?, ?)`, roleID, key, now); err != nil {
+					return err
+				}
+			}
 		case strings.HasPrefix(key, "rbac:"), strings.HasPrefix(key, "config:"), strings.HasPrefix(key, "terminal:"), strings.HasPrefix(key, "audit:"):
 			continue
 		case key == "mcp:write" || key == "mcp:external:execute":
+			continue
+		// agent:local-execute 與 mcp:execute 可經 /api/mcp 呼叫 exec 工具，
+		// 後者以 args["shell"] 指定執行檔、args["command"] 執行任意 shell。
+		// 這與刻意只授予 admin 的 terminal:execute 是同一種能力，
+		// 不得因走 MCP 這條路就落入下方 default 而洩漏給 Operator。
+		case key == "agent:local-execute" || key == "mcp:execute":
+			continue
+		// 省略 connection_id 的 webshell 請求會繞過每條連線的歸屬 ACL，
+		// 可直達內網任意目標。僅 admin 可用。
+		case key == "webshell:connect-unsaved":
 			continue
 		case key == "roles:write" || key == "roles:delete" ||
 			key == "skills:write" || key == "skills:delete" ||
 			key == "agents:write" || key == "agents:delete" ||
 			key == "knowledge:write" || key == "knowledge:delete" ||
 			key == "workflow:write" || key == "workflow:delete" || key == "robot:write":
+			continue
+		case key == "loan:read" || key == "loan:write":
+			// 貸款案件主檔是靶場匯出的真實財務／個資資料，且帶匯出功能。
+			// 預設只給 admin；operator 要用請在 RBAC 介面個別指派。
+			continue
+		case key == "scope:write":
+			// 核准／撤銷授權券 = 改變安全邊界本身。
+			// 預設分派規則會把「非 :read 的權限」給 operator，但那就變成
+			// operator 可以自己提出、自己核准 —— 等於沒有控制。
+			// 與 terminal:execute / loan:write 同一原則：預設只給 admin，
+			// operator 要用請在 RBAC 介面個別指派。
 			continue
 		case strings.HasSuffix(key, ":read"):
 			for _, roleID := range []string{RBACSystemRoleOperator, RBACSystemRoleAuditor, RBACSystemRoleViewer} {
@@ -646,6 +724,8 @@ func (db *DB) userOwnsResource(userID, resourceType, resourceID string) bool {
 		table = "c2_listeners"
 	case "xss_payload":
 		table = "xss_payloads"
+	case "redirect_verify_run":
+		table = "redirect_verify_runs"
 	default:
 		return false
 	}
@@ -677,6 +757,8 @@ func (db *DB) SetResourceOwner(resourceType, resourceID, userID string) error {
 		table = "c2_listeners"
 	case "xss_payload":
 		table = "xss_payloads"
+	case "redirect_verify_run":
+		table = "redirect_verify_runs"
 	default:
 		return nil
 	}
@@ -949,7 +1031,9 @@ func enrichRBACAssignmentLabels(rows []RBACResourceAssignment, lookup func(resou
 	for resourceType, ids := range idsByType {
 		options, err := lookup(resourceType, ids)
 		if err != nil {
-			return err
+			// 單一資源類型的標籤查詢失敗（例如資源已被刪除或類型不支援）
+			// 只略過該類型的標籤富化，不讓整個授權清單回 500。
+			continue
 		}
 		labelsByType[resourceType] = options
 	}
@@ -1312,6 +1396,9 @@ func (db *DB) UpdateRBACUser(userID, displayName string, enabled *bool, roleIDs 
 		return err
 	}
 	defer func() { _ = tx.Rollback() }()
+	if err := validateBuiltinAdminUpdate(tx, userID, enabled, roleIDs); err != nil {
+		return err
+	}
 	if enabled != nil {
 		if _, err := tx.Exec(`UPDATE rbac_users SET display_name = ?, enabled = ?, updated_at = ? WHERE id = ?`, strings.TrimSpace(displayName), boolToInt(*enabled), time.Now(), userID); err != nil {
 			return err

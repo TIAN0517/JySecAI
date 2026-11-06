@@ -13,12 +13,13 @@
 
 - [架构说明](architecture.md) · [安全模型](security-model.md) · [RBAC](rbac.md)
 - [Agent 与角色](agent-and-role-guide.md) · [Skills](skills-guide.md) · [Eino 多代理](MULTI_AGENT_EINO.md) · [Agent 最终回复治理](agent-finalization-best-practices.md)
-- [工作流](workflow-graph.md) · [工具执行治理](tool-execution-governance.md) · [人机协同最佳实践](hitl-best-practices.md)
+- [工作流](workflow-graph.md) · [工具执行治理](tool-execution-governance.md) · [人机协同最佳实践](hitl-best-practices.md) · [授权范围登记](scope-registry.md)
 
 ## 功能指南
 
 - [资产管理](asset-management.md) · [知识库](knowledge-base.md) · [机器人接入](robot.md) · [视觉分析](VISION.md)
-- [WebShell](webshell.md) · [C2](c2.md) · [MCP 联邦](mcp-federation.md)
+- [WebShell](webshell.md) · [C2](c2.md) · [滲透測試報告](pentest-report.md) · [MCP 联邦](mcp-federation.md) · [IDA MCP 逆向工程接入](ida-mcp-integration.md)
+- [受控跳转（回连）端点](redirect-endpoints.md) · [批次开放式跳转验证](redirect-batch-verify.md)
 
 ## 运维与参考
 

@@ -11,6 +11,8 @@
 | 服务 | 说明 |
 |------|------|
 | [reverse_shell](reverse_shell/) | 反向 Shell：开启/停止监听、与已连接目标交互执行命令，完整交互流程。 |
+| [redteam_skills](redteam_skills/) | 攻击方法论技能库：合并上游 Claude-Red（MIT，78 技能／23 分类）与本机 `skills/`（131 技能），支持按触发词自动匹配。**唯读，不对目标做任何动作。** |
+| [kali_gpt](kali_gpt/) | Kali GPT 式渗透推理：工具→ATT&CK 映射、依发现动态推荐工具链、PTES 阶段计划、案件经验记忆。**只规划不执行**，落地动作仍须走平台的 HITL 与授权范围闸门。 |
 
 ## 使用方式
 

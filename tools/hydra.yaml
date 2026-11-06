@@ -2,6 +2,7 @@ name: "hydra"
 command: "hydra"
 args: ["-I"]
 enabled: true
+action_class: "credential_enum"
 short_description: "密码暴力破解工具，支持多种协议和服务"
 description: |
   Hydra 是网络登录口令爆破工具，支持 SSH、FTP、HTTP、SMB 等多种协议。
@@ -78,6 +79,8 @@ parameters:
     format: "flag"
   - name: "target"
     type: "string"
+    target: true
+    target_kind: "host"
     description: "目标 IP、主机名或 CIDR（须在选项之后）"
     required: true
     position: 1

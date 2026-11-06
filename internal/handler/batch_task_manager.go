@@ -74,6 +74,9 @@ type BatchTaskQueue struct {
 	ID                    string       `json:"id"`
 	Title                 string       `json:"title,omitempty"`
 	Role                  string       `json:"role,omitempty"` // 角色名称（空字符串表示默认角色）
+	// AIChannelID 会话级 AI 通道覆盖（仅内存态，不落库）：自动复测等程序化派工
+	// 用指定通道跑对话。重启即丢——队列本来就是派工即执行，重启也会终止执行。
+	AIChannelID           string       `json:"aiChannelId,omitempty"`
 	AgentMode             string       `json:"agentMode"`      // single | eino_single | deep | plan_execute | supervisor
 	ScheduleMode          string       `json:"scheduleMode"`   // manual | cron
 	CronExpr              string       `json:"cronExpr,omitempty"`
@@ -179,6 +182,29 @@ func normalizeBatchQueueConcurrency(n int) int {
 	return n
 }
 
+// normalizeBatchTaskMessage 仅用于判重；实际保存仍保留用户输入的大小写与内部格式。
+func normalizeBatchTaskMessage(message string) string {
+	return strings.Join(strings.Fields(message), " ")
+}
+
+func dedupeBatchTaskMessages(tasks []string) []string {
+	unique := make([]string, 0, len(tasks))
+	seen := make(map[string]struct{}, len(tasks))
+	for _, message := range tasks {
+		message = strings.TrimSpace(message)
+		key := normalizeBatchTaskMessage(message)
+		if key == "" {
+			continue
+		}
+		if _, exists := seen[key]; exists {
+			continue
+		}
+		seen[key] = struct{}{}
+		unique = append(unique, message)
+	}
+	return unique
+}
+
 // CreateBatchQueue 创建批量任务队列
 func (m *BatchTaskManager) CreateBatchQueue(
 	title, role, agentMode, scheduleMode, cronExpr, projectID string,
@@ -195,6 +221,10 @@ func (m *BatchTaskManager) CreateBatchQueue(
 	}
 	if len(tasks) > MaxBatchTasksPerQueue {
 		return nil, fmt.Errorf("单个队列最多 %d 条任务", MaxBatchTasksPerQueue)
+	}
+	tasks = dedupeBatchTaskMessages(tasks)
+	if len(tasks) == 0 {
+		return nil, fmt.Errorf("任务列表不能为空")
 	}
 
 	m.mu.Lock()
@@ -226,9 +256,6 @@ func (m *BatchTaskManager) CreateBatchQueue(
 	dbTasks := make([]map[string]interface{}, 0, len(tasks))
 
 	for _, message := range tasks {
-		if message == "" {
-			continue // 跳过空行
-		}
 		taskID := generateShortID()
 		task := &BatchTask{
 			ID:      taskID,
@@ -897,6 +924,16 @@ func (m *BatchTaskManager) UpdateTaskMessage(queueID, taskID, message string) er
 	if !queueAllowsTaskListMutationLocked(queue) {
 		return fmt.Errorf("队列正在执行或未就绪，无法编辑任务")
 	}
+	message = strings.TrimSpace(message)
+	messageKey := normalizeBatchTaskMessage(message)
+	if messageKey == "" {
+		return fmt.Errorf("任务消息不能为空")
+	}
+	for _, task := range queue.Tasks {
+		if task.ID != taskID && normalizeBatchTaskMessage(task.Message) == messageKey {
+			return fmt.Errorf("队列中已存在相同任务")
+		}
+	}
 
 	// 查找并更新任务
 	for _, task := range queue.Tasks {
@@ -933,8 +970,18 @@ func (m *BatchTaskManager) AddTaskToQueue(queueID, message string) (*BatchTask, 
 		return nil, fmt.Errorf("队列正在执行或未就绪，无法添加任务")
 	}
 
-	if message == "" {
+	message = strings.TrimSpace(message)
+	messageKey := normalizeBatchTaskMessage(message)
+	if messageKey == "" {
 		return nil, fmt.Errorf("任务消息不能为空")
+	}
+	if len(queue.Tasks) >= MaxBatchTasksPerQueue {
+		return nil, fmt.Errorf("单个队列最多 %d 条任务", MaxBatchTasksPerQueue)
+	}
+	for _, task := range queue.Tasks {
+		if normalizeBatchTaskMessage(task.Message) == messageKey {
+			return nil, fmt.Errorf("队列中已存在相同任务")
+		}
 	}
 
 	// 生成任务ID

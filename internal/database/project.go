@@ -228,8 +228,12 @@ func (db *DB) ListProjects(status, search string, limit, offset int) ([]*Project
 }
 
 func (db *DB) ListProjectsForAccess(status, search string, limit, offset int, userID, scope string) ([]*Project, error) {
-	if scope == RBACScopeAll || strings.TrimSpace(userID) == "" {
+	if scope == RBACScopeAll {
 		return db.ListProjects(status, search, limit, offset)
+	}
+	// 解析不出呼叫者时返回空，而不是回退到未过滤的 ListProjects。
+	if strings.TrimSpace(userID) == "" {
+		return []*Project{}, nil
 	}
 	if limit <= 0 {
 		limit = 50
@@ -418,6 +422,30 @@ func (db *DB) GetProjectFact(id string) (*ProjectFact, error) {
 	return scanProjectFactRow(row)
 }
 
+// AddProjectFactUpsertedHook 新增一個專案事實寫入後的通知訂閱者。
+//
+// 專案事實是「利用後數據」的主要載體：黑板的 body 會記住完整的攻擊鏈與
+// 實際取到的資料。所以外部接收端需要這條鉤子，才能收到收割成果本身。
+func (db *DB) AddProjectFactUpsertedHook(hook func(*ProjectFact)) {
+	if db == nil || hook == nil {
+		return
+	}
+	db.projectFactUpsertedHooks = append(db.projectFactUpsertedHooks, hook)
+}
+
+// NotifyProjectFactUpserted must be called after the fact has been written.
+// Delivery runs asynchronously and never delays the write path.
+func (db *DB) NotifyProjectFactUpserted(fact *ProjectFact) {
+	if db == nil || fact == nil || len(db.projectFactUpsertedHooks) == 0 {
+		return
+	}
+	upserted := *fact
+	for _, hook := range db.projectFactUpsertedHooks {
+		hook := hook
+		go hook(&upserted)
+	}
+}
+
 // mergeFactBodyOnUpdate 更新时若 incoming body 为空则保留已有内容，避免仅改 summary 时丢失攻击链。
 func mergeFactBodyOnUpdate(incoming, existing string) string {
 	if strings.TrimSpace(incoming) == "" {
@@ -464,6 +492,7 @@ func (db *DB) UpsertProjectFact(f *ProjectFact) (*ProjectFact, error) {
 		if err != nil {
 			return nil, fmt.Errorf("更新事实失败: %w", err)
 		}
+		db.NotifyProjectFactUpserted(f)
 		return f, nil
 	}
 
@@ -486,6 +515,7 @@ func (db *DB) UpsertProjectFact(f *ProjectFact) (*ProjectFact, error) {
 	if err != nil {
 		return nil, fmt.Errorf("创建事实失败: %w", err)
 	}
+	db.NotifyProjectFactUpserted(f)
 	return f, nil
 }
 

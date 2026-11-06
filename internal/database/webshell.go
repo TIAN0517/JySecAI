@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"strings"
 	"time"
 
@@ -80,7 +81,10 @@ func (db *DB) ListWebshellConnectionsForAccess(userID, scope, projectID string) 
 		args = append(args, projectID)
 	}
 	userID = strings.TrimSpace(userID)
-	if userID != "" && scope != RBACScopeAll {
+	if scope != RBACScopeAll && userID == "" {
+		// fail-closed：解析不出呼叫者时看不到任何资料。
+		query += " AND 1=0"
+	} else if scope != RBACScopeAll {
 		query += ` AND (
 			owner_user_id = ?
 			OR EXISTS (
@@ -106,6 +110,10 @@ func (db *DB) ListWebshellConnectionsForAccess(userID, scope, projectID string) 
 			db.logger.Warn("扫描 WebShell 连接行失败", zap.Error(err))
 			continue
 		}
+		c.Password, err = db.decryptCredential(c.Password)
+		if err != nil {
+			return nil, fmt.Errorf("decrypt webshell %s password: %w", c.ID, err)
+		}
 		list = append(list, c)
 	}
 	return list, rows.Err()
@@ -127,16 +135,24 @@ func (db *DB) GetWebshellConnection(id string) (*WebShellConnection, error) {
 		db.logger.Error("查询 WebShell 连接失败", zap.Error(err), zap.String("id", id))
 		return nil, err
 	}
+	c.Password, err = db.decryptCredential(c.Password)
+	if err != nil {
+		return nil, fmt.Errorf("decrypt webshell %s password: %w", c.ID, err)
+	}
 	return &c, nil
 }
 
 // CreateWebshellConnection 创建 WebShell 连接
 func (db *DB) CreateWebshellConnection(c *WebShellConnection) error {
+	password, err := db.encryptCredential(c.Password)
+	if err != nil {
+		return fmt.Errorf("encrypt webshell password: %w", err)
+	}
 	query := `
 		INSERT INTO webshell_connections (id, project_id, url, password, type, method, cmd_param, remark, encoding, os, created_at)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
-	_, err := db.Exec(query, c.ID, strings.TrimSpace(c.ProjectID), c.URL, c.Password, c.Type, c.Method, c.CmdParam, c.Remark, c.Encoding, c.OS, c.CreatedAt)
+	_, err = db.Exec(query, c.ID, strings.TrimSpace(c.ProjectID), c.URL, password, c.Type, c.Method, c.CmdParam, c.Remark, c.Encoding, c.OS, c.CreatedAt)
 	if err != nil {
 		db.logger.Error("创建 WebShell 连接失败", zap.Error(err), zap.String("id", c.ID))
 		return err
@@ -146,12 +162,16 @@ func (db *DB) CreateWebshellConnection(c *WebShellConnection) error {
 
 // UpdateWebshellConnection 更新 WebShell 连接
 func (db *DB) UpdateWebshellConnection(c *WebShellConnection) error {
+	password, err := db.encryptCredential(c.Password)
+	if err != nil {
+		return fmt.Errorf("encrypt webshell password: %w", err)
+	}
 	query := `
 		UPDATE webshell_connections
 		SET project_id = ?, url = ?, password = ?, type = ?, method = ?, cmd_param = ?, remark = ?, encoding = ?, os = ?
 		WHERE id = ?
 	`
-	result, err := db.Exec(query, strings.TrimSpace(c.ProjectID), c.URL, c.Password, c.Type, c.Method, c.CmdParam, c.Remark, c.Encoding, c.OS, c.ID)
+	result, err := db.Exec(query, strings.TrimSpace(c.ProjectID), c.URL, password, c.Type, c.Method, c.CmdParam, c.Remark, c.Encoding, c.OS, c.ID)
 	if err != nil {
 		db.logger.Error("更新 WebShell 连接失败", zap.Error(err), zap.String("id", c.ID))
 		return err

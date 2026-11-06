@@ -1,0 +1,159 @@
+{
+  "comment": "JySecAI external_mcp.servers. Paths expand ${JYSECAI_PYTHON} and ${JYSECAI_CURRENT}.",
+  "servers": {
+    "kali-mcp": {
+      "command": "/usr/bin/python3",
+      "args": ["/mnt/c/Users/Administrator/desktop/evidence/MCP-Kali-Server/client.py", "--server", "http://127.0.0.1:5000"],
+      "working_directory": "/mnt/c/Users/Administrator/desktop/evidence/MCP-Kali-Server",
+      "description": "External Kali MCP; restored as disabled, backend and dependencies not checked",
+      "timeout": 300,
+      "disabled": true,
+      "external_mcp_enable": false
+    },
+    "hexstrike-ai": {
+      "command": "/usr/bin/python3",
+      "args": ["/mnt/c/Users/Administrator/desktop/evidence/hexstrike-ai/hexstrike_mcp.py", "--server", "http://127.0.0.1:8888"],
+      "working_directory": "/mnt/c/Users/Administrator/desktop/evidence/hexstrike-ai",
+      "description": "External HexStrike MCP; restored as disabled, backend and dependencies not checked",
+      "timeout": 300,
+      "disabled": true,
+      "external_mcp_enable": false
+    },
+    "pent-claude-agent": {
+      "command": "${JYSECAI_PYTHON:-/opt/jysecai/core/venv/bin/python}",
+      "args": ["${JYSECAI_CURRENT:-/opt/jysecai/core/current}/mcp-servers/pent_claude_agent/mcp_pent_claude_agent.py"],
+      "working_directory": "${JYSECAI_CURRENT:-/opt/jysecai/core/current}/mcp-servers/pent_claude_agent",
+      "description": "Pentest task MCP; Claude Agent SDK via local Anthropic shim",
+      "timeout": 180,
+      "terminate_duration": 15,
+      "external_mcp_enable": true
+    },
+    "dragon-v": {
+      "command": "${JYSECAI_PYTHON:-/opt/jysecai/core/venv/bin/python}",
+      "args": ["${JYSECAI_CURRENT:-/opt/jysecai/core/current}/mcp-servers/dragon_v/dragon_v_mcp_server.py"],
+      "working_directory": "${JYSECAI_CURRENT:-/opt/jysecai/core/current}/mcp-servers/dragon_v",
+      "description": "Offline CVE, fingerprint and authorized scan tools",
+      "timeout": 180,
+      "terminate_duration": 20,
+      "external_mcp_enable": true
+    },
+    "reverse-shell": {
+      "command": "${JYSECAI_PYTHON:-/opt/jysecai/core/venv/bin/python}",
+      "args": ["${JYSECAI_CURRENT:-/opt/jysecai/core/current}/mcp-servers/reverse_shell/mcp_reverse_shell.py"],
+      "working_directory": "${JYSECAI_CURRENT:-/opt/jysecai/core/current}/mcp-servers/reverse_shell",
+      "description": "Authorized reverse-shell listener and session commands",
+      "timeout": 120,
+      "terminate_duration": 10,
+      "external_mcp_enable": true
+    },
+    "vuln-intel": {
+      "command": "${JYSECAI_PYTHON:-/opt/jysecai/core/venv/bin/python}",
+      "args": ["${JYSECAI_CURRENT:-/opt/jysecai/core/current}/mcp-servers/vuln_intel/mcp_vuln_intel.py"],
+      "description": "Read-only NVD, CISA KEV, EPSS, OSV, ExploitDB and public POC intelligence",
+      "timeout": 90,
+      "terminate_duration": 10,
+      "external_mcp_enable": true
+    },
+    "jysecai-assets": {
+      "command": "${JYSECAI_PYTHON:-/opt/jysecai/core/venv/bin/python}",
+      "args": ["${JYSECAI_CURRENT:-/opt/jysecai/core/current}/mcp-servers/asset_intelligence/scripts/run_stdio.py"],
+      "description": "JySecAI 资产情报与测绘 (FOFA / ZoomEye + SQLite)",
+      "timeout": 60,
+      "external_mcp_enable": true
+    },
+    "redteam-knowledge": {
+      "command": "${JYSECAI_PYTHON:-/opt/jysecai/core/venv/bin/python}",
+      "args": ["${JYSECAI_CURRENT:-/opt/jysecai/core/current}/mcp-servers/redteam_knowledge/mcp_redteam_knowledge.py"],
+      "description": "Read-only MITRE ATT&CK, LOLBAS, GTFOBins and Atomic Red Team knowledge",
+      "timeout": 120,
+      "terminate_duration": 10,
+      "external_mcp_enable": true
+    },
+    "redteam-skills": {
+      "command": "${JYSECAI_PYTHON:-/opt/jysecai/core/venv/bin/python}",
+      "args": ["${JYSECAI_CURRENT:-/opt/jysecai/core/current}/mcp-servers/redteam_skills/mcp_redteam_skills.py"],
+      "working_directory": "${JYSECAI_CURRENT:-/opt/jysecai/core/current}/mcp-servers/redteam_skills",
+      "description": "Claude-Red + 本机 skills/ 合并索引，只读",
+      "timeout": 90,
+      "terminate_duration": 10,
+      "external_mcp_enable": true
+    },
+    "kali-gpt": {
+      "command": "${JYSECAI_PYTHON:-/opt/jysecai/core/venv/bin/python}",
+      "args": ["${JYSECAI_CURRENT:-/opt/jysecai/core/current}/mcp-servers/kali_gpt/mcp_kali_gpt.py"],
+      "working_directory": "${JYSECAI_CURRENT:-/opt/jysecai/core/current}/mcp-servers/kali_gpt",
+      "description": "Kali GPT 式渗透推理，只规划不执行",
+      "timeout": 90,
+      "terminate_duration": 10,
+      "external_mcp_enable": true
+    },
+    "github": {
+      "command": "/home/BossJy/.nvm/versions/node/v24.22.2/bin/npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "allowed_command_roots": ["/home/BossJy/.nvm/versions/node/v24.22.2/bin"],
+      "inherit_parent_env": true,
+      "description": "GitHub official MCP (needs GITHUB_TOKEN in env)",
+      "timeout": 60,
+      "external_mcp_enable": true
+    },
+    "cloudflare": {
+      "type": "http",
+      "url": "https://mcp.cloudflare.com/mcp",
+      "description": "Cloudflare MCP",
+      "timeout": 60,
+      "keep_alive": 30,
+      "max_retries": 5,
+      "external_mcp_enable": true
+    },
+    "ida-official": {
+      "type": "http",
+      "url": "http://127.0.0.1:8737/mcp",
+      "description": "Official Hex-Rays IDA MCP (start deploy/systemd/user/jysec-ida-mcp.service)",
+      "timeout": 180,
+      "keep_alive": 30,
+      "max_retries": 5,
+      "external_mcp_enable": true
+    },
+    "memory": {
+      "command": "/home/BossJy/.nvm/versions/node/v24.22.2/bin/npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "allowed_command_roots": ["/home/BossJy/.nvm/versions/node/v24.22.2/bin"],
+      "description": "Persistent memory MCP",
+      "timeout": 60,
+      "external_mcp_enable": true
+    },
+    "sequential-thinking": {
+      "command": "/home/BossJy/.nvm/versions/node/v24.22.2/bin/npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "allowed_command_roots": ["/home/BossJy/.nvm/versions/node/v24.22.2/bin"],
+      "description": "Sequential thinking MCP",
+      "timeout": 60,
+      "external_mcp_enable": true
+    },
+    "time": {
+      "command": "/home/BossJy/.nvm/versions/node/v24.22.2/bin/npx",
+      "args": ["-y", "@modelcontextprotocol/server-time"],
+      "allowed_command_roots": ["/home/BossJy/.nvm/versions/node/v24.22.2/bin"],
+      "description": "Time MCP",
+      "timeout": 30,
+      "external_mcp_enable": true
+    },
+    "context7": {
+      "command": "/home/BossJy/.nvm/versions/node/v24.22.2/bin/npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "allowed_command_roots": ["/home/BossJy/.nvm/versions/node/v24.22.2/bin"],
+      "description": "Context7 docs MCP",
+      "timeout": 60,
+      "external_mcp_enable": true
+    },
+    "chrome-devtools": {
+      "command": "/home/BossJy/.nvm/versions/node/v24.22.2/bin/npx",
+      "args": ["-y", "chrome-devtools-mcp@latest", "--autoConnect", "--channel=stable"],
+      "allowed_command_roots": ["/home/BossJy/.nvm/versions/node/v24.22.2/bin"],
+      "description": "Chrome DevTools MCP (needs a logged-in Chrome)",
+      "timeout": 90,
+      "disabled": true,
+      "external_mcp_enable": false
+    }
+  }
+}

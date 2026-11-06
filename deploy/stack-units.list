@@ -1,0 +1,22 @@
+# JySecAI stack manifest.
+# Boot pull-up and disconnect recovery both read this file.
+# kind unit
+# system = systemd system unit, user = bossjy user unit.
+# jysec-8080-proxy is omitted on purpose: it occupies 127.0.0.1:8080.
+system jysec-core.service
+system jysec-gateway.service
+system jysec-edge.service
+system jysec-control-plane.service
+system jysec-worker.service
+system jysec-scanner-adapter.service
+system jysec-hexstrike.service
+system jysec-kali-api.service
+user grok-bridge.service
+user codex-bridge.service
+user nous-free-bridge.service
+user jysec-ida-mcp.service
+user jysec-stack-guard.service
+user hermes-gateway.service
+user hermes-hexstrike.service
+user kali-api-5555.service
+user all-vuln-console.service

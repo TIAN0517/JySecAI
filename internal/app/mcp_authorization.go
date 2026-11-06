@@ -73,6 +73,20 @@ func mcpToolAuthorizer(db *database.DB) func(context.Context, string, map[string
 				return fmt.Errorf("no access to conversation %s", conversationID)
 			}
 			return nil
+		case builtin.ToolEscalateFindingsChain:
+			// 串鏈會寫出一筆新的漏洞記錄，權限與 record_vulnerability 完全相同：
+			// 要能寫漏洞，且要能寫進這個對話。
+			if err := require("vulnerability:write"); err != nil {
+				return err
+			}
+			conversationID := mcpAuthorizationString(args, "conversation_id")
+			if conversationID == "" {
+				conversationID = mcpAuthorizationConversationID(ctx)
+			}
+			if conversationID == "" || db == nil || !db.UserCanAccessResource(principal.UserID, principal.ScopeFor("vulnerability:write"), "conversation", conversationID) {
+				return fmt.Errorf("no access to conversation %s", conversationID)
+			}
+			return nil
 		case builtin.ToolListVulnerabilities:
 			if err := require("vulnerability:read"); err != nil {
 				return err
@@ -84,6 +98,27 @@ func mcpToolAuthorizer(db *database.DB) func(context.Context, string, map[string
 			return nil
 		case builtin.ToolGetVulnerability:
 			return resource("vulnerability:read", "vulnerability", "id")
+		case builtin.ToolUpdateVulnerability:
+			return resource("vulnerability:write", "vulnerability", "id")
+		case builtin.ToolVulnTriageReport:
+			if err := require("vulnerability:read"); err != nil {
+				return err
+			}
+			conversationID := mcpAuthorizationConversationID(ctx)
+			if conversationID == "" || db == nil || !db.UserCanAccessResource(principal.UserID, principal.ScopeFor("vulnerability:read"), "conversation", conversationID) {
+				return fmt.Errorf("no access to conversation %s", conversationID)
+			}
+			return nil
+		case builtin.ToolRedirectProbe:
+			// 探測本身就是對外發出請求，因此沿用 agent:execute。
+			if err := require("agent:execute"); err != nil {
+				return err
+			}
+			// 指定漏洞 ID 時要能寫回該筆紀錄，寫入權限與 update_vulnerability 相同。
+			if id := mcpAuthorizationString(args, "vulnerability_id"); id != "" {
+				return resource("vulnerability:write", "vulnerability", "vulnerability_id")
+			}
+			return nil
 		case builtin.ToolQueryAssets:
 			return require("asset:read")
 		case builtin.ToolGetAsset:

@@ -7,8 +7,10 @@ package toolguard
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"sync/atomic"
 )
@@ -23,11 +25,38 @@ const (
 	// The named group keeps surrounding boundary punctuation out of the reminder.
 	governmentDomainPattern = `(?i)(?:^|[^\p{L}\p{M}\p{N}_.-])(?P<match>(?:(?:[\p{L}\p{M}\p{N}_*-]+\.)+gov(?:\.[\p{L}\p{M}\p{N}_*-]+)*|gov(?:\.[\p{L}\p{M}\p{N}_*-]+)+|\.gov(?:\.[\p{L}\p{M}\p{N}_*-]+)*)\.?)(?:$|[^\p{L}\p{M}\p{N}_.-])`
 	defaultMessage          = "识别到 {match}，工具调用已被安全规则「{rule}」拦截，请检查目标与授权范围后再试。"
+
+	// governmentDomainsRuleID 是內建政府網域規則的 ID。
+	// 授權範圍（全域 scope 與專案 allow）只豁免這一條規則，其他規則照常判斷。
+	governmentDomainsRuleID = "government-domains"
 )
 
 type Config struct {
 	Enabled bool   `json:"enabled" yaml:"enabled"`
 	Rules   []Rule `json:"rules" yaml:"rules"`
+	// Scope declares targets covered by a signed engagement. An exact target
+	// match inside Scope bypasses the built-in government-domain rule while all
+	// unrelated rules and targets continue to be evaluated.
+	//
+	// A nil or empty Scope preserves historical behaviour exactly. A pointer
+	// keeps "absent" distinct from "present but empty" so configs written by
+	// this build stay byte-compatible with earlier ones.
+	Scope *Scope `json:"scope,omitempty" yaml:"scope,omitempty"`
+}
+
+// Scope is an explicit allow-list of authorized targets. All fields are
+// optional; a nil or empty Scope matches nothing and changes no behaviour.
+type Scope struct {
+	// Domains are exact hostnames, e.g. "portal.agency.gov.example".
+	Domains []string `json:"domains" yaml:"domains,omitempty"`
+	// DomainSuffixes match any host ending with the given suffix, e.g.
+	// ".gov.tw" matches "agency.gov.tw" but not "gov.tw.evil.example".
+	DomainSuffixes []string `json:"domain_suffixes" yaml:"domain_suffixes,omitempty"`
+	// Wildcards use shell-style globs on the full host, e.g. "*.city.gov.example".
+	// '*' deliberately does not cross a dot.
+	Wildcards []string `json:"wildcards" yaml:"wildcards,omitempty"`
+	// CIDRs are textual IPv4/IPv6 blocks, e.g. "192.0.2.10/32".
+	CIDRs []string `json:"cidrs" yaml:"cidrs,omitempty"`
 }
 
 type Rule struct {
@@ -51,19 +80,34 @@ type compiledRule struct {
 	matchGroup int
 }
 
+// compiledScope holds the pre-parsed Scope for fast matching.
+type compiledScope struct {
+	domains   map[string]struct{}
+	suffixes  []string
+	wildcards []*regexp.Regexp
+	cidrs     []*net.IPNet
+	active    bool
+}
+
 // Policy is an immutable snapshot safe for concurrent checks.
 type Policy struct {
 	config Config
 	rules  []compiledRule
+	scope  compiledScope
 }
 
 // DefaultConfig enables a conservative government-domain rule, including .gov,
 // .gov.cn and wildcard forms such as *.gov.*. Additional rules can be configured.
+//
+// The default Scope is nil, so out-of-the-box behaviour is unchanged:
+// government and other critical targets stay blocked. Operators running an
+// authorized engagement populate Scope to permit exactly the hosts named in
+// their engagement letter.
 func DefaultConfig() Config {
 	return Config{
 		Enabled: true,
 		Rules: []Rule{{
-			ID:      "government-domains",
+			ID:      governmentDomainsRuleID,
 			Name:    "政府网站保护",
 			Enabled: true,
 			Pattern: governmentDomainPattern,
@@ -110,35 +154,331 @@ func Compile(config Config) (*Policy, error) {
 			policy.rules = append(policy.rules, compiledRule{rule: rule, pattern: pattern, matchGroup: pattern.SubexpIndex("match")})
 		}
 	}
+	scope, err := compileScope(policy.config.Scope)
+	if err != nil {
+		return nil, err
+	}
+	policy.scope = scope
 	return policy, nil
+}
+
+const (
+	MaxScopeDomains   = 2000
+	MaxScopeSuffixes  = 200
+	MaxScopeWildcards = 500
+	MaxScopeCIDRs     = 500
+	MaxScopeEntryLen  = 512
+)
+
+// compileScope validates and pre-parses the authorized-target list. A nil or
+// empty scope returns an inactive value, so behaviour is identical to a build
+// without this feature.
+func compileScope(scope *Scope) (compiledScope, error) {
+	return compileScopeWithLabel("tool guard", scope)
+}
+
+// compileScopeWithLabel 依標籤編譯授權範圍。
+//
+// label 只影響錯誤訊息的前綴：既有呼叫固定傳 "tool guard"，因此既有錯誤字串不變；
+// 專案範圍則用 "project scope allow" / "project scope deny" 區分來源。
+func compileScopeWithLabel(label string, scope *Scope) (compiledScope, error) {
+	out := compiledScope{domains: make(map[string]struct{})}
+	if scope == nil {
+		return out, nil
+	}
+	if len(scope.Domains) > MaxScopeDomains {
+		return out, fmt.Errorf("%s: scope.domains exceeds %d entries", label, MaxScopeDomains)
+	}
+	if len(scope.DomainSuffixes) > MaxScopeSuffixes {
+		return out, fmt.Errorf("%s: scope.domain_suffixes exceeds %d entries", label, MaxScopeSuffixes)
+	}
+	if len(scope.Wildcards) > MaxScopeWildcards {
+		return out, fmt.Errorf("%s: scope.wildcards exceeds %d entries", label, MaxScopeWildcards)
+	}
+	if len(scope.CIDRs) > MaxScopeCIDRs {
+		return out, fmt.Errorf("%s: scope.cidrs exceeds %d entries", label, MaxScopeCIDRs)
+	}
+
+	for _, raw := range scope.Domains {
+		host := normalizeHost(raw)
+		if host == "" {
+			return out, fmt.Errorf("%s: scope.domains contains an invalid entry %q", label, raw)
+		}
+		out.domains[host] = struct{}{}
+	}
+	for _, raw := range scope.DomainSuffixes {
+		suffix := strings.ToLower(strings.TrimSpace(raw))
+		if suffix == "" || len(suffix) > MaxScopeEntryLen || !strings.HasPrefix(suffix, ".") {
+			return out, fmt.Errorf("%s: scope.domain_suffixes entry %q must start with '.'", label, raw)
+		}
+		out.suffixes = append(out.suffixes, suffix)
+	}
+	for _, raw := range scope.Wildcards {
+		glob := strings.ToLower(strings.TrimSpace(raw))
+		if glob == "" || len(glob) > MaxScopeEntryLen {
+			return out, fmt.Errorf("%s: scope.wildcards entry %q is empty or too long", label, raw)
+		}
+		// Only * and ? are honoured; everything else is quoted so a pattern
+		// such as ".gov.tw" cannot smuggle regex metacharacters.
+		// '*' deliberately does NOT cross a dot: "*.gov.tw" must not match
+		// "a.b.gov.tw", otherwise a one-label scope would silently widen.
+		var b strings.Builder
+		b.WriteString("^")
+		for _, r := range glob {
+			switch r {
+			case '*':
+				b.WriteString(`[^./]*`)
+			case '?':
+				b.WriteString(`[^./]`)
+			default:
+				b.WriteString(regexp.QuoteMeta(string(r)))
+			}
+		}
+		b.WriteString("$")
+		re, err := regexp.Compile(b.String())
+		if err != nil {
+			return out, fmt.Errorf("%s: scope.wildcards entry %q is invalid: %w", label, raw, err)
+		}
+		out.wildcards = append(out.wildcards, re)
+	}
+	for _, raw := range scope.CIDRs {
+		entry := strings.TrimSpace(raw)
+		if entry == "" || len(entry) > MaxScopeEntryLen {
+			return out, fmt.Errorf("%s: scope.cidrs entry %q is empty or too long", label, raw)
+		}
+		_, network, err := net.ParseCIDR(entry)
+		if err != nil {
+			return out, fmt.Errorf("%s: scope.cidrs entry %q is invalid: %w", label, raw, err)
+		}
+		out.cidrs = append(out.cidrs, network)
+	}
+
+	out.active = len(out.domains) > 0 || len(out.suffixes) > 0 ||
+		len(out.wildcards) > 0 || len(out.cidrs) > 0
+	return out, nil
+}
+
+// normalizeHost lowercases a host and strips an optional scheme, userinfo,
+// port, path and trailing dot. It returns "" when no host can be recovered.
+func normalizeHost(value string) string {
+	v := strings.ToLower(strings.TrimSpace(value))
+	if v == "" {
+		return ""
+	}
+	if idx := strings.Index(v, "://"); idx >= 0 {
+		v = v[idx+3:]
+	}
+	if idx := strings.LastIndex(v, "@"); idx >= 0 {
+		v = v[idx+1:]
+	}
+	if idx := strings.IndexAny(v, "/?#"); idx >= 0 {
+		v = v[:idx]
+	}
+	// Strip a :port suffix, but keep bracketed IPv6 literals intact.
+	if strings.HasPrefix(v, "[") {
+		if end := strings.Index(v, "]"); end >= 0 {
+			return strings.TrimSuffix(v[1:end], ".")
+		}
+	} else if idx := strings.LastIndex(v, ":"); idx >= 0 {
+		if _, err := strconv.Atoi(v[idx+1:]); err == nil {
+			v = v[:idx]
+		}
+	}
+	v = strings.TrimSuffix(v, ".")
+	if v == "" {
+		return ""
+	}
+	return v
+}
+
+// contains reports whether host is inside the authorized scope.
+func (s compiledScope) contains(host string) bool {
+	if !s.active || host == "" {
+		return false
+	}
+	if _, ok := s.domains[host]; ok {
+		return true
+	}
+	for _, suffix := range s.suffixes {
+		if strings.HasSuffix(host, suffix) && len(host) > len(suffix) {
+			return true
+		}
+	}
+	for _, re := range s.wildcards {
+		if re.MatchString(host) {
+			return true
+		}
+	}
+	if ip := net.ParseIP(host); ip != nil {
+		for _, network := range s.cidrs {
+			if network.Contains(ip) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func hostByte(value byte) bool {
+	return value >= 'a' && value <= 'z' || value >= 'A' && value <= 'Z' ||
+		value >= '0' && value <= '9' || strings.ContainsRune("._-*?", rune(value))
+}
+
+func hostAroundMatch(candidate string, start, end int) string {
+	for start > 0 && hostByte(candidate[start-1]) {
+		start--
+	}
+	for end < len(candidate) && hostByte(candidate[end]) {
+		end++
+	}
+	return normalizeHost(candidate[start:end])
+}
+
+func (p *Policy) matchedTargetInScope(candidate string, start, end int) bool {
+	if p == nil || !p.scope.active {
+		return false
+	}
+	// Expand a short legacy match such as "gov" to the surrounding hostname.
+	// This also keeps aggregate JSON candidates precise when they carry multiple
+	// targets: each regex match expands only within its own hostname token.
+	return p.scope.contains(hostAroundMatch(candidate, start, end))
+}
+
+func matchBounds(rule compiledRule, indices []int) (int, int) {
+	start, end := indices[0], indices[1]
+	if group := rule.matchGroup; group > 0 && indices[group*2] >= 0 {
+		start, end = indices[group*2], indices[group*2+1]
+	}
+	return start, end
+}
+
+func renderMatch(rule compiledRule, candidate, toolName string, indices []int) *Match {
+	start, end := matchBounds(rule, indices)
+	matched := candidate[start:end]
+	message := rule.rule.Message
+	if strings.TrimSpace(message) == "" {
+		message = defaultMessage
+	}
+	// A single replacement pass prevents matched text from introducing
+	// additional template substitutions.
+	message = strings.NewReplacer("{match}", matched, "{tool}", toolName, "{rule}", rule.rule.Name).Replace(message)
+	return &Match{RuleID: rule.rule.ID, RuleName: rule.rule.Name, MatchedText: matched, Message: message}
 }
 
 // Check returns the first blocking rule, or nil when the call is allowed. Args
 // should be JSON-compatible and must not be mutated while Check is running.
+//
+// A government-domain match proceeds when that exact matched host is inside the
+// configured authorization Scope. Scope never suppresses unrelated rules or a
+// second out-of-scope target carried in the same request.
+// allMatches returns every non-overlapping match of re in s, but it does not let
+// a consumed boundary character hide the match that follows it.
+//
+// The built-in rule is anchored on both sides by a *consuming* context group:
+// `(?:^|[^\p{L}\p{M}\p{N}_.-])host(?:$|[^\p{L}\p{M}\p{N}_.-])`. Go's RE2 has no
+// lookahead, so the character proving the boundary is part of the match.
+// FindAllStringSubmatchIndex restarts at the end of the previous match, which
+// means that character is already gone and the next hostname has no leading
+// boundary left to satisfy. In "authorized.gov.example president.gov.cn" only
+// the first hostname was ever examined, so an out-of-scope government target
+// riding along behind an in-scope one was never blocked.
+//
+// Give one character of context back after each match so the following token
+// can use it as its own leading boundary.
+func allMatches(re *regexp.Regexp, s string) [][]int {
+	var out [][]int
+	for pos := 0; pos < len(s); {
+		loc := re.FindStringSubmatchIndex(s[pos:])
+		if loc == nil {
+			break
+		}
+		for i := range loc {
+			if loc[i] >= 0 {
+				loc[i] += pos
+			}
+		}
+		out = append(out, loc)
+		next := loc[1]
+		if next > pos {
+			next-- // hand one consumed byte back as the next leading boundary
+		}
+		if next <= pos {
+			break // no forward progress; a zero-width match would loop forever
+		}
+		pos = next
+	}
+	return out
+}
+
+// Check returns the first blocking rule, or nil when the call is allowed. Args
+// should be JSON-compatible and must not be mutated while Check is running.
+//
+// Check 等同 CheckScoped(toolName, args, nil)：不套用任何專案授權範圍。
 func (p *Policy) Check(toolName string, args map[string]interface{}) *Match {
-	if p == nil || !p.config.Enabled || len(p.rules) == 0 {
+	return p.CheckScoped(toolName, args, nil)
+}
+
+// CheckScoped 依專案授權範圍檢查這次呼叫是否應被攔截。
+//
+// scope 為 nil 代表這次呼叫不屬於任何專案，行為與 Check 完全一致。專案範圍的語意：
+//   - 排除清單（deny）命中 → 一律攔截，且獨立於 tool_guard.enabled（安全優先）。
+//   - 允許清單（allow）命中 → 只豁免內建的 government-domains 規則，其他規則照常判斷。
+//
+// A government-domain match proceeds when that exact matched host is inside the
+// configured authorization Scope. Scope never suppresses unrelated rules or a
+// second out-of-scope target carried in the same request.
+// allMatches returns every non-overlapping match of re in s, but it does not let
+// a consumed boundary character hide the match that follows it.
+//
+// The built-in rule is anchored on both sides by a *consuming* context group:
+// `(?:^|[^\p{L}\p{M}\p{N}_.-])host(?:$|[^\p{L}\p{M}\p{N}_.-])`. Go's RE2 has no
+// lookahead, so the character proving the boundary is part of the match.
+// FindAllStringSubmatchIndex restarts at the end of the previous match, which
+// means that character is already gone and the next hostname has no leading
+// boundary left to satisfy. In "authorized.gov.example president.gov.cn" only
+// the first hostname was ever examined, so an out-of-scope government target
+// riding along behind an in-scope one was never blocked.
+//
+// Give one character of context back after each match so the following token
+// can use it as its own leading boundary.
+func (p *Policy) CheckScoped(toolName string, args map[string]interface{}, scope *TargetScope) *Match {
+	if p == nil {
 		return nil
 	}
 	candidates := candidateTexts(toolName, args)
+	// 專案排除清單獨立於規則生效：即使全域攔截已關閉，只要落在專案的 exclude 內就攔截。
+	if scope != nil {
+		if match := scope.denyMatch(candidates, toolName); match != nil {
+			return match
+		}
+	}
+	if !p.config.Enabled || len(p.rules) == 0 {
+		return nil
+	}
 	for _, rule := range p.rules {
 		for _, candidate := range candidates {
-			indices := rule.pattern.FindStringSubmatchIndex(candidate)
-			if indices == nil {
+			if rule.rule.ID != governmentDomainsRuleID {
+				indices := rule.pattern.FindStringSubmatchIndex(candidate)
+				if indices != nil {
+					return renderMatch(rule, candidate, toolName, indices)
+				}
 				continue
 			}
-			start, end := indices[0], indices[1]
-			if group := rule.matchGroup; group > 0 && indices[group*2] >= 0 {
-				start, end = indices[group*2], indices[group*2+1]
+			for _, indices := range allMatches(rule.pattern, candidate) {
+				start, end := matchBounds(rule, indices)
+				match := renderMatch(rule, candidate, toolName, indices)
+				// Scope is a precise exception to the built-in target rule. Checking
+				// this match prevents an allowed hostname elsewhere in the arguments
+				// from suppressing an unrelated block.
+				if p.matchedTargetInScope(candidate, start, end) {
+					continue
+				}
+				// 專案允許清單同樣只豁免「實際命中的那一個主機」。
+				if scope != nil && scope.allow.contains(hostAroundMatch(candidate, start, end)) {
+					continue
+				}
+				return match
 			}
-			matched := candidate[start:end]
-			message := rule.rule.Message
-			if strings.TrimSpace(message) == "" {
-				message = defaultMessage
-			}
-			// A single replacement pass prevents matched text from introducing
-			// additional template substitutions.
-			message = strings.NewReplacer("{match}", matched, "{tool}", toolName, "{rule}", rule.rule.Name).Replace(message)
-			return &Match{RuleID: rule.rule.ID, RuleName: rule.rule.Name, MatchedText: matched, Message: message}
 		}
 	}
 	return nil
@@ -184,11 +524,30 @@ func (m *Manager) Check(toolName string, args map[string]interface{}) *Match {
 	return m.policy.Load().Check(toolName, args)
 }
 
+// CheckScoped 依專案授權範圍檢查；未提供範圍時等同 Check。
+func (m *Manager) CheckScoped(toolName string, args map[string]interface{}, scope *TargetScope) *Match {
+	if m == nil {
+		return nil
+	}
+	return m.policy.Load().CheckScoped(toolName, args, scope)
+}
+
 func cloneConfig(config Config) Config {
 	if config.Rules != nil {
 		rules := make([]Rule, len(config.Rules))
 		copy(rules, config.Rules)
 		config.Rules = rules
+	}
+	// Deep-copy scope: Manager.Update may run concurrently with Check, and
+	// sharing the backing array would let a later reload mutate a live policy.
+	// A nil scope stays nil so it remains absent from persisted YAML.
+	if config.Scope != nil {
+		config.Scope = &Scope{
+			Domains:        append([]string(nil), config.Scope.Domains...),
+			DomainSuffixes: append([]string(nil), config.Scope.DomainSuffixes...),
+			Wildcards:      append([]string(nil), config.Scope.Wildcards...),
+			CIDRs:          append([]string(nil), config.Scope.CIDRs...),
+		}
 	}
 	return config
 }

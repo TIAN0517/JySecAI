@@ -131,3 +131,50 @@ func TestTryMarkQueueExecutorDedupes(t *testing.T) {
 		t.Fatal("mark after unmark should succeed")
 	}
 }
+
+func TestCreateBatchQueueDeduplicatesEquivalentMessages(t *testing.T) {
+	m := NewBatchTaskManager(zap.NewNop())
+	queue, err := m.CreateBatchQueue("dedupe", "", "eino_single", "manual", "", "", nil, 1, []string{
+		"  scan https://example.test  ",
+		"scan   https://example.test",
+		"scan\nhttps://example.test",
+		"Scan https://example.test",
+	})
+	if err != nil {
+		t.Fatalf("CreateBatchQueue: %v", err)
+	}
+	if got, want := len(queue.Tasks), 2; got != want {
+		t.Fatalf("task count = %d, want %d", got, want)
+	}
+	if got := queue.Tasks[0].Message; got != "scan https://example.test" {
+		t.Fatalf("first message = %q", got)
+	}
+}
+
+func TestAddAndUpdateTaskRejectDuplicates(t *testing.T) {
+	m := NewBatchTaskManager(zap.NewNop())
+	queue, err := m.CreateBatchQueue("dedupe", "", "eino_single", "manual", "", "", nil, 1, []string{
+		"scan https://one.test",
+		"scan https://two.test",
+	})
+	if err != nil {
+		t.Fatalf("CreateBatchQueue: %v", err)
+	}
+
+	if _, err := m.AddTaskToQueue(queue.ID, " scan   https://one.test "); err == nil {
+		t.Fatal("expected duplicate add to fail")
+	}
+	if err := m.UpdateTaskMessage(queue.ID, queue.Tasks[1].ID, "scan\nhttps://one.test"); err == nil {
+		t.Fatal("expected duplicate update to fail")
+	}
+	if got := queue.Tasks[1].Message; got != "scan https://two.test" {
+		t.Fatalf("duplicate update mutated task: %q", got)
+	}
+}
+
+func TestCreateBatchQueueRejectsEmptyAfterNormalization(t *testing.T) {
+	m := NewBatchTaskManager(zap.NewNop())
+	if _, err := m.CreateBatchQueue("empty", "", "eino_single", "manual", "", "", nil, 1, []string{" ", "\n\t"}); err == nil {
+		t.Fatal("expected empty normalized task list to fail")
+	}
+}

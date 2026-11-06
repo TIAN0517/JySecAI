@@ -1999,25 +1999,6 @@ window.addEventListener('beforeunload', function() {
     }
 });
 
-// 工具函数
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function escapeJsString(text) {
-    return JSON.stringify(String(text == null ? '' : text));
-}
-
-function escapeAttr(text) {
-    return escapeHtml(text).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-
-function escapeJsStringAttr(text) {
-    return escapeAttr(escapeJsString(text));
-}
-
 function formatTime(timeStr) {
     if (!timeStr) return '';
     

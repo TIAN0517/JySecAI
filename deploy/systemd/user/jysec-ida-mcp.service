@@ -1,0 +1,22 @@
+[Unit]
+Description=Official Hex-Rays IDA MCP shared by JySecAI and Hermes
+Documentation=https://github.com/HexRaysSA/ida-mcp
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/ida-mcp http --host 127.0.0.1 --port 8737 --agent jysecai-hermes-shared --idle-timeout 900
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+KillMode=mixed
+UMask=0077
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=default.target

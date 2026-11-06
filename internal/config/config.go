@@ -11,7 +11,9 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 
+	"jysecai/internal/redirect"
 	"jysecai/internal/termout"
 	"jysecai/internal/toolguard"
 
@@ -19,47 +21,176 @@ import (
 )
 
 type Config struct {
-	Version     string                `yaml:"version,omitempty" json:"version,omitempty"` // 前端显示的版本号，如 v1.3.3
-	Server      ServerConfig          `yaml:"server"`
-	Log         LogConfig             `yaml:"log"`
-	MCP         MCPConfig             `yaml:"mcp"`
-	AI          AIConfig              `yaml:"ai,omitempty" json:"ai,omitempty"`
-	OpenAI      OpenAIConfig          `yaml:"openai,omitempty" json:"openai,omitempty"`
-	FOFA        FofaConfig            `yaml:"fofa,omitempty" json:"fofa,omitempty"`
-	ZoomEye     SpaceSearchConfig     `yaml:"zoomeye,omitempty" json:"zoomeye,omitempty"`
-	Quake       SpaceSearchConfig     `yaml:"quake,omitempty" json:"quake,omitempty"`
-	Shodan      SpaceSearchConfig     `yaml:"shodan,omitempty" json:"shodan,omitempty"`
-	Agent       AgentConfig           `yaml:"agent"`
-	Hitl        HitlConfig            `yaml:"hitl,omitempty" json:"hitl,omitempty"`
-	ToolGuard   *toolguard.Config     `yaml:"tool_guard,omitempty" json:"tool_guard,omitempty"`
-	Security    SecurityConfig        `yaml:"security"`
-	Database    DatabaseConfig        `yaml:"database"`
-	Auth        AuthConfig            `yaml:"auth"`
-	Audit       AuditConfig           `yaml:"audit,omitempty" json:"audit,omitempty"`
-	Monitor     MonitorConfig         `yaml:"monitor,omitempty" json:"monitor,omitempty"`
-	ExternalMCP ExternalMCPConfig     `yaml:"external_mcp,omitempty"`
-	Knowledge   KnowledgeConfig       `yaml:"knowledge,omitempty"`
-	C2          C2Config              `yaml:"c2,omitempty" json:"c2,omitempty"`                 // 内置 C2 总开关；未配置时默认启用
-	Robots      RobotsConfig          `yaml:"robots,omitempty" json:"robots,omitempty"`         // 企业微信/钉钉/飞书等机器人配置
-	RolesDir    string                `yaml:"roles_dir,omitempty" json:"roles_dir,omitempty"`   // 角色配置文件目录（新方式）
-	Roles       map[string]RoleConfig `yaml:"roles,omitempty" json:"roles,omitempty"`           // 向后兼容：支持在主配置文件中定义角色
-	SkillsDir   string                `yaml:"skills_dir,omitempty" json:"skills_dir,omitempty"` // Skills配置文件目录
-	AgentsDir   string                `yaml:"agents_dir,omitempty" json:"agents_dir,omitempty"` // 多代理子 Agent Markdown 定义目录（*.md，YAML front matter）
-	MultiAgent  MultiAgentConfig      `yaml:"multi_agent,omitempty" json:"multi_agent,omitempty"`
-	Project     ProjectConfig         `yaml:"project,omitempty" json:"project,omitempty"`
-	Vision      VisionConfig          `yaml:"vision,omitempty" json:"vision,omitempty"`
-	Xss         XssConfig             `yaml:"xss,omitempty" json:"xss,omitempty"`
+	Version     string            `yaml:"version,omitempty" json:"version,omitempty"` // 前端显示的版本号，如 v1.3.3
+	Server      ServerConfig      `yaml:"server"`
+	Log         LogConfig         `yaml:"log"`
+	MCP         MCPConfig         `yaml:"mcp"`
+	AI          AIConfig          `yaml:"ai,omitempty" json:"ai,omitempty"`
+	OpenAI      OpenAIConfig      `yaml:"openai,omitempty" json:"openai,omitempty"`
+	FOFA        FofaConfig        `yaml:"fofa,omitempty" json:"fofa,omitempty"`
+	ZoomEye     SpaceSearchConfig `yaml:"zoomeye,omitempty" json:"zoomeye,omitempty"`
+	Quake       SpaceSearchConfig `yaml:"quake,omitempty" json:"quake,omitempty"`
+	Shodan      SpaceSearchConfig `yaml:"shodan,omitempty" json:"shodan,omitempty"`
+	ProxyPool   ProxyPoolConfig   `yaml:"proxy_pool,omitempty" json:"proxy_pool,omitempty"`
+	Agent       AgentConfig       `yaml:"agent"`
+	Hitl        HitlConfig        `yaml:"hitl,omitempty" json:"hitl,omitempty"`
+	Scope       ScopeConfig       `yaml:"scope,omitempty" json:"scope,omitempty"`
+	ToolGuard   *toolguard.Config `yaml:"tool_guard,omitempty" json:"tool_guard,omitempty"`
+	Security    SecurityConfig    `yaml:"security"`
+	Database    DatabaseConfig    `yaml:"database"`
+	Auth        AuthConfig        `yaml:"auth"`
+	Audit       AuditConfig       `yaml:"audit,omitempty" json:"audit,omitempty"`
+	Monitor     MonitorConfig     `yaml:"monitor,omitempty" json:"monitor,omitempty"`
+	ExternalMCP ExternalMCPConfig `yaml:"external_mcp,omitempty"`
+	// ExternalMySQL 是「下游接收端」設定，不是主資料庫。平台本體仍然用 SQLite，
+	// 這裡指定的是把收割到的成果另外送到外部 MySQL 的連線。預設關閉。
+	ExternalMySQL ExternalMySQLConfig   `yaml:"external_mysql,omitempty" json:"external_mysql,omitempty"`
+	Knowledge     KnowledgeConfig       `yaml:"knowledge,omitempty"`
+	C2            C2Config              `yaml:"c2,omitempty" json:"c2,omitempty"`                 // 内置 C2 总开关；未配置时默认启用
+	Robots        RobotsConfig          `yaml:"robots,omitempty" json:"robots,omitempty"`         // 企业微信/钉钉/飞书等机器人配置
+	RolesDir      string                `yaml:"roles_dir,omitempty" json:"roles_dir,omitempty"`   // 角色配置文件目录（新方式）
+	Roles         map[string]RoleConfig `yaml:"roles,omitempty" json:"roles,omitempty"`           // 向后兼容：支持在主配置文件中定义角色
+	SkillsDir     string                `yaml:"skills_dir,omitempty" json:"skills_dir,omitempty"` // Skills配置文件目录
+	AgentsDir     string                `yaml:"agents_dir,omitempty" json:"agents_dir,omitempty"` // 多代理子 Agent Markdown 定义目录（*.md，YAML front matter）
+	MultiAgent    MultiAgentConfig      `yaml:"multi_agent,omitempty" json:"multi_agent,omitempty"`
+	Project       ProjectConfig         `yaml:"project,omitempty" json:"project,omitempty"`
+	Vision        VisionConfig          `yaml:"vision,omitempty" json:"vision,omitempty"`
+	Xss           XssConfig             `yaml:"xss,omitempty" json:"xss,omitempty"`
+	AutoTriage    AutoTriageConfig      `yaml:"auto_triage,omitempty" json:"auto_triage,omitempty"`
+	AutoVerify    AutoVerifyConfig      `yaml:"auto_verify,omitempty" json:"auto_verify,omitempty"`
+	// Redirect 是受控跳轉（回連）端點清單：複測開放式跳轉時要換掉的目標主機。
+	Redirect RedirectConfig `yaml:"redirect,omitempty" json:"redirect,omitempty"`
+	// Xalgorix 只在伺服器設定裡保存。json:"-" 避免設定 API 把連線位址和 token 一起送出。
+	Xalgorix XalgorixConfig `yaml:"xalgorix,omitempty" json:"-"`
+	// Engagement 是授權書上的「乙方」（執行滲透測試的一方）身分設定。
+	//
+	// 甲方（委託方）與授權人來自案件裡人工錄入的授權記錄；乙方是平台營運方本身，
+	// 屬於平台層設定，因此放在 config 而不是案件資料裡。
+	Engagement EngagementConfig `yaml:"engagement,omitempty" json:"engagement,omitempty"`
+}
+
+// 單代理系統提示的內建預設名稱。
+//
+// 這組常數是設定檔（agent.system_prompt_preset）、API 驗證與 Agent 選用提示的
+// 同一份真相。放在 config 是因為它是設定值；放在各處各寫一份字串會出現
+// 「設定寫了但沒生效」或「驗證擋掉合法值」這類不一致。
+const (
+	// SystemPromptPresetDefault 保守：優先低影響手段，遇到高風險動作自行降級。
+	SystemPromptPresetDefault = "default"
+	// SystemPromptPresetAggressive 進攻型：深度優先打穿、自動升級強度、被擋換路、
+	// 目標端防禦繞过渡认为评估技术、發現立即落庫不等人工確認。
+	SystemPromptPresetAggressive = "aggressive"
+)
+
+// EngagementConfig 是滲透測試授權書上乙方（受託方）的基本資料。
+type EngagementConfig struct {
+	VendorName      string `yaml:"vendor_name,omitempty" json:"vendor_name,omitempty"`
+	VendorTaxID     string `yaml:"vendor_tax_id,omitempty" json:"vendor_tax_id,omitempty"`
+	VendorAddress   string `yaml:"vendor_address,omitempty" json:"vendor_address,omitempty"`
+	VendorLead      string `yaml:"vendor_lead,omitempty" json:"vendor_lead,omitempty"`
+	VendorReference string `yaml:"vendor_reference,omitempty" json:"vendor_reference,omitempty"`
+}
+
+// RedirectConfig 受控跳轉（回連）端點清單。
+//
+// 存放漏洞記錄裡的跳轉 payload 往往帶著攻擊者自己的網域；複測時應該整批換成
+// 操作者自己的受控端點，讓回連可以歸因、也能在證據裡留下可核對的紀錄。
+type RedirectConfig struct {
+	Enabled bool     `yaml:"enabled" json:"enabled"`
+	URLs    []string `yaml:"urls" json:"urls"`
+	// AttachScan 控制掃描器（對話／批量任務／機器人）啟動時是否同步巡站並植入受控短鏈。
+	// nil 表示未寫入：端點清單生效時預設開啟。
+	AttachScan *bool `yaml:"attach_scan,omitempty" json:"attach_scan,omitempty"`
+}
+
+// EnabledEffective 回報這份端點清單是否應該生效。
+//
+// 規則只有一條，且在「初次註冊」與「設定熱套用後重新註冊」兩條路徑都用同一條：
+// enabled 為 true、或清單裡有端點，任一者成立即啟用。
+// 這樣「填了清單卻忘了開關」不會讓功能形同關閉，反過來清單與開關都空也確實關閉。
+func (c RedirectConfig) EnabledEffective() bool {
+	return c.Enabled || len(c.URLs) > 0
+}
+
+// AttachScanEffective 掃描是否同步跑批次跳轉巡站＋植入。
+// 端點清單生效且未顯式關閉時為 true。
+func (c RedirectConfig) AttachScanEffective() bool {
+	if !c.EnabledEffective() {
+		return false
+	}
+	if c.AttachScan == nil {
+		return true
+	}
+	return *c.AttachScan
+}
+
+// Normalize 正規化端點清單：丟掉非法端點並去重，順序保持原樣。
+func (c *RedirectConfig) Normalize() {
+	if c == nil {
+		return
+	}
+	c.URLs = redirect.NormalizeURLs(c.URLs)
+}
+
+// XalgorixConfig 指向操作者自行部署的 Xalgorix。JySecAI 只呼叫它的管理 API，
+// 不在這個程序裡啟動掃描容器。APIToken 對應 XALGORIX_API_TOKEN。
+type XalgorixConfig struct {
+	Enabled  bool   `yaml:"enabled" json:"enabled"`
+	BaseURL  string `yaml:"base_url" json:"base_url"`
+	APIToken string `yaml:"api_token" json:"-"`
+}
+
+// AutoTriageConfig 控制「全自動 AI 漏洞分流」要不要跑。
+//
+// 預設關閉：它會自動改寫 vulnerabilities.status，是全系統唯一不需要人點一下就
+// 動資料的排程。actor_user_id 必須指向真的有管理員角色的帳號，否則啟動時會跳過
+// 並記錄原因。
+type AutoTriageConfig struct {
+	Enabled         bool `yaml:"enabled" json:"enabled"`
+	IntervalSeconds int  `yaml:"interval_seconds,omitempty" json:"interval_seconds,omitempty"`
+	Batch           int  `yaml:"batch,omitempty" json:"batch,omitempty"`
+	// ActorUserID 是自動 worker 執行時使用的帳號（可見範圍固定為 all）。
+	// 啟動時會實際查這個帳號有沒有 all 範圍的角色，沒有就不啟動 —— 因為
+	// scope=all 的存取檢查會直接放行、不會回頭驗證 userID。
+	// 套用紀錄仍署名 auto-triage，所以這個值只影響可見範圍、不影響稽核署名。
+	ActorUserID string `yaml:"actor_user_id,omitempty" json:"actor_user_id,omitempty"`
+}
+
+// AutoVerifyConfig 控制「全自動漏洞複測」排程：把非 critical 的 open 漏洞
+// 自動送進批次佇列，每筆開獨立對話讓 agent 實際重掃，並呼叫
+// update_vulnerability 寫回判定（判定走對話工具的完整 HITL/稽核路徑）。
+type AutoVerifyConfig struct {
+	Enabled         bool `yaml:"enabled" json:"enabled"`
+	IntervalSeconds int  `yaml:"interval_seconds,omitempty" json:"interval_seconds,omitempty"`
+	Batch           int  `yaml:"batch,omitempty" json:"batch,omitempty"`
+	// ActorUserID 同 auto_triage：worker 的可見範圍帳號，啟動時實際驗證 all 範圍，
+	// 沒有就不啟動。佇列與複測對話都掛在這個帳號名下。
+	ActorUserID string `yaml:"actor_user_id,omitempty" json:"actor_user_id,omitempty"`
+	// ExcludeSeverities 不自動複測的嚴重度；留空預設排除 critical（嚴重留給人工）。
+	ExcludeSeverities []string `yaml:"exclude_severities,omitempty" json:"exclude_severities,omitempty"`
+	// AIChannelID 複測對話用的 AI 通道；空則用 ai.default_channel。
+	// 複測需要可靠的工具呼叫能力，預設通道是 flash 級小模型時建議指定強通道。
+	AIChannelID string `yaml:"ai_channel,omitempty" json:"ai_channel,omitempty"`
 }
 
 // XssConfig XSS 收割平台配置
 type XssConfig struct {
-	Enabled         bool   `yaml:"enabled" json:"enabled"`
-	Token           string `yaml:"token,omitempty" json:"token,omitempty"`
-	BindHost        string `yaml:"bind_host,omitempty" json:"bind_host,omitempty"`
-	BindPort        int    `yaml:"bind_port,omitempty" json:"bind_port,omitempty"`
-	CooldownSeconds int    `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
-	PublicURL       string `yaml:"public_url,omitempty" json:"public_url,omitempty"`
-	DNSExfilDomain  string `yaml:"dns_exfil_domain,omitempty" json:"dns_exfil_domain,omitempty"`
+	Enabled            bool   `yaml:"enabled" json:"enabled"`
+	Token              string `yaml:"token,omitempty" json:"token,omitempty"`
+	BindHost           string `yaml:"bind_host,omitempty" json:"bind_host,omitempty"`
+	BindPort           int    `yaml:"bind_port,omitempty" json:"bind_port,omitempty"`
+	CooldownSeconds    int    `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
+	PublicURL          string `yaml:"public_url,omitempty" json:"public_url,omitempty"`
+	DNSExfilDomain     string `yaml:"dns_exfil_domain,omitempty" json:"dns_exfil_domain,omitempty"` // Deprecated: cookie data is never sent over DNS.
+	CanaryCookieName   string `yaml:"canary_cookie_name,omitempty" json:"canary_cookie_name,omitempty"`
+	ProbeTTLSeconds    int    `yaml:"probe_ttl_seconds,omitempty" json:"probe_ttl_seconds,omitempty"`
+	RateLimitPerMinute int    `yaml:"rate_limit_per_minute,omitempty" json:"rate_limit_per_minute,omitempty"`
+	MaxCaptureBytes    int    `yaml:"max_capture_bytes,omitempty" json:"max_capture_bytes,omitempty"`
+	// TrustProxyHeaders 让采集端点在来源为 loopback 时采信 CF-Connecting-IP。
+	// 默认关闭：仅凭「对端是 127.0.0.1」不足以证明请求经过可信隧道——同主机的
+	// 普通反向代理不会覆写客户端自带的该头，外部访客可以随意伪造，从而绕过
+	// 以 IP 为键的写入频率限制。只有在确认前置代理会强制覆写该头时才开启。
+	TrustProxyHeaders bool `yaml:"trust_proxy_headers,omitempty" json:"trust_proxy_headers,omitempty"`
 }
 
 func (c XssConfig) EnabledEffective() bool {
@@ -90,6 +221,55 @@ func (c XssConfig) XssCooldownSecondsEffective() int {
 	return c.CooldownSeconds
 }
 
+// XssCanaryCookieNameEffective only permits the dedicated application-owned
+// canary name so the collector cannot be retargeted at authentication cookies.
+func (c XssConfig) XssCanaryCookieNameEffective() string {
+	name := strings.TrimSpace(c.CanaryCookieName)
+	if name != "jysec_xss_canary" {
+		return "jysec_xss_canary"
+	}
+	return name
+}
+
+// XssProbeTTLSecondsEffective bounds callback lifetime to one minute through one day.
+func (c XssConfig) XssProbeTTLSecondsEffective() int {
+	if c.ProbeTTLSeconds <= 0 {
+		return 3600
+	}
+	if c.ProbeTTLSeconds < 60 {
+		return 60
+	}
+	if c.ProbeTTLSeconds > 86400 {
+		return 86400
+	}
+	return c.ProbeTTLSeconds
+}
+
+// XssRateLimitPerMinuteEffective bounds per-source callback traffic.
+func (c XssConfig) XssRateLimitPerMinuteEffective() int {
+	if c.RateLimitPerMinute <= 0 {
+		return 30
+	}
+	if c.RateLimitPerMinute > 300 {
+		return 300
+	}
+	return c.RateLimitPerMinute
+}
+
+// XssMaxCaptureBytesEffective limits stored canary values and metadata.
+func (c XssConfig) XssMaxCaptureBytesEffective() int {
+	if c.MaxCaptureBytes <= 0 {
+		return 512
+	}
+	if c.MaxCaptureBytes < 64 {
+		return 64
+	}
+	if c.MaxCaptureBytes > 4096 {
+		return 4096
+	}
+	return c.MaxCaptureBytes
+}
+
 // XssPublicURLEffective returns the public URL for the XSS collector; empty means use local bind.
 func (c XssConfig) XssPublicURLEffective() string {
 	return strings.TrimSpace(c.PublicURL)
@@ -110,6 +290,115 @@ type EnsureLocalConfigResult struct {
 	ExamplePath string
 }
 
+// ProxyPoolConfig controls the SOCKS5 pool used by network-space search APIs.
+// It is deliberately scoped to reconnaissance API traffic so LLM and other
+// credential-bearing requests are never routed through third-party proxies.
+type ProxyPoolConfig struct {
+	Enabled               bool                `yaml:"enabled" json:"enabled"`
+	Strategy              string              `yaml:"strategy,omitempty" json:"strategy,omitempty"`
+	HealthCheckURL        string              `yaml:"health_check_url,omitempty" json:"health_check_url,omitempty"`
+	ConnectTimeoutSeconds int                 `yaml:"connect_timeout_seconds,omitempty" json:"connect_timeout_seconds,omitempty"`
+	RequestTimeoutSeconds int                 `yaml:"request_timeout_seconds,omitempty" json:"request_timeout_seconds,omitempty"`
+	FailureThreshold      int                 `yaml:"failure_threshold,omitempty" json:"failure_threshold,omitempty"`
+	CooldownSeconds       int                 `yaml:"cooldown_seconds,omitempty" json:"cooldown_seconds,omitempty"`
+	Proxies               []SOCKS5ProxyConfig `yaml:"proxies,omitempty" json:"proxies,omitempty"`
+}
+
+type SOCKS5ProxyConfig struct {
+	Name    string `yaml:"name,omitempty" json:"name,omitempty"`
+	URL     string `yaml:"url" json:"url"`
+	Enabled bool   `yaml:"enabled" json:"enabled"`
+	// Group 分流標籤：residential=住宅輪替（情蒐/掃描）, dc=機房（長連線/大流量）。
+	// 空值視為 dc；Manager.Client(group) 依此過濾。
+	Group string `yaml:"group,omitempty" json:"group,omitempty"`
+}
+
+// ProxyGroupEffective 回傳正規化後的群組標籤（dc 或 residential）。
+func (c SOCKS5ProxyConfig) ProxyGroupEffective() string {
+	g := strings.ToLower(strings.TrimSpace(c.Group))
+	if g == "residential" {
+		return "residential"
+	}
+	return "dc"
+}
+
+func (c *ProxyPoolConfig) NormalizeAndValidate() error {
+	if c == nil {
+		return nil
+	}
+	c.Strategy = strings.ToLower(strings.TrimSpace(c.Strategy))
+	if c.Strategy == "" {
+		c.Strategy = "round_robin"
+	}
+	if c.Strategy != "round_robin" && c.Strategy != "random" {
+		return fmt.Errorf("proxy_pool.strategy must be round_robin or random")
+	}
+	c.HealthCheckURL = strings.TrimSpace(c.HealthCheckURL)
+	if c.HealthCheckURL == "" {
+		c.HealthCheckURL = "https://api.ipify.org"
+	}
+	healthURL, err := url.Parse(c.HealthCheckURL)
+	if err != nil || healthURL.Scheme != "https" || healthURL.Hostname() == "" {
+		return fmt.Errorf("proxy_pool.health_check_url must be a valid HTTPS URL")
+	}
+	if c.ConnectTimeoutSeconds <= 0 {
+		c.ConnectTimeoutSeconds = 8
+	}
+	if c.RequestTimeoutSeconds <= 0 {
+		c.RequestTimeoutSeconds = 15
+	}
+	if c.FailureThreshold <= 0 {
+		c.FailureThreshold = 2
+	}
+	if c.CooldownSeconds <= 0 {
+		c.CooldownSeconds = 60
+	}
+
+	seen := make(map[string]struct{}, len(c.Proxies))
+	for i := range c.Proxies {
+		entry := &c.Proxies[i]
+		entry.Name = strings.TrimSpace(entry.Name)
+		entry.URL = strings.TrimSpace(entry.URL)
+		if entry.URL == "" {
+			return fmt.Errorf("proxy_pool.proxies[%d].url is required", i)
+		}
+		if !strings.Contains(entry.URL, "://") {
+			entry.URL = "socks5://" + entry.URL
+		}
+		proxyURL, parseErr := url.Parse(entry.URL)
+		if parseErr != nil ||
+			(proxyURL.Scheme != "socks5" && proxyURL.Scheme != "socks5h") ||
+			proxyURL.Hostname() == "" || proxyURL.Port() == "" ||
+			proxyURL.Path != "" || proxyURL.RawPath != "" || proxyURL.RawQuery != "" || proxyURL.Fragment != "" {
+			return fmt.Errorf("proxy_pool.proxies[%d].url must be socks5://host:port", i)
+		}
+		port, portErr := strconv.Atoi(proxyURL.Port())
+		if portErr != nil || port < 1 || port > 65535 {
+			return fmt.Errorf("proxy_pool.proxies[%d].url has an invalid port", i)
+		}
+		canonical := strings.ToLower(proxyURL.Scheme) + "://" + proxyURL.Host
+		if _, exists := seen[canonical]; exists {
+			return fmt.Errorf("proxy_pool contains duplicate proxy %s", proxyURL.Host)
+		}
+		seen[canonical] = struct{}{}
+		if entry.Name == "" {
+			entry.Name = proxyURL.Host
+		}
+	}
+	if c.Enabled {
+		enabled := 0
+		for _, entry := range c.Proxies {
+			if entry.Enabled {
+				enabled++
+			}
+		}
+		if enabled == 0 {
+			return fmt.Errorf("proxy_pool.enabled requires at least one enabled proxy")
+		}
+	}
+	return nil
+}
+
 const (
 	DefaultMaxCompletionTokens                        = 16384
 	DefaultSummarizationUserIntentLedgerMaxRunes      = 96000
@@ -128,6 +417,12 @@ type ProjectConfig struct {
 	FactIndexPathMaxRunes   int    `yaml:"fact_index_path_max_runes,omitempty" json:"fact_index_path_max_runes,omitempty"`
 	FactSummaryMaxRunes     int    `yaml:"fact_summary_max_runes,omitempty" json:"fact_summary_max_runes,omitempty"`
 	DefaultInjectDeprecated bool   `yaml:"default_inject_deprecated,omitempty" json:"default_inject_deprecated,omitempty"`
+	// ScopeGuardEnabled 開啟後，專案 scope_json 的 targets / exclude 會進入
+	// toolguard 攔截層：targets 豁免內建政府規則，exclude 一律攔截。
+	//
+	// 預設關閉。這個欄位位於 project: 區段，而設定 API 只改寫指定區段、
+	// 不會動 project:，因此只能改 config.yaml —— 擴大豁免是管理員的決定。
+	ScopeGuardEnabled bool `yaml:"scope_guard_enabled,omitempty" json:"scope_guard_enabled,omitempty"`
 }
 
 // FactIndexMaxRunesEffective 自动注入黑板索引的最大 rune 数。
@@ -624,6 +919,7 @@ type RobotsConfig struct {
 	Slack    RobotSlackConfig    `yaml:"slack,omitempty" json:"slack,omitempty"`       // Slack
 	Discord  RobotDiscordConfig  `yaml:"discord,omitempty" json:"discord,omitempty"`   // Discord
 	QQ       RobotQQConfig       `yaml:"qq,omitempty" json:"qq,omitempty"`             // QQ 机器人
+	Webhook  RobotWebhookConfig  `yaml:"webhook,omitempty" json:"webhook,omitempty"`   // 轉送到 hermes gateway
 }
 
 // RobotWechatConfig 微信 iLink 机器人配置（个人微信 ClawBot / iLink 协议）
@@ -637,6 +933,23 @@ type RobotWechatConfig struct {
 	BotAgent      string                   `yaml:"bot_agent,omitempty" json:"bot_agent,omitempty"`             // base_info.bot_agent
 	GetUpdatesBuf string                   `yaml:"get_updates_buf,omitempty" json:"get_updates_buf,omitempty"` // 长轮询游标（运行时）
 	Auth          RobotAuthorizationConfig `yaml:"auth,omitempty" json:"auth,omitempty"`
+}
+
+// RobotWebhookConfig 把漏洞推播轉送到另一個服務（例如 hermes gateway），由它決定
+// 投遞到哪些聊天頻道。設計上是「單一收件人」：webhook 不做平台身分驗證，所以
+// Secret 與 URL 綁在一起，兩者都必須設定才會啟用。
+type RobotWebhookConfig struct {
+	Enabled bool                     `yaml:"enabled" json:"enabled"`
+	URL     string                   `yaml:"url,omitempty" json:"url,omitempty"`
+	Secret  string                   `yaml:"secret,omitempty" json:"secret,omitempty"`
+	Auth    RobotAuthorizationConfig `yaml:"auth,omitempty" json:"auth,omitempty"`
+}
+
+// Configured reports whether the webhook has both halves of its credential.
+// A URL without a secret (or vice versa) would deliver unauthenticated, so it
+// is treated as not configured rather than silently sending in the clear.
+func (c RobotWebhookConfig) Configured() bool {
+	return c.Enabled && strings.TrimSpace(c.URL) != "" && strings.TrimSpace(c.Secret) != ""
 }
 
 const (
@@ -677,6 +990,23 @@ func (c RobotAuthorizationConfig) ExternalUserAllowed(externalUserID string) boo
 // RobotSessionConfig 机器人会话隔离策略
 type RobotSessionConfig struct {
 	StrictUserIdentity *bool `yaml:"strict_user_identity,omitempty" json:"strict_user_identity,omitempty"` // true 时只允许真实用户标识，不允许会话/群 ID 兜底
+	RateLimitPerMinute int   `yaml:"rate_limit_per_minute,omitempty" json:"rate_limit_per_minute,omitempty"`
+	RateLimitBurst     int   `yaml:"rate_limit_burst,omitempty" json:"rate_limit_burst,omitempty"`
+}
+
+func (c RobotSessionConfig) EffectiveRateLimit() (perMinute, burst int) {
+	perMinute = c.RateLimitPerMinute
+	if perMinute <= 0 {
+		perMinute = 30
+	}
+	burst = c.RateLimitBurst
+	if burst <= 0 {
+		burst = 10
+	}
+	if burst > perMinute {
+		burst = perMinute
+	}
+	return perMinute, burst
 }
 
 // StrictUserIdentityEnabled 返回是否启用严格用户身份模式；未配置时默认 true。
@@ -847,6 +1177,12 @@ func (c RobotsConfig) ServiceAccountUserIDs() map[string]string {
 type ServerConfig struct {
 	Host string `yaml:"host" json:"host"`
 	Port int    `yaml:"port" json:"port"`
+	// TrustCFConnectingIP 让服务在「对端是 loopback」时采信 CF-Connecting-IP
+	// 作为真实客户端 IP（用于 per-IP 限流与稽核）。默认关闭：仅凭「对端是
+	// 127.0.0.1」不足以证明请求经过 Cloudflare——同主机上任何能连到本服务的
+	// 进程都可以伪造该头。开启前必须确认所有入口都会覆写它（Cloudflare 边缘
+	// 会覆写；自建反代必须在 proxy 层覆写，不得透传客户端自带的值）。
+	TrustCFConnectingIP bool `yaml:"trust_cf_connecting_ip,omitempty" json:"trust_cf_connecting_ip,omitempty"`
 	// CORSAllowedOrigins contains additional, exact origins that may call the API.
 	// Same-origin browser requests are always allowed. Wildcards are intentionally unsupported.
 	CORSAllowedOrigins []string `yaml:"cors_allowed_origins,omitempty" json:"cors_allowed_origins,omitempty"`
@@ -892,7 +1228,9 @@ type OpenAIConfig struct {
 // AIConfig stores first-class model channels. Runtime callers resolve a channel
 // into OpenAIConfig at the edge instead of moving API credentials through chat requests.
 type AIConfig struct {
-	DefaultChannel string                     `yaml:"default_channel,omitempty" json:"default_channel,omitempty"`
+	DefaultChannel string `yaml:"default_channel,omitempty" json:"default_channel,omitempty"`
+	// RotateChannels 依序輪替未指定通道的掃描與對話。至少兩個才生效；指定 aiChannelId 時不輪替。
+	RotateChannels []string                   `yaml:"rotate_channels,omitempty" json:"rotate_channels,omitempty"`
 	Channels       map[string]AIChannelConfig `yaml:"channels,omitempty" json:"channels,omitempty"`
 }
 
@@ -993,6 +1331,43 @@ func (c AIConfig) ResolveChannel(channelID string) (OpenAIConfig, string, bool) 
 	return OpenAIConfig{}, id, false
 }
 
+var scanChannelRotate struct {
+	mu sync.Mutex
+	n  uint64
+}
+
+// NextRotateChannel returns the next configured scan channel. Requests that
+// name a channel keep that choice. Fewer than two resolvable channels disables rotation.
+func (c *Config) NextRotateChannel() (string, bool) {
+	if c == nil {
+		return "", false
+	}
+	ids := make([]string, 0, len(c.AI.RotateChannels))
+	seen := map[string]struct{}{}
+	for _, raw := range c.AI.RotateChannels {
+		id := NormalizeAIChannelID(raw)
+		if id == "" {
+			continue
+		}
+		if _, ok := seen[id]; ok {
+			continue
+		}
+		if _, _, ok := c.AI.ResolveChannel(id); !ok {
+			continue
+		}
+		seen[id] = struct{}{}
+		ids = append(ids, id)
+	}
+	if len(ids) < 2 {
+		return "", false
+	}
+	scanChannelRotate.mu.Lock()
+	idx := scanChannelRotate.n % uint64(len(ids))
+	scanChannelRotate.n++
+	scanChannelRotate.mu.Unlock()
+	return ids[idx], true
+}
+
 func (c *Config) ResolveAIChannel(channelID string) (OpenAIConfig, string, bool) {
 	if c == nil {
 		return OpenAIConfig{}, "", false
@@ -1001,6 +1376,21 @@ func (c *Config) ResolveAIChannel(channelID string) (OpenAIConfig, string, bool)
 		return oa, id, true
 	}
 	return c.OpenAI, NormalizeAIChannelID(channelID), strings.TrimSpace(c.OpenAI.Model) != "" || strings.TrimSpace(c.OpenAI.BaseURL) != ""
+}
+
+// expandAISecretRefs 展開通道裡的 ${OLLAMA_API_KEY} 這類引用。
+// 明文金鑰不含 ${}，展開後仍是原值。
+func expandAISecretRefs(cfg *Config) {
+	if cfg == nil {
+		return
+	}
+	cfg.OpenAI.APIKey = expandEnvVar(cfg.OpenAI.APIKey)
+	cfg.OpenAI.BaseURL = expandEnvVar(cfg.OpenAI.BaseURL)
+	for id, ch := range cfg.AI.Channels {
+		ch.APIKey = expandEnvVar(ch.APIKey)
+		ch.BaseURL = expandEnvVar(ch.BaseURL)
+		cfg.AI.Channels[id] = ch
+	}
 }
 
 func (c *Config) ApplyDefaultAIChannel() {
@@ -1078,16 +1468,16 @@ func (c *Config) NormalizeAIProviderProfiles() {
 // OpenAIReasoningConfig 全局默认与网关 profile（对话页可通过 ChatRequest.reasoning 覆盖，受 AllowClientReasoning 约束）。
 type OpenAIReasoningConfig struct {
 	// Mode: auto（默认）| on | off | default（与 auto 相同）。
-	// off 在 OpenAI/Claude profile 下省略推理字段；DeepSeek profile 下发送 thinking.type=disabled（其默认开启思考）。
+	// off 对已知支持 none 的官方 OpenAI 模型发送 reasoning_effort=none；DeepSeek profile 发送 thinking.type=disabled；其他服务保持省略推理字段。
 	Mode string `yaml:"mode,omitempty" json:"mode,omitempty"`
-	// Effort: low | medium | high | max | xhigh；max/xhigh 为不同网关最高档命名，原样下发、不互转。空表示不单独指定强度。
+	// Effort: low | medium | high | max | xhigh；已知支持 none 的官方 OpenAI 模型另接受 none（等同关闭）。空表示不单独指定强度。
 	Effort string `yaml:"effort,omitempty" json:"effort,omitempty"`
 	// AllowClientReasoning 为 false 时忽略请求体 reasoning；nil 或未设置等同于 true。
 	AllowClientReasoning *bool `yaml:"allow_client_reasoning,omitempty" json:"allow_client_reasoning,omitempty"`
 	// Profile: auto | deepseek_compat | openai_compat | output_config_effort
 	Profile string `yaml:"profile,omitempty" json:"profile,omitempty"`
 	// ExtraRequestFields 合并进 Chat Completions 根 JSON（管理员用；与自动字段同名时后者覆盖）。
-	// Mode=off 时会移除其中的推理控制字段，但保留其他扩展字段；DeepSeek profile 随后补充显式关闭开关。
+	// Mode=off 时移除其中的推理控制字段，保留其他扩展字段，再按提供商与已知模型能力补充显式关闭参数。
 	ExtraRequestFields map[string]interface{} `yaml:"extra_request_fields,omitempty" json:"extra_request_fields,omitempty"`
 }
 
@@ -1139,6 +1529,60 @@ type DatabaseConfig struct {
 	KnowledgeDBPath string `yaml:"knowledge_db_path,omitempty"` // 知识库数据库路径（可选，为空则使用会话数据库）
 }
 
+// ExternalMySQLConfig 外部 MySQL 接收端设定。
+//
+// 這是「下游接收端」，不是主資料庫：平台本體仍然寫 SQLite，這裡指定的只是
+// 把收割到的成果另外送一份到外部 MySQL。接收端掛掉（MySQL 停機、網路斷、
+// 帳號被鎖）時平台照常運作 —— 只是接收暫停。這條紅線不能為了「同步送出」
+// 而打破：那會讓外部資料庫變成平台的主寫入依賴。
+type ExternalMySQLConfig struct {
+	// Enabled 總開關。預設關閉 —— 未明確開啟時平台不會嘗試連任何外部資料庫。
+	Enabled bool   `yaml:"enabled" json:"enabled"`
+	Host    string `yaml:"host,omitempty" json:"host,omitempty"`
+	Port    int    `yaml:"port,omitempty" json:"port,omitempty"`
+	User    string `yaml:"user,omitempty" json:"user,omitempty"`
+	// Password 建議寫成 ${JY_SEC_MYSQL_PASSWORD} 走環境變數，不要把明文留在檔案裡。
+	// json:"-" 讓設定 API 不會把密碼送回瀏覽器。
+	Password    string `yaml:"password,omitempty" json:"-"`
+	Database    string `yaml:"database,omitempty" json:"database,omitempty"`
+	TablePrefix string `yaml:"table_prefix,omitempty" json:"table_prefix,omitempty"`
+	// TimeoutSeconds 單次 MySQL 操作逾時（秒）。必須遠小於平台的請求逾時，
+	// 否則網路卡住會把主流程一起拖住。0 = 預設 10 秒。
+	TimeoutSeconds int `yaml:"timeout_seconds,omitempty" json:"timeout_seconds,omitempty"`
+	// MaxOpenConns / MaxIdleConns 連線池大小。接收端不需要太多連線。
+	MaxOpenConns int `yaml:"max_open_conns,omitempty" json:"max_open_conns,omitempty"`
+	MaxIdleConns int `yaml:"max_idle_conns,omitempty" json:"max_idle_conns,omitempty"`
+	// ConnMaxLifetimeSeconds 連線最大存活秒數；0 = 預設 1800 秒。
+	ConnMaxLifetimeSeconds int `yaml:"conn_max_lifetime_seconds,omitempty" json:"conn_max_lifetime_seconds,omitempty"`
+	// PollIntervalSeconds 排程器多久檢查一次本地寄件箱（秒）；0 = 預設 5 秒。
+	// 成果是先落在平台自己的 SQLite 寄件箱，再由這裡輪詢送往外部 MySQL ——
+	// 所以外部 MySQL 掛掉時成果不會消失，只是等它回來。
+	PollIntervalSeconds int `yaml:"poll_interval_seconds,omitempty" json:"poll_interval_seconds,omitempty"`
+	// BatchSize 每輪最多送出幾筆；0 = 預設 50。
+	BatchSize int `yaml:"batch_size,omitempty" json:"batch_size,omitempty"`
+	// DisableMasking 關閉對外輸出的去識別化遮蔽。
+	//
+	// 預設是「有遮蔽」：送出去的 target / evidence 會含真實目標的公網位址、
+	// 憑證與測試環境的內網位址，而外部資料庫的存取範圍通常比平台寬得多。
+	// 真的要在自己的受控環境保留原值時才關掉，而且要在交接紀錄裡寫清楚理由。
+	DisableMasking bool `yaml:"disable_masking,omitempty" json:"disable_masking,omitempty"`
+	// MaskHosts 連主機名一起遮蔽（預設只遮位址，主機名保留以便分析）。
+	MaskHosts bool `yaml:"mask_hosts,omitempty" json:"mask_hosts,omitempty"`
+	// RedactIPs 額外指定要完全抹除（不保留關聯代號）的位址，例如測試出口池的公開 IP。
+	RedactIPs []string `yaml:"redact_ips,omitempty" json:"redact_ips,omitempty"`
+}
+
+// EnabledEffective 接收端是否實際啟用。
+//
+// 需要開關與連線資訊同時齊全才算啟用：只開 enabled 卻沒給 host，
+// 代表設定寫錯了，這時應該「不啟動並記錄原因」，不是「用空字串去連線」。
+func (c ExternalMySQLConfig) EnabledEffective() bool {
+	return c.Enabled &&
+		strings.TrimSpace(c.Host) != "" &&
+		strings.TrimSpace(c.User) != "" &&
+		strings.TrimSpace(c.Database) != ""
+}
+
 type AgentConfig struct {
 	MaxIterations                      int `yaml:"max_iterations" json:"max_iterations"`
 	ToolTimeoutMinutes                 int `yaml:"tool_timeout_minutes" json:"tool_timeout_minutes"`                                     // 单次工具执行最大时长（分钟），超时自动终止，防止长时间挂起；0 表示不限制（不推荐）
@@ -1147,12 +1591,65 @@ type AgentConfig struct {
 	ExternalMCPMaxConcurrentTotal      int `yaml:"external_mcp_max_concurrent_total" json:"external_mcp_max_concurrent_total"`           // 所有外部 MCP 工具全局并发；0 表示默认 16
 	ExternalMCPCircuitFailureThreshold int `yaml:"external_mcp_circuit_failure_threshold" json:"external_mcp_circuit_failure_threshold"` // 单个 MCP server 连续失败多少次后打开熔断；0 表示默认 3；负数关闭
 	ExternalMCPCircuitCooldownSeconds  int `yaml:"external_mcp_circuit_cooldown_seconds" json:"external_mcp_circuit_cooldown_seconds"`   // 熔断后冷却秒数；0 表示默认 60
+	BatchMaxGlobalConcurrency          int `yaml:"batch_max_global_concurrency" json:"batch_max_global_concurrency"`                     // 所有批量队列全局同时运行子任务上限；0 表示默认 8
 	// ShellNoOutputTimeoutSeconds execute/exec 无任何 stdout/stderr 时的空闲终止秒数（通用防挂死，不维护命令黑名单）；0=默认 300（5 分钟）；-1=关闭。
 	ShellNoOutputTimeoutSeconds int `yaml:"shell_no_output_timeout_seconds" json:"shell_no_output_timeout_seconds"`
 	// WorkspaceRootDir 会话工作目录根路径（curl/wget 下载、read_file/glob/grep 本地分析）；空=tmp/workspace，其下按 projects/{id} 或 conversations/{id} 隔离。
 	WorkspaceRootDir string `yaml:"workspace_root_dir,omitempty" json:"workspace_root_dir,omitempty"`
 	// SystemPromptPath 单代理系统提示 Markdown/文本文件路径（相对 config.yaml 所在目录，或可写绝对路径）。非空且可读时替换内置单代理提示；留空用内置。
 	SystemPromptPath string `yaml:"system_prompt_path,omitempty" json:"system_prompt_path,omitempty"`
+	// SystemPromptPreset 内置系统提示预设：default（保守，低影响优先）| aggressive（进攻型，深度优先打穿）。
+	// 未知值回退 default。system_prompt_path 非空且可读时优先于 preset（文件内容覆盖一切）。
+	SystemPromptPreset string `yaml:"system_prompt_preset,omitempty" json:"system_prompt_preset,omitempty"`
+}
+
+// ScopeConfig 是授權範圍登記（Scope Registry）的執行面設定。
+//
+// 授權的唯一權威在資料庫的三張表（scope_targets 常駐集／scope_grants 授權券／
+// scope_denials 拒絕記憶）；這裡只決定「這張表要不要真的擋人」。
+//
+// Enforcement 三個值：
+//   off     — 完全不評估。registry 是空的就切 enforce 會讓每次碰網路的
+//     工具呼叫都跳出授權卡片，平台等於被鎖死。
+//   audit   — 評估並寫 audit_logs（action=scope_resolve），但不阻擋未覆蓋的目標呼叫。
+//     預設值。禁區（119／EPCR／消防救護／政府網域）、拒絕記憶與永久封鎖的動作類別
+//     （destructive／real_transaction）在這個模式下仍然直接拒絕，不受影響。
+//   enforce — 未覆蓋目標產生 scope_extension 中斷請操作者裁決；命中禁區或
+//     永久封鎖的動作類別直接拒絕。
+type ScopeConfig struct {
+	// Enforcement 執行模式（off | audit | enforce）。
+	Enforcement string `yaml:"enforcement,omitempty" json:"enforcement,omitempty"`
+	// DefaultOwner 是常駐授權的預設 owner（沒有相鄰授權可推導時使用）。
+	DefaultOwner string `yaml:"default_owner,omitempty" json:"default_owner,omitempty"`
+	// TimeoutSeconds 是 scope_extension 中斷等待人工裁決的秒數；0 = 沿用該會話的 HITL 逾時設定。
+	TimeoutSeconds int `yaml:"timeout_seconds,omitempty" json:"timeout_seconds,omitempty"`
+}
+
+// Scope 執行模式的常數。
+const (
+	// ScopeEnforcementOff 不評估任何目標。
+	ScopeEnforcementOff = "off"
+	// ScopeEnforcementAudit 只評估與稽核，不阻擋（預設）。
+	ScopeEnforcementAudit = "audit"
+	// ScopeEnforcementEnforce 未覆蓋就中斷請操作者裁決。
+	ScopeEnforcementEnforce = "enforce"
+)
+
+// EnforcementMode 回傳正規化後的執行模式。
+//
+// 空值與無法辨識的值一律落到 audit：評估並稽核、但不因設定寫錯就讓整個平台拒絕服務。
+// 注意 audit 不是「完全不設防」——禁區、拒絕記憶與永久封鎖的動作類別在該模式下
+// 仍然直接拒絕（見 handler/scope_gate.go 的判定順序）。
+func (c ScopeConfig) EnforcementMode() string {
+	switch strings.ToLower(strings.TrimSpace(c.Enforcement)) {
+	case ScopeEnforcementOff:
+		return ScopeEnforcementOff
+	case ScopeEnforcementAudit:
+		return ScopeEnforcementAudit
+	case ScopeEnforcementEnforce:
+		return ScopeEnforcementEnforce
+	}
+	return ScopeEnforcementAudit
 }
 
 // HitlConfig 人机协同全局选项；与会话侧栏/API 中的白名单合并为并集后参与判定。
@@ -1175,6 +1672,14 @@ type HitlConfig struct {
 	DefaultReviewer string `yaml:"default_reviewer,omitempty" json:"default_reviewer,omitempty"`
 	// DefaultTimeoutSeconds 全局默认审批等待秒数；nil 表示使用前端历史默认 300 秒，0 表示不限时。
 	DefaultTimeoutSeconds *int `yaml:"default_timeout_seconds,omitempty" json:"default_timeout_seconds,omitempty"`
+	// AuditAgentFailOpen 审批 Agent 异常时是否 fail-open（自动放行）。
+	//
+	// 预设 false = fail-closed：LLM 没配置、调用失败、回应解析不出来 —— 一律拒绝，
+	// 绝不因为基础设施抖动就把工具执行闸门变成自动通过。审批闸门失效时「拦住」
+	// 才是安全的一侧。
+	//
+	// 只有在明确理解代价（模型一挂，所有工具调用就自动获准）时才显式打开。
+	AuditAgentFailOpen bool `yaml:"audit_agent_fail_open,omitempty" json:"audit_agent_fail_open,omitempty"`
 }
 
 // EffectiveDefaultMode returns off, approval, or review_edit; omitted or unknown values default to off.
@@ -1424,17 +1929,23 @@ type ExternalMCPServerConfig struct {
 	Type string `yaml:"type,omitempty" json:"type,omitempty"`
 
 	// stdio 模式配置
-	Command string            `yaml:"command,omitempty" json:"command,omitempty"`
-	Args    []string          `yaml:"args,omitempty" json:"args,omitempty"`
-	Env     map[string]string `yaml:"env,omitempty" json:"env,omitempty"`
+	Command             string            `yaml:"command,omitempty" json:"command,omitempty"`
+	Args                []string          `yaml:"args,omitempty" json:"args,omitempty"`
+	Env                 map[string]string `yaml:"env,omitempty" json:"env,omitempty"`
+	WorkingDirectory    string            `yaml:"working_directory,omitempty" json:"working_directory,omitempty"`
+	CommandSHA256       string            `yaml:"command_sha256,omitempty" json:"command_sha256,omitempty"`
+	AllowedCommandRoots []string          `yaml:"allowed_command_roots,omitempty" json:"allowed_command_roots,omitempty"`
+	InheritParentEnv    bool              `yaml:"inherit_parent_env,omitempty" json:"inherit_parent_env,omitempty"`
 
 	// HTTP/SSE 模式配置
-	URL     string            `yaml:"url,omitempty" json:"url,omitempty"`
-	Headers map[string]string `yaml:"headers,omitempty" json:"headers,omitempty"`
+	URL               string            `yaml:"url,omitempty" json:"url,omitempty"`
+	Headers           map[string]string `yaml:"headers,omitempty" json:"headers,omitempty"`
+	AllowInsecureHTTP bool              `yaml:"allow_insecure_http,omitempty" json:"allow_insecure_http,omitempty"`
 
 	// 官方标准字段
-	Disabled    bool     `yaml:"disabled,omitempty" json:"disabled,omitempty"`       // 禁用服务器（官方字段）
-	AutoApprove []string `yaml:"autoApprove,omitempty" json:"autoApprove,omitempty"` // 自动批准的工具列表（官方字段）
+	Disabled       bool     `yaml:"disabled,omitempty" json:"disabled,omitempty"`               // 禁用服务器（官方字段）
+	DisabledReason string   `yaml:"disabled_reason,omitempty" json:"disabled_reason,omitempty"` // 为何禁用，给状态监控展示
+	AutoApprove    []string `yaml:"autoApprove,omitempty" json:"autoApprove,omitempty"`         // 自动批准的工具列表（官方字段）
 
 	// SDK 高级配置（对应 MCP Go SDK 传输层参数）
 	MaxRetries        int `yaml:"max_retries,omitempty" json:"max_retries,omitempty"`               // Streamable HTTP 断线重连次数（默认 5）
@@ -1472,6 +1983,11 @@ type ToolConfig struct {
 	Parameters       []ParameterConfig `yaml:"parameters,omitempty"`         // 参数定义（可选）
 	ArgMapping       string            `yaml:"arg_mapping,omitempty"`        // 参数映射方式: "auto", "manual", "template"（可选）
 	AllowedExitCodes []int             `yaml:"allowed_exit_codes,omitempty"` // 允许的退出码列表（某些工具在成功时也返回非零退出码）
+	// ActionClass 動作類別（scope registry 用）。
+	// 未宣告＝arbitrary（最嚴格，一律需批准且需 scope 明確授權）。
+	// 詞彙：local_analysis / offline_replay / harmless_request / db_read_extract /
+	//       credential_enum / bulk_scan / destructive / real_transaction。
+	ActionClass string `yaml:"action_class,omitempty"`
 }
 
 // ParameterConfig 参数配置
@@ -1487,9 +2003,14 @@ type ParameterConfig struct {
 	Format      string      `yaml:"format,omitempty"`    // 参数格式: "flag", "positional", "combined" (flag=value), "template"
 	Template    string      `yaml:"template,omitempty"`  // 模板字符串，如 "{flag} {value}" 或 "{value}"
 	Options     []string    `yaml:"options,omitempty"`   // 可选值列表（用于枚举）
+	// Target 標示這是「目標參數」（scope registry 從這裡抽目標）。
+	Target bool `yaml:"target,omitempty"`
+	// TargetKind 目標種類: host | url | cidr | mixed。
+	TargetKind string `yaml:"target_kind,omitempty"`
 }
 
 func Load(path string) (*Config, error) {
+	LoadDotEnv(path)
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("读取配置文件失败: %w", err)
@@ -1498,6 +2019,10 @@ func Load(path string) (*Config, error) {
 	var cfg Config
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		return nil, fmt.Errorf("解析配置文件失败: %w", err)
+	}
+	expandAISecretRefs(&cfg)
+	if err := unprotectSensitiveConfig(path, &cfg); err != nil {
+		return nil, fmt.Errorf("解密配置凭证失败: %w", err)
 	}
 	if cfg.ToolGuard != nil {
 		if err := validateToolGuardYAML(data); err != nil {
@@ -1516,6 +2041,8 @@ func Load(path string) (*Config, error) {
 	}
 	cfg.NormalizeAIProviderProfiles()
 	cfg.ApplyDefaultAIChannel()
+	// 受控跳轉端點：丟掉非法項並去重，避免設定裡的手誤直接變成探測目標。
+	cfg.Redirect.Normalize()
 	if err := validateOpenAIOutputLimits(cfg.OpenAI); err != nil {
 		return nil, err
 	}
@@ -1546,6 +2073,31 @@ func Load(path string) (*Config, error) {
 
 			cfg.ExternalMCP.Servers[name] = serverCfg
 		}
+	}
+
+	// 外部 MySQL 接收端：環境變數展開 + 預設值。
+	// 密碼走 ${JY_SEC_MYSQL_PASSWORD} 這類環境變數，避免明文落在檔案裡。
+	ExpandExternalMySQLEnv(&cfg.ExternalMySQL)
+	if cfg.ExternalMySQL.Port <= 0 {
+		cfg.ExternalMySQL.Port = 3306
+	}
+	if cfg.ExternalMySQL.TimeoutSeconds <= 0 {
+		cfg.ExternalMySQL.TimeoutSeconds = 10
+	}
+	if cfg.ExternalMySQL.MaxOpenConns <= 0 {
+		cfg.ExternalMySQL.MaxOpenConns = 4
+	}
+	if cfg.ExternalMySQL.MaxIdleConns <= 0 {
+		cfg.ExternalMySQL.MaxIdleConns = 2
+	}
+	if cfg.ExternalMySQL.ConnMaxLifetimeSeconds <= 0 {
+		cfg.ExternalMySQL.ConnMaxLifetimeSeconds = 1800
+	}
+	if cfg.ExternalMySQL.PollIntervalSeconds <= 0 {
+		cfg.ExternalMySQL.PollIntervalSeconds = 5
+	}
+	if cfg.ExternalMySQL.BatchSize <= 0 {
+		cfg.ExternalMySQL.BatchSize = 50
 	}
 
 	// 从角色目录加载角色配置
@@ -1989,7 +2541,7 @@ func Default() *Config {
 	return &Config{
 		Server: ServerConfig{
 			Host: "0.0.0.0",
-			Port: 8080,
+			Port: 9898,
 		},
 		Log: LogConfig{
 			Level:  "info",
@@ -2022,6 +2574,7 @@ func Default() *Config {
 			ExternalMCPMaxConcurrentTotal:      16,  // 外部 MCP 工具全局默认最多 16 个同时执行
 			ExternalMCPCircuitFailureThreshold: 3,   // 单个 server 连续 3 次失败后临时熔断
 			ExternalMCPCircuitCooldownSeconds:  60,  // 熔断默认冷却 60 秒
+			BatchMaxGlobalConcurrency:          8,   // 批量队列全局默认最多 8 个子任务同时执行
 			ShellNoOutputTimeoutSeconds:        300, // execute/exec 无新输出空闲终止（秒）；-1 关闭
 		},
 		Security: SecurityConfig{
@@ -2085,10 +2638,14 @@ func Default() *Config {
 			},
 		},
 		Xss: XssConfig{
-			Enabled:         true,
-			BindHost:        "127.0.0.1",
-			BindPort:        18877,
-			CooldownSeconds: 60,
+			Enabled:            true,
+			BindHost:           "127.0.0.1",
+			BindPort:           18877,
+			CooldownSeconds:    60,
+			CanaryCookieName:   "jysec_xss_canary",
+			ProbeTTLSeconds:    3600,
+			RateLimitPerMinute: 30,
+			MaxCaptureBytes:    512,
 		},
 	}
 }
@@ -2212,6 +2769,23 @@ func (c RerankConfig) ProviderEffective(baseURL string) string {
 		return "dashscope"
 	}
 	return "cohere"
+}
+
+// RerankDisabledProvider 是明確關閉精排的設定值。
+//
+// 沒有這個值的時候，provider 留空會被 ProviderEffective 推斷成 cohere，
+// 於是換成本機 embedding 端點（例如 Ollama）之後，每次檢索都會去呼叫
+// 該端點上並不存在的 /v1/rerank。雖然 pipeline 會優雅降級成融合序，
+// 但等於精排靜默失效且每次查詢都噴警告。設成這個值才能真的關掉。
+const RerankDisabledProvider = "none"
+
+// RerankDisabled 判斷精排是否被明確關閉。
+func (c RerankConfig) RerankDisabled() bool {
+	switch strings.TrimSpace(strings.ToLower(c.Provider)) {
+	case RerankDisabledProvider, "off", "disabled", "false":
+		return true
+	}
+	return false
 }
 
 func (c RerankConfig) ModelEffective(provider string) string {

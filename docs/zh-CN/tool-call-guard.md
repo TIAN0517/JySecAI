@@ -11,6 +11,8 @@
 3. 点击页面顶部「全部规则验证」按当前顺序及启停状态检查全部规则。在已有规则编辑区点击「验证本条」，就在该规则下方输入工具名和 JSON 参数、查看命中文本与最终提醒；新增规则的单条验证直接在弹窗中完成。单条验证忽略总开关和该规则的启停状态，适合调试未启用规则。单条和全部验证分别保留输入与结果，均使用未保存的表单配置，不执行工具，也不改变运行中的规则。
 4. 点击保存。服务端校验全部规则后写入 `config.yaml` 的 `tool_guard`，立即生效，无需重启。校验或写入失败会保留原有规则。直接编辑 YAML 后需要重启服务；非空 `tool_guard` 必须明确填写 `enabled` 和 `rules`，清空规则使用 `[]`。
 
+正式授权的目标可写入 `tool_guard.scope`，支持精确域名、域名后缀、单层通配符和 CIDR。范围内主机只跳过内置 `government-domains` 目标规则，其他规则仍照常判断。同一请求包含多个目标时逐一处理：范围内目标不会让范围外目标一起通过。页面读取和保存规则时会完整保留 scope。
+
 规则按列表顺序检查，首先命中的启用规则决定提醒。检查对象包括工具名称、参数的 JSON 表示、嵌套字符串和键名，以及最多三轮常见 URL 百分号解码后的文本。使用 Go/RE2 正则语法，例如 `(?i)` 表示忽略大小写；不支持回溯引用和环视。最多 100 条规则，正则和提醒各最多 4096 字节。禁用的规则也须通过校验。
 
 提醒支持以下占位符，留空则使用通用提醒：
@@ -25,6 +27,62 @@
 
 命中后，工具处理器或外部客户端不会执行该调用。界面和执行记录使用独立的「已拦截」状态，并保留拦截原因；监控单独统计拦截次数，不计入调用失败或成功率的分母。升级启动时，可明确识别的旧版安全规则拦截记录会自动归入此状态。返回给 Agent 的 MCP 结果仍保留 `isError: true`，同时携带 `blocked: true`，以明确表示请求未执行。外部 MCP 的规则拦截不会算作服务故障而触发熔断。
 
+## 專案測試範圍（scope_json）
+
+專案的測試範圍（`projects.scope_json`）除了進提示層，還可以接進攔截層。
+
+### 開關
+
+```yaml
+project:
+  enabled: true
+  scope_guard_enabled: true
+```
+
+`scope_guard_enabled` **預設關閉**，而且只能改 `config.yaml`：設定 API 只改寫指定區段、不會動 `project:`，所以「擴大豁免」永遠是管理員在檔案裡的決定，不會被 API 或 Agent 改掉。
+
+開啟後：
+
+- 專案 `targets` 裡的主機豁免內建的 `government-domains` 規則（其他規則照常判斷）。
+- 專案 `exclude` 裡的主機一律攔截；即使同時列在 `targets` 也照樣攔（排除優先否決）。
+- 只作用於**綁定該專案的對話**。對話沒綁專案、查不到專案、或 `scope_json` 不是合法 JSON 時，一律不套用任何專案範圍 —— 既不放寬，也不攔截。
+- 專案 `exclude` 的強制力**獨立於 `tool_guard.enabled`**：全域攔截整個關掉時，排除清單仍然生效（安全優先）；此時只有「豁免」那一半失效。
+
+### scope_json 格式
+
+```json
+{
+  "targets": ["https://app.example.com", "*.cdn.example.com"],
+  "exclude": ["legacy.gov.tw"],
+  "notes": "本次測試的說明",
+  "scope": {
+    "allow": {
+      "domains": ["portal.agency.gov.tw"],
+      "domain_suffixes": [".city.gov.tw"],
+      "wildcards": ["*.cdn.example.com"],
+      "cidrs": ["192.0.2.0/24"]
+    },
+    "deny": {
+      "domains": ["legacy.gov.tw"]
+    }
+  }
+}
+```
+
+| 欄位 | 意義 |
+| --- | --- |
+| `targets` | 已授權目標（自由字串）。命中者豁免內建政府規則。 |
+| `exclude` | 明確排除的目標（自由字串）。命中者一律攔截。 |
+| `notes` | 說明文字，只進提示層。 |
+| `scope.allow` | 結構化的允許清單；存在時**優先於** `targets`。 |
+| `scope.deny` | 結構化的排除清單；存在時**優先於** `exclude`。 |
+
+自由字串會被自動判斷型別：合法 CIDR（含 `/`）→ `cidrs`；含 `*` 或 `?` → `wildcards`；開頭為 `.` → `domain_suffixes`；其餘剝掉 scheme、userinfo、路徑與埠號後 → `domains`（IP 也算）。像「n/a」這種解讀不出主機的項目會被忽略，不會讓整份範圍失效。
+
+### API
+
+`GET /api/tool-guard` 與 `PUT /api/tool-guard` 仍只處理 `tool_guard` 區段；專案範圍隨專案紀錄一起管理（`projects.scope_json`），不受影響。
+
 ## 权限与边界
 
 查看和试匹配需要 `config:read`；修改需要 `config:write` 和全局权限范围。规则配置变更写入系统审计日志。HITL 的关闭状态、免审批白名单和审批通过结果均不能覆盖调用拦截；审批后编辑的参数也会在实际执行入口检查。规则更新影响后续执行检查，不能撤销已经发出的调用。
@@ -33,6 +91,6 @@
 
 ## API
 
-- `GET /api/tool-guard`：返回生效配置 `{enabled, rules}`。
-- `PUT /api/tool-guard`：保存相同结构；每条规则含 `id`、`name`、`enabled`、`pattern`、`message`。必须明确提供总开关和规则数组。
+- `GET /api/tool-guard`：返回生效配置 `{enabled, rules, scope?}`。
+- `PUT /api/tool-guard`：保存相同结构；每条规则含 `id`、`name`、`enabled`、`pattern`、`message`。必须明确提供总开关和规则数组；`scope` 可省略。
 - `POST /api/tool-guard/test`：请求 `{config, toolName, arguments}`，响应 `{blocked, match?}`；`match` 含 `ruleId`、`ruleName`、`matchedText`、`message`。

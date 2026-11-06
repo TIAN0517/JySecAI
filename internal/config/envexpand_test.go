@@ -79,3 +79,21 @@ func TestExpandConfigEnv(t *testing.T) {
 		t.Errorf("Headers[Authorization] = %q, want %q", cfg.Headers["Authorization"], "Bearer secret123")
 	}
 }
+
+func TestLoadDotEnvSetsMissingKeyOnly(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(dir+"/.env", []byte("OLLAMA_API_KEY=from-file\nKEEP_ME=file\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("KEEP_ME", "already")
+	os.Unsetenv("OLLAMA_API_KEY")
+	t.Cleanup(func() { os.Unsetenv("OLLAMA_API_KEY") })
+
+	LoadDotEnv(dir + "/config.yaml")
+	if got := os.Getenv("OLLAMA_API_KEY"); got != "from-file" {
+		t.Fatalf("OLLAMA_API_KEY = %q", got)
+	}
+	if got := os.Getenv("KEEP_ME"); got != "already" {
+		t.Fatalf("KEEP_ME = %q", got)
+	}
+}

@@ -284,6 +284,11 @@ func normalizeHitlMode(mode string) string {
 		return "approval"
 	case "approval", "review_edit":
 		return v
+	case scopeExtensionMode:
+		// scope_extension 是「目標授權」的中斷模式（Scope Registry P1）。
+		// 它沿用同一張 hitl_interrupts 表，但決策詞彙與落地規則不同，
+		// 所以必須原樣保留，不能被正規化成 approval。
+		return v
 	default:
 		return "approval"
 	}
@@ -873,6 +878,23 @@ type hitlDecisionReq struct {
 	Decision        string                 `json:"decision" binding:"required"`
 	Comment         string                 `json:"comment,omitempty"`
 	EditedArguments map[string]interface{} `json:"editedArguments,omitempty"`
+	// ScopeConditions 僅 scope_extension 模式使用；其餘模式忽略。
+	ScopeConditions *hitlScopeConditions `json:"scopeConditions,omitempty"`
+	// ScopeTargets 是操作者宣告的「本次將接觸的目標清單」。
+	// 僅 scope_extension 模式使用；任意執行類工具（arbitrary=true）時必填。
+	ScopeTargets []string `json:"scopeTargets,omitempty"`
+}
+
+// hitlScopeConditions 是 scope_extension 決策可攜帶的授權條件。
+type hitlScopeConditions struct {
+	// Owner 是新授權的 owner；留空則由後端推導（相鄰授權 → 設定檔預設 → adhoc）。
+	Owner string `json:"owner,omitempty"`
+	// ActionClasses 是新授權容許的動作類別；留空則用本次工具的動作類別。
+	ActionClasses []string `json:"actionClasses,omitempty"`
+	// MaxUses 是附條件授權的使用次數上限；<= 0 視為 1。
+	MaxUses int `json:"maxUses,omitempty"`
+	// ValidUntil 是有效期限（RFC3339）；解析失敗 → 該次決策失敗。
+	ValidUntil string `json:"validUntil,omitempty"`
 }
 
 func (h *AgentHandler) DecideHITLInterrupt(c *gin.Context) {
@@ -887,6 +909,23 @@ func (h *AgentHandler) DecideHITLInterrupt(c *gin.Context) {
 	}
 	if !h.hitlInterruptAllowed(c, req.InterruptID) {
 		c.JSON(http.StatusForbidden, gin.H{"error": "无权访问该资源"})
+		return
+	}
+	// scope_extension 模式走專屬路徑：決策詞彙不同，而且必須先把授權寫進
+	// registry，才把決定送回等待中的工具呼叫（原地續跑時才查得到授權）。
+	if h.hitlManager.PendingInterruptMode(req.InterruptID) == scopeExtensionMode {
+		if err := h.resolveScopeInterrupt(c.Request.Context(), req.InterruptID, req.Decision, req.Comment, req.ScopeConditions, req.ScopeTargets); err != nil {
+			c.JSON(http.StatusConflict, gin.H{"error": "scope_decision_invalid", "message": err.Error()})
+			return
+		}
+		if h.audit != nil {
+			h.audit.RecordOK(c, "scope", "scope_resolve", "Scope 授權裁決", "hitl_interrupt", req.InterruptID, map[string]interface{}{
+				"decision":        req.Decision,
+				"scopeTargets":    req.ScopeTargets,
+				"scopeConditions": req.ScopeConditions,
+			})
+		}
+		c.JSON(http.StatusOK, gin.H{"ok": true})
 		return
 	}
 	if err := h.hitlManager.ResolveInterrupt(req.InterruptID, req.Decision, req.Comment, req.EditedArguments); err != nil {
@@ -943,6 +982,14 @@ func (h *AgentHandler) DismissHITLInterrupt(c *gin.Context) {
 }
 
 func (h *AgentHandler) interceptHITLForEinoTool(runCtx context.Context, cancelRun context.CancelCauseFunc, conversationID, assistantMessageID string, sendEventFunc func(eventType, message string, data interface{}), toolName, arguments string) (string, error) {
+	// 【Scope Registry P1：攔截點 A】授權範圍閘。
+	//
+	// 放在既有 HITL 判斷之前：scope 是「這次能不能碰這個目標」，HITL 是
+	// 「這次要不要人批」。前者是安全邊界（禁區／永久封鎖直接擋），後者才是
+	// 逐次人工覆核。順序反過來的話，未授權的目標會先被丟給審批流程。
+	if err := h.scopeGateEvaluate(runCtx, cancelRun, conversationID, assistantMessageID, sendEventFunc, toolName, arguments); err != nil {
+		return arguments, err
+	}
 	payload := map[string]interface{}{
 		"toolName":   toolName,
 		"arguments":  arguments,

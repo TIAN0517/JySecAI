@@ -43,6 +43,7 @@ func TestStartListener_ImplantTokenSurvivesHandlerRedaction(t *testing.T) {
 		t.Fatal(err)
 	}
 	token := rec.ImplantToken
+	encryptionKey := rec.EncryptionKey
 
 	rec, err = mgr.StartListener(rec.ID)
 	if err != nil {
@@ -54,10 +55,13 @@ func TestStartListener_ImplantTokenSurvivesHandlerRedaction(t *testing.T) {
 
 	time.Sleep(50 * time.Millisecond)
 
-	body := `{"hostname":"n","username":"u","os":"Linux","arch":"amd64","internal_ip":"10.0.0.1","pid":42}`
+	body, err := EncryptAESGCM(encryptionKey, []byte(`{"hostname":"n","username":"u","os":"Linux","arch":"amd64","internal_ip":"10.0.0.1","pid":42}`))
+	if err != nil {
+		t.Fatal(err)
+	}
 	req, _ := http.NewRequest(http.MethodPost, "http://127.0.0.1:"+strconv.Itoa(port)+"/check_in", strings.NewReader(body))
 	req.Header.Set("X-Implant-Token", token)
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-Type", "application/octet-stream")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Fatal(err)
@@ -67,8 +71,12 @@ func TestStartListener_ImplantTokenSurvivesHandlerRedaction(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("status=%d body=%s", resp.StatusCode, b)
 	}
-	if !strings.Contains(string(b), "session_id") {
-		t.Fatalf("expected session_id in body: %s", b)
+	plain, err := DecryptAESGCM(encryptionKey, string(b))
+	if err != nil {
+		t.Fatalf("decrypt response: %v", err)
+	}
+	if !strings.Contains(string(plain), "session_id") {
+		t.Fatalf("expected session_id in body: %s", plain)
 	}
 	_ = mgr.StopListener(rec.ID)
 }

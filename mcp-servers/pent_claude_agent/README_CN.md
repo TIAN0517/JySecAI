@@ -83,3 +83,22 @@ Agent 默认使用本目录下的 `pent_claude_agent_config.yaml`。可通过以
 
 - 仅在有授权、隔离的测试环境中使用。
 - 配置中的 API Key 需妥善保管；生产环境建议使用环境变量。
+
+## 模型后端：Anthropic 格式 shim
+
+Claude Agent SDK 只讲 Anthropic Messages API（`POST /v1/messages`），但平台既有的模型 relay
+只提供 OpenAI 格式（`/v1/chat/completions`）。`anthropic_shim.py` 负责在两者之间转换，
+让 pentest agent 直接复用平台已经配好、且有额度的 relay——不需要额外的付费 API key。
+
+- 以 `jysec-anthropic-shim.service` 运行在 `127.0.0.1:18790`；上游从平台 `config.yaml` 的
+  `ai.channels` 读取（本模块不保存任何密钥）。
+- 上游候选按顺序重试，单个上游账号失效（例如 relay 轮替到未授权的 codex 账号）不会让整个请求失败。
+- `pent_claude_agent_config.yaml` 把 `ANTHROPIC_BASE_URL` 指向 shim，`ANTHROPIC_MODEL` 指向上游模型。
+
+```bash
+systemctl status jysec-anthropic-shim.service
+curl -s http://127.0.0.1:18790/health
+```
+
+Agent 的工作目录是独立的 `workspace/`，任务产物不会写进项目源码树。`setting_sources` 只保留
+`project`：用户级 `~/.claude/settings.json` 会覆盖上面这些 `ANTHROPIC_*` 变量。

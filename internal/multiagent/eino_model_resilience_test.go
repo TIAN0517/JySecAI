@@ -152,6 +152,9 @@ func TestNewEinoModelFailoverConfigBuildsDistinctFallbackModel(t *testing.T) {
 	if !cfg.ShouldFailover(context.Background(), nil, &adk.RetryExhaustedError{LastErr: errors.New("upstream returned 503"), TotalRetries: 4}) {
 		t.Fatal("retry-exhausted transient error should fail over")
 	}
+	if !cfg.ShouldFailover(context.Background(), nil, &adk.RetryExhaustedError{LastErr: errors.New("model output rejected by ShouldRetry at attempt 5"), TotalRetries: 4}) {
+		t.Fatal("retry-exhausted rejected empty output should fail over")
+	}
 	if cfg.ShouldFailover(context.Background(), nil, &adk.RetryExhaustedError{LastErr: errors.New("invalid api key"), TotalRetries: 4}) {
 		t.Fatal("retry-exhausted permanent error should not fail over")
 	}
@@ -251,6 +254,9 @@ func TestNewEinoAgenticModelFailoverConfigBuildsDistinctFallbackModel(t *testing
 	}
 	if !cfg.ShouldFailover(context.Background(), nil, &adk.RetryExhaustedError{LastErr: errors.New("upstream returned 503"), TotalRetries: 4}) {
 		t.Fatal("retry-exhausted transient agentic error should fail over")
+	}
+	if !cfg.ShouldFailover(context.Background(), nil, &adk.RetryExhaustedError{LastErr: errors.New("model output rejected by ShouldRetry at attempt 5"), TotalRetries: 4}) {
+		t.Fatal("retry-exhausted rejected empty agentic output should fail over")
 	}
 	if cfg.ShouldFailover(context.Background(), nil, &adk.RetryExhaustedError{LastErr: errors.New("invalid api key"), TotalRetries: 4}) {
 		t.Fatal("retry-exhausted permanent agentic error should not fail over")

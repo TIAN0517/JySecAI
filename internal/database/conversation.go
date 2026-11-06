@@ -451,8 +451,13 @@ func appendConversationProjectFilter(where string, args []interface{}, projectID
 
 func appendConversationAccessFilter(where string, args []interface{}, userID, scope, alias string) (string, []interface{}) {
 	userID = strings.TrimSpace(userID)
-	if userID == "" || scope == RBACScopeAll {
+	if scope == RBACScopeAll {
 		return where, args
+	}
+	// 同 appendVulnerabilityAccessFilter：解析不出呼叫者時回傳零筆，
+	// 而不是「沒有條件因而看得到全部」。
+	if userID == "" {
+		return where + " AND 1=0", args
 	}
 	prefix := ""
 	if alias != "" {
@@ -583,8 +588,13 @@ func (db *DB) ListConversations(limit, offset int, search, sortBy, projectID str
 }
 
 func (db *DB) ListConversationsForAccess(limit, offset int, search, sortBy, projectID, userID, scope string) ([]*Conversation, error) {
-	if scope == RBACScopeAll || strings.TrimSpace(userID) == "" {
+	if scope == RBACScopeAll {
 		return db.ListConversations(limit, offset, search, sortBy, projectID)
+	}
+	// 解析不出呼叫者时返回空，而不是回退到未过滤的 ListConversations：
+	// 那样等于把「没有身份」解释成「可以看全部」。
+	if strings.TrimSpace(userID) == "" {
+		return []*Conversation{}, nil
 	}
 	var rows *sql.Rows
 	var err error

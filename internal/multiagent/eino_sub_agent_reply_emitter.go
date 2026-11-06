@@ -34,7 +34,7 @@ func (e *einoSubAgentReplyEmitter) EmitDelta(content string) bool {
 		return false
 	}
 	var delta string
-	e.buf, delta = normalizeStreamingDelta(e.buf, content)
+	e.buf, delta = openai.NormalizeStreamingDelta(e.buf, content)
 	if delta == "" || e.progress == nil {
 		return false
 	}

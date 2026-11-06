@@ -8,7 +8,7 @@ JySecAI 的主配置文件是 `config.yaml`。大多数配置也可以在 Web �
 version: "vX.Y.Z" # 占位符；请使用 config.example.yaml 中当前发布版本的值
 server:
   host: 0.0.0.0
-  port: 8080
+  port: 9898
   tls_enabled: true
   tls_auto_self_sign: true
   # 可选：其他可信 Web 集成；Chromium 浏览器插件无需配置
@@ -257,7 +257,21 @@ project:
 | `knowledge.embedding` | 检索器/索引器配置更新 | 已有向量通常需要重建索引 |
 | `robots` | 会触发连接重启 | 平台回调配置仍需在平台侧正确 |
 | `c2.enabled` | 会协调 C2 runtime | 已暴露端口和会话要人工确认 |
+| `redirect.enabled` / `redirect.urls` | 会重新注册 `redirect_probe` 工具 | 已储存的 payload 仍要重新对新端点复测 |
 | `server.port/tls` | 通常需要重启进程 | 监听地址不是普通热更新 |
+
+## 受控跳转（回连）端点
+
+`redirect` 存放的是复测开放式跳转时使用的回连端点。漏洞记录里通常嵌着攻击者自己的网域；把受控端点设定一次，就能把整批 payload 换成你自己控制的地址。
+
+```yaml
+redirect:
+  enabled: true
+  urls:
+    - https://97y.me/tjneJ
+```
+
+`enabled` 为 `true` 或 `urls` 非空即视为启用；没有 `http`/`https` scheme 的项目会被丢弃，重复项会依顺序去重。只有在清单启用时，`redirect_probe` 这个 MCP 工具才会注册。工具参数与写回行为见 [受控跳转（回连）端点](redirect-endpoints.md)。
 
 ## 配置优先级和派生关系
 
@@ -299,7 +313,7 @@ project:
 修改后验证：
 
 ```bash
-curl -k https://127.0.0.1:8080/api/auth/validate \
+curl -k https://127.0.0.1:9898/api/auth/validate \
   -H "Authorization: Bearer <token>"
 ```
 

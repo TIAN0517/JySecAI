@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -11,7 +12,17 @@ import (
 	"github.com/cloudwego/eino/adk/filesystem"
 )
 
+// 本檔所有測試都依賴 POSIX shell（/bin/sh、sudo、& 背景工作、sleep）。
+// 產品本身也只在 Linux 部署，Windows 上沒有對應實作可測，直接跳過而非模擬。
+func requirePOSIXShell(t *testing.T) {
+	t.Helper()
+	if runtime.GOOS == "windows" {
+		t.Skip("需要 POSIX shell（/bin/sh、sudo、& 背景工作），Windows 上不適用")
+	}
+}
+
 func TestEinoStreamingShell_StreamsStderrBeforeStdoutEOF(t *testing.T) {
+	requirePOSIXShell(t)
 	shell := NewEinoStreamingShell()
 	cmd := PrepareNonInteractiveShellCommand("echo err-only >&2; exit 1")
 	sr, err := shell.ExecuteStreaming(context.Background(), &filesystem.ExecuteRequest{Command: cmd})
@@ -43,6 +54,7 @@ func TestEinoStreamingShell_StreamsStderrBeforeStdoutEOF(t *testing.T) {
 }
 
 func TestEinoStreamingShell_SudoFailsFast(t *testing.T) {
+	requirePOSIXShell(t)
 	shell := NewEinoStreamingShell()
 	cmd := PrepareNonInteractiveShellCommand("sudo whoami && sudo cat /etc/os-release")
 	sr, err := shell.ExecuteStreaming(context.Background(), &filesystem.ExecuteRequest{Command: cmd})
@@ -79,6 +91,7 @@ func TestEinoStreamingShell_SudoFailsFast(t *testing.T) {
 }
 
 func TestEinoStreamingShell_StderrWhileStdoutBlocks(t *testing.T) {
+	requirePOSIXShell(t)
 	shell := NewEinoStreamingShell()
 	// 模拟 sudo：stderr 先有输出，stdout 侧进程仍挂起；旧 eino local 在首包 stderr 前不会向流写任何内容。
 	cmd := PrepareNonInteractiveShellCommand(`echo "password prompt" >&2; sleep 30`)
@@ -118,6 +131,7 @@ func TestEinoStreamingShell_StderrWhileStdoutBlocks(t *testing.T) {
 
 // TestEinoStreamingShell_BackgroundJobDoesNotHoldPipe 模拟 cmd & 后继续前台逻辑：重定向后应快速结束。
 func TestEinoStreamingShell_BackgroundJobDoesNotHoldPipe(t *testing.T) {
+	requirePOSIXShell(t)
 	if testing.Short() {
 		t.Skip("skipping shell integration in -short")
 	}

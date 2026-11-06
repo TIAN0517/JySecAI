@@ -19,6 +19,8 @@ func TestDiagnosticFiltering(t *testing.T) {
 			root := t.TempDir()
 			dir := filepath.Join(root, "log")
 			log := New(level, filepath.Join(root, "primary.log"), DiagnosticOptions{Dir: dir})
+			// 開啟的日誌檔必須關閉，否則 Windows 不允許 t.TempDir() 清理。
+			defer func() { _ = log.Close() }()
 			log.Debug("debug")
 			log.Info("info")
 			if _, err := os.Stat(dir); !os.IsNotExist(err) {
@@ -58,6 +60,7 @@ func TestDiagnosticFiltering(t *testing.T) {
 func TestDiagnosticDisabled(t *testing.T) {
 	dir := filepath.Join(t.TempDir(), "log")
 	log := New("error", os.DevNull, DiagnosticOptions{Dir: dir, Disabled: true})
+	defer func() { _ = log.Close() }()
 	log.Error("failure")
 	if _, err := os.Stat(dir); !os.IsNotExist(err) {
 		t.Fatalf("disabled diagnostics wrote files: %v", err)
@@ -112,6 +115,7 @@ func TestDiagnosticWriteFailureKeepsPrimaryOutput(t *testing.T) {
 	root := t.TempDir()
 	primary := filepath.Join(root, "primary.log")
 	log := New("info", primary, DiagnosticOptions{Dir: filepath.Join(primary, "invalid")})
+	defer func() { _ = log.Close() }()
 	log.Error("still visible")
 	data, err := os.ReadFile(primary)
 	if err != nil || !strings.Contains(string(data), "still visible") {

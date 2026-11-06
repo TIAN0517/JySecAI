@@ -1,6 +1,7 @@
 name: "paramspider"
 command: "paramspider"
 enabled: true
+action_class: "bulk_scan"
 short_description: "从Web档案中挖掘参数"
 description: |
   ParamSpider从Web档案中挖掘参数，用于发现隐藏的参数。

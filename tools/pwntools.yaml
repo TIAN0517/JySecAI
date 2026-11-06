@@ -27,6 +27,7 @@ args:
 
     exec(script_content, {})
 enabled: true
+action_class: "arbitrary"
 short_description: "CTF和漏洞利用开发框架"
 description: |
   执行自定义pwntools脚本，并通过环境变量注入常用目标信息：
@@ -47,6 +48,8 @@ parameters:
     format: "positional"
   - name: "target_host"
     type: "string"
+    target: true
+    target_kind: "host"
     description: "远程主机地址（PWN_HOST）"
     required: false
     default: ""

@@ -161,7 +161,11 @@ func (h *ConversationHandler) ListConversations(c *gin.Context) {
 	}
 
 	sortBy := strings.TrimSpace(c.Query("sort_by"))
-	session, _ := security.CurrentSession(c)
+	session, ok := security.CurrentSession(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "未登录"})
+		return
+	}
 
 	var conversations []*database.Conversation
 	var total int

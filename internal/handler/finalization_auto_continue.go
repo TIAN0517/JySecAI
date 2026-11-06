@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"time"
 
@@ -13,7 +14,7 @@ import (
 	"go.uber.org/zap"
 )
 
-const finalizationAutoContinueMaxAttempts = 2
+const finalizationAutoContinueMaxAttempts = 3
 const finalizationPendingToolCancelWait = 2 * time.Second
 const finalizationPendingToolCancelPoll = 50 * time.Millisecond
 const finalizationPendingToolCancelNote = "Agent 迭代已结束，最终回复前自动终止未完成的工具执行"
@@ -33,6 +34,7 @@ func (h *AgentHandler) tryAutoContinueAfterFinalization(
 	conversationID string,
 	result *multiagent.RunResult,
 	decision agentfinalizer.Decision,
+	executionIDs []string,
 	attempt *int,
 	curHistory *[]agent.ChatMessage,
 	curFinalMessage *string,
@@ -51,8 +53,9 @@ func (h *AgentHandler) tryAutoContinueAfterFinalization(
 			zap.Error(err))
 		return false
 	}
-	// Agent 无感续跑：不追加新的 user/system 文案，只使用上一段模型可见轨迹继续 Runner。
-	*curFinalMessage = ""
+	// 将恢复约束作为本段临时输入，不写入用户消息。相比原样重跑，它会要求
+	// Agent 读取真实错误、修正参数或改用安全替代方案，避免重复相同失败调用。
+	*curFinalMessage = h.finalizationRecoveryInstruction(decision, *attempt, executionIDs)
 	if progressCallback != nil {
 		progressCallback("finalization_auto_continue", "最终回复检查尚未收敛，正在基于已有轨迹继续执行…", map[string]interface{}{
 			"conversationId":      conversationID,
@@ -63,7 +66,7 @@ func (h *AgentHandler) tryAutoContinueAfterFinalization(
 			"completionReason":    decision.CompletionReason,
 			"missingChecks":       decision.MissingChecks,
 			"pendingExecutionIds": decision.PendingExecutionIDs,
-			"contextInjection":    false,
+			"contextInjection":    true,
 		})
 	}
 	select {
@@ -72,6 +75,92 @@ func (h *AgentHandler) tryAutoContinueAfterFinalization(
 	case <-time.After(finalizationAutoContinueBackoff(*attempt)):
 		return true
 	}
+}
+
+func (h *AgentHandler) finalizationRecoveryInstruction(decision agentfinalizer.Decision, attempt int, executionIDs []string) string {
+	failed, allTerminal := h.finalizationFailedExecutions(executionIDs)
+	contextLine := "前一段尚未产生可验证的成功工具执行。"
+	if allTerminal && len(failed) > 0 {
+		contextLine = fmt.Sprintf("前一段共有 %d 个工具执行以失败、拦截、取消或超时结束。", len(failed))
+	}
+	return fmt.Sprintf(
+		"[JySecAI 自动复原 %d/%d]\n%s 请读取轨迹中的实际工具错误并继续完成原任务：参数错误就修正；暂时性错误才有限重试；工具不可用则改用等价且安全的替代方案。不要无变化地重复同一失败调用，不要把失败写成成功，也不要绕过工具守卫或 HITL。缺失检查：%s",
+		attempt, finalizationAutoContinueMaxAttempts, contextLine, strings.Join(decision.MissingChecks, "; "),
+	)
+}
+
+func (h *AgentHandler) finalizationFailedExecutions(executionIDs []string) ([]*mcp.ToolExecution, bool) {
+	ids := uniqueNonEmptyStrings(executionIDs)
+	if h == nil || h.db == nil || len(ids) == 0 {
+		return nil, false
+	}
+	failed := make([]*mcp.ToolExecution, 0, len(ids))
+	for _, id := range ids {
+		execution, err := h.db.GetToolExecution(id)
+		if err != nil || execution == nil {
+			return failed, false
+		}
+		switch strings.TrimSpace(execution.Status) {
+		case mcp.ToolExecutionStatusFailed,
+			mcp.ToolExecutionStatusBlocked,
+			mcp.ToolExecutionStatusCancelled,
+			mcp.ToolExecutionStatusHardTimeout,
+			mcp.ToolExecutionStatusOrphaned:
+			failed = append(failed, execution)
+		default:
+			return failed, false
+		}
+	}
+	return failed, len(failed) == len(ids)
+}
+
+// finalizeExhaustedFailedExecutions closes a fully terminal failed run after
+// bounded autonomous recovery. It delivers an explicit failure result instead
+// of leaving a 24/7 job waiting for a human or presenting a false success.
+func (h *AgentHandler) finalizeExhaustedFailedExecutions(decision agentfinalizer.Decision, attempt int, executionIDs []string, result *multiagent.RunResult) agentfinalizer.Decision {
+	if decision.CompletionReason != agentfinalizer.ReasonMissingEvidence {
+		return decision
+	}
+	if attempt < finalizationAutoContinueMaxAttempts && result != nil && multiagent.HasEinoResumeTrace(result) {
+		return decision
+	}
+	failed, allTerminal := h.finalizationFailedExecutions(executionIDs)
+	if !allTerminal || len(failed) == 0 {
+		return decision
+	}
+	tools := make([]string, 0, len(failed))
+	seen := make(map[string]struct{}, len(failed))
+	for _, execution := range failed {
+		name := strings.TrimSpace(execution.ToolName)
+		if name == "" {
+			name = "unknown-tool"
+		}
+		entry := name + " (" + strings.TrimSpace(execution.Status) + ")"
+		if _, ok := seen[entry]; ok {
+			continue
+		}
+		seen[entry] = struct{}{}
+		tools = append(tools, entry)
+	}
+	decision.Finalizable = true
+	decision.Finalized = true
+	decision.Status = agentfinalizer.StatusFailed
+	decision.CompletionReason = agentfinalizer.ReasonFailed
+	decision.EvidenceVerified = false
+	decision.MissingChecks = nil
+	recoverySummary := fmt.Sprintf("系統已完成 %d 次有界自動復原", attempt)
+	if attempt == 0 {
+		recoverySummary = "本次執行沒有可安全續跑的 Agent 軌跡"
+	}
+	decision.FinalText = fmt.Sprintf("自動執行未完成：%d 筆工具執行皆以終止狀態結束，%s，未將失敗誤報為成功。失敗工具：%s。此輪已正常結束，不需人工解除；排程可在下一輪再次執行。", len(failed), recoverySummary, strings.Join(tools, ", "))
+	if result != nil {
+		result.Finalized = true
+		result.Status = decision.Status
+		result.CompletionReason = decision.CompletionReason
+		result.EvidenceVerified = false
+		result.MissingChecks = nil
+	}
+	return decision
 }
 
 func finalizationAutoContinueBackoff(attempt int) time.Duration {

@@ -14,7 +14,7 @@ version: "v1.7.18"
 # 服务器配置
 server:
   host: 0.0.0.0 # 监听地址，0.0.0.0 表示监听所有网络接口
-  port: 8080 # 服务端口；未启用 TLS 时为 http://localhost:8080
+  port: 9898 # 服务端口；未启用 TLS 时为 http://localhost:9898
   # 其他可信 Web 集成的精确 Origin。Chromium 浏览器插件会自动识别，无需配置；不要使用通配符。
   # cors_allowed_origins:
   #   - https://trusted-integration.example
@@ -128,13 +128,28 @@ agent:
   external_mcp_max_concurrent_total: 16 # 所有外部 MCP 工具全局并发上限；0=默认16；负数=不限制
   external_mcp_circuit_failure_threshold: 15 # 单个外部 MCP server 连续失败多少次后熔断；0=默认3；负数=关闭熔断
   external_mcp_circuit_cooldown_seconds: 60 # 熔断冷却秒数；0=默认60
+  batch_max_global_concurrency: 8 # 所有批量任务队列全局同时运行的子任务数上限；0=默认8
   shell_no_output_timeout_seconds: 1200 # execute/exec 连续无新输出则终止（秒）；通用防挂死；0=默认300；-1=关闭
   workspace_root_dir: "" # 会话工作目录根路径（curl/wget 下载、read_file/glob/grep 本地分析）；空=tmp/workspace，其下按 projects/{id} 或 conversations/{id} 隔离；勿用系统 /tmp
   # system_prompt_path: prompts/single-agent.md # 可选：单代理系统提示文件（相对本配置文件所在目录）；非空且可读时替换内置提示
 
   system_prompt_path: ""
+  # system_prompt_preset: aggressive
+  # 单代理系统提示预设：
+  #   default     — 保守：优先低影响手段，遇到高风险动作会自行降级或给替代方案。
+  #   aggressive  — 进攻型：深度优先打穿、自动升级扫描强度、被拦换路、
+  #                 目标端防御绕过渡认为评估技术、发现立即落库不等人工确认。
+  # 两者都保留同一条硬底线：证据纪律（confidence 依实际证据给分，没有判定通道
+  # 就标 undetermined）、不伪造工具执行记录、平台层闸门（scope registry／禁区／
+  # destructive／HITL）命中就停并如实回报。
+  # system_prompt_path 非空且可读时优先于 preset（文件内容覆盖一切）。
+  system_prompt_preset: ""
 # 调用拦截：在「安全防护 → 调用拦截」编辑并保存后立即生效；与 HITL 审批白名单独立。
 # 旧配置省略 tool_guard 时也默认启用政府域名保护。手动修改 YAML 后需重启。
+#
+# scope（授权范围）：有正式授权书/服务契约的渗透测试案件，把范围内目标列在
+# scope 中即可正常探测，范围外的政府/关键基础设施仍会被拦截。
+# 省略或留空 = 全部拦截（与旧版本行为完全一致）。
 tool_guard:
   enabled: true
   rules:
@@ -145,6 +160,68 @@ tool_guard:
       pattern: '(?i)(?:^|[^\p{L}\p{M}\p{N}_.-])(?P<match>(?:(?:[\p{L}\p{M}\p{N}_*-]+\.)+gov(?:\.[\p{L}\p{M}\p{N}_*-]+)*|gov(?:\.[\p{L}\p{M}\p{N}_*-]+)+|\.gov(?:\.[\p{L}\p{M}\p{N}_*-]+)*)\.?)(?:$|[^\p{L}\p{M}\p{N}_.-])'
       # 支持 {match}、{tool}、{rule}；留空使用通用提醒。
       message: '识别到 {match}，禁止攻击政府网站。请检查目标与授权范围，并更换为已获授权的非政府目标。'
+
+  # ---- 授权范围（engagement scope）----
+  # 只列出来源可查的目标。建议在项目档案中保存授权证明（案号、期间、联络窗口），
+  # 与本清单一并归档，便于交付与稽核。
+  # 命中 scope 的目标：跳过政府域名规则，正常执行。
+  # 未命中：维持原拦截行为。
+  #
+  # 四种写法可混用：
+  #   domains          精确主机名（不含 scheme/port/path）
+  #   domain_suffixes  后缀，必须以 "." 开头；只匹配更长的主机
+  #                    ".city.gov.example" 会命中 status.city.gov.example，
+  #                    但不会命中 "city.gov.example.evil.test"（防后缀走私）
+  #   wildcards        shell 风格通配；* 不跨越 "."，即 "*.gov.tw" 不匹配 "a.b.gov.tw"
+  #   cidrs            IPv4/IPv6 网段，IP 直连时使用
+  scope:
+    domains: []
+    domain_suffixes: []
+    wildcards: []
+    cidrs: []
+    # 填写示例（有授权时改成实际范围）：
+    # domains:
+    #   - portal.agency.gov.example
+    #   - api.department.gov.example
+    # domain_suffixes:
+    #   - .city.gov.example
+    #   - .department.gov.example
+    # wildcards:
+    #   - "*.agency.gov.example"
+    # cidrs:
+    #   - 192.0.2.10/32
+    #   - 198.51.100.0/24
+
+# 授权范围登记（Scope Registry）：平台端唯一的授权权威。
+# 授权不再是那份静态 JSON，而是数据库里的三张表（scope_targets 常驻集／scope_grants 授权券／scope_denials 拒绝记忆）。
+# 工具执行前会查这张表：未覆盖的目标会推一张「授权扩充」卡片给操作者裁决（批准为常驻／只准这次／附条件／拒绝）。
+# 禁区（119／EPCR／消防救护）与 destructive／real_transaction 动作类别任何授权都解不开。
+scope:
+  # 執行模式：
+  #   off     — 完全不评估
+  #   audit   — 评估并写 audit_logs（action=scope_resolve），但不拦未覆盖目标的调用
+  #   enforce — 未覆盖目标 → 产生 scope_extension 中断请操作者裁决；命中禁区 → 直接拒绝
+  # 默认 audit：评估并稽核，但不因 registry 覆盖不足就把平台锁死。
+  # 注意 audit 不是「完全不设防」——禁区（119／EPCR／消防救护／政府网域）、拒绝记忆、
+  # 以及 destructive／real_transaction 这两类永久封锁的动作类别，在 audit 模式下仍然直接拒绝。
+  # 正确顺序：audit 看缺口 → 匯入授权 → 才切 enforce。改完要重启核心才生效。
+  # 注意：這裡要加引號——YAML 1.1 把 off/on 當布林，Go 的 yaml.v3 解進 string 欄位沒事，
+  # 但 Python 的 PyYAML（all/ 工具鏈）會把 off 解成 False。加引號兩邊一致。
+  enforcement: "audit"
+  # 常驻授权的预设 owner（没有相邻授权可推导时使用）
+  default_owner: "self"
+  # scope_extension 中断等待人工裁决的秒数；0 = 沿用该会话的 HITL 逾时设定
+  timeout_seconds: 0
+
+# 滲透測試授權書上的乙方（受託方）身分，也就是執行測試的這一方。
+# 甲方（委託方）與授權人來自案件裡人工錄入的授權記錄；乙方是平台營運方本身，
+# 屬於平台層設定，所以放在這裡而不是案件資料裡。留空則授權書上乙方欄位留白。
+engagement:
+  vendor_name: ""
+  vendor_tax_id: ""
+  vendor_address: ""
+  vendor_lead: ""
+  vendor_reference: ""
 
 # 人机协同（HITL）全局白名单：此处列出的工具始终免审批，与对话页「白名单工具（免审批，逗号分隔）」合并为并集；侧栏「应用」可合并写入本列表并立即生效。
 # 非白名单工具在审批方=审计 Agent 时，按会话 HITL 模式选用提示词：
@@ -383,11 +460,145 @@ mcp:
   auth_header_value: "" # 全局服务凭证值，仅 allow_global_access=true 时生效
   allow_global_access: false # 高风险兼容模式：静态密钥映射为全局服务身份；默认请使用用户 Bearer Token
 # 外部 MCP 配置
+# 独立武器库（Grok 进攻技能 + 可本机拉起的 MCP）见 deploy/arsenal/
 external_mcp:
   servers: {}
+  # ── 內建 MCP（隨本倉庫 mcp-servers/ 一起部署；預設關閉，開箱環境把路徑改成自己的即可）──
+  #   redteam-skills：上游 Claude-Red 攻擊技能庫（MIT，SnailSploit/Kai Aizen）與本機 skills/ 合併索引，
+  #                   支援以觸發詞自動比對該載入哪些技能；唯讀，不對目標做任何動作。
+  #   kali-gpt：Kali GPT 式滲透推理——工具→ATT&CK 映射、依發現動態推薦工具鏈、PTES 階段計畫、
+  #             案件經驗記憶；只規劃不執行，實際動作仍須走平台的 HITL 與授權範圍閘門。
+  # redteam-skills:
+  #   type: stdio
+  #   command: /opt/jysecai/core/venv/bin/python
+  #   args:
+  #     - /opt/jysecai/core/current/mcp-servers/redteam_skills/mcp_redteam_skills.py
+  #   working_directory: /opt/jysecai/core/current/mcp-servers/redteam_skills
+  #   description: 上游 Claude-Red 攻擊技能庫（MIT）與本機 skills 合併索引，唯讀不改目標
+  #   timeout: 90
+  #   terminate_duration: 10
+  #   disabled: true
+  #   external_mcp_enable: false
+  #   tool_enabled:
+  #     redteam_list_skill_categories: true
+  #     redteam_list_skills: true
+  #     redteam_get_skill: true
+  #     redteam_search_skills: true
+  #     redteam_match_skills: true
+  # kali-gpt:
+  #   type: stdio
+  #   command: /opt/jysecai/core/venv/bin/python
+  #   args:
+  #     - /opt/jysecai/core/current/mcp-servers/kali_gpt/mcp_kali_gpt.py
+  #   working_directory: /opt/jysecai/core/current/mcp-servers/kali_gpt
+  #   env:
+  #     KALI_GPT_MEMORY_DB: /var/lib/jysecai/core/kali_gpt/memory.db
+  #   description: Kali GPT 式滲透推理（ATT&CK 映射／動態工具鏈／PTES 計畫／記憶），只規劃不執行
+  #   timeout: 90
+  #   terminate_duration: 10
+  #   disabled: true
+  #   external_mcp_enable: false
+  #   tool_enabled:
+  #     kali_map_to_mitre: true
+  #     kali_suggest_toolchain: true
+  #     kali_plan_phase: true
+  #     kali_record_memory: true
+  #     kali_recall_memory: true
+  #     kali_gpt_status: true
+  # 官方 Hex-Rays IDA MCP（先依 docs/zh-CN/ida-mcp-integration.md 启动本机服务）：
+  # servers:
+  #   ida-official:
+  #     type: http
+  #     url: http://127.0.0.1:8737/mcp
+  #     description: Official Hex-Rays IDA MCP shared with Hermes
+  #     timeout: 120
+  #     keep_alive: 30
+  #     max_retries: 5
+  #     external_mcp_enable: true
+  #     tool_enabled:
+  #       open_database: true
+  #       execute_python: true
+  #       reference: true
+  #       list_databases: true
+  #       save_database: true
+  #       close_database: true
+  #
+  # NVIDIA SkillSpector（Apache-2.0），安裝在獨立 venv 後啟用：
+  #   python3 -m venv ~/.venvs/skillspector
+  #   ~/.venvs/skillspector/bin/pip install skillspector
+  # 掃描單位必須是「單一 skill 目錄」（內含 SKILL.md）。若直接指向市集根目錄，
+  # 會被當成一個 unknown skill、coverage 掉到 0%，每個檔案都被誤報為
+  # Concealed Executable Artifact。判讀請人工複核，不要拿 risk_score 當准入閘門。
+  # skillspector:
+  #   type: stdio
+  #   command: /home/bossjy/.venvs/skillspector/bin/skillspector
+  #   args: [mcp]
+  #   allowed_command_roots: [/home/bossjy/.venvs/skillspector/bin]
+  #   description: 'SkillSpector: scan an agent skill directory for supply-chain risk before install.'
+  #   timeout: 120
+  #   disabled: true
+  #   max_retries: 2
+  #   keep_alive: 15
+  #   external_mcp_enable: false
+  #   tool_enabled:
+  #     scan_skill: true
+# ============================================
+# 外部 MySQL 接收端（下游倉儲，不是主資料庫）
+# ============================================
+# 平台本體仍然寫 SQLite（database.path）。這一段指定的是「另外」把收割到的
+# 成果送一份到外部 MySQL —— 漏洞證據、專案事實（黑板上的攻擊鏈與收割資料），
+# 以及它們的敏感度分級與完整溯源。
+#
+# 紅線：接收端掛掉（MySQL 停機、網路斷、帳號被鎖）時平台照常運作，
+# 只是接收暫停。送出是非同步的，永遠不阻塞平台的寫入路徑。
+#
+# 建議用專用帳號，只授權接收庫，不要用 root ——
+# 這台 MySQL 上還有其他庫含個資。
+external_mysql:
+  enabled: false
+  host: 127.0.0.1
+  port: 3306
+  user: jy_receiver
+  # 密碼走環境變數，不要把明文寫在檔案裡：
+  # password: ${JY_SEC_MYSQL_PASSWORD}
+  password: ""
+  database: jy_vuln_receiver
+  # table_prefix: 同一台 MySQL 上跑多個平台實例時用來隔離表名
+  table_prefix: ""
+  timeout_seconds: 10
+  max_open_conns: 4
+  max_idle_conns: 2
+  conn_max_lifetime_seconds: 1800
+  # 收割成果先落在平台自己的 SQLite 寄件箱，再輪詢送往外部 MySQL。
+  # 外部 MySQL 掛掉時成果不會消失，只是留在寄件箱裡等它回來。
+  poll_interval_seconds: 5
+  batch_size: 50
 # 内置 C2：本机仅做对话/知识库时可设为 false，不启动监听器、不注册 C2 MCP 工具；省略本段时默认启用
 c2:
   enabled: true
+# 受控跳轉（回連）端點清單：複測開放式跳轉時要換掉的目標主機。
+# enabled 為 true 或 urls 非空即啟用；兩者皆空則不註冊 redirect_probe 工具。
+# 只填你自己控制的回連位址，並為每個目標保留不同的路徑段落以利歸因。
+# 預設留空：這裡不應該出現別人的端點。
+redirect:
+  enabled: false
+  urls: []
+  # 掃描器（對話／批量任務／機器人）啟動時同步巡站並植入短鏈。端點清單生效時預設 true。
+  attach_scan: true
+  # 範例（平台自用的受控回連端點；請換成你自己控制的位址，勿照抄）：
+  # urls:
+  #   - https://97y.me/tjneJ
+# 安全回呼驗證：只收集 jysec_* Canary；SSRF/XXE 使用一次性探針
+xss:
+  enabled: true
+  bind_host: 127.0.0.1
+  bind_port: 18877
+  public_url: https://b.xs1.ccwu.cc
+  canary_cookie_name: jysec_xss_canary
+  probe_ttl_seconds: 3600
+  rate_limit_per_minute: 30
+  max_capture_bytes: 512
+  cooldown_seconds: 60
 # ============================================
 # 知识库相关配置
 # ============================================
@@ -399,6 +610,21 @@ knowledge:
     model: text-embedding-v4 # 嵌入模型名称
     base_url: https://dashscope.aliyuncs.com/compatible-mode/v1 # 留空则使用OpenAI配置的base_url
     api_key: sk-xxxxxxx # 留空则使用OpenAI配置的api_key
+    # 用本机 Ollama 时改成下面这样（Ollama 自带 OpenAI 兼容的 /v1/embeddings）：
+    #   model: bge-m3
+    #   base_url: http://127.0.0.1:11434/v1
+    #   api_key: ollama          # Ollama 不验证密钥，但此栏不能留空
+    # 记得同时把下面的 retrieval.rerank.provider 设成 none。
+    #
+    # 自家 Jy Gateway 的 jy-embed（OpenAI 兼容 /embeddings，向量维度 1024）：
+    #   model: jy-embed
+    #   base_url: https://ai5090.gasjy.com/api/v1
+    #   api_key: <與 ai.channels.jy-gateway-jy53* 同一把>
+    # 该网关只提供 /embeddings，没有 /rerank，所以 rerank.provider 一样要设 none。
+    #
+    # 配好之後用 cmd/knowledge-doctor 確認端點真的通（不要只靠設定檔看起來對）：
+    #   go run ./cmd/knowledge-doctor --config config.yaml
+    # exit 0=正常 1=有錯誤 2=診斷本身失敗。輸出只顯示遮罩後的金鑰。
   retrieval:
     top_k: 5 # 检索返回的Top-K结果数量
     similarity_threshold: 0.4 # 余弦相似度阈值（0-1），低于此值的结果将被过滤
@@ -407,10 +633,13 @@ knowledge:
       max_queries: 4 # 改写变体上限（含语义覆盖）；建议 3~4
     # 精排（始终启用）：dashscope 用 gte-rerank；其他 OpenAI 兼容端点走 /v1/rerank
     rerank:
-      provider: "" # 空=按 base_url 推断：dashscope | cohere
+      provider: "" # 空=按 base_url 推断：dashscope | cohere；none/off=关闭精排
       model: "" # 空=dashscope→gte-rerank，cohere→rerank-multilingual-v3.0
       base_url: "" # 留空则用 embedding / openai 的 base_url
       api_key: "" # 留空则用 embedding / openai 的 api_key
+      # 用本机 embedding 端点（如 Ollama）时请设 provider: none。
+      # 留空会被推断成 cohere，导致每次检索都去请求本机不存在的 /v1/rerank；
+      # 虽然流水线会优雅降级为融合序，但精排实际已失效且每次查询都会记录警告。
     post_retrieve:
       prefetch_top_k: 20 # 每条 MultiQuery 变体的向量候选数；0=内置 max(top_k*4,20)
       max_context_chars: 0 # 0 不限制；否则返回的正文总 Unicode 字符上限（整段 chunk）
@@ -448,6 +677,14 @@ knowledge:
 # 用于在手机端通过企业微信/钉钉/飞书与 JySecAI 对话，无需部署在服务器上也可使用
 # 在系统设置 -> 机器人设置 中可配置
 robots:
+  webhook: # 把漏洞推播转交给另一个服务（例如 hermes gateway），由它投递到聊天频道
+    enabled: false
+    # 必须同时设定 url 与 secret 才会启用：webhook 不做平台身份验证，
+    # 两者绑在一起当作单一收件人凭据。
+    # url: http://127.0.0.1:8791/jysecai/alert
+    # secret: "" # 请求会带 X-JySecAI-Signature: sha256=<hex(HMAC-SHA256(secret, body))>
+    auth:
+      mode: user_binding
   wechat: # 微信 iLink（个人微信 ClawBot，扫码绑定）
     enabled: false
     # 鉴权默认 user_binding；专用机器人可改 service_account，并必须限制真实发送者
@@ -516,7 +753,7 @@ robots:
 # ============================================
 
 # 技能包目录：每个子目录仅标准 SKILL.md（Agent Skills：front matter 仅 name、description）+ 可选附属文件；无 SKILL.yaml
-# 示例：skills/cyberstrike-eino-demo/
+# 示例：skills/jytech-eino-demo/
 skills_dir: skills # Skills配置文件目录（相对于配置文件所在目录）
 # ============================================
 # 多代理子 Agent（Markdown，唯一维护处）
@@ -543,3 +780,40 @@ project:
   fact_index_path_max_runes: 10000
   fact_summary_max_runes: 24000
   default_inject_deprecated: false
+
+# 外部 Xalgorix。只填操作者自己部署、且已限制來源的管理位址。
+# 不要把 Xalgorix 面板暴露到公網。token 用 XALGORIX_API_TOKEN，只授權 /api。
+xalgorix:
+  enabled: false
+  base_url: "http://127.0.0.1:9137"
+  api_token: ""
+
+auto_triage: # 全自动 AI 漏洞分流（定时把待处理漏洞分群、评优先序并套用状态）
+  # 默认关闭：它会自动改写 vulnerabilities.status，是唯一不需要人点一下就动资料的排程。
+  enabled: false
+  interval_seconds: 7200
+  # 每轮送几笔给模型。20 是量出来的：60 笔时模型只覆盖 6 笔（其余落进「未分组」被跳过），
+  # 20 笔时 20/20 全中。批次太大会被输出长度截断。
+  batch: 20
+  # 必须是 all 范围的角色，启动时会实际验证；填错就不启动。
+  # 注意套用纪录仍署名 auto-triage，这个值只影响可见范围。
+  actor_user_id: ""
+
+auto_verify: # 自动漏洞复测（定时把非 critical 的 open 漏洞送进批次佇列，每笔开独立对话让 agent 唯读复测并写回判定）
+  # 默认关闭：它会经 update_vulnerability 改写漏洞状态。判定仍走完整工具路径
+  # （HITL / Tool Guard / 稽核全继承批次佇列行为），confirmed 需 confidence ≥95
+  # 否则被信心闸门自动压回 open。
+  enabled: false
+  interval_seconds: 1800
+  # 每轮派几笔（每笔一个独立对话）。批次 5 是为了把模型注意力留给指令本身。
+  batch: 5
+  # 必须是 all 范围的角色，启动时会实际验证；填错就不启动。
+  actor_user_id: ""
+  # 排除的严重度，大小写不敏感；预设只排 critical，留给人工。
+  exclude_severities:
+    - critical
+
+  # 复测对话用的 AI 通道；空则用 ai.default_channel。复测需要可靠的工具调用
+  # 能力：flash 级小模型会发空参数 tool_search 甚至乱摸无关工具，建议指定
+  # 强通道；通道无效时回退默认通道（仅记 warn）。
+  ai_channel: ""

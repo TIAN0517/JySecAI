@@ -1,6 +1,7 @@
 name: "netexec"
 command: "netexec"
 enabled: true
+action_class: "credential_enum"
 short_description: "网络枚举和利用框架（原CrackMapExec）"
 description: |
   NetExec（原CrackMapExec）是一个网络枚举和利用框架，支持多种协议。
@@ -26,6 +27,8 @@ parameters:
     format: "positional"
   - name: "target"
     type: "string"
+    target: true
+    target_kind: "host"
     description: "目标IP或网络"
     required: true
     position: 1

@@ -35,11 +35,11 @@ test('欢迎语随项目和无项目状态更新', () => {
     assert.match(projects, /window\.refreshChatWelcomeEmptyState\(\)/);
     assert.equal(
         zh.chat.projectWelcomeMessage,
-        '当前{{project}}项目，请输入您的测试需求，系统将自动执行相应的安全测试。'
+        '当前项目：{{project}}。请输入授权范围内的红队测试目标与需求。'
     );
     assert.equal(zh.chat.projectWelcomeTitlePrefix, '要在 ');
-    assert.equal(zh.chat.projectWelcomeTitleSuffix, ' 项目中测试什么？');
-    assert.equal(zh.chat.welcomeSubtitle, '请输入您的测试需求，系统将自动执行相应的安全测试。');
+    assert.equal(zh.chat.projectWelcomeTitleSuffix, ' 项目中推进哪项红队任务？');
+    assert.equal(zh.chat.welcomeSubtitle, '授权红队作战 · 输入目标与范围后开始执行。');
     assert.equal(typeof en.chat.projectWelcomeMessage, 'string');
 });
 

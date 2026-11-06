@@ -30,7 +30,9 @@ import (
 	"jysecai/internal/mcp/builtin"
 	"jysecai/internal/monitor"
 	"jysecai/internal/multiagent"
+	"jysecai/internal/proxypool"
 	"jysecai/internal/robot"
+	"jysecai/internal/scope"
 	"jysecai/internal/security"
 	"jysecai/internal/skillpackage"
 	"jysecai/internal/toolguard"
@@ -41,39 +43,48 @@ import (
 	"golang.org/x/net/http2"
 )
 
+// telegramShutdownTimeout 等待旧 Telegram 长轮询实例退出的上限。
+// 取消 ctx 会中断在途的 getUpdates 请求，正常情况下毫秒级即可返回；
+// 超时只是兜底，避免旧实例卡住时把整个重启流程拖死。
+const telegramShutdownTimeout = 10 * time.Second
+
 // App 应用
 type App struct {
-	config             *config.Config
-	logger             *logger.Logger
-	router             *gin.Engine
-	mcpServer          *mcp.Server
-	externalMCPMgr     *mcp.ExternalMCPManager
-	agent              *agent.Agent
-	executor           *security.Executor
-	db                 *database.DB
-	knowledgeDB        *database.DB // 知识库数据库连接（如果使用独立数据库）
-	auth               *security.AuthManager
-	knowledgeManager   *knowledge.Manager        // 知识库管理器（用于动态初始化）
-	knowledgeRetriever *knowledge.Retriever      // 知识库检索器（用于动态初始化）
-	knowledgeIndexer   *knowledge.Indexer        // 知识库索引器（用于动态初始化）
-	knowledgeHandler   *handler.KnowledgeHandler // 知识库处理器（用于动态初始化）
-	agentHandler       *handler.AgentHandler     // Agent处理器（用于更新知识库管理器）
-	robotHandler       *handler.RobotHandler     // 机器人处理器（钉钉/飞书/企业微信等）
-	robotMu            sync.Mutex                // 保护机器人长连接的 cancel
-	dingCancel         context.CancelFunc        // 钉钉 Stream 取消函数，用于配置变更时重启
-	larkCancel         context.CancelFunc        // 飞书长连接取消函数，用于配置变更时重启
-	wechatCancel       context.CancelFunc        // 微信 iLink 长轮询取消函数
-	telegramCancel     context.CancelFunc        // Telegram 长轮询取消函数
-	slackCancel        context.CancelFunc        // Slack Socket Mode 取消函数
-	discordCancel      context.CancelFunc        // Discord Gateway 取消函数
-	qqCancel           context.CancelFunc        // QQ WebSocket 取消函数
-	alertCancel        context.CancelFunc        // 漏洞提醒持久化投递 worker
-	c2Manager          *c2.Manager               // C2 管理器（未启用 C2 时为 nil）
-	c2Watchdog         *c2.SessionWatchdog       // C2 会话看门狗
-	c2WatchdogCancel   context.CancelFunc        // 看门狗取消函数
-	c2Handler          *handler.C2Handler        // C2 REST（与 Manager 生命周期同步）
-	xssHandler         *handler.XssHandler       // XSS cookie-harvesting platform<br/>
-	auditSvc           *audit.Service
+	config               *config.Config
+	logger               *logger.Logger
+	router               *gin.Engine
+	mcpServer            *mcp.Server
+	externalMCPMgr       *mcp.ExternalMCPManager
+	agent                *agent.Agent
+	executor             *security.Executor
+	db                   *database.DB
+	knowledgeDB          *database.DB // 知识库数据库连接（如果使用独立数据库）
+	auth                 *security.AuthManager
+	knowledgeManager     *knowledge.Manager            // 知识库管理器（用于动态初始化）
+	knowledgeRetriever   *knowledge.Retriever          // 知识库检索器（用于动态初始化）
+	knowledgeIndexer     *knowledge.Indexer            // 知识库索引器（用于动态初始化）
+	knowledgeHandler     *handler.KnowledgeHandler     // 知识库处理器（用于动态初始化）
+	agentHandler         *handler.AgentHandler         // Agent处理器（用于更新知识库管理器）
+	robotHandler         *handler.RobotHandler         // 机器人处理器（钉钉/飞书/企业微信等）
+	scopeRegistryHandler *handler.ScopeRegistryHandler // 授权状态机（scope registry）查询与核准
+	robotMu              sync.Mutex                    // 保护机器人长连接的 cancel
+	dingCancel           context.CancelFunc            // 钉钉 Stream 取消函数，用于配置变更时重启
+	larkCancel           context.CancelFunc            // 飞书长连接取消函数，用于配置变更时重启
+	wechatCancel         context.CancelFunc            // 微信 iLink 长轮询取消函数
+	telegramCancel       context.CancelFunc            // Telegram 长轮询取消函数
+	telegramDone         chan struct{}                 // Telegram 长轮询退出信号（避免重启时新旧实例抢 getUpdates）
+	slackCancel          context.CancelFunc            // Slack Socket Mode 取消函数
+	discordCancel        context.CancelFunc            // Discord Gateway 取消函数
+	qqCancel             context.CancelFunc            // QQ WebSocket 取消函数
+	alertCancel          context.CancelFunc            // 漏洞提醒持久化投递 worker
+	c2Manager            *c2.Manager                   // C2 管理器（未启用 C2 时为 nil）
+	c2Watchdog           *c2.SessionWatchdog           // C2 会话看门狗
+	c2WatchdogCancel     context.CancelFunc            // 看门狗取消函数
+	c2Handler            *handler.C2Handler            // C2 REST（与 Manager 生命周期同步）
+	xssHandler           *handler.XssHandler           // XSS cookie-harvesting platform<br/>
+	auditSvc             *audit.Service
+	proxyPool            *proxypool.Manager
+	receiverBridge       *receiverBridge // 外部 MySQL 接收端（未啟用時為 nil）
 }
 
 // New 创建新应用
@@ -87,10 +98,33 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	}
 
 	gin.SetMode(gin.ReleaseMode)
+	proxyPoolManager, err := proxypool.New(cfg.ProxyPool, log.Logger)
+	if err != nil {
+		return nil, fmt.Errorf("initialize SOCKS5 proxy pool: %w", err)
+	}
 	router := gin.Default()
+
+	// gin 預設信任所有代理（trustedProxies 為 0.0.0.0/0），ClientIP() 會直接
+	// 採用 X-Forwarded-For。攻擊者只要每次請求帶不同的 XFF，RateLimitMiddleware
+	// 的 per-IP 桶就會不斷換新，登入與 webhook 的速率限制形同失效。
+	// 本服務預設直接對外提供，不假設前方一定有可信反向代理。
+	if err := router.SetTrustedProxies(nil); err != nil {
+		return nil, fmt.Errorf("设置可信代理失败: %w", err)
+	}
+	router.ForwardedByClientIP = false
 
 	// CORS中间件
 	router.Use(corsMiddleware(cfg.Server.CORSAllowedOrigins))
+
+	// Content-Security-Policy 与基础安全标头。
+	//
+	// 认证 token 只存在 localStorage，任何能在主控台同源下执行的 JavaScript
+	// 都能直接把它读走（公开审计揭露过的同型储存型 XSS 就是这样变成主控端
+	// RCE 的）。XSS 根因修掉之后，CSP 是第二道防线：script-src 'self' 会挡掉
+	//「从外部网域载入 <script src>」这个攻击链里最关键的一步。
+	//
+	// 必须在注册路由之前挂上：gin 的 Use 只影响之后注册的路由。
+	router.Use(security.CSPMiddleware(security.ConsoleCSP))
 
 	// 初始化数据库
 	dbPath := cfg.Database.Path
@@ -154,6 +188,13 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	mcpServer := mcp.NewServerWithStorage(log.Logger, db)
 	mcpServer.SetToolAuthorizer(mcpToolAuthorizer(db))
 	mcpServer.SetToolGuard(toolGuard)
+	// 專案授權範圍接入攔截層（預設關閉；開關在 config.yaml 的 project: 區段）。
+	// 內部與外部 MCP 共用同一個解析器，兩邊的判定才會一致。
+	var projectScope *projectScopeResolver
+	if cfg.Project.ScopeGuardEnabled {
+		projectScope = newProjectScopeResolver(db)
+		mcpServer.SetProjectScopeResolver(projectScope.Resolve)
+	}
 	mcpServer.ConfigureHTTPToolCallTimeoutFromAgentMinutes(cfg.Agent.ToolTimeoutMinutes)
 	mcpServer.ConfigureToolWaitTimeoutSeconds(cfg.Agent.ToolWaitTimeoutSeconds)
 	mcpServer.ConfigureToolResultMaxBytes(cfg.MultiAgent.EinoMiddleware.ReductionMaxLengthForTruncEffective())
@@ -165,6 +206,11 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	executor.SetToolOutputMaxBytes(cfg.MultiAgent.EinoMiddleware.ReductionMaxLengthForTruncEffective())
 	executor.SetToolOutputSpillRoot(cfg.MultiAgent.EinoMiddleware.ReductionRootDir)
 
+	// Scope Registry（授權範圍登記）：建立唯一權威的查詢服務，並注入執行面兜底
+	// （攔截點 B）。enforcement=off 時檢查器完全不做事，維持既有行為。
+	scopeService := scope.NewService(db.DB)
+	executor.SetScopeGuard(security.NewRegistryScopeGuard(scopeService, cfg.Scope.EnforcementMode(), log.Logger))
+
 	// 注册工具
 	executor.RegisterTools(mcpServer)
 
@@ -173,11 +219,16 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	registerAssetTools(mcpServer, db, log.Logger)
 	registerProjectFactTools(mcpServer, db, cfg, log.Logger)
 	registerVisionTools(mcpServer, cfg, log.Logger)
+	// 注册受控跳转（回连）探测工具；未配置端点清单时不会注册。
+	registerRedirectTools(mcpServer, db, cfg, log.Logger, proxyPoolManager)
 
 	// 创建外部MCP管理器（使用与内部MCP服务器相同的存储）
 	externalMCPMgr := mcp.NewExternalMCPManagerWithStorage(log.Logger, db)
 	externalMCPMgr.SetToolAuthorizer(externalMCPToolAuthorizer())
 	externalMCPMgr.SetToolGuard(toolGuard)
+	if cfg.Project.ScopeGuardEnabled {
+		externalMCPMgr.SetProjectScopeResolver(projectScope.Resolve)
+	}
 	externalMCPMgr.ConfigureToolWaitTimeoutSeconds(cfg.Agent.ToolWaitTimeoutSeconds)
 	externalMCPMgr.ConfigureToolResultMaxBytes(cfg.MultiAgent.EinoMiddleware.ReductionMaxLengthForTruncEffective())
 	externalMCPMgr.ConfigureToolResultSpillRoot(cfg.MultiAgent.EinoMiddleware.ReductionRootDir)
@@ -243,13 +294,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		knowledgeManager = knowledge.NewManager(knowledgeDB, cfg.Knowledge.BasePath, log.Logger)
 
 		// 创建嵌入器
-		// 使用OpenAI配置的API Key（如果知识库配置中没有指定）
-		if cfg.Knowledge.Embedding.APIKey == "" {
-			cfg.Knowledge.Embedding.APIKey = cfg.OpenAI.APIKey
-		}
-		if cfg.Knowledge.Embedding.BaseURL == "" {
-			cfg.Knowledge.Embedding.BaseURL = cfg.OpenAI.BaseURL
-		}
+		applyKnowledgeEmbeddingConfig(cfg, log.Logger)
 
 		embedder, err := knowledge.NewEmbedder(context.Background(), &cfg.Knowledge, &cfg.OpenAI, log.Logger)
 		if err != nil {
@@ -279,6 +324,17 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 
 		// 扫描知识库并建立索引（异步）
 		go func() {
+			resolved := knowledge.ResolveEmbeddingConfig(&cfg.Knowledge, &cfg.OpenAI)
+			probe := knowledge.ProbeEmbedding(&http.Client{Timeout: 8 * time.Second}, resolved, 8*time.Second)
+			if ok, why := knowledge.AutoIndexAllowed(probe); !ok {
+				log.Logger.Warn("嵌入服務不可達，跳過自動知識庫索引",
+					zap.String("endpoint", probe.Endpoint),
+					zap.Int("status", probe.StatusCode),
+					zap.String("reason", why),
+				)
+				return
+			}
+
 			itemsToIndex, err := knowledgeManager.ScanKnowledgeBase()
 			if err != nil {
 				log.Logger.Warn("扫描知识库失败", zap.Error(err))
@@ -403,8 +459,13 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	authHandler.SetAudit(auditSvc)
 	attackChainHandler := handler.NewAttackChainHandler(db, &cfg.OpenAI, log.Logger)
 	vulnerabilityHandler := handler.NewVulnerabilityHandler(db, log.Logger)
+	vulnerabilityHandler.SetPocOutputDir(filepath.Join(filepath.Dir(dbPath), "poc_drafts"))
+	vulnerabilityHandler.SetRedirectConfig(&cfg.Redirect)
+	vulnerabilityHandler.SetTriageConfig(&cfg.OpenAI)
 	assetHandler := handler.NewAssetHandler(db, log.Logger)
 	projectHandler := handler.NewProjectHandler(db, log.Logger)
+	redirectVerifyHandler := handler.NewRedirectVerifyHandler(cfg, db, log.Logger)
+	agentHandler.SetRedirectVerifyHandler(redirectVerifyHandler)
 	rbacHandler := handler.NewRBACHandler(db, log.Logger)
 	rbacHandler.SetAudit(auditSvc)
 	rbacHandler.SetAuthManager(authManager)
@@ -419,6 +480,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	registerWebshellTools(mcpServer, db, webshellHandler, log.Logger)
 	registerWebshellManagementTools(mcpServer, db, webshellHandler, log.Logger)
 	configHandler := handler.NewConfigHandler(configPath, cfg, mcpServer, executor, agent, attackChainHandler, externalMCPMgr, log.Logger)
+	configHandler.SetProxyPoolManager(proxyPoolManager)
 	configHandler.SetDB(db)
 	configHandler.SetToolGuard(toolGuard)
 	configHandler.SetAudit(auditSvc)
@@ -432,6 +494,10 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	skillsHandler := handler.NewSkillsHandler(cfg, configPath, log.Logger)
 	skillsHandler.SetAudit(auditSvc)
 	fofaHandler := handler.NewFofaHandler(cfg, log.Logger)
+	fofaHandler.SetProxyPoolManager(proxyPoolManager)
+	assetIntelHandler := handler.NewAssetIntelHandler(cfg, log.Logger)
+	loanHandler := handler.NewLoanHandler(log.Logger)
+	recordsHandler := handler.NewRecordsHandler(log.Logger)
 	terminalHandler := handler.NewTerminalHandler(log.Logger)
 	if db != nil {
 		skillsHandler.SetDB(db) // 设置数据库连接以便获取调用统计
@@ -462,39 +528,56 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 	auditHandler := handler.NewAuditHandler(db, auditSvc, log.Logger)
 	robotHandler := handler.NewRobotHandler(cfg, db, agentHandler, log.Logger)
 	robotHandler.SetAudit(auditSvc)
+	scopeRegistryHandler := handler.NewScopeRegistryHandler(db, log.Logger)
 	db.SetVulnerabilityCreatedHook(robotHandler.NotifyNewVulnerability)
+
+	// 外部 MySQL 接收端：把收割到的成果另外送到主力機 MySQL。
+	// 平台本體仍然是 SQLite 主庫；這條路徑掛掉只會讓接收暫停，不影響平台運作。
+	receiverBridge := setupExternalReceiver(cfg, db, log.Logger)
+
 	openAPIHandler := handler.NewOpenAPIHandler(db, log.Logger, conversationHandler, agentHandler)
 
 	// 创建 App 实例（部分字段稍后填充）
 	app := &App{
-		config:             cfg,
-		logger:             log,
-		router:             router,
-		mcpServer:          mcpServer,
-		externalMCPMgr:     externalMCPMgr,
-		agent:              agent,
-		executor:           executor,
-		db:                 db,
-		knowledgeDB:        knowledgeDBConn,
-		auth:               authManager,
-		knowledgeManager:   knowledgeManager,
-		knowledgeRetriever: knowledgeRetriever,
-		knowledgeIndexer:   knowledgeIndexer,
-		knowledgeHandler:   knowledgeHandler,
-		agentHandler:       agentHandler,
-		robotHandler:       robotHandler,
-		c2Manager:          c2Manager,
-		c2Watchdog:         c2Watchdog,
-		c2WatchdogCancel:   watchdogCancel,
-		c2Handler:          c2Handler,
-		xssHandler:         xssHandler,
-		auditSvc:           auditSvc,
+		config:               cfg,
+		logger:               log,
+		router:               router,
+		mcpServer:            mcpServer,
+		externalMCPMgr:       externalMCPMgr,
+		agent:                agent,
+		executor:             executor,
+		db:                   db,
+		knowledgeDB:          knowledgeDBConn,
+		auth:                 authManager,
+		knowledgeManager:     knowledgeManager,
+		knowledgeRetriever:   knowledgeRetriever,
+		knowledgeIndexer:     knowledgeIndexer,
+		knowledgeHandler:     knowledgeHandler,
+		agentHandler:         agentHandler,
+		robotHandler:         robotHandler,
+		scopeRegistryHandler: scopeRegistryHandler,
+		c2Manager:            c2Manager,
+		c2Watchdog:           c2Watchdog,
+		c2WatchdogCancel:     watchdogCancel,
+		c2Handler:            c2Handler,
+		xssHandler:           xssHandler,
+		auditSvc:             auditSvc,
+		proxyPool:            proxyPoolManager,
+		receiverBridge:       receiverBridge,
 	}
 	// 飞书/钉钉长连接（无需公网），启用时在后台启动；后续前端应用配置时会通过 RestartRobotConnections 重启
 	app.startRobotConnections()
 	alertCtx, alertCancel := context.WithCancel(context.Background())
 	app.alertCancel = alertCancel
 	go robotHandler.RunVulnerabilityAlertWorker(alertCtx)
+	// 自動分流掛在 alertCtx 底下：收工（alertCancel）時連帶停掉，避免關機流程
+	// 留下一個還在呼叫模型的 goroutine。
+	vulnerabilityHandler.StartAutoTriage(alertCtx, cfg.AutoTriage)
+
+	// 自動複測：非 critical 的 open 漏洞自動開對話重掃（vulnerability_verify_auto.go）。
+	// 掛在同一個 alertCtx 下收工；派工走批次佇列既有機制，不另開特權通道。
+	vulnerabilityHandler.SetAutoVerifyQueueRunner(agentHandler)
+	vulnerabilityHandler.StartAutoVerify(alertCtx, cfg.AutoVerify)
 
 	// 设置漏洞工具注册器（内置工具，必须设置）
 	vulnerabilityRegistrar := func() error {
@@ -513,6 +596,13 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		return nil
 	}
 	configHandler.SetWebshellToolRegistrar(webshellRegistrar)
+
+	// 设置受控跳转工具注册器（ApplyConfig / 端点清单变更时重新注册）
+	redirectRegistrar := func() error {
+		registerRedirectTools(mcpServer, db, cfg, log.Logger, proxyPoolManager)
+		return nil
+	}
+	configHandler.SetRedirectToolRegistrar(redirectRegistrar)
 
 	// Skills 由 Eino ADK skill 中间件提供（多代理）；此处不注册 MCP 形态的技能工具
 	configHandler.SetSkillsToolRegistrar(func() error { return nil })
@@ -590,6 +680,7 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		vulnerabilityHandler,
 		assetHandler,
 		projectHandler,
+		redirectVerifyHandler,
 		workflowHandler,
 		webshellHandler,
 		chatUploadsHandler,
@@ -597,6 +688,9 @@ func New(cfg *config.Config, log *logger.Logger, configPath string) (*App, error
 		skillsHandler,
 		markdownAgentsHandler,
 		fofaHandler,
+		assetIntelHandler,
+		loanHandler,
+		recordsHandler,
 		terminalHandler,
 		app.c2Handler,
 		app.xssHandler,
@@ -777,6 +871,22 @@ func (a *App) Shutdown() {
 
 	a.shutdownC2()
 
+	// 停止外部 MySQL 接收端。順便把統計寫出來 ——
+	// 「送了幾筆、跳過幾筆、失敗幾筆、還有多少留在本地寄件箱」不寫出來，
+	// 接收端就等於沒有觀測性。
+	if a.receiverBridge != nil {
+		delivered, skipped, failed, dropped := a.receiverBridge.Stats()
+		a.logger.Logger.Info("外部 MySQL 接收端統計",
+			zap.Int64("delivered", delivered),
+			zap.Int64("skipped", skipped),
+			zap.Int64("failed", failed),
+			zap.Int64("dropped", dropped),
+			zap.Int("pending_in_outbox", a.receiverBridge.Pending(context.Background())),
+		)
+		a.receiverBridge.Stop()
+		a.receiverBridge = nil
+	}
+
 	// 停止 XSS 采集器服务器
 	if a.xssHandler != nil {
 		a.xssHandler.StopCollector()
@@ -825,7 +935,13 @@ func (a *App) startRobotConnections() {
 	if cfg.Robots.Telegram.Enabled && strings.TrimSpace(cfg.Robots.Telegram.BotToken) != "" {
 		ctx, cancel := context.WithCancel(context.Background())
 		a.telegramCancel = cancel
-		go robot.StartTelegram(ctx, cfg.Robots, a.robotHandler, a.logger.Logger)
+		done := make(chan struct{})
+		a.telegramDone = done
+		go func() {
+			defer close(done)
+			// 传入 a.db：把已消费的 update_id 落库，重启后不会重放历史消息。
+			robot.StartTelegram(ctx, cfg.Robots, a.robotHandler, a.logger.Logger, a.db, a.scopeRegistryHandler)
+		}()
 	}
 	if cfg.Robots.Slack.Enabled && strings.TrimSpace(cfg.Robots.Slack.BotToken) != "" && strings.TrimSpace(cfg.Robots.Slack.AppToken) != "" {
 		ctx, cancel := context.WithCancel(context.Background())
@@ -863,6 +979,8 @@ func (a *App) RestartRobotConnections() {
 		a.telegramCancel()
 		a.telegramCancel = nil
 	}
+	telegramDone := a.telegramDone
+	a.telegramDone = nil
 	if a.slackCancel != nil {
 		a.slackCancel()
 		a.slackCancel = nil
@@ -876,6 +994,16 @@ func (a *App) RestartRobotConnections() {
 		a.qqCancel = nil
 	}
 	a.robotMu.Unlock()
+	// Telegram 的 getUpdates 同一时间只能有一个长轮询在跑：先等旧实例真正退出再开新的，
+	// 否则新旧实例会互相抢轮询，撞上 "Conflict: terminated by other getUpdates request"
+	// 并陷入反复重连（旧实例没退干净时，新实例从 offset=0 开始还会重播历史消息）。
+	if telegramDone != nil {
+		select {
+		case <-telegramDone:
+		case <-time.After(telegramShutdownTimeout):
+			a.logger.Logger.Warn("Telegram 长轮询未在预期时间内退出，仍将启动新实例")
+		}
+	}
 	// 给旧 goroutine 一点时间退出
 	time.Sleep(200 * time.Millisecond)
 	a.startRobotConnections()
@@ -898,6 +1026,7 @@ func setupRoutes(
 	vulnerabilityHandler *handler.VulnerabilityHandler,
 	assetHandler *handler.AssetHandler,
 	projectHandler *handler.ProjectHandler,
+	redirectVerifyHandler *handler.RedirectVerifyHandler,
 	workflowHandler *handler.WorkflowHandler,
 	webshellHandler *handler.WebShellHandler,
 	chatUploadsHandler *handler.ChatUploadsHandler,
@@ -905,6 +1034,9 @@ func setupRoutes(
 	skillsHandler *handler.SkillsHandler,
 	markdownAgentsHandler *handler.MarkdownAgentsHandler,
 	fofaHandler *handler.FofaHandler,
+	assetIntelHandler *handler.AssetIntelHandler,
+	loanHandler *handler.LoanHandler,
+	recordsHandler *handler.RecordsHandler,
 	terminalHandler *handler.TerminalHandler,
 	c2Handler *handler.C2Handler,
 	xssHandler *handler.XssHandler,
@@ -919,23 +1051,29 @@ func setupRoutes(
 	api := router.Group("/api")
 
 	// 认证相关路由
-	authRoutes := api.Group("/auth")
 	loginRL := security.NewRateLimiter(10, 1*time.Minute)
 	{
-		authRoutes.POST("/login", security.RateLimitMiddleware(loginRL), authHandler.Login)
-		authRoutes.POST("/logout", security.AuthMiddleware(authManager), authHandler.Logout)
-		authRoutes.POST("/change-password", security.AuthMiddleware(authManager), security.RequirePermission("auth:self"), authHandler.ChangePassword)
-		authRoutes.GET("/validate", security.AuthMiddleware(authManager), authHandler.Validate)
-		authRoutes.POST("/robot-binding-code", security.AuthMiddleware(authManager), security.RequirePermission("auth:self"), robotHandler.CreateRobotBindingCode)
-		authRoutes.GET("/robot-bindings", security.AuthMiddleware(authManager), security.RequirePermission("auth:self"), robotHandler.ListMyRobotBindings)
-		authRoutes.DELETE("/robot-bindings/:id", security.AuthMiddleware(authManager), security.RequirePermission("auth:self"), robotHandler.DeleteMyRobotBinding)
+		// /login 必須保持公開（未登入者才能換 token），所以單獨開一組、不掛認證中介層。
+		publicAuthRoutes := api.Group("/auth")
+		publicAuthRoutes.POST("/login", security.RateLimitMiddleware(loginRL, app.config.Server.TrustCFConnectingIP), authHandler.Login)
+	}
+	// 其餘認證路由統一在群組層掛 AuthMiddleware，避免逐條重複；權限檢查仍是逐路由的。
+	authRoutes := api.Group("/auth")
+	authRoutes.Use(security.AuthMiddleware(authManager))
+	{
+		authRoutes.POST("/logout", authHandler.Logout)
+		authRoutes.POST("/change-password", security.RequirePermission("auth:self"), authHandler.ChangePassword)
+		authRoutes.GET("/validate", authHandler.Validate)
+		authRoutes.POST("/robot-binding-code", security.RequirePermission("auth:self"), robotHandler.CreateRobotBindingCode)
+		authRoutes.GET("/robot-bindings", security.RequirePermission("auth:self"), robotHandler.ListMyRobotBindings)
+		authRoutes.DELETE("/robot-bindings/:id", security.RequirePermission("auth:self"), robotHandler.DeleteMyRobotBinding)
 	}
 
 	// 机器人回调（无需登录，供企业微信/钉钉/飞书服务器调用）
 	// 添加速率限制：每个 IP 每分钟最多 60 次请求，防止滥用
 	robotRL := security.NewRateLimiter(60, 1*time.Minute)
 	robotGroup := api.Group("/robot")
-	robotGroup.Use(security.RateLimitMiddleware(robotRL))
+	robotGroup.Use(security.RateLimitMiddleware(robotRL, app.config.Server.TrustCFConnectingIP))
 	{
 		robotGroup.GET("/wecom", robotHandler.HandleWecomGET)
 		robotGroup.POST("/wecom", robotHandler.HandleWecomPOST)
@@ -987,6 +1125,13 @@ func setupRoutes(
 		protected.DELETE("/hitl/logs", agentHandler.DeleteHITLLogs)
 		protected.GET("/hitl/logs/:id", agentHandler.GetHITLLog)
 		protected.POST("/hitl/decision", agentHandler.DecideHITLInterrupt)
+		// 授权状态机（scope registry）：查询覆盖率的只读端点 + 变更授权的写入端点。
+		// 权限由 RBAC 中间件按路径判定（scope:read / scope:write）。
+		protected.GET("/scope/grants", app.scopeRegistryHandler.ListGrants)
+		protected.GET("/scope/targets", app.scopeRegistryHandler.ListTargets)
+		protected.GET("/scope/audit", app.scopeRegistryHandler.Audit)
+		protected.POST("/scope/grants/:id/activate", app.scopeRegistryHandler.ActivateGrant)
+		protected.POST("/scope/grants/:id/reject", app.scopeRegistryHandler.RevokeGrant)
 		protected.POST("/hitl/dismiss", agentHandler.DismissHITLInterrupt)
 		protected.GET("/hitl/config/:conversationId", agentHandler.GetHITLConversationConfig)
 		protected.PUT("/hitl/config", agentHandler.UpsertHITLConversationConfig)
@@ -1019,6 +1164,29 @@ func setupRoutes(
 		protected.POST("/fofa/search", fofaHandler.Search)
 		// 信息收集 - 自然语言解析为 FOFA 语法（需人工确认后再查询）
 		protected.POST("/fofa/parse", fofaHandler.ParseNaturalLanguage)
+
+		// 资产管理 - asset_intelligence MCP 橋接 (唯讀, 不直接呼叫外部 API)
+		protected.GET("/assets-intel", assetIntelHandler.List)
+		protected.GET("/loan/summary", loanHandler.Summary)
+		protected.GET("/loan/cases", loanHandler.Cases)
+		protected.GET("/loan/applications", loanHandler.Applications)
+		protected.GET("/loan/case/:no", loanHandler.Case)
+		protected.GET("/loan/tables", loanHandler.Tables)
+		protected.GET("/loan/verify", loanHandler.Verify)
+		protected.GET("/loan/export", loanHandler.Export)
+		protected.GET("/loan/classification", loanHandler.Classification)
+		// 提取記錄管理主控台：型別 → 欄位定義由資料庫決定，新增資料型別不必改前端。
+		protected.GET("/records/types", recordsHandler.RecordsTypes)
+		protected.GET("/records/list", recordsHandler.RecordsList)
+		protected.GET("/records/classification", recordsHandler.RecordsClassification)
+		protected.GET("/records/export", recordsHandler.RecordsExport)
+		protected.POST("/records/ingest", recordsHandler.RecordsIngest)
+		protected.GET("/databases", handler.NewDatabasesHandler(app.config, loanHandler, assetIntelHandler).WithRecords(recordsHandler).Catalog)
+		protected.GET("/assets-intel/history", assetIntelHandler.RecentHistory)
+		protected.GET("/assets-intel/providers", assetIntelHandler.ProviderStatus)
+		protected.GET("/assets-intel/search", assetIntelHandler.Search)
+		protected.GET("/assets-intel/quota", assetIntelHandler.Quota)
+		protected.GET("/assets-intel/snapshots", assetIntelHandler.Snapshots)
 
 		// 资产管理
 		protected.GET("/assets", assetHandler.List)
@@ -1078,6 +1246,8 @@ func setupRoutes(
 
 		// 配置管理
 		protected.GET("/config", configHandler.GetConfig)
+		protected.GET("/config/proxy-pool/status", configHandler.GetProxyPoolStatus)
+		protected.POST("/config/test-proxy-pool", configHandler.TestProxyPool)
 		protected.GET("/tool-guard", configHandler.GetToolGuard)
 		protected.PUT("/tool-guard", configHandler.UpdateToolGuard)
 		protected.POST("/tool-guard/test", configHandler.TestToolGuard)
@@ -1262,20 +1432,60 @@ func setupRoutes(
 		// 漏洞管理
 		protected.GET("/vulnerabilities", vulnerabilityHandler.ListVulnerabilities)
 		protected.GET("/vulnerabilities/export", vulnerabilityHandler.ExportVulnerabilities)
+		protected.GET("/vulnerabilities/export-urls", vulnerabilityHandler.ExportVulnerabilityURLs)
+		protected.GET("/vulnerabilities/export-records", vulnerabilityHandler.ExportVulnerabilityRecords)
 		protected.DELETE("/vulnerabilities/batch", vulnerabilityHandler.BatchDeleteVulnerabilities)
 		protected.GET("/vulnerabilities/filter-options", vulnerabilityHandler.GetVulnerabilityFilterOptions)
 		protected.GET("/vulnerabilities/stats", vulnerabilityHandler.GetVulnerabilityStats)
+		protected.POST("/vulnerabilities/batch-generate-poc", vulnerabilityHandler.BatchGeneratePoc)
+		// 批次把漏洞紀錄裡的 payload 回連端點換成受控端點。
+		// 必須註冊在 /vulnerabilities/:id 之前（與其他分流路由同理）。
+		protected.POST("/vulnerabilities/rewrite-controlled-endpoints", vulnerabilityHandler.RewriteVulnerabilityEndpoints)
 		protected.GET("/vulnerability-alerts/subscription", vulnerabilityHandler.GetMyAlertSubscription)
 		protected.PUT("/vulnerability-alerts/subscription", vulnerabilityHandler.UpdateMyAlertSubscription)
+		// 分流路由必須註冊在 /vulnerabilities/:id 之前，否則 gin 會因為
+		// 靜態段與 wildcard 在同一層衝突而 panic。
+		protected.POST("/vulnerabilities/triage/run", vulnerabilityHandler.RunTriage)
+		protected.GET("/vulnerabilities/triage/runs", vulnerabilityHandler.ListTriageRuns)
+		protected.GET("/vulnerabilities/triage/runs/:id", vulnerabilityHandler.GetTriageRun)
+		protected.POST("/vulnerabilities/triage/runs/:id/apply", vulnerabilityHandler.ApplyTriageRun)
 		protected.GET("/vulnerabilities/:id", vulnerabilityHandler.GetVulnerability)
+		protected.POST("/vulnerability-pending/approve", vulnerabilityHandler.DispatchPendingVerification)
+		protected.POST("/vulnerabilities/:id/generate-poc", vulnerabilityHandler.GeneratePoc)
 		protected.POST("/vulnerabilities", vulnerabilityHandler.CreateVulnerability)
 		protected.PUT("/vulnerabilities/:id", vulnerabilityHandler.UpdateVulnerability)
 		protected.DELETE("/vulnerabilities/:id", vulnerabilityHandler.DeleteVulnerability)
+
+		// 批次受控跳轉驗證（跳轉目標 = 受控回連端點；一次送多筆目標）
+		protected.GET("/redirect-verify/endpoints", redirectVerifyHandler.ListEndpoints)
+		protected.POST("/redirect-verify/crawl", redirectVerifyHandler.Crawl)
+		protected.POST("/redirect-verify/injections", redirectVerifyHandler.ScanInjections)
+		protected.POST("/redirect-verify/implant", redirectVerifyHandler.BuildImplant)
+		protected.GET("/redirect-verify/implant", redirectVerifyHandler.ImplantCapabilities)
+		protected.GET("/redirect-verify/runs", redirectVerifyHandler.ListRuns)
+		protected.POST("/redirect-verify/runs", redirectVerifyHandler.CreateRun)
+		protected.GET("/redirect-verify/runs/:id", redirectVerifyHandler.GetRun)
+		protected.POST("/redirect-verify/runs/:id/cancel", redirectVerifyHandler.CancelRun)
+		protected.GET("/redirect-verify/runs/:id/report", redirectVerifyHandler.RunReport)
+
+		securityOpsHandler := handler.NewSecurityOpsHandler(app.db, app.config, app.logger.Logger)
+		protected.GET("/security-ops/catalog", securityOpsHandler.Catalog)
+		protected.GET("/security-ops/runs", securityOpsHandler.ListRuns)
+		protected.POST("/security-ops/runs", securityOpsHandler.CreateRun)
+		protected.POST("/security-ops/runs/:id/approve", securityOpsHandler.ApproveRun)
+		protected.POST("/security-ops/runs/:id/cancel", securityOpsHandler.CancelRun)
+		protected.GET("/security-ops/runs/:id/events", securityOpsHandler.ListEvents)
+		protected.GET("/security-ops/runs/:id/artifacts", securityOpsHandler.ListArtifacts)
+		protected.GET("/security-ops/runs/:id/report", securityOpsHandler.DownloadReport)
+		protected.GET("/security-ops/projects/:projectId/findings", securityOpsHandler.ListFindings)
 
 		// 项目管理与事实黑板
 		protected.GET("/projects/dashboard-summary", projectHandler.GetDashboardSummary)
 		protected.GET("/projects", projectHandler.ListProjects)
 		protected.POST("/projects", projectHandler.CreateProject)
+		protected.GET("/projects/:id/pentest-report", securityOpsHandler.ProjectPentestReport)
+		protected.GET("/projects/:id/authorization-letter", securityOpsHandler.ProjectAuthorizationLetter)
+		protected.POST("/projects/:id/authorization-letter", securityOpsHandler.ProjectAuthorizationLetter)
 		protected.GET("/projects/:id/stats", projectHandler.GetProjectStats)
 		protected.GET("/projects/:id/conversations", projectHandler.ListProjectConversations)
 		protected.GET("/projects/:id", projectHandler.GetProject)
@@ -1435,7 +1645,13 @@ func setupRoutes(
 
 	// 静态文件
 	router.Static("/static", "./web/static")
+	// 根路徑 favicon：瀏覽器會自動請求 /favicon.ico（即使頁面裡有 <link rel="icon">），
+	// 少了它每次瀏覽都會在存取日誌留下 404。內容與 /static/favicon.ico 是同一個檔案。
+	router.StaticFile("/favicon.ico", "./web/static/favicon.ico")
 	router.LoadHTMLGlob("web/templates/*")
+
+	// 治理控制面頁面。靜態檔在 web/governance，狀態 API 唯讀。
+	handler.MountGovernancePage(router, filepath.Join("web", "governance"))
 
 	// 前端页面
 	router.GET("/", func(c *gin.Context) {
@@ -2043,6 +2259,39 @@ func registerWebshellManagementTools(mcpServer *mcp.Server, db *database.DB, web
 	logger.Debug("WebShell 管理工具注册成功")
 }
 
+// applyKnowledgeEmbeddingConfig 解析知识库实际使用的 embedding 设置并写回 cfg，
+// 同时把「哪些字段是从 OpenAI 聊天设置继承来的」记录到日志。
+//
+// 这段继承逻辑原本在两处初始化点各写了一份，且完全静默。当 base_url 与 api_key
+// 同时继承自聊天设置时，平台会把 /embeddings 请求打到只提供 /v1/messages 的
+// 聊天端点上，得到一个看不出成因的 404。集中到这里之后，至少启动日志能指认来源，
+// 完整的端点实测诊断见 cmd/knowledge-doctor。
+func applyKnowledgeEmbeddingConfig(cfg *config.Config, logger *zap.Logger) {
+	if cfg == nil {
+		return
+	}
+	resolved := knowledge.ResolveEmbeddingConfig(&cfg.Knowledge, &cfg.OpenAI)
+
+	cfg.Knowledge.Embedding.BaseURL = resolved.BaseURL
+	cfg.Knowledge.Embedding.APIKey = resolved.APIKey
+	if resolved.Model != "" {
+		cfg.Knowledge.Embedding.Model = resolved.Model
+	}
+
+	if logger != nil {
+		for _, msg := range resolved.Diagnostics() {
+			logger.Warn("知识库 embedding 配置问题", zap.String("detail", msg))
+		}
+		logger.Info("知识库 embedding 配置已解析",
+			zap.String("model", resolved.Model),
+			zap.String("baseURL", resolved.BaseURL),
+			zap.Bool("baseURL继承自OpenAI聊天设置", resolved.BaseURLInherited),
+			zap.Bool("apiKey继承自OpenAI聊天设置", resolved.APIKeyInherited),
+			zap.Bool("apiKey是示例占位符", resolved.PlaceholderAPIKey),
+		)
+	}
+}
+
 // initializeKnowledge 初始化知识库组件（用于动态初始化）
 func initializeKnowledge(
 	cfg *config.Config,
@@ -2081,13 +2330,7 @@ func initializeKnowledge(
 	knowledgeManager := knowledge.NewManager(knowledgeDB, cfg.Knowledge.BasePath, logger)
 
 	// 创建嵌入器
-	// 使用OpenAI配置的API Key（如果知识库配置中没有指定）
-	if cfg.Knowledge.Embedding.APIKey == "" {
-		cfg.Knowledge.Embedding.APIKey = cfg.OpenAI.APIKey
-	}
-	if cfg.Knowledge.Embedding.BaseURL == "" {
-		cfg.Knowledge.Embedding.BaseURL = cfg.OpenAI.BaseURL
-	}
+	applyKnowledgeEmbeddingConfig(cfg, logger)
 
 	embedder, err := knowledge.NewEmbedder(context.Background(), &cfg.Knowledge, &cfg.OpenAI, logger)
 	if err != nil {

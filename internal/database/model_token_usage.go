@@ -298,6 +298,12 @@ func (db *DB) GetModelTokenUsageStats(filter ModelTokenUsageFilter) (*ModelToken
 	if db == nil {
 		return nil, fmt.Errorf("database is nil")
 	}
+	// 零值 filter 会让 appendConversationAccessFilter 收不到任何条件或
+	// 直接拒绝，两种都不是调用方想要的。与其静默返回一份空统计，不如
+	// 明确要求调用方声明它的范围。
+	if filter.Access.Scope != RBACScopeAll && strings.TrimSpace(filter.Access.UserID) == "" {
+		return nil, fmt.Errorf("缺少调用者身份：ModelTokenUsageFilter.Access 需要 UserID 或 all 范围")
+	}
 	if filter.Days <= 0 {
 		filter.Days = 7
 	}

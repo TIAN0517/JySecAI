@@ -51,7 +51,10 @@ func (db *DB) GetProjectDashboardSummaryForAccess(factLimit int, userID, scope s
 	projectAccess := ""
 	args := []interface{}{}
 	userID = strings.TrimSpace(userID)
-	if userID != "" && scope != RBACScopeAll {
+	if scope != RBACScopeAll && userID == "" {
+		// fail-closed：解析不出呼叫者时看不到任何项目。
+		projectAccess = " AND 1=0"
+	} else if scope != RBACScopeAll {
 		projectAccess = ` AND (
 			p.owner_user_id = ?
 			OR EXISTS (

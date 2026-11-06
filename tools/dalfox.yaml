@@ -1,9 +1,11 @@
 name: "dalfox"
 command: "dalfox"
 # dalfox v2+ 使用子命令，单目标模式为 `dalfox url <target>`，不再支持根级的 -u
+
 args:
   - "url"
 enabled: true
+action_class: "bulk_scan"
 short_description: "高级XSS漏洞扫描器"
 description: |
   Dalfox是一个高级XSS漏洞扫描器，支持多种XSS检测技术。
@@ -43,6 +45,8 @@ parameters:
     format: "flag"
   - name: "mining_dom"
     type: "bool"
+    target: true
+    target_kind: "host"
     description: "启用DOM挖掘"
     required: false
     flag: "--mining-dom"

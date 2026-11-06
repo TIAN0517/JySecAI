@@ -9,10 +9,13 @@ args:
     import os
 
     # ==================== Quake配置 ====================
-    # 请在此处配置您的Quake API Token
-    # 您也可以在环境变量中设置：QUAKE_API_KEY
-    # enable 默认为 false，需开启才能调用该MCP
-    QUAKE_API_KEY = ""  # 请填写您的Quake API Token
+    # 密钥机制:本文件不内嵌任何API密钥(密钥不落地,避免随仓库/工具列表泄露)。
+    # 注入方式(二选一):
+    #   1) 环境变量注入(推荐):在平台进程环境设置 QUAKE_API_KEY,本脚本运行时经 os.getenv 读取
+    #      (工具执行器以 os.Environ() 传递子进程环境,见 internal/security/executor.go);
+    #   2) 密钥请于 config.yaml 加密存储(enc:cfg:v1,见 internal/config/secret_protection.go),随配置注入。
+    # 注意:tools/*.yaml 加载路径(internal/config.LoadToolsFromDir)不支持 ${VAR} 环境变量展开
+    #      (ExpandConfigEnv 仅作用于 ExternalMCP servers),请勿在本文件使用 ${QUAKE_API_KEY} 语法。
     # ==================================================
 
     # Quake API基础URL
@@ -88,7 +91,7 @@ args:
             print(json.dumps(error_result, ensure_ascii=False, indent=2))
             sys.exit(1)
 
-        api_key = os.getenv("QUAKE_API_KEY", QUAKE_API_KEY).strip()
+        api_key = os.getenv("QUAKE_API_KEY", "").strip()
         query = str(config.get("query", "")).strip()
 
         if not api_key:
@@ -96,7 +99,7 @@ args:
                 "status": "error",
                 "message": "缺少Quake配置: api_key（Quake API Token）",
                 "required_config": ["api_key"],
-                "note": "请在YAML文件的QUAKE_API_KEY配置项中填写Token，或在环境变量QUAKE_API_KEY中设置。Token可在Quake用户中心获取。"
+                "note": "本工具不内嵌密钥:请通过环境变量QUAKE_API_KEY注入(平台进程环境或启动脚本设置);密钥请于config.yaml加密存储,勿明文写入本文件。Token可在Quake用户中心获取。"
             }
             print(json.dumps(error_result, ensure_ascii=False, indent=2))
             sys.exit(1)
@@ -222,7 +225,8 @@ args:
         }
         print(json.dumps(error_result, ensure_ascii=False, indent=2))
         sys.exit(1)
-enabled: false
+enabled: true
+action_class: "harmless_request"
 short_description: "Quake网络空间搜索接口，支持自定义query、size、fields"
 description: |
   Quake（360 网络空间测绘）资产搜索工具，调用 Quake API v3 实时检索互联网资产。
@@ -235,7 +239,11 @@ description: |
 
   **鉴权方式：**
   - Header 使用 `X-QuakeToken`
-  - 可在本文件中填写 `QUAKE_API_KEY`，或通过环境变量 `QUAKE_API_KEY` 注入
+  **密钥注入方式（密钥不落地）：**
+  - 本文件不内嵌API密钥：请通过环境变量 `QUAKE_API_KEY` 注入（平台进程环境或启动脚本设置，脚本运行时 `os.getenv` 读取）
+  - 密钥请于 `config.yaml` 加密存储（`enc:cfg:v1`，见 `internal/config/secret_protection.go`），勿明文写入本文件
+  - 注意：`tools/*.yaml` 加载路径不支持 `${VAR}` 环境变量展开（仅 ExternalMCP servers 支持），勿在本文件使用 `${QUAKE_API_KEY}` 语法
+
 
   **常见查询示例：**
   - `domain:"example.com"`

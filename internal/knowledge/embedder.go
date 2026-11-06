@@ -202,6 +202,10 @@ func (e *Embedder) isRetryableError(err error) bool {
 		return false
 	}
 	errStr := err.Error()
+	if strings.Contains(errStr, "521") || strings.Contains(errStr, "522") ||
+		strings.Contains(errStr, "523") || strings.Contains(errStr, "524") {
+		return false
+	}
 	if strings.Contains(errStr, "429") || strings.Contains(errStr, "rate limit") {
 		return true
 	}
@@ -237,7 +241,7 @@ func (w *einoFloatEmbedder) EmbedStrings(ctx context.Context, texts []string, op
 }
 
 func (w *einoFloatEmbedder) GetType() string {
-	return "CyberStrikeKnowledgeEmbedder"
+	return "JyTechKnowledgeEmbedder"
 }
 
 func (w *einoFloatEmbedder) IsCallbacksEnabled() bool {

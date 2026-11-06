@@ -10,10 +10,13 @@ args:
     import math
 
     # ==================== Shodan配置 ====================
-    # 请在此处配置您的Shodan API Key
-    # 您也可以在环境变量中设置：SHODAN_API_KEY
-    # enable 默认为 false，需开启才能调用该MCP
-    SHODAN_API_KEY = ""  # 请替换为您自己的Shodan API Key
+    # 密钥机制:本文件不内嵌任何API密钥(密钥不落地,避免随仓库/工具列表泄露)。
+    # 注入方式(二选一):
+    #   1) 环境变量注入(推荐):在平台进程环境设置 SHODAN_API_KEY,本脚本运行时经 os.getenv 读取
+    #      (工具执行器以 os.Environ() 传递子进程环境,见 internal/security/executor.go);
+    #   2) 密钥请于 config.yaml 加密存储(enc:cfg:v1,见 internal/config/secret_protection.go),随配置注入。
+    # 注意:tools/*.yaml 加载路径(internal/config.LoadToolsFromDir)不支持 ${VAR} 环境变量展开
+    #      (ExpandConfigEnv 仅作用于 ExternalMCP servers),请勿在本文件使用 ${SHODAN_API_KEY} 语法。
     # ==================================================
 
     # Shodan API基础URL
@@ -105,7 +108,7 @@ args:
             print(json.dumps(error_result, ensure_ascii=False, indent=2))
             sys.exit(1)
 
-        api_key = os.getenv("SHODAN_API_KEY", SHODAN_API_KEY).strip()
+        api_key = os.getenv("SHODAN_API_KEY", "").strip()
         query = str(config.get("query", "")).strip()
 
         if not api_key:
@@ -113,7 +116,7 @@ args:
                 "status": "error",
                 "message": "缺少Shodan配置: api_key（Shodan API密钥）",
                 "required_config": ["api_key"],
-                "note": "请在YAML文件的SHODAN_API_KEY配置项中填写您的API密钥，或在环境变量SHODAN_API_KEY中设置。API密钥可在Shodan账户页面查看: https://account.shodan.io/"
+                "note": "本工具不内嵌密钥:请通过环境变量SHODAN_API_KEY注入(平台进程环境或启动脚本设置);密钥请于config.yaml加密存储,勿明文写入本文件。API密钥可在Shodan账户页面查看: https://account.shodan.io/"
             }
             print(json.dumps(error_result, ensure_ascii=False, indent=2))
             sys.exit(1)
@@ -293,7 +296,8 @@ args:
         }
         print(json.dumps(error_result, ensure_ascii=False, indent=2))
         sys.exit(1)
-enabled: false
+enabled: true
+action_class: "harmless_request"
 short_description: "Shodan网络空间搜索，支持search与count模式"
 description: |
   Shodan 资产搜索工具，基于官方 Developer API 实现，支持快速检索和统计分析。
@@ -309,7 +313,11 @@ description: |
 
   **鉴权方式：**
   - Query 参数使用 `key`
-  - 可在本文件中填写 `SHODAN_API_KEY`，或通过环境变量 `SHODAN_API_KEY` 注入
+  **密钥注入方式（密钥不落地）：**
+  - 本文件不内嵌API密钥：请通过环境变量 `SHODAN_API_KEY` 注入（平台进程环境或启动脚本设置，脚本运行时 `os.getenv` 读取）
+  - 密钥请于 `config.yaml` 加密存储（`enc:cfg:v1`，见 `internal/config/secret_protection.go`），勿明文写入本文件
+  - 注意：`tools/*.yaml` 加载路径不支持 `${VAR}` 环境变量展开（仅 ExternalMCP servers 支持），勿在本文件使用 `${SHODAN_API_KEY}` 语法
+
 
   **查询语法示例：**
   - `product:nginx`

@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	factRhythmCore = "勿等会话结束或收尾再批量写入。每**确认**一条新认知（开放端口/服务版本、入口路径、认证态或凭据特征、可利用点或攻击面变化）后，**立即**调用 `upsert_project_fact`（同 fact_key 覆盖更新）。每**验证**出一条可复现漏洞（含 POC/影响）后，**立即**调用 `record_vulnerability`；与事实可各记一次。继续下一步工作前优先落库，避免上下文压缩后细节丢失。未绑项目时说明无法写黑板，仍在本轮保留证据摘要。"
+	factRhythmCore              = "勿等会话结束或收尾再批量写入。每**确认**一条新认知（开放端口/服务版本、入口路径、认证态或凭据特征、可利用点或攻击面变化）后，**立即**调用 `upsert_project_fact`（同 fact_key 覆盖更新）。每**验证**出一条可复现漏洞（含 POC/影响）后，**立即**调用 `record_vulnerability`；与事实可各记一次。继续下一步工作前优先落库，避免上下文压缩后细节丢失。未绑项目时说明无法写黑板，仍在本轮保留证据摘要。"
 	factRhythmCoordinatorSuffix = "委派/子任务返回新认知或漏洞时，由协调者及时写入，勿假定子代理已记。"
 	factRhythmSubAgentSuffix    = "若工具集中无上述工具，须在交付物末尾给出「待落库」结构化条目（fact_key 建议、summary、body/POC 要点），供协调者**立即**写入。"
 )
@@ -86,6 +86,9 @@ func FactRecordingBlackboardSection(coordinatorDelegate bool) string {
 	b.WriteString(" 查重，详情用 ")
 	b.WriteString(builtin.ToolGetVulnerability)
 	b.WriteString("(id)（默认仅当前项目/会话）。\n")
+	b.WriteString("\n")
+	b.WriteString(vulnerabilityEvidenceDiscipline(builtin.ToolRecordVulnerability))
+	b.WriteString("\n")
 	b.WriteString("- 同一发现可能需**各记一次**（事实记**完整攻击链与 exploit 细节**供复现，漏洞记正式 findings）。误报用 ")
 	b.WriteString(builtin.ToolDeprecateProjectFact)
 	b.WriteString(" 或漏洞状态 false_positive。\n")
@@ -101,9 +104,28 @@ func FactRecordingBlackboardSection(coordinatorDelegate bool) string {
 	return b.String()
 }
 
+// vulnerabilityEvidenceDiscipline 漏洞证据纪律。
+//
+// 移植 Zack-AI-Scanner v3.0 的三条硬规矩，它们对应的都是实测翻车过的坑：
+//
+//  1. 95% 报告闸门 —— 模型给 90 分的判断不该被报成漏洞。
+//  2. 「未判定」不等于「安全」 —— 关掉回连通道后，盲注类漏洞必然停在未判定；
+//     漏报只代表没拿到证据，不代表没有。把未判定当排除项，风险分数会因「没验到」而下降。
+//  3. 没有证据绝不能被当成没有漏洞的证据 —— 查询失败不是反向证据。
+func vulnerabilityEvidenceDiscipline(tool string) string {
+	var b strings.Builder
+	b.WriteString("### 漏洞证据纪律\n\n")
+	b.WriteString("- 每条 `")
+	b.WriteString(tool)
+	b.WriteString("` 给 `confidence`（0-100）：只有拿到**客观证据**（基线与载荷响应的**差异**、带随机标记的**回连**、服务端**算术求值**结果）才给 >= 95；不足就给真实分数，系统会保留记录、只把状态压回 open。\n")
+	b.WriteString("- **没有证据 ≠ 没有漏洞**：拿不到判定通道时用 `status=\"undetermined\"`。**未判定不等于安全**。\n")
+	b.WriteString("- 同一发现再次记录时，系统会**自动合并更强的证据并自动升级**，不必手工改旧记录。\n")
+	return b.String()
+}
+
 // FactRecordingSubAgentSection 子代理边渗透边记录（无工具时输出待落库条目）。
 func FactRecordingSubAgentSection() string {
-	return "## 边渗透边记录\n\n" + factRecordingIncrementalRhythmBuiltin(false, true) + "\n"
+	return "## 边渗透边记录\n\n" + ProjectResultRecordingGuidance() + "\n\n" + factRecordingIncrementalRhythmBuiltin(false, true) + "\n"
 }
 
 // FactRecordingBlackboardSectionMarkdown 与 FactRecordingBlackboardSection 等价的 Markdown（工具名为字面量，供 agents/*.md）。
@@ -116,6 +138,9 @@ func FactRecordingBlackboardSectionMarkdown(coordinatorDelegate bool) string {
 	b.WriteString("- **环境/目标/认证等认知**（非正式漏洞）：使用 **`upsert_project_fact`**，`fact_key` 建议 `category/slug`（如 `target/primary_domain`），同 key 覆盖更新；body 记端口/版本/凭据特征与证据来源。\n")
 	b.WriteString("- **发现与利用上下文**（审计复现）：`fact_key` 建议 `finding/`、`chain/`、`exploit/`、`poc/` 前缀；**body 必填**完整攻击链（入口 → 步骤 → 原始请求/响应或命令 → 现象 → 关联 `related_vulnerability_id`），**禁止仅写结论**；summary 写「什么 + 在哪 + 如何验证」一行要点。\n")
 	b.WriteString("- **可交付漏洞**：使用 **`record_vulnerability`**（标题、描述、严重程度、类型、目标、证明 POC、影响、修复建议）。严重程度 critical / high / medium / low / info。\n")
+	b.WriteString("\n")
+	b.WriteString(vulnerabilityEvidenceDiscipline("record_vulnerability"))
+	b.WriteString("\n")
 	b.WriteString("- 同一发现可能需**各记一次**（事实记可复现攻击链，漏洞记正式 findings）。误报用 **`deprecate_project_fact`** 或漏洞状态 false_positive。\n")
 	b.WriteString("- 事实多时用 **`list_project_facts`** / **`search_project_facts`** 检索。\n\n")
 	b.WriteString(factEdgeRecordingGuidance())

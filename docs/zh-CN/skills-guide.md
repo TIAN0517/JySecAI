@@ -18,7 +18,7 @@ skills/
     SKILL.md
   ssrf-testing/
     SKILL.md
-  cyberstrike-eino-demo/
+  jytech-eino-demo/
     SKILL.md
     REFERENCE.md
     assets/

@@ -44,6 +44,40 @@ else
   bad "source == sidecar == landing" "src=${SRC_SHA:0:12} side=${SIDE_SHA:0:12} land=${LAND_SHA:0:12}"
 fi
 
+# 2026-11-06：落地二進位與其所在的 release 目錄，必須不是服務帳號（jysec）可寫。
+# 為什麼要查「目錄」而不只是檔案 mode：檔案 chmod 600 也擋不住 unlink ——
+# 能替換檔案的是「父目錄的寫入權」。服務帳號若能改寫自己執行的二進位，
+# 等於拿到跨重啟的持久化；而 sha256 只證明「部署當下」一致，證明不了事後沒被改。
+LANDBIN=/opt/jysecai/core/current/jysec-core
+# release 目錄本身（不是它的上一層 releases/）—— 能被 unlink 的是這一層。
+LANDDIR=$(readlink -f /opt/jysecai/core/current)
+# _jysec_w 成功（exit 0）代表該路徑對 jysec 可寫。
+_jysec_w() {
+  if command -v runuser >/dev/null 2>&1; then
+    runuser -u jysec -- test -w "$1" >/dev/null 2>&1
+  else
+    su -s /bin/sh -c "test -w '$1'" jysec >/dev/null 2>&1
+  fi
+}
+BINW=0; DIRW=0
+_jysec_w "$LANDBIN" && BINW=1
+_jysec_w "$LANDDIR" && DIRW=1
+if [ "$BINW" = "0" ] && [ "$DIRW" = "0" ]; then
+  ok "落地二進位與 release 目錄皆非服務帳號可寫"
+else
+  bad "落地二進位權限" "jysec 可寫二進位=$BINW 可寫目錄=$DIRW（$LANDDIR）"
+fi
+
+# 2026-11-06：systemd unit 檔不得含明文機密（FOFA/ZoomEye 等金鑰）。
+# 原始情況：drop-in 是 644，任何本機帳號都能讀到金鑰。應改用 EnvironmentFile（0600 root）。
+if grep -qsE 'Environment=[A-Za-z_]*(API_KEY|SECRET|PASSWORD|TOKEN)=.+' \
+     /etc/systemd/system/jysec-core.service \
+     /etc/systemd/system/jysec-core.service.d/*.conf 2>/dev/null; then
+  bad "unit 檔含明文機密" "應改用 EnvironmentFile（0600 root）"
+else
+  ok "unit 檔不含明文機密"
+fi
+
 # bridge 也要有收據。原因：2026-11-06 實查發現 dev-mode 實作只存在於落地檔，
 # 原始碼從未同步 —— 從原始碼重建就會弄丟，而沒有任何檢查會發現。
 BR_SRC=$(sha256sum "$ROOT/tools/grok_openai_bridge_slim.py" 2>/dev/null | awk '{print $1}')
@@ -80,6 +114,16 @@ while IFS= read -r f; do
   [ "$a" = "$b" ] || { MIS=$((MIS+1)); echo "        不一致: $rel"; }
 done < <(find "$ROOT/web" -type f)
 if [ "$MIS" -eq 0 ]; then ok "$CNT 個 web 檔案全部一致"; else bad "web 資產一致" "$MIS 個不一致"; fi
+
+# 反向比對：落地目錄不該出現原始碼沒有的檔案。
+# 2026-11-06：原腳本只比對 source -> landing，落地側多出的殘留檔完全不會被發現。
+# 實例：XSS 截圖模組的 html2canvas 只存在於落地目錄、原始碼沒有 —— 乾淨重建即斷。
+EX=0
+while IFS= read -r f; do
+  rel="${f#/opt/jysecai/core/current/web/}"
+  [ -f "$ROOT/web/$rel" ] || { echo "        落地多出: $rel"; EX=$((EX+1)); }
+done < <(find /opt/jysecai/core/current/web -type f)
+if [ "$EX" -eq 0 ]; then ok "落地目錄無原始碼以外的多餘檔案"; else bad "落地多餘檔案" "$EX 個落地側多餘檔"; fi
 CSSN=$(curl -s "$API/" -m 20 | grep -c 'css/records.css')
 JSN=$(curl -s "$API/" -m 20 | grep -c 'js/records.js')
 if [ "$CSSN" = "1" ] && [ "$JSN" = "1" ]; then ok "index.html 資產各只引用一次"; else bad "index.html 資產引用" "css=$CSSN js=$JSN"; fi
@@ -95,6 +139,24 @@ EMPTY=$(sqlite3 "$RECORDS" "SELECT COUNT(*) FROM records;")
 if [ "$EMPTY" -gt 0 ]; then ok "記錄庫非空"; else bad "記錄庫非空"; fi
 
 # ---------------------------------------------------------------- 5 API
+# ---------------------------------------------------------------- 4b 品質閘門
+sect "4b. 資料品質閘門（欄位填值率 + 年份窗口）"
+# 為什麼要這組：原本第 4 組只驗「去重 0 筆重複」與「有資料型別 N 個」，
+# 這兩件事都跟欄位有沒有值無關。實測發現 member_profile 4353 筆的
+# name/id_number/address 全部不存在、loan_case 的 address 只有 1 筆有值，
+# 舊閘門完全查不出來。
+RQ_LOG=/tmp/_jysec_records_quality.log
+if python3 "$ROOT/scripts/records_quality_gate.py" \
+     --db /var/lib/jysecai/core/extracted_records.db --years 2023-2026 \
+     > "$RQ_LOG" 2>&1; then
+  ok "欄位填值率 + 年份窗口 達標"
+else
+  bad "欄位填值率 + 年份窗口" "詳見 $RQ_LOG"
+  grep -E "FAIL" "$RQ_LOG" | sed 's/^/        /'
+fi
+# 需求欄位覆蓋（姓名/電話/描述/地址/身份證/貸款日期）—— 持續可見，不阻擋發佈
+sed -n "/■ 需求欄位覆蓋/,/■ 判定/p" "$RQ_LOG" | sed 's/^/      /'
+
 sect "5. records API"
 U=verify_rel_tmp
 P="Tmp$(head -c 10 /dev/urandom | base64 | tr -dc 'A-Za-z0-9')"

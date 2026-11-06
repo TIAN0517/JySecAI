@@ -3,20 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JySecAI — Jy 技術團隊</title>
-    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png?v=latest">
-    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png?v=latest">
-    <link rel="shortcut icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png?v=latest">
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=latest">
-    <!-- Theme-aware favicons: white logo for dark mode, black logo for light mode -->
-    <link rel="icon" type="image/png" href="/static/favicon-white.png?v=latest" media="(prefers-color-scheme: dark)">
-    <link rel="icon" type="image/png" href="/static/favicon-black.png?v=latest" media="(prefers-color-scheme: light)">
+    <title>Jy 红队作战台 — JySecAI</title>
+    <!-- 圖標版本號：換圖標時必須一起 bump。CDN 把 query string 當成 cache key，
+         「?v=latest」這種固定字串會讓舊圖標被快取住（max-age=14400），瀏覽器就一直拿到舊的。
+         改成帶版號的參數 → URL 變了 → CDN 必定重新抓。 -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png?v=20261103">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png?v=20261103">
+    <link rel="shortcut icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png?v=20261103">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=20261103">
+    <!-- Theme-aware favicons: 淺色主題用深色版、深色主題用淺色版（皆保留 3D 明暗） -->
+    <link rel="icon" type="image/png" href="/static/favicon-white.png?v=20261103" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" href="/static/favicon-black.png?v=20261103" media="(prefers-color-scheme: light)">
     <script>
         (function () {
             try {
-                var stored = localStorage.getItem('jysec-theme') || 'system';
+                var stored = localStorage.getItem('jysec-theme');
+                if (stored == null) {
+                    stored = localStorage.getItem('cyberstrike-theme');
+                    if (stored != null) {
+                        try { localStorage.setItem('jysec-theme', stored); localStorage.removeItem('cyberstrike-theme'); } catch (e) {}
+                    }
+                }
+                stored = stored || 'dark';
                 if (stored !== 'system' && stored !== 'light' && stored !== 'dark') {
-                    stored = 'system';
+                    stored = 'dark';
                 }
                 var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
                 var resolved = stored === 'dark' || (stored !== 'light' && prefersDark) ? 'dark' : 'light';
@@ -24,7 +34,7 @@
                 document.documentElement.setAttribute('data-theme', resolved);
                 document.documentElement.style.colorScheme = resolved;
             } catch (e) {
-                document.documentElement.setAttribute('data-theme', 'light');
+                document.documentElement.setAttribute('data-theme', 'dark');
             }
         })();
     </script>
@@ -36,14 +46,30 @@
             }
         })();
     </script>
-    <link rel="stylesheet" href="/static/css/style.css?v=20260907-1">
+    <link rel="stylesheet" href="/static/css/style.css?v=20261105-mcpcard">
     <link rel="stylesheet" href="/static/css/chat-plan-progress.css?v=20260813-4">
     <link rel="stylesheet" href="/static/css/c2.css">
     <link rel="stylesheet" href="/static/css/sentinel.css">
+    <link rel="stylesheet" href="/static/css/tool-guard.css?v=20261003-1">
+    <link rel="stylesheet" href="/static/css/redirect-verify.css?v=20261101-1">
+    <link rel="stylesheet" href="/static/css/vulnerability-triage.css?v=1">
+    <link rel="stylesheet" href="/static/css/security-ops.css?v=20261022-3">
+    <link rel="stylesheet" href="/static/css/xss.css?v=20261020-1">
+    <link rel="stylesheet" href="/static/css/asset-intel.css?v=20261020-1">
+    <link rel="stylesheet" href="/static/css/databases.css?v=20261105-1">
+    <link rel="stylesheet" href="/static/css/tech-grid.css?v=20261101-3">
     <link rel="stylesheet" href="/static/vendor/xterm.css">
-    <script src="/static/js/router.js?v=20260819-3"></script>
+    <script src="/static/js/router.js?v=20261105-dbadmin"></script>
+    <link rel="stylesheet" href="/static/css/records.css?v=20261106-2">
 </head>
 <body>
+    <!-- 科技感 3D 立體格子背景（純裝飾，不攔截互動） -->
+    <div class="tech-grid-bg" aria-hidden="true">
+        <div class="tech-grid-stars"></div>
+        <div class="tech-grid-floor"></div>
+        <div class="tech-grid-ceil"></div>
+        <div class="tech-grid-scan"></div>
+    </div>
     <div id="login-overlay" class="login-overlay" style="display: none;">
         <div class="login-card">
             <div class="login-brand">
@@ -54,7 +80,7 @@
                         <span class="brand-wordmark__core">JySec</span><span class="brand-wordmark__ai">AI</span>
                     </span>
                 </h2>
-                <p class="login-subtitle" data-i18n="login.subtitle">使用平台账号登录，默认管理员为 admin。</p>
+                <p class="login-subtitle" data-i18n="login.subtitle">授权红队作战台 · 使用平台账号登录，默认管理员为 admin。</p>
             </div>
             <form id="login-form" class="login-form">
                 <div class="form-group">
@@ -81,20 +107,18 @@
                     <h1 class="brand-wordmark brand-wordmark--lg">
                         <span class="brand-wordmark__core">JySec</span><span class="brand-wordmark__ai">AI</span>
                     </h1>
-                    <span class="brand-developer">Jy 技術團隊</span>
+                    <span class="brand-developer">Jy 红队</span>
                     <span class="version-badge" data-i18n="header.version" data-i18n-attr="title" data-i18n-skip-text="true" title="当前版本">{{.Version}}</span>
                 </div>
                 <div class="header-right">
                     <div class="header-actions">
-                        <form action="/governance/" method="get">
-                            <button class="openapi-doc-btn" type="submit" title="治理與計費" aria-label="前往治理與計費控制面">
+                        <a class="openapi-doc-btn" href="https://governanceai.utown.cc.cd/governance/" title="治理與計費" aria-label="前往治理與計費控制面">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <path d="M12 3 4.5 6v5.5c0 4.6 3.1 7.9 7.5 9.5 4.4-1.6 7.5-4.9 7.5-9.5V6L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
                                     <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                                 <span>治理與計費</span>
-                            </button>
-                        </form>
+                        </a>
                         <button class="openapi-doc-btn" onclick="window.open('/api-docs', '_blank')" data-i18n="header.apiDocs" data-i18n-attr="title" data-i18n-skip-text="true" title="API 文档">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -179,7 +203,7 @@
                                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                                         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                                     </svg>
-                                    <span>绑定机器人账号</span>
+                                    <span data-i18n="header.bindRobot">绑定机器人账号</span>
                                 </div>
                                 <div class="user-menu-item" role="menuitem" tabindex="0" onclick="logout()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();logout();}">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -261,6 +285,7 @@
                         <div class="nav-submenu">
                             <div class="nav-submenu-item" data-page="asset-overview" onclick="switchPage('asset-overview')" data-i18n="nav.assetOverview">资产概览</div>
                             <div class="nav-submenu-item" data-page="asset-library" onclick="switchPage('asset-library')" data-i18n="nav.assetLibrary">资产库</div>
+                            <div class="nav-submenu-item" data-page="asset-intel" onclick="switchPage('asset-intel')" data-i18n="nav.assetIntel">資產情報</div>
                             <div class="nav-submenu-item" data-page="info-collect" onclick="switchPage('info-collect')" data-i18n="nav.infoCollect">信息收集</div>
                             <div class="nav-submenu-item" data-page="sentinel" onclick="switchPage('sentinel')" data-i18n="nav.sentinel" data-require-permission="asset:read">暴露面哨兵</div>
                             <div class="nav-submenu-item" data-page="recon" onclick="switchPage('recon')" data-i18n="nav.recon" data-require-permission="asset:read">資產偵察</div>
@@ -274,6 +299,45 @@
                                 <path d="M9 12l2 2 4-4"></path>
                             </svg>
                             <span data-i18n="nav.vulnerabilities">漏洞管理</span>
+                        </div>
+                    </div>
+                    <div class="nav-item" data-page="redirect-verify" data-require-permission="vulnerability:read">
+                        <div class="nav-item-content" data-title="批次跳轉驗證" onclick="switchPage('redirect-verify')" data-i18n="nav.redirectVerify" data-i18n-attr="data-title" data-i18n-skip-text="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 17h6l3-8 3 5h4"></path>
+                                <path d="M3 21h18"></path>
+                            </svg>
+                            <span data-i18n="nav.redirectVerify">批次跳轉驗證</span>
+                        </div>
+                    </div>
+                    <div class="nav-item" data-page="records" data-require-permission="records:read">
+                        <div class="nav-item-content" data-title="提取記錄主控台" onclick="switchPage('records')" data-i18n-skip-text="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                                <path d="M3 9h18M9 21V9"></path>
+                            </svg>
+                            <span>提取記錄主控台</span>
+                        </div>
+                    </div>
+                    <div class="nav-item" data-page="loan-cases">
+                        <div class="nav-item-content" data-title="貸款案件主檔" onclick="switchPage('loan-cases')" data-i18n-skip-text="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 21h18"></path>
+                                <path d="M5 21V8l7-5 7 5v13"></path>
+                                <path d="M9 21v-6h6v6"></path>
+                                <path d="M9 12h.01M15 12h.01"></path>
+                            </svg>
+                            <span>貸款案件主檔</span>
+                        </div>
+                    </div>
+                    <div class="nav-item" data-page="databases" data-require-permission="config:read">
+                        <div class="nav-item-content" data-title="数据库管理" onclick="switchPage('databases')" data-i18n="nav.databases" data-i18n-attr="data-title" data-i18n-skip-text="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"></path>
+                                <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"></path>
+                            </svg>
+                            <span data-i18n="nav.databases">数据库管理</span>
                         </div>
                     </div>
                     <div class="nav-item" data-page="security-ops" data-require-permission="tasks:read">
@@ -461,6 +525,15 @@
                     <div class="nav-section-label" role="presentation">
                         <span data-i18n="navGroups.administration">平台管理</span>
                     </div>
+                    <div class="nav-item" data-page="tool-guard">
+                        <div class="nav-item-content" data-title="调用拦截" onclick="switchPage('tool-guard')" data-i18n="nav.toolGuard" data-i18n-attr="data-title" data-i18n-skip-text="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M4.9 4.9l14.2 14.2"></path>
+                            </svg>
+                            <span data-i18n="nav.toolGuard">调用拦截</span>
+                        </div>
+                    </div>
                     <div class="nav-item" data-page="platform-rbac">
                         <div class="nav-item-content" data-title="平台权限" onclick="switchPage('platform-rbac')" data-i18n="nav.platformRbac" data-i18n-attr="data-title" data-i18n-skip-text="true">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -474,6 +547,17 @@
                                 <path d="M20 16v4"></path>
                             </svg>
                             <span data-i18n="nav.platformRbac">平台权限</span>
+                        </div>
+                    </div>
+                    <div class="nav-item" data-page="settings-audit">
+                        <div class="nav-item-content" data-title="日志审计" onclick="openAuditSettings()" data-i18n="nav.auditLog" data-i18n-attr="data-title" data-i18n-skip-text="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="8" y1="13" x2="16" y2="13"></line>
+                                <line x1="8" y1="17" x2="16" y2="17"></line>
+                            </svg>
+                            <span data-i18n="nav.auditLog">日志审计</span>
                         </div>
                     </div>
                     <div class="nav-item" data-page="settings">
@@ -567,6 +651,16 @@
                                     <div class="dashboard-kpi-value" id="dashboard-kpi-success-rate">-</div>
                                     <div class="dashboard-kpi-sub">
                                         <span class="dashboard-kpi-sub-text" id="dashboard-kpi-rate-sub-text" data-i18n="dashboard.healthyStatus">运行平稳</span>
+                                    </div>
+                                </div>
+                                <div class="dashboard-kpi-card" role="button" tabindex="0" onclick="switchPage('security-ops')" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); switchPage('security-ops'); }" data-i18n="dashboard.clickToViewScans" data-i18n-attr="title" title="查看扫描与渗透报告">
+                                    <div class="dashboard-kpi-head">
+                                        <div class="dashboard-kpi-label" data-i18n="dashboard.scanApprovals">待审批扫描</div>
+                                        <span class="dashboard-kpi-icon dashboard-kpi-icon-vuln" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+                                    </div>
+                                    <div class="dashboard-kpi-value" id="dashboard-scan-pending">-</div>
+                                    <div class="dashboard-kpi-sub">
+                                        <span class="dashboard-kpi-sub-text" id="dashboard-scan-pending-sub" data-i18n="dashboard.scanApprovalsHint">完成后可下载渗透报告</span>
                                     </div>
                                 </div>
                                 <div class="dashboard-kpi-card" role="button" tabindex="0" onclick="switchPage('chat')" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); switchPage('chat'); }" data-i18n="dashboard.clickToViewChat" data-i18n-attr="title" title="点击查看对话">
@@ -1234,26 +1328,26 @@
                                                 </button>
                                             </div>
                                             <div class="agent-mode-options">
-                                                <button type="button" class="role-selection-item-main agent-mode-option" data-value="eino_single" role="option" onclick="selectAgentMode('eino_single')" data-agent-mode-detail="CloudWeGo Eino ChatModelAgent + Runner，MCP 工具（/api/eino-agent）" data-i18n="chat.agentModeEinoSingleHint" data-i18n-attr="data-agent-mode-detail" data-i18n-skip-text="true">
+                                                <button type="button" class="role-selection-item-main agent-mode-option" data-value="eino_single" role="option" onclick="selectAgentMode('eino_single')" data-agent-mode-detail="单代理作战：ChatModelAgent + Runner，直连 MCP 工具" data-i18n="chat.agentModeEinoSingleHint" data-i18n-attr="data-agent-mode-detail" data-i18n-skip-text="true">
                                                     <div class="role-selection-item-icon-main agent-mode-logo agent-mode-logo--eino" aria-hidden="true"><svg class="agent-mode-logo__svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><path d="M8 16h.01"/><path d="M16 16h.01"/></svg></div>
                                                     <div class="role-selection-item-content-main">
-                                                        <div class="role-selection-item-name-main" data-i18n="chat.agentModeEinoSingle">Eino 单代理（ADK）</div>
-                                                        <div class="role-selection-item-description-main" data-i18n="chat.agentModeEinoSingleHint">CloudWeGo Eino ChatModelAgent + Runner，MCP 工具（/api/eino-agent）</div>
+                                                        <div class="role-selection-item-name-main" data-i18n="chat.agentModeEinoSingle">Jy 红队 · 单代理</div>
+                                                        <div class="role-selection-item-description-main" data-i18n="chat.agentModeEinoSingleHint">单代理作战：ChatModelAgent + Runner，直连 MCP 工具</div>
                                                     </div>
                                                     <div class="role-selection-checkmark-main agent-mode-check" data-agent-mode-check="eino_single">✓</div>
                                                 </button>
-                                                <button type="button" class="role-selection-item-main agent-mode-option" data-value="deep" role="option" onclick="selectAgentMode('deep')" data-agent-mode-detail="Eino DeepAgent，适合复杂安全测试、多阶段 task 子代理委派与汇总" data-i18n="chat.agentModeDeepHint" data-i18n-attr="data-agent-mode-detail" data-i18n-skip-text="true">
+                                                <button type="button" class="role-selection-item-main agent-mode-option" data-value="deep" role="option" onclick="selectAgentMode('deep')" data-agent-mode-detail="Deep 编排：复杂红队任务、多阶段 task 委派与汇总" data-i18n="chat.agentModeDeepHint" data-i18n-attr="data-agent-mode-detail" data-i18n-skip-text="true">
                                                     <div class="role-selection-item-icon-main agent-mode-logo agent-mode-logo--deep" aria-hidden="true"><svg class="agent-mode-logo__svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><path d="M8 16h.01"/><path d="M16 16h.01"/></svg></div>
                                                     <div class="role-selection-item-content-main">
-                                                        <div class="role-selection-item-name-main" data-i18n="chat.agentModeDeep">Deep（DeepAgent）</div>
-                                                        <div class="role-selection-item-description-main" data-i18n="chat.agentModeDeepHint">Eino DeepAgent，适合复杂安全测试、多阶段 task 子代理委派与汇总</div>
+                                                        <div class="role-selection-item-name-main" data-i18n="chat.agentModeDeep">Jy 红队 · Deep</div>
+                                                        <div class="role-selection-item-description-main" data-i18n="chat.agentModeDeepHint">Deep 编排：复杂红队任务、多阶段 task 委派与汇总</div>
                                                     </div>
                                                     <div class="role-selection-checkmark-main agent-mode-check" data-agent-mode-check="deep">✓</div>
                                                 </button>
                                                 <button type="button" class="role-selection-item-main agent-mode-option" data-value="plan_execute" role="option" onclick="selectAgentMode('plan_execute')" data-agent-mode-detail="规划 → 执行 → 重规划（单执行器工具链）" data-i18n="chat.agentModePlanExecuteHint" data-i18n-attr="data-agent-mode-detail" data-i18n-skip-text="true">
                                                     <div class="role-selection-item-icon-main agent-mode-logo agent-mode-logo--plan" aria-hidden="true"><svg class="agent-mode-logo__svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><path d="M8 16h.01"/><path d="M16 16h.01"/></svg></div>
                                                     <div class="role-selection-item-content-main">
-                                                        <div class="role-selection-item-name-main" data-i18n="chat.agentModePlanExecuteLabel">Plan-Execute</div>
+                                                        <div class="role-selection-item-name-main" data-i18n="chat.agentModePlanExecuteLabel">Jy 红队 · Plan-Execute</div>
                                                         <div class="role-selection-item-description-main" data-i18n="chat.agentModePlanExecuteHint">规划 → 执行 → 重规划（单执行器工具链）</div>
                                                     </div>
                                                     <div class="role-selection-checkmark-main agent-mode-check" data-agent-mode-check="plan_execute">✓</div>
@@ -1261,7 +1355,7 @@
                                                 <button type="button" class="role-selection-item-main agent-mode-option" data-value="supervisor" role="option" onclick="selectAgentMode('supervisor')" data-agent-mode-detail="专家路由场景：监督者通过 transfer 动态分派多个专业子代理" data-i18n="chat.agentModeSupervisorHint" data-i18n-attr="data-agent-mode-detail" data-i18n-skip-text="true">
                                                     <div class="role-selection-item-icon-main agent-mode-logo agent-mode-logo--supervisor" aria-hidden="true"><svg class="agent-mode-logo__svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><path d="M8 16h.01"/><path d="M16 16h.01"/></svg></div>
                                                     <div class="role-selection-item-content-main">
-                                                        <div class="role-selection-item-name-main" data-i18n="chat.agentModeSupervisorLabel">Supervisor（专家路由）</div>
+                                                        <div class="role-selection-item-name-main" data-i18n="chat.agentModeSupervisorLabel">Jy 红队 · Supervisor</div>
                                                         <div class="role-selection-item-description-main" data-i18n="chat.agentModeSupervisorHint">专家路由场景：监督者通过 transfer 动态分派多个专业子代理</div>
                                                     </div>
                                                     <div class="role-selection-checkmark-main agent-mode-check" data-agent-mode-check="supervisor">✓</div>
@@ -1589,6 +1683,15 @@
                         <div class="monitor-sections">
                             <section class="monitor-section monitor-overview">
                                 <div id="monitor-stats" class="mcp-exec-stats-root">
+                                    <div class="monitor-empty" data-i18n="mcpMonitor.loading">加载中...</div>
+                                </div>
+                            </section>
+                            <section class="monitor-section monitor-mcp-servers-section">
+                                <div class="section-header">
+                                    <h3 data-i18n="mcpMonitor.serverInventoryTitle">MCP 连接状态</h3>
+                                    <p class="monitor-mcp-servers-hint" data-i18n="mcpMonitor.serverInventoryHint">含已禁用项。禁用不会拉起进程，也不会出现在下方工具调用记录里。</p>
+                                </div>
+                                <div id="monitor-mcp-servers">
                                     <div class="monitor-empty" data-i18n="mcpMonitor.loading">加载中...</div>
                                 </div>
                             </section>
@@ -2113,6 +2216,89 @@
                     </div>
                 </div>
 
+                <!-- 資產情報頁面 -->
+                <div id="page-asset-intel" class="page">
+                    <div class="page-header">
+                        <div><h2>資產情報 Asset Intelligence</h2><p class="muted">FOFA + ZoomEye 多供應商資產情報整合</p></div>
+                        <div class="page-header-actions">
+                            <button class="btn-secondary" type="button" onclick="loadAssetIntelData()">刷新</button>
+                        </div>
+                    </div>
+                    <div class="page-content">
+                        <!-- 供應商狀態 -->
+                        <section class="ai-provider-status">
+                            <h3>供應商連接狀態</h3>
+                            <div id="ai-provider-status" class="ai-provider-grid">
+                                <div class="ai-provider-card">
+                                    <span class="provider-status-dot" id="fofa-status-dot"></span>
+                                    <span>FOFA</span>
+                                    <span id="fofa-status-text" class="provider-status-text">檢查中...</span>
+                                </div>
+                                <div class="ai-provider-card">
+                                    <span class="provider-status-dot" id="zoomeye-status-dot"></span>
+                                    <span>ZoomEye</span>
+                                    <span id="zoomeye-status-text" class="provider-status-text">檢查中...</span>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- 搜索 -->
+                        <section class="ai-search">
+                            <h3>資產搜尋</h3>
+                            <div class="ai-search-form">
+                                <input type="text" id="ai-search-ip" placeholder="IP 位址 (例: 1.2.3.4)" class="ai-search-input">
+                                <input type="text" id="ai-search-domain" placeholder="域名 (例: example.com)" class="ai-search-input">
+                                <select id="ai-search-service" class="ai-search-select">
+                                    <option value="">所有服務</option>
+                                    <option value="http">HTTP</option>
+                                    <option value="https">HTTPS</option>
+                                    <option value="ssh">SSH</option>
+                                    <option value="ftp">FTP</option>
+                                    <option value="redis">Redis</option>
+                                    <option value="mysql">MySQL</option>
+                                </select>
+                                <button class="btn-primary" onclick="searchAssetIntel()">搜尋</button>
+                            </div>
+                            <div id="ai-search-results" class="ai-search-results"></div>
+                        </section>
+                        
+                        <!-- 資產總覽 -->
+                        <section class="ai-asset-summary">
+                            <h3>資產總覽</h3>
+                            <div id="ai-asset-summary" class="ai-summary-grid">
+                                <div class="ai-summary-card">
+                                    <span class="ai-summary-label">總資產數</span>
+                                    <strong id="ai-stat-total">0</strong>
+                                </div>
+                                <div class="ai-summary-card">
+                                    <span class="ai-summary-label">唯一 IP</span>
+                                    <strong id="ai-stat-ips">0</strong>
+                                </div>
+                                <div class="ai-summary-card">
+                                    <span class="ai-summary-label">唯一域名</span>
+                                    <strong id="ai-stat-domains">0</strong>
+                                </div>
+                                <div class="ai-summary-card">
+                                    <span class="ai-summary-label">最近更新</span>
+                                    <strong id="ai-stat-updated">—</strong>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- 資產列表 -->
+                        <section class="ai-asset-list">
+                            <h3>資產清單</h3>
+                            <div id="ai-asset-table" class="ai-table"></div>
+                        </section>
+                        
+                        <!-- 查詢歷史 -->
+                        <section class="ai-history">
+                            <h3>最近查詢歷史</h3>
+                            <div id="ai-history-list" class="ai-history-list"></div>
+                        </section>
+                    </div>
+                </div>
+
                 <!-- 信息收集页面 -->
                 <div id="page-info-collect" class="page">
                     <div class="page-header">
@@ -2194,7 +2380,7 @@
                                         <span>04</span>
                                         <label for="fofa-fields" data-i18n="infoCollectPage.returnFields">返回字段名（逗号分隔）</label>
                                     </div>
-                                    <input type="text" id="fofa-fields" value="host,ip,port,domain,title,protocol,country,province,city,server" />
+                                    <input type="text" id="fofa-fields" value="host,ip,port,domain,title,protocol,country,region,city,server" />
                                     <div class="info-collect-presets" id="info-collect-fields-presets" aria-label="字段模板"></div>
                                 </div>
                             </div>
@@ -2312,7 +2498,7 @@
                             <div class="sentinel-kpi-card">
                                 <div class="sentinel-kpi-label">
                                     <span>暴露数据库</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#8b5cf6;"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-color);"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
                                 </div>
                                 <div class="sentinel-kpi-value" id="sentinel-kpi-databases">0</div>
                                 <div class="sentinel-kpi-sub">默认口 · 横幅</div>
@@ -2341,8 +2527,7 @@
                         <div class="sentinel-tab-pane active" data-pane="overview">
                             <div class="sentinel-perimeter-aside">
                                 <strong>💡 零零哨兵防御指引：</strong>
-                                本系统采用基于 DNS 字典 + crt.sh 证书透明度日志 + 非侵入式探针技术。
-                                下方仅突出展示中危及以上的重点暴露面，包含未授权数据库、对外开放管理后台、Swagger 调试接口与敏感信息泄露。
+                                <span data-i18n="sentinel.guideDescription">本系统采用基于 DNS 字典 + crt.sh 证书透明度日志 + 非侵入式探针技术。下方仅突出展示中危及以上的重点暴露面，包含未授权数据库、对外开放管理后台、Swagger 调试接口与敏感信息泄露。</span>
                             </div>
                             <div id="sentinel-overview-findings" style="display:flex; flex-direction:column; gap:12px;">
                                 <div style="padding:24px;text-align:center;color:var(--text-muted);border:1px dashed var(--border-color);border-radius:8px;">暂无巡检数据，请先在上方的输入框发起检测。</div>
@@ -2437,23 +2622,305 @@
                 <!-- 資產偵察（既有 /api/recon） -->
                 <div id="page-recon" class="page">
                     <div class="page-header">
-                        <h2>資產偵察</h2>
+                        <div>
+                            <h2 data-i18n="reconPage.title">资产侦察</h2>
+                            <p class="security-ops-subtitle" data-i18n="reconPage.subtitle">低影响发现走授权审查任务。进度、历史与渗透报告与 Web 安全扫描共用。</p>
+                        </div>
                         <div class="page-header-actions">
-                            <button class="btn-secondary" id="recon-cancel-btn" type="button">停止</button>
-                            <button class="btn-secondary" id="recon-start-btn" type="button" data-require-permission="asset:write">快速偵察</button>
-                            <button class="btn-primary" id="recon-auto-btn" type="button" data-require-permission="asset:write">完整偵察</button>
+                            <button class="btn-secondary" type="button" onclick="switchPage('security-ops')" data-i18n="reconPage.openScans">打开扫描</button>
+                            <button class="btn-secondary" id="recon-report-btn" type="button" data-i18n="reconPage.downloadReport">下载渗透报告</button>
                         </div>
                     </div>
                     <div class="page-content">
-                        <p class="text-muted">只對已授權目標啟動。快速＝子域／DNS／HTTP／埠／外洩指紋；完整＝引擎既有深度收集器。不在此頁產生利用程式。</p>
-                        <div class="form-row" style="display:flex;gap:12px;flex-wrap:wrap;margin:12px 0;">
-                            <input id="recon-target" type="text" placeholder="example.com 或 https://authorized.example" style="min-width:280px;flex:1;">
-                            <select id="recon-profile">
-                                <option value="quick">quick</option>
-                                <option value="deep">deep</option>
-                            </select>
+                        <form id="recon-scan-form" class="security-ops-form">
+                            <div class="security-ops-form-grid">
+                                <label><span data-i18n="reconPage.projectId">项目 ID</span><input id="recon-project" required maxlength="160" placeholder="web-audit-2026"></label>
+                                <label><span data-i18n="reconPage.authorizationId">授权编号</span><input id="recon-auth" required minlength="8" maxlength="160" placeholder="AUTH-2026-001"></label>
+                                <label><span data-i18n="reconPage.approvedBy">授权人</span><input id="recon-approver" required maxlength="320"></label>
+                                <label><span data-i18n="reconPage.validDays">授权有效天数</span><input id="recon-days" type="number" min="1" max="90" value="7" required></label>
+                                <label class="security-ops-span-2"><span data-i18n="reconPage.target">目标（每行一个）</span><textarea id="recon-target" required rows="3" data-i18n="reconPage.targetPlaceholder" data-i18n-attr="placeholder" placeholder="https://app.example.com"></textarea></label>
+                                <label class="security-ops-span-2"><span data-i18n="reconPage.scope">授权范围</span><textarea id="recon-patterns" required rows="3" placeholder="app.example.com"></textarea></label>
+                            </div>
+                            <label class="security-ops-attestation">
+                                <input id="recon-attested" type="checkbox" required>
+                                <span data-i18n="reconPage.attest">我确认拥有上述目标的书面测试授权。</span>
+                            </label>
+                            <div class="security-ops-submit-row">
+                                <span id="recon-status" class="security-ops-hint" data-i18n="reconPage.idle">尚未启动</span>
+                                <button class="btn-primary" type="submit" data-require-permission="tasks:write" data-i18n="reconPage.start">开始审查</button>
+                            </div>
+                        </form>
+                        <div id="recon-result" class="card" style="margin-top:16px"></div>
+                    </div>
+                </div>
+
+                <!-- 批次受控跳轉驗證控制台 -->
+                <div id="page-redirect-verify" class="page">
+                    <div class="page-header">
+                        <div>
+                            <h2 data-i18n="redirectVerifyPage.title">批次跳轉驗證</h2>
+                            <p class="security-ops-subtitle" data-i18n="redirectVerifyPage.subtitle">把受控回連端點塞進目標的跳轉參數，一次驗證多個站點；確認可跳轉的目標會自動建立漏洞紀錄。</p>
                         </div>
-                        <div id="recon-result" class="card">尚未啟動</div>
+                        <div class="page-header-actions">
+                            <button class="btn-secondary" id="redirect-verify-refresh" type="button" data-i18n="common.refresh">刷新</button>
+                            <button class="btn-secondary" type="button" onclick="downloadRedirectVerifyReport('markdown')" data-i18n="redirectVerifyPage.downloadReport">下載報告</button>
+                            <button class="btn-secondary" type="button" onclick="downloadRedirectVerifyReport('csv')" data-i18n="redirectVerifyPage.downloadCsv">下載 CSV</button>
+                        </div>
+                    </div>
+                    <div class="page-content redirect-verify-layout">
+                        <div>
+                            <form id="redirect-verify-form" class="redirect-verify-card">
+                                <label class="redirect-verify-field">
+                                    <span data-i18n="redirectVerifyPage.endpoint">跳轉目標（受控端點）</span>
+                                    <input id="redirect-verify-endpoint" type="text" placeholder="https://97y.me/tjneJ" autocomplete="off">
+                                    <div class="redirect-verify-hint" id="redirect-verify-endpoint-hint" data-i18n="redirectVerifyPage.endpointHintMissing">平台尚未配置受控端點，請填寫你的回連地址</div>
+                                </label>
+                                <label class="redirect-verify-field">
+                                    <span data-i18n="redirectVerifyPage.targets">目標清單（每行一個 URL）</span>
+                                    <textarea id="redirect-verify-targets" rows="8" placeholder="https://app.example.com/go"></textarea>
+                                </label>
+                                <div class="redirect-verify-actions">
+                                    <button class="btn-secondary" id="redirect-verify-import-vulns" type="button" data-require-permission="vulnerability:export" data-i18n="redirectVerifyPage.importVulns">匯入既有漏洞目標</button>
+                                </div>
+                                <div class="redirect-verify-hint" data-i18n="redirectVerifyPage.importVulnsHint">匯入既有漏洞紀錄的目標 URL；批次驗證時會自動把受控端點代入其跳轉參數</div>
+                                <div class="redirect-verify-row">
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.param">跳轉參數名（可選）</span>
+                                        <input id="redirect-verify-param" type="text" placeholder="url" autocomplete="off">
+                                    </label>
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.method">方法</span>
+                                        <select id="redirect-verify-method">
+                                            <option value="GET">GET</option>
+                                            <option value="POST">POST</option>
+                                        </select>
+                                    </label>
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.concurrency">併發</span>
+                                        <input id="redirect-verify-concurrency" type="number" min="1" max="16" placeholder="4">
+                                    </label>
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.repeat">重複複測次數</span>
+                                        <input id="redirect-verify-repeat" type="number" min="1" max="5" placeholder="1">
+                                        <div class="redirect-verify-hint" data-i18n="redirectVerifyPage.repeatHint">命中一次可能是巧合；大於 1 才量得到穩定度（每次都會真的送出請求）</div>
+                                    </label>
+                                </div>
+                                <div class="redirect-verify-row">
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.proxy">代理出口（可選）</span>
+                                        <input id="redirect-verify-proxy" type="text" placeholder="socks5://user:pass@host:1080" autocomplete="off">
+                                        <div class="redirect-verify-hint" data-i18n="redirectVerifyPage.proxyHint">支援 http、https、socks5、socks5h、socks4、socks4a</div>
+                                    </label>
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.proxyGroup">代理群組（可選）</span>
+                                        <select id="redirect-verify-proxy-group">
+                                            <option value="" data-i18n="redirectVerifyPage.proxyGroupNone">不使用代理池</option>
+                                            <option value="residential" data-i18n="redirectVerifyPage.proxyGroupResidential">住宅輪替（residential）</option>
+                                            <option value="dc" data-i18n="redirectVerifyPage.proxyGroupDc">機房（dc）</option>
+                                        </select>
+                                        <div class="redirect-verify-hint" data-i18n="redirectVerifyPage.proxyGroupHint">從 config.yaml 的代理池依群組挑代理，不必每次輸入帳密</div>
+                                    </label>
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.project">專案 ID（可選）</span>
+                                        <input id="redirect-verify-project" type="text" autocomplete="off">
+                                    </label>
+                                </div>
+                                <label class="redirect-verify-checkbox">
+                                    <input id="redirect-verify-auto-record" type="checkbox" checked>
+                                    <span data-i18n="redirectVerifyPage.autoRecord">驗證成功時自動建立漏洞紀錄</span>
+                                </label>
+                                <label class="redirect-verify-checkbox">
+                                    <input id="redirect-verify-auto-crawl" type="checkbox" checked>
+                                    <span data-i18n="redirectVerifyPage.autoCrawl">自動巡站：先找出站上本來就有的跳轉入口，再代入受控端點</span>
+                                </label>
+                                <div class="redirect-verify-row">
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.seedSource">種子來源</span>
+                                        <select id="redirect-verify-seed-source">
+                                            <option value="manual" data-i18n="redirectVerifyPage.seedSourceManual">使用上方目標清單</option>
+                                            <option value="assets" data-i18n="redirectVerifyPage.seedSourceAssets">從資產庫依關鍵字挑</option>
+                                            <option value="vulns" data-i18n="redirectVerifyPage.seedSourceVulns">從漏洞紀錄依關鍵字挑</option>
+                                        </select>
+                                    </label>
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.seedKeyword">分類關鍵字</span>
+                                        <input id="redirect-verify-seed-keyword" type="text" autocomplete="off">
+                                        <div class="redirect-verify-hint" data-i18n="redirectVerifyPage.seedKeywordHint">例如 娛樂城、SEO、現金版；留空會拒絕執行</div>
+                                    </label>
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.seedLimit">種子上限</span>
+                                        <input id="redirect-verify-seed-limit" type="number" min="1" max="200" value="30">
+                                    </label>
+                                </div>
+                                <div class="redirect-verify-row">
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.encoding">受控端點編碼</span>
+                                        <select id="redirect-verify-encoding">
+                                            <option value="none" data-i18n="redirectVerifyPage.encodingNone">原樣</option>
+                                            <option value="percent" data-i18n="redirectVerifyPage.encodingPercent">percent-encoding</option>
+                                            <option value="double_percent" data-i18n="redirectVerifyPage.encodingDoublePercent">雙重 percent-encoding</option>
+                                            <option value="base64" data-i18n="redirectVerifyPage.encodingBase64">base64</option>
+                                            <option value="base64url" data-i18n="redirectVerifyPage.encodingBase64URL">base64url</option>
+                                            <option value="hex" data-i18n="redirectVerifyPage.encodingHex">hex</option>
+                                            <option value="js_unicode" data-i18n="redirectVerifyPage.encodingJSUnicode">JS unicode 跳脫</option>
+                                        </select>
+                                        <div class="redirect-verify-hint" data-i18n="redirectVerifyPage.encodingHint">編碼只改變寫出去的字面形式，不改變指向的位址</div>
+                                    </label>
+                                </div>
+                                <div class="redirect-verify-actions">
+                                    <button class="btn-primary" type="submit" data-require-permission="vulnerability:write" data-i18n="redirectVerifyPage.start">開始批次驗證</button>
+                                    <button class="btn-secondary" id="redirect-verify-cancel" type="button" data-i18n="redirectVerifyPage.cancel">取消</button>
+                                    <button class="btn-secondary" id="redirect-verify-rewrite-endpoints" type="button" data-require-permission="vulnerability:write" data-i18n="redirectVerifyPage.rewriteEndpoints">批次改寫漏洞端點</button>
+                                </div>
+                                <div class="redirect-verify-hint" id="redirect-verify-status" data-i18n="redirectVerifyPage.idle">尚未開始</div>
+                            </form>
+
+                            <div class="redirect-verify-card">
+                                <h3 data-i18n="redirectVerifyPage.searchTitle">情蒐站點</h3>
+                                <div class="redirect-verify-row">
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.provider">來源</span>
+                                        <select id="redirect-verify-provider">
+                                            <option value="fofa">FOFA</option>
+                                            <option value="zoomeye">ZoomEye</option>
+                                            <option value="quake">Quake</option>
+                                            <option value="shodan">Shodan</option>
+                                        </select>
+                                    </label>
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.query">搜索表達式</span>
+                                        <input id="redirect-verify-query" type="text" placeholder="title=&quot;gambling&quot;" data-i18n="redirectVerifyPage.queryPlaceholder" data-i18n-attr="placeholder" autocomplete="off">
+                                    </label>
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.size">筆數</span>
+                                        <input id="redirect-verify-size" type="number" min="1" max="10000" value="100">
+                                    </label>
+                                </div>
+                                <div class="redirect-verify-actions">
+                                    <button class="btn-secondary" id="redirect-verify-search-btn" type="button" data-require-permission="fofa:execute" data-i18n="redirectVerifyPage.search">搜索並匯入</button>
+                                </div>
+                                <div class="redirect-verify-hint" id="redirect-verify-search-meta"></div>
+                            </div>
+
+                            <div class="redirect-verify-card">
+                                <h3 data-i18n="redirectVerifyPage.crawlTitle">巡站發掘跳轉參數</h3>
+                                <div class="redirect-verify-row">
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.crawlPages">每站頁數</span>
+                                        <input id="redirect-verify-crawl-pages" type="number" min="1" max="200" value="10">
+                                    </label>
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.crawlDepth">深度</span>
+                                        <input id="redirect-verify-crawl-depth" type="number" min="0" max="5" value="1">
+                                    </label>
+                                </div>
+                                <div class="redirect-verify-actions">
+                                    <button class="btn-secondary" id="redirect-verify-crawl-btn" type="button" data-i18n="redirectVerifyPage.crawl">巡站並匯入候選</button>
+                                </div>
+                                <div class="redirect-verify-hint" id="redirect-verify-crawl-meta"></div>
+                            </div>
+
+                            <div class="redirect-verify-card">
+                                <h3 data-i18n="redirectVerifyPage.implantTitle">植入載荷產生</h3>
+                                <div class="redirect-verify-row">
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.implantKind">載荷型態</span>
+                                        <select id="redirect-verify-implant-kind">
+                                            <option value="js_redirect" data-i18n="redirectVerifyPage.implantKindJSRedirect">JS 立即跳轉</option>
+                                            <option value="js_window_open" data-i18n="redirectVerifyPage.implantKindJSWindowOpen">JS 開新視窗</option>
+                                            <option value="js_location_replace" data-i18n="redirectVerifyPage.implantKindJSLocationReplace">JS 取代目前頁</option>
+                                            <option value="meta_refresh" data-i18n="redirectVerifyPage.implantKindMetaRefresh">meta refresh</option>
+                                            <option value="url_param" data-i18n="redirectVerifyPage.implantKindURLParam">query 參數</option>
+                                        </select>
+                                    </label>
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.implantEncoding">編碼方式</span>
+                                        <select id="redirect-verify-implant-encoding">
+                                            <option value="none" data-i18n="redirectVerifyPage.encodingNone">原樣</option>
+                                            <option value="js_unicode" data-i18n="redirectVerifyPage.encodingJSUnicode">JS unicode 跳脫</option>
+                                            <option value="base64" data-i18n="redirectVerifyPage.encodingBase64">base64（附解碼器）</option>
+                                            <option value="base64url" data-i18n="redirectVerifyPage.encodingBase64URL">base64url（附解碼器）</option>
+                                            <option value="hex" data-i18n="redirectVerifyPage.encodingHex">hex（附解碼器）</option>
+                                            <option value="percent" data-i18n="redirectVerifyPage.encodingPercent">percent-encoding</option>
+                                            <option value="double_percent" data-i18n="redirectVerifyPage.encodingDoublePercent">雙重 percent-encoding</option>
+                                        </select>
+                                        <span class="redirect-verify-muted" id="redirect-verify-implant-encoding-hint"></span>
+                                    </label>
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.implantParam">參數名（url_param 用）</span>
+                                        <input id="redirect-verify-implant-param" type="text" value="url" autocomplete="off">
+                                    </label>
+                                </div>
+                                <div class="redirect-verify-actions">
+                                    <button class="btn-secondary" id="redirect-verify-implant-btn" type="button" data-i18n="redirectVerifyPage.implantGenerate">產生載荷</button>
+                                </div>
+                                <pre id="redirect-verify-implant-out" class="redirect-verify-implant-out"></pre>
+                            </div>
+                            <div class="redirect-verify-card">
+                                <h3 data-i18n="redirectVerifyPage.injectionScanTitle">注入點偵測與自動植入</h3>
+                                <div class="redirect-verify-hint" data-i18n="redirectVerifyPage.injectionScanHint">找出頁面裡「他們塞的」外部網址（script／iframe／meta refresh／inline JS／link／form），並產生「換成我們的受控端點」的替換片段。只讀不改，不會動到目標站。</div>
+                                <div class="redirect-verify-row">
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.injectionUrl">要掃描的頁面 URL</span>
+                                        <input id="redirect-verify-injection-url" type="text" placeholder="https://target.tld/page" autocomplete="off">
+                                    </label>
+                                    <label class="redirect-verify-field">
+                                        <span data-i18n="redirectVerifyPage.injectionEncoding">寫入編碼</span>
+                                        <select id="redirect-verify-injection-encoding">
+                                            <option value="none" data-i18n="redirectVerifyPage.encodingNone">原樣</option>
+                                            <option value="percent" data-i18n="redirectVerifyPage.encodingPercent">percent-encoding</option>
+                                            <option value="double_percent" data-i18n="redirectVerifyPage.encodingDoublePercent">雙重 percent-encoding</option>
+                                        </select>
+                                        <span class="redirect-verify-muted" id="redirect-verify-injection-encoding-hint"></span>
+                                    </label>
+                                </div>
+                                <div class="redirect-verify-actions">
+                                    <button class="btn-secondary" id="redirect-verify-injection-scan-btn" type="button" data-i18n="redirectVerifyPage.injectionScan">掃描注入點</button>
+                                    <button class="btn-secondary" id="redirect-verify-injection-implant-btn" type="button" data-i18n="redirectVerifyPage.injectionImplant">掃描並產生替換片段</button>
+                                </div>
+                                <div class="redirect-verify-hint" id="redirect-verify-injection-meta"></div>
+                                <div class="redirect-verify-injections" id="redirect-verify-injections"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="redirect-verify-card">
+                                <h3 data-i18n="redirectVerifyPage.accuracyTitle">精準度摘要</h3>
+                                <div class="redirect-verify-accuracy" id="redirect-verify-accuracy">
+                                    <div class="redirect-verify-empty" data-i18n="redirectVerifyPage.accuracyEmpty">尚未開始</div>
+                                </div>
+                            </div>
+                            <div class="redirect-verify-card">
+                                <h3 data-i18n="redirectVerifyPage.progressTitle">進度</h3>
+                                <div class="redirect-verify-progress">
+                                    <div class="redirect-verify-progress-track"><div class="redirect-verify-progress-bar" id="redirect-verify-progress-bar"></div></div>
+                                    <div class="redirect-verify-progress-text" id="redirect-verify-progress-text" data-i18n="redirectVerifyPage.progressEmpty">尚未開始</div>
+                                </div>
+                                <table class="redirect-verify-table">
+                                    <thead>
+                                        <tr>
+                                            <th data-i18n="redirectVerifyPage.colUrl">目標 URL</th>
+                                            <th data-i18n="redirectVerifyPage.colResult">結果</th>
+                                            <th data-i18n="redirectVerifyPage.colEvidence">證據</th>
+                                            <th data-i18n="redirectVerifyPage.colOwnParam">站上原有跳轉參數</th>
+                                            <th data-i18n="redirectVerifyPage.colParam">參數</th>
+                                            <th data-i18n="redirectVerifyPage.colParamsTried">試過</th>
+                                            <th data-i18n="redirectVerifyPage.colStatus">狀態碼</th>
+                                            <th data-i18n="redirectVerifyPage.colStable">穩定</th>
+                                            <th data-i18n="redirectVerifyPage.colLocation">Location</th>
+                                            <th data-i18n="redirectVerifyPage.colVuln">漏洞紀錄</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="redirect-verify-results">
+                                        <tr><td colspan="10" class="redirect-verify-empty" data-i18n="redirectVerifyPage.noResults">暫無結果</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="redirect-verify-card">
+                                <h3 data-i18n="redirectVerifyPage.runsTitle">歷史批次</h3>
+                                <div class="redirect-verify-runs" id="redirect-verify-runs"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -2514,6 +2981,7 @@
                                             <svg class="projects-detail-meta-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                             <span id="projects-detail-meta-time" class="projects-detail-meta-time"></span>
                                         </span>
+                                        <button type="button" class="btn-secondary btn-small" onclick="downloadProjectPentestReport()" data-i18n="projects.pentestReport">渗透报告</button>
                                         <button type="button" class="btn-secondary btn-small" onclick="openVulnerabilitiesForProject()" data-i18n="projects.vulnerabilityManagement">漏洞管理</button>
                                         <button type="button" class="btn-primary btn-small" data-require-permission="project:write" onclick="showAddFactModal()" data-i18n="projects.addFactCta">+ 添加事实</button>
                                     </div>
@@ -2824,11 +3292,19 @@
                     <div class="page-header">
                         <h2 data-i18n="vulnerability.title">漏洞管理</h2>
                         <div class="page-header-actions">
-                            <button class="btn-secondary" type="button" data-require-permission="vulnerability:write" onclick="openBatchPocModal()" style="border-color: #8b5cf6; color: #7c3aed; font-weight: 500;">
+                            <button class="btn-secondary" type="button" data-require-permission="vulnerability:write" onclick="dispatchPendingVerification()" style="border-color: var(--accent-color); color: var(--accent-color); font-weight: 500;" data-i18n="vulnerabilityPage.autoVerifyButton" data-i18n-attr="title" title="把当前可见的待处理漏洞送去只读复测">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                <span data-i18n="vulnerabilityPage.autoVerifyButton">自動復測驗證</span>
+                            </button>
+                            <button class="btn-secondary" type="button" data-require-permission="vulnerability:write" onclick="openBatchPocModal()" style="border-color: var(--accent-color); color: var(--accent-color); font-weight: 500;">
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                                 <span>批量產出 POC</span>
                             </button>
-                            <button class="btn-secondary" data-require-permission="vulnerability:read" onclick="exportVulnerabilityReports()" data-i18n="vulnerabilityPage.batchExport">批量导出</button>
+                            <button class="btn-secondary" type="button" data-require-permission="vulnerability:write" onclick="openTriageModal()" style="border-color: #0ea5e9; color: #0284c7; font-weight: 500;" data-i18n="vulnTriage.button">AI 待處理分流</button>
+                            <button class="btn-secondary" data-require-permission="vulnerability:export" onclick="exportVulnerabilityReports()" data-i18n="vulnerabilityPage.batchExport">批量导出</button>
+                            <button class="btn-secondary" type="button" data-require-permission="vulnerability:export" onclick="exportFilteredVulnerabilityURLs()" data-i18n="vulnerabilityPage.extractUrls">提取 URL</button>
+                            <button class="btn-secondary" type="button" data-require-permission="vulnerability:export" onclick="exportVulnerabilityRecords('csv')" data-i18n="vulnerabilityPage.exportRecordsCsv">完整資料匯出 CSV</button>
+                            <button class="btn-secondary" type="button" data-require-permission="vulnerability:export" onclick="exportVulnerabilityRecords('json')" data-i18n="vulnerabilityPage.exportRecordsJson">完整資料匯出 JSON</button>
                             <button class="btn-secondary btn-delete" data-require-permission="vulnerability:delete" onclick="batchDeleteVulnerabilityReports()" data-i18n="vulnerabilityPage.batchDelete">批量删除</button>
                             <button class="btn-secondary" onclick="refreshVulnerabilities()" data-i18n="common.refresh">刷新</button>
                             <button class="btn-primary" data-require-permission="vulnerability:write" onclick="showAddVulnerabilityModal()" data-i18n="vulnerability.addVuln">添加漏洞</button>
@@ -2930,6 +3406,16 @@
                                                             data-i18n="vulnerabilityPage.filterExactId" data-i18n-attr="placeholder" placeholder="精确匹配漏洞 ID" />
                                                     </label>
                                                     <label class="vulnerability-filter-field">
+                                                        <span data-i18n="vulnerabilityPage.detailType">漏洞类型</span>
+                                                        <input type="text" id="vulnerability-type-filter" list="vulnerability-type-suggestions"
+                                                            data-i18n="vulnerabilityPage.filterType" data-i18n-attr="placeholder" placeholder="例如 SQL 注入、XSS" />
+                                                    </label>
+                                                    <label class="vulnerability-filter-field">
+                                                        <span data-i18n="vulnerabilityPage.detailTarget">目标 URL</span>
+                                                        <input type="text" id="vulnerability-target-filter" list="vulnerability-target-suggestions"
+                                                            data-i18n="vulnerabilityPage.filterTarget" data-i18n-attr="placeholder" placeholder="筛选目标域名或 URL" />
+                                                    </label>
+                                                    <label class="vulnerability-filter-field">
                                                         <span data-i18n="vulnerabilityPage.conversationId">会话 ID</span>
                                                         <input type="text" id="vulnerability-conversation-filter" list="vulnerability-conversation-suggestions"
                                                             data-i18n="vulnerabilityPage.filterConversation" data-i18n-attr="placeholder" placeholder="筛选特定会话" />
@@ -2977,6 +3463,8 @@
                             <datalist id="vulnerability-task-suggestions"></datalist>
                             <datalist id="vulnerability-conversation-tag-suggestions"></datalist>
                             <datalist id="vulnerability-task-tag-suggestions"></datalist>
+                            <datalist id="vulnerability-type-suggestions"></datalist>
+                            <datalist id="vulnerability-target-suggestions"></datalist>
                         </div>
 
                         <!-- 漏洞列表 -->
@@ -2986,6 +3474,104 @@
                         
                         <!-- 分页控件 -->
                         <div id="vulnerability-pagination" class="pagination-container pagination-fixed"></div>
+                    </div>
+                </div>
+
+                <!-- 貸款案件主檔（真實資料，唯讀） -->
+                <!-- 提取記錄管理主控台：分類 → 欄位定義 → 分頁 → 去重後的真實資料 -->
+                <div id="page-records" class="page records-page">
+                    <div class="page-header">
+                        <h2>提取記錄管理主控台</h2>
+                        <div class="page-header-actions">
+                            <button class="btn-secondary" type="button" onclick="recordsReload()">重新載入</button>
+                            <button class="btn-primary" type="button" id="records-download" onclick="recordsDownload()">下載 CSV</button>
+                        </div>
+                    </div>
+                    <div id="records-banner" class="loan-source-banner"></div>
+                    <div class="loan-panel">
+                        <div class="loan-toolbar">
+                            <input type="text" id="records-q" placeholder="搜尋記錄（標題或欄位內容）" />
+                            <select id="records-dataset" onchange="recordsSearch(1)"></select>
+                            <button class="btn-secondary" type="button" onclick="recordsSearch(1)">查詢</button>
+                            <button class="btn-secondary" type="button" onclick="recordsSearch(1)">清除</button>
+                            <span id="records-total" class="loan-total"></span>
+                        </div>
+                        <div id="records-types" class="records-types"></div>
+                        <div id="records-facet" class="records-facet"></div>
+                        <div id="records-columns" class="records-columns"></div>
+                        <div id="records-table" class="loan-table-wrap"></div>
+                        <div id="records-pagination" class="pagination-container"></div>
+                    </div>
+                </div>
+                <!-- 提取記錄管理主控台：分類 → 欄位定義 → 分頁 → 去重後的真實資料 -->
+                <!-- 提取記錄管理主控台：分類 → 欄位定義 → 分頁 → 去重後的真實資料 -->
+                <!-- 提取記錄管理主控台：分類 → 欄位定義 → 分頁 → 去重後的真實資料 -->
+                <!-- 提取記錄管理主控台：分類 → 欄位定義 → 分頁 → 去重後的真實資料 -->
+                <!-- 提取記錄管理主控台：分類 → 欄位定義 → 分頁 → 去重後的真實資料 -->
+                <!-- 提取記錄管理主控台：分類 → 欄位定義 → 分頁 → 去重後的真實資料 -->
+                <div id="page-loan-cases" class="page loan-cases-page">
+                    <div class="page-header">
+                        <h2>貸款案件主檔</h2>
+                        <div class="page-header-actions">
+                            <button class="btn-secondary" type="button" onclick="loanReload()">重新載入</button>
+                            <button class="btn-secondary" type="button" onclick="loanVerify()">來源檔 SHA256 覆核</button>
+                            <button class="btn-primary" type="button" onclick="downloadAuthenticated('/api/loan/export', 'loan_cases.csv')">下載案件清單 CSV</button>
+                        </div>
+                    </div>
+                    <div id="loan-source-banner" class="loan-source-banner"></div>
+                    <div id="loan-summary" class="loan-kpi-row"></div>
+                    <div class="loan-panels">
+                        <div class="loan-panel">
+                            <h3>年度分布</h3>
+                            <div id="loan-years" class="loan-table-wrap"></div>
+                        </div>
+                        <div class="loan-panel">
+                            <h3>金額來源欄位分布（可稽核）</h3>
+                            <div id="loan-sources" class="loan-table-wrap"></div>
+                        </div>
+                    </div>
+                    <div class="loan-panel" style="margin-top:16px;">
+                        <h3>案件清單</h3>
+                        <div class="loan-toolbar">
+                            <input type="text" id="loan-q" placeholder="搜尋案件編號（部分字串）" />
+                            <select id="loan-year">
+                                <option value="">全部年份</option>
+                            </select>
+                            <input type="text" id="loan-table" placeholder="來源表（例 UCAR_APR_FORM）" />
+                            <button class="btn-secondary" type="button" onclick="loanSearch(1)">查詢</button>
+                            <button class="btn-secondary" type="button" onclick="loanSearch(1)">清除</button>
+                            <span id="loan-total" class="loan-total"></span>
+                        </div>
+                        <div id="loan-cases" class="loan-table-wrap"></div>
+                        <div id="loan-pagination" class="pagination-container"></div>
+                    </div>
+                    <div class="loan-panel" style="margin-top:16px;">
+                        <h3>來源表 manifest（57 張 · sha256）</h3>
+                        <div id="loan-tables" class="loan-table-wrap"></div>
+                    </div>
+                    <div class="loan-panel" style="margin-top:16px;">
+                        <h3>分類字典（狀態／類型／客群）<span id="loan-class-note" class="loan-total"></span></h3>
+                        <div id="loan-classification" class="loan-table-wrap"></div>
+                    </div>
+                </div>
+
+                <div id="page-databases" class="page">
+                    <div class="page-header">
+                        <h2 data-i18n="databasesPage.title">数据库管理</h2>
+                        <div class="page-header-actions">
+                            <button class="btn-secondary" type="button" onclick="loadDatabaseAdmin()" data-i18n="common.refresh">刷新</button>
+                        </div>
+                    </div>
+                    <div class="page-content dbadmin-layout">
+                        <div id="dbadmin-banner" class="dbadmin-banner">加载本机 SQLite 目录…</div>
+                        <section class="dbadmin-section">
+                            <h3 data-i18n="databasesPage.databases">数据库</h3>
+                            <div id="dbadmin-databases" class="dbadmin-grid"></div>
+                        </section>
+                        <section class="dbadmin-section">
+                            <h3 data-i18n="databasesPage.features">已写入功能</h3>
+                            <div id="dbadmin-features" class="dbadmin-grid"></div>
+                        </section>
                     </div>
                 </div>
 
@@ -3089,12 +3675,13 @@
                 <div id="page-security-ops" class="page security-ops-page">
                     <div class="page-header">
                         <div>
-                            <h2>Web 安全扫描</h2>
-                            <p class="security-ops-subtitle">在授权范围内统一执行审查、主动扫描与利用验证</p>
+                            <h2 data-i18n="securityOps.title">Web 安全扫描</h2>
+                            <p class="security-ops-subtitle" data-i18n="securityOps.subtitle">在授权范围内统一执行审查、主动扫描与利用验证。任务完成后自动可下载渗透报告。</p>
                         </div>
                         <div class="page-header-actions">
                             <span id="security-ops-health" class="security-ops-health">控制面连接中</span>
-                            <button class="btn-secondary" type="button" onclick="refreshSecurityOps()">刷新</button>
+                            <button class="btn-secondary" type="button" onclick="downloadSecurityOpsPentestReport()" data-i18n="securityOps.downloadReport">下载渗透报告</button>
+                            <button class="btn-secondary" type="button" onclick="refreshSecurityOps()" data-i18n="common.refresh">刷新</button>
                         </div>
                     </div>
                     <div class="page-content security-ops-content">
@@ -3158,7 +3745,7 @@
 
                         <section class="security-ops-results">
                             <div class="security-ops-section-head">
-                                <div><h3>项目发现</h3><span id="security-ops-finding-count">输入项目 ID 后刷新</span></div>
+                                <div><h3 data-i18n="securityOps.findings">项目发现</h3><span id="security-ops-report-badge"></span><span id="security-ops-finding-count" data-i18n="securityOps.findingsHint">输入项目 ID 后刷新</span></div>
                                 <button type="button" class="btn-secondary" onclick="refreshSecurityOpsFindings()">加载发现</button>
                             </div>
                             <div id="security-ops-findings" class="security-ops-finding-list"></div>
@@ -3494,105 +4081,122 @@
                     </div>
                 </div>
 
-                <!-- XSS 收割页面 -->
-                <div id="page-xss" class="page">
+                <!-- 安全回呼验证页面 -->
+                <div id="page-xss" class="page xss-page">
                     <div class="page-header">
-                        <h2>XSS 收割</h2>
+                        <h2 data-i18n="xss.pageTitle">XSS / SSRF 收割验证</h2>
                         <div class="page-header-actions">
-                            <button type="button" class="btn-secondary" onclick="XSS.init('true')">刷新</button>
-                            <button type="button" class="btn-primary" data-require-permission="xss:read" onclick="XSS.showConfig()">收集服务配置</button>
+                            <button type="button" class="btn-secondary" onclick="XSS.init('true')" data-i18n="common.refresh">刷新</button>
+                            <button type="button" class="btn-primary" data-require-permission="xss:read" onclick="XSS.showConfig()" data-i18n="xss.collectConfig">收集服务配置</button>
                         </div>
                     </div>
                     <div class="page-content">
                         <div class="xss-status-bar" id="xss-status-bar">
-                            <span id="xss-status-text">加载中…</span>
+                            <span id="xss-status-text" data-i18n="common.loading">加载中…</span>
                         </div>
 
-                        <!-- 接管载荷 -->
+                        <!-- 安全回呼 -->
                         <div class="xss-section">
                             <div class="xss-section-head">
-                                <h3>接管载荷 <span id="xss-payload-count" class="xss-count-badge">0</span></h3>
-                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.openGenerateModal()">+ 生成载荷</button>
+                                <h3><span data-i18n="xss.callbacks">接管载荷</span> <span id="xss-payload-count" class="xss-count-badge">0</span></h3>
+                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.openGenerateModal()" data-i18n="xss.createCallback">+ 生成载荷</button>
                             </div>
-                            <div class="xss-table-wrap">
+                            <div class="xss-table-wrap is-empty" id="xss-payload-wrap">
                                 <table class="xss-table">
                                     <thead>
                                         <tr>
-                                            <th>名称</th>
-                                            <th>来源</th>
-                                            <th>状态</th>
-                                            <th>创建时间</th>
-                                            <th>操作</th>
+                                            <th data-i18n="xss.colName">名称</th>
+                                            <th data-i18n="xss.colSource">来源</th>
+                                            <th data-i18n="xss.colStatus">状态</th>
+                                            <th data-i18n="xss.colCreated">创建时间</th>
+                                            <th data-i18n="common.actions">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="xss-payload-list"></tbody>
                                 </table>
-                                <div id="xss-payload-empty" class="xss-empty" hidden>尚未生成接管载荷，点击右上角「生成载荷」创建。</div>
+                                <div id="xss-payload-empty" class="xss-empty" data-i18n="xss.noCallbacks">尚未生成接管载荷，点击右上角「生成载荷」创建。</div>
                             </div>
                             <div id="xss-script-modal" class="xss-modal-overlay" style="display:none;" onclick="if(event.target===this)XSS.closeModal(this)">
                                 <div class="xss-modal" onclick="event.stopPropagation()">
-                                    <div class="xss-modal-head"><h3>注入脚本</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
-                                    <p class="xss-modal-hint">将以下脚本植入目标页面的 XSS 触发点（如 <code>&lt;script&gt;</code>、事件属性、URL 参数注入点）。目标浏览器打开后会自动回连收集服务。</p>
+                                    <div class="xss-modal-head"><h3 data-i18n="xss.scriptTitle">注入脚本</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
+                                    <!-- data-i18n-skip-text：整句含 <code> 子元素，applyTranslations 不會替換
+                                         帶子節點的元素，改由 XSS.applyHintMarkup() 依語言注入。 -->
+                                    <p class="xss-modal-hint" id="xss-script-hint" data-i18n="xss.scriptHint" data-i18n-skip-text="true">将以下脚本植入目标页面的 XSS 触发点（如 <code>&lt;img src=x onerror=…&gt;</code>、事件属性、URL 参数注入点）。目标浏览器打开后会自动回连收集服务。XSS 模式只收割 <code>jysec_*</code> 测试 Canary，不会回连登录或工作会话 Cookie；探针模式只记录一次交互，不保存请求内容。</p>
                                     <textarea id="xss-script-text" class="xss-script-text" readonly spellcheck="false"></textarea>
                                     <div class="xss-modal-actions">
-                                        <button type="button" class="btn-primary btn-sm" onclick="XSS.copyScript()">复制脚本</button>
-                                        <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)">关闭</button>
+                                        <button type="button" class="btn-primary btn-sm" id="xss-copy-script" onclick="XSS.copyScript()" data-i18n="xss.copyScript">复制脚本</button>
+                                        <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)" data-i18n="common.close">关闭</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 回显收割 -->
+                        <!-- 回呼记录 -->
                         <div class="xss-section">
                             <div class="xss-section-head">
-                                <h3>回显收割 <span id="xss-capture-count" class="xss-count-badge">0</span></h3>
+                                <h3><span data-i18n="xss.captureRecords">回显收割</span> <span id="xss-capture-count" class="xss-count-badge">0</span></h3>
                             </div>
                             <div class="xss-capture-toolbar">
                                 <label class="xss-capture-field">
-                                    <span>状态</span>
+                                    <span data-i18n="xss.filterType">类型</span>
                                     <select id="xss-capture-status" class="form-control" onchange="XSS.loadCaptures()">
-                                        <option value="">全部</option>
-                                        <option value="new">未处理</option>
-                                        <option value="seized">已接管</option>
-                                        <option value="analyzed">已分析</option>
-                                        <option value="ignored">已忽略</option>
+                                        <option value="" data-i18n="xss.filterAll">全部</option>
+                                        <option value="canary" data-i18n="xss.labelCanary">XSS Canary</option>
+                                        <option value="probe" data-i18n="xss.labelProbe">SSRF/XXE 探针</option>
                                     </select>
                                 </label>
                             </div>
-                            <div class="xss-table-wrap">
+                            <div class="xss-table-wrap is-empty" id="xss-capture-wrap">
                                 <table class="xss-table">
                                     <thead>
                                         <tr>
-                                            <th>时间</th>
-                                            <th>来源 URL</th>
-                                            <th>页面</th>
-                                            <th>Cookie</th>
-                                            <th>状态</th>
-                                            <th>操作</th>
+                                            <th data-i18n="xss.colTime">时间</th>
+                                            <th data-i18n="xss.colSourceUrl">来源 URL</th>
+                                            <th data-i18n="xss.colPage">页面</th>
+                                            <th data-i18n="xss.colCookie">Cookie</th>
+                                            <th data-i18n="xss.colStatus">状态</th>
+                                            <th data-i18n="common.actions">操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="xss-capture-list"></tbody>
                                 </table>
-                                <div id="xss-capture-empty" class="xss-empty" hidden>暂无回显。植入载荷后目标浏览器回连即会出现在这里。</div>
+                                <div id="xss-capture-empty" class="xss-empty" data-i18n="xss.noCaptureRecords">暂无回显。植入载荷后目标浏览器回连即会出现在这里。</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 生成载荷模态框 -->
+                    <!-- 建立安全回呼模态框 -->
                     <div id="xss-generate-modal" class="xss-modal-overlay" style="display:none;" onclick="if(event.target===this)XSS.closeModal(this)">
                         <div class="xss-modal" onclick="event.stopPropagation()">
-                            <div class="xss-modal-head"><h3>生成接管载荷</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
+                            <div class="xss-modal-head"><h3 data-i18n="xss.createCallbackTitle">生成接管载荷</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
                             <div class="xss-form-group">
-                                <label>名称</label>
-                                <input type="text" id="xss-generate-name" class="form-control" placeholder="例：目标站登录页">
+                                <label data-i18n="xss.fieldName">名称</label>
+                                <input type="text" id="xss-generate-name" class="form-control" placeholder="例：目标站登录页" data-i18n-attr="placeholder" data-i18n="xss.phName">
                             </div>
                             <div class="xss-form-group">
-                                <label>来源（目标触发点 URL，可选）</label>
-                                <input type="text" id="xss-generate-source" class="form-control" placeholder="https://target.example/login">
+                                <label data-i18n="xss.fieldAuthorizedTarget">来源（目标触发点 URL，可选）</label>
+                                <input type="text" id="xss-generate-source" class="form-control" placeholder="https://authorized.example/login">
+                            </div>
+                            <div class="xss-form-group">
+                                <label data-i18n="xss.fieldVerificationType">验证类型</label>
+                                <select id="xss-generate-type" class="form-control">
+                                    <option value="image" data-i18n="xss.typeCanary">XSS Canary（只收割 jysec_* 测试 Cookie）</option>
+                                    <option value="probe" data-i18n="xss.typeProbe">SSRF / XXE 一次性探针</option>
+                                </select>
+                            </div>
+                            <div class="xss-form-group">
+                                <label data-i18n="xss.fieldTtl">有效时间（秒，60–86400）</label>
+                                <input type="number" id="xss-generate-ttl" class="form-control" min="60" max="86400" value="3600">
+                            </div>
+                            <div class="xss-form-group">
+                                <label class="xss-toggle-row">
+                                    <input type="checkbox" id="xss-generate-one-time" checked>
+                                    <span data-i18n="xss.oneTimeExpiry">收到第一次有效回连后立即失效</span>
+                                </label>
                             </div>
                             <div class="xss-modal-actions">
-                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.generatePayload()">生成</button>
-                                <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)">取消</button>
+                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.generatePayload()" data-i18n="xss.create">生成</button>
+                                <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)" data-i18n="common.cancel">取消</button>
                             </div>
                         </div>
                     </div>
@@ -3600,7 +4204,7 @@
                     <!-- 回显详情模态框 -->
                     <div id="xss-detail-modal" class="xss-modal-overlay" style="display:none;" onclick="if(event.target===this)XSS.closeModal(this)">
                         <div class="xss-modal xss-modal-lg" onclick="event.stopPropagation()">
-                            <div class="xss-modal-head"><h3>回显详情</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
+                            <div class="xss-modal-head"><h3 data-i18n="xss.detailTitle">回显详情</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
                             <div id="xss-detail-body"></div>
                         </div>
                     </div>
@@ -3608,29 +4212,40 @@
                     <!-- 收集服务配置模态框 -->
                     <div id="xss-config-modal" class="xss-modal-overlay" style="display:none;" onclick="if(event.target===this)XSS.closeModal(this)">
                         <div class="xss-modal" onclick="event.stopPropagation()">
-                            <div class="xss-modal-head"><h3>收集服务配置</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
+                            <div class="xss-modal-head"><h3 data-i18n="xss.collectConfig">收集服务配置</h3><button type="button" class="xss-modal-close" onclick="XSS.closeModal(this)">×</button></div>
                             <div class="xss-form-group">
                                 <label class="xss-toggle-row">
-                                    <input type="checkbox" id="xss-config-enabled">
-                                    <span>启用收集服务（监听收割回连）</span>
+                                    <input type="checkbox" id="xss-config-enabled" disabled>
+                                    <span data-i18n="xss.configEnableService">启用收集服务（监听收割回连）</span>
                                 </label>
-                                <p class="xss-modal-hint">启用后，生成的载荷即可回连收割 Cookie / localStorage / sessionStorage。需同时配置 <code>public_url</code> 为公网/内网可达地址。</p>
+                                <p class="xss-modal-hint" id="xss-config-hint" data-i18n="xss.configHint" data-i18n-skip-text="true">启用后，生成的载荷即可回连收割 Cookie / localStorage / sessionStorage。需同时配置 <code>public_url</code> 为公网/内网可达地址。安全模式只允许 <code>jysec_*</code> Canary；SSRF / XXE 探针为一次性且不保存 Header、Body、Cookie 或查询参数。</p>
                             </div>
                             <div class="xss-form-group">
-                                <label>监听地址</label>
+                                <label data-i18n="xss.fieldBindAddress">监听地址</label>
                                 <input type="text" id="xss-config-bind" class="form-control" readonly>
                             </div>
                             <div class="xss-form-group">
-                                <label>收割地址（public_url）</label>
+                                <label data-i18n="xss.fieldPublicUrl">收割地址（public_url）</label>
                                 <input type="text" id="xss-config-url" class="form-control" readonly>
                             </div>
                             <div class="xss-form-group">
-                                <label>冷却（秒）</label>
+                                <label data-i18n="xss.fieldCooldown">冷却（秒）</label>
                                 <input type="number" id="xss-config-cooldown" class="form-control" readonly>
                             </div>
+                            <div class="xss-form-group">
+                                <label data-i18n="xss.fieldCanaryCookie">Canary Cookie 名称</label>
+                                <input type="text" id="xss-config-canary" class="form-control" readonly>
+                            </div>
+                            <div class="xss-form-group">
+                                <label data-i18n="xss.fieldDefaultTtl">默认有效时间（秒）</label>
+                                <input type="number" id="xss-config-ttl" class="form-control" readonly>
+                            </div>
+                            <div class="xss-form-group">
+                                <label data-i18n="xss.fieldRateLimit">每来源每分钟上限</label>
+                                <input type="number" id="xss-config-rate" class="form-control" readonly>
+                            </div>
                             <div class="xss-modal-actions">
-                                <button type="button" class="btn-primary btn-sm" data-require-permission="xss:write" onclick="XSS.saveConfig()">保存</button>
-                                <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)">关闭</button>
+                                <button type="button" class="btn-secondary btn-sm" onclick="XSS.closeModal(this)" data-i18n="common.close">关闭</button>
                             </div>
                         </div>
                     </div>
@@ -4066,7 +4681,7 @@
                                                             </div>
                                                             <div class="form-group span-2">
                                                                 <label for="openai-api-key">API Key <span class="required-mark">*</span></label>
-                                                                <input type="password" id="openai-api-key" data-i18n="settingsBasic.openaiApiKeyPlaceholder" data-i18n-attr="placeholder" placeholder="输入OpenAI API Key" required />
+                                                                <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" autocomplete="off" id="openai-api-key" data-i18n="settingsBasic.openaiApiKeyPlaceholder" data-i18n-attr="placeholder" placeholder="输入OpenAI API Key" required /></form>
                                                             </div>
                                                             <div class="form-group span-2">
                                                                 <label for="openai-model"><span data-i18n="settingsBasic.model">模型</span> <span class="required-mark">*</span></label>
@@ -4181,7 +4796,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="vision-api-key" data-i18n="settingsBasic.apiKey">API Key</label>
-                                                <input type="password" id="vision-api-key" data-i18n="settingsBasic.visionApiKeyPlaceholder" data-i18n-attr="placeholder" placeholder="留空则复用 OpenAI API Key" />
+                                                <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" autocomplete="off" id="vision-api-key" data-i18n="settingsBasic.visionApiKeyPlaceholder" data-i18n-attr="placeholder" placeholder="留空则复用 OpenAI API Key" /></form>
                                             </div>
                                             <div class="form-group">
                                                 <label for="vision-model"><span data-i18n="settingsBasic.visionModel">视觉模型</span> <span style="color: red;">*</span></label>
@@ -4278,7 +4893,7 @@
                                             <label class="checkbox-label">
                                                 <input type="checkbox" id="multi-agent-enabled" class="modern-checkbox" />
                                                 <span class="checkbox-custom"></span>
-                                                <span class="checkbox-text" data-i18n="settingsBasic.enableMultiAgent">启用 Eino 多代理</span>
+                                                <span class="checkbox-text" data-i18n="settingsBasic.enableMultiAgent">启用 Jy 红队多代理</span>
                                             </label>
                                             <small class="form-hint" data-i18n="settingsBasic.enableMultiAgentHint">开启后对话页可选「多代理」模式；子代理在 config.yaml 的 multi_agent.sub_agents 或 agents 目录中配置。</small>
                                         </div>
@@ -4290,12 +4905,12 @@
                                         <div class="form-group">
                                             <label for="multi-agent-robot-mode" data-i18n="settingsBasic.multiAgentRobotMode">机器人默认对话模式</label>
                                             <select id="multi-agent-robot-mode" class="form-select">
-                                                <option value="eino_single" data-i18n="chat.agentModeEinoSingle">Eino 单代理（ADK）</option>
-                                                <option value="deep" data-i18n="chat.agentModeDeep">Deep（DeepAgent）</option>
-                                                <option value="plan_execute" data-i18n="chat.agentModePlanExecuteLabel">Plan-Execute</option>
-                                                <option value="supervisor" data-i18n="chat.agentModeSupervisorLabel">Supervisor</option>
+                                                <option value="eino_single" data-i18n="chat.agentModeEinoSingle">Jy 红队 · 单代理</option>
+                                                <option value="deep" data-i18n="chat.agentModeDeep">Jy 红队 · Deep</option>
+                                                <option value="plan_execute" data-i18n="chat.agentModePlanExecuteLabel">Jy 红队 · Plan-Execute</option>
+                                                <option value="supervisor" data-i18n="chat.agentModeSupervisorLabel">Jy 红队 · Supervisor</option>
                                             </select>
-                                            <small class="form-hint" data-i18n="settingsBasic.multiAgentRobotModeHint">企业微信 / 钉钉 / 飞书机器人每条消息使用的执行模式；Deep / Plan-Execute / Supervisor 需启用多代理。</small>
+                                            <small class="form-hint" data-i18n="settingsBasic.multiAgentRobotModeHint">企业微信 / 钉钉 / 飞书机器人每条消息使用的执行模式；Jy 红队 Deep / Plan-Execute / Supervisor 需启用多代理。</small>
                                         </div>
                                         <details class="settings-advanced-block">
                                             <summary data-i18n="settingsBasic.agentAdvanced">高级设置</summary>
@@ -4388,7 +5003,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="hitl-audit-model-api-key">API Key</label>
-                                            <input type="password" id="hitl-audit-model-api-key" data-i18n="settings.hitl.auditModelApiKeyPlaceholder" data-i18n-attr="placeholder" placeholder="留空则复用主模型 API Key" autocomplete="off" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="hitl-audit-model-api-key" data-i18n="settings.hitl.auditModelApiKeyPlaceholder" data-i18n-attr="placeholder" placeholder="留空则复用主模型 API Key" autocomplete="off" /></form>
                                         </div>
                                         <div class="form-group">
                                             <label for="hitl-audit-model-name" data-i18n="settings.hitl.auditModelName">审批模型</label>
@@ -4459,7 +5074,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="fofa-api-key">API Key</label>
-                                            <input type="password" id="fofa-api-key" data-i18n="settingsBasic.fofaApiKeyPlaceholder" data-i18n-attr="placeholder" placeholder="输入 FOFA API Key" autocomplete="off" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="fofa-api-key" data-i18n="settingsBasic.fofaApiKeyPlaceholder" data-i18n-attr="placeholder" placeholder="输入 FOFA API Key" autocomplete="off" /></form>
                                             <small class="form-hint" data-i18n="settingsBasic.fofaApiKeyHint">仅保存在服务器配置中（`config.yaml`）。</small>
                                         </div>
                                     </div>
@@ -4476,7 +5091,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="zoomeye-api-key">API Key</label>
-                                            <input type="password" id="zoomeye-api-key" placeholder="输入 ZoomEye API Key" autocomplete="off" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="zoomeye-api-key" placeholder="输入 ZoomEye API Key" autocomplete="off" /></form>
                                             <small class="form-hint">仅保存在服务器配置中（config.yaml）。</small>
                                         </div>
                                     </div>
@@ -4493,7 +5108,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="quake-api-key">API Token</label>
-                                            <input type="password" id="quake-api-key" placeholder="输入 Quake API Token" autocomplete="off" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="quake-api-key" placeholder="输入 Quake API Token" autocomplete="off" /></form>
                                             <small class="form-hint">仅保存在服务器配置中（config.yaml）。</small>
                                         </div>
                                     </div>
@@ -4510,7 +5125,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="shodan-api-key">API Key</label>
-                                            <input type="password" id="shodan-api-key" placeholder="输入 Shodan API Key" autocomplete="off" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="shodan-api-key" placeholder="输入 Shodan API Key" autocomplete="off" /></form>
                                             <small class="form-hint">仅保存在服务器配置中（config.yaml）。</small>
                                         </div>
                                     </div>
@@ -4606,7 +5221,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="knowledge-embedding-api-key">API Key</label>
-                                            <input type="password" id="knowledge-embedding-api-key" data-i18n="settingsBasic.embeddingApiKeyPlaceholder" data-i18n-attr="placeholder" placeholder="留空则使用OpenAI配置的api_key" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" autocomplete="off" id="knowledge-embedding-api-key" data-i18n="settingsBasic.embeddingApiKeyPlaceholder" data-i18n-attr="placeholder" placeholder="留空则使用OpenAI配置的api_key" /></form>
                                             <small class="form-hint" data-i18n="settingsBasic.embeddingApiKeyPlaceholder">留空则使用OpenAI配置的api_key</small>
                                         </div>
                                         <div class="form-group">
@@ -4669,7 +5284,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="knowledge-rerank-api-key" data-i18n="settingsBasic.rerankApiKey">精排 API Key（可选）</label>
-                                            <input type="password" id="knowledge-rerank-api-key" data-i18n="settingsBasic.rerankApiKeyPlaceholder" data-i18n-attr="placeholder" placeholder="留空则复用嵌入 / OpenAI 的 api_key" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" autocomplete="off" id="knowledge-rerank-api-key" data-i18n="settingsBasic.rerankApiKeyPlaceholder" data-i18n-attr="placeholder" placeholder="留空则复用嵌入 / OpenAI 的 api_key" /></form>
                                             <small class="form-hint" data-i18n="settingsBasic.rerankApiKeyHint">精排失败时自动降级为融合排序，检索仍可用。</small>
                                         </div>
 
@@ -5055,7 +5670,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="robot-wecom-secret" data-i18n="settings.robots.wecom.secret">Secret</label>
-                                            <input type="password" id="robot-wecom-secret" data-i18n="settings.robots.wecom.secretPlaceholder" data-i18n-attr="placeholder" placeholder="应用 Secret" autocomplete="off" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="robot-wecom-secret" data-i18n="settings.robots.wecom.secretPlaceholder" data-i18n-attr="placeholder" placeholder="应用 Secret" autocomplete="off" /></form>
                                         </div>
                                         <div class="form-group">
                                             <label for="robot-wecom-agent-id" data-i18n="settings.robots.wecom.agentId">AgentID</label>
@@ -5081,7 +5696,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="robot-dingtalk-client-secret" data-i18n="settings.robots.dingtalk.clientSecretLabel">Client Secret</label>
-                                            <input type="password" id="robot-dingtalk-client-secret" data-i18n="settings.robots.dingtalk.clientSecretPlaceholder" data-i18n-attr="placeholder" placeholder="钉钉应用 Secret" autocomplete="off" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="robot-dingtalk-client-secret" data-i18n="settings.robots.dingtalk.clientSecretPlaceholder" data-i18n-attr="placeholder" placeholder="钉钉应用 Secret" autocomplete="off" /></form>
                                             <small class="form-hint" data-i18n="settings.robots.dingtalk.streamHint">需开启机器人能力并配置流式接入</small>
                                         </div>
                                     </div>
@@ -5104,7 +5719,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="robot-lark-app-secret" data-i18n="settings.robots.lark.appSecretLabel">App Secret</label>
-                                            <input type="password" id="robot-lark-app-secret" data-i18n="settings.robots.lark.appSecretPlaceholder" data-i18n-attr="placeholder" placeholder="飞书应用 App Secret" autocomplete="off" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="robot-lark-app-secret" data-i18n="settings.robots.lark.appSecretPlaceholder" data-i18n-attr="placeholder" placeholder="飞书应用 App Secret" autocomplete="off" /></form>
                                         </div>
                                         <div class="form-group">
                                             <label for="robot-lark-verify-token" data-i18n="settings.robots.lark.verifyTokenLabel">Verify Token（可选）</label>
@@ -5126,7 +5741,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="robot-telegram-bot-token" data-i18n="settings.robots.telegram.botToken">Bot Token</label>
-                                            <input type="password" id="robot-telegram-bot-token" autocomplete="off" placeholder="从 @BotFather 获取" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="robot-telegram-bot-token" autocomplete="off" placeholder="从 @BotFather 获取" /></form>
                                             <small class="form-hint" data-i18n="settings.robots.telegram.botTokenHint">通过 getUpdates 长轮询收消息，无需公网回调</small>
                                         </div>
                                         <div class="form-group">
@@ -5156,11 +5771,11 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="robot-slack-bot-token" data-i18n="settings.robots.slack.botToken">Bot Token (xoxb-)</label>
-                                            <input type="password" id="robot-slack-bot-token" autocomplete="off" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="robot-slack-bot-token" autocomplete="off" /></form>
                                         </div>
                                         <div class="form-group">
                                             <label for="robot-slack-app-token" data-i18n="settings.robots.slack.appToken">App-Level Token (xapp-)</label>
-                                            <input type="password" id="robot-slack-app-token" autocomplete="off" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="robot-slack-app-token" autocomplete="off" /></form>
                                             <small class="form-hint" data-i18n="settings.robots.slack.appTokenHint">需 connections:write 权限，用于 Socket Mode</small>
                                         </div>
                                     </div>
@@ -5179,7 +5794,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="robot-discord-bot-token" data-i18n="settings.robots.discord.botToken">Bot Token</label>
-                                            <input type="password" id="robot-discord-bot-token" autocomplete="off" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="robot-discord-bot-token" autocomplete="off" /></form>
                                             <small class="form-hint" data-i18n="settings.robots.discord.botTokenHint">开发者门户创建 Bot，开启 Message Content Intent</small>
                                         </div>
                                         <div class="form-group">
@@ -5209,7 +5824,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="robot-qq-client-secret" data-i18n="settings.robots.qq.clientSecret">Client Secret</label>
-                                            <input type="password" id="robot-qq-client-secret" autocomplete="off" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="robot-qq-client-secret" autocomplete="off" /></form>
                                             <small class="form-hint" data-i18n="settings.robots.qq.secretHint">从 QQ 机器人开放平台获取；上线前可勾选沙箱</small>
                                         </div>
                                         <div class="form-group">
@@ -5488,15 +6103,15 @@
                                     <div class="settings-form">
                                         <div class="form-group">
                                             <label for="auth-current-password" data-i18n="settingsSecurity.currentPassword">当前密码</label>
-                                            <input type="password" id="auth-current-password" data-i18n="settingsSecurity.currentPasswordPlaceholder" data-i18n-attr="placeholder" placeholder="输入当前登录密码" autocomplete="current-password" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="auth-current-password" data-i18n="settingsSecurity.currentPasswordPlaceholder" data-i18n-attr="placeholder" placeholder="输入当前登录密码" autocomplete="current-password" /></form>
                                         </div>
                                         <div class="form-group">
                                             <label for="auth-new-password" data-i18n="settingsSecurity.newPassword">新密码</label>
-                                            <input type="password" id="auth-new-password" data-i18n="settingsSecurity.newPasswordPlaceholder" data-i18n-attr="placeholder" placeholder="设置新密码（至少 8 位）" autocomplete="new-password" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="auth-new-password" data-i18n="settingsSecurity.newPasswordPlaceholder" data-i18n-attr="placeholder" placeholder="设置新密码（至少 8 位）" autocomplete="new-password" /></form>
                                         </div>
                                         <div class="form-group">
                                             <label for="auth-confirm-password" data-i18n="settingsSecurity.confirmPassword">确认新密码</label>
-                                            <input type="password" id="auth-confirm-password" data-i18n="settingsSecurity.confirmPasswordPlaceholder" data-i18n-attr="placeholder" placeholder="再次输入新密码" autocomplete="new-password" />
+                                            <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="auth-confirm-password" data-i18n="settingsSecurity.confirmPasswordPlaceholder" data-i18n-attr="placeholder" placeholder="再次输入新密码" autocomplete="new-password" /></form>
                                         </div>
                                         <div class="form-actions">
                                             <button class="btn-secondary" type="button" onclick="resetPasswordForm()" data-i18n="settingsSecurity.clear">清空</button>
@@ -5508,6 +6123,147 @@
 
                         </div>
                     </div>
+                </div>
+
+                <!-- 调用拦截页面 -->
+                <div id="page-tool-guard" class="page tool-guard-page">
+                    <div class="page-header">
+                        <h2 data-i18n="toolGuard.title">调用拦截</h2>
+                        <p data-i18n="toolGuard.description">在 MCP 工具执行前检查工具名称和参数，命中规则立即阻止调用。人机协同审批和工具白名单不会跳过此检查。</p>
+                        <div class="page-header-actions">
+                            <span id="tool-guard-save-state" class="tool-guard-save-state"></span>
+                            <button type="button" class="btn-secondary" id="tool-guard-open-test" onclick="openToolGuardTest()" data-i18n="toolGuard.testEntry">全部规则验证</button>
+                            <button type="button" class="btn-secondary" id="tool-guard-reset" onclick="resetToolGuardConfig()" data-i18n="toolGuard.reset">撤销修改</button>
+                            <button type="button" class="btn-primary" id="tool-guard-save" onclick="saveToolGuardConfig()" data-i18n="toolGuard.save">保存并生效</button>
+                        </div>
+                    </div>
+                    <div class="tool-guard-content">
+                        <section class="tool-guard-card tool-guard-policy">
+                            <div class="tool-guard-policy-info">
+                                <span class="tool-guard-policy-icon" aria-hidden="true">
+                                    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                                </span>
+                                <div class="tool-guard-policy-copy">
+                                    <h3 data-i18n="toolGuard.policyTitle">拦截策略</h3>
+                                    <p data-i18n="toolGuard.enableHint">在工具执行前检查风险，修改后保存生效。</p>
+                                </div>
+                            </div>
+                            <label class="tool-guard-toggle tool-guard-switch">
+                                <input type="checkbox" id="tool-guard-enabled" onchange="changeToolGuardEnabled(this.checked)">
+                                <span data-i18n="toolGuard.enabled">启用调用拦截</span>
+                            </label>
+                            <span id="tool-guard-protection-status" class="tool-guard-save-state"></span>
+                        </section>
+
+                        <section class="tool-guard-card tool-guard-scope-card">
+                            <div class="tool-guard-section-header">
+                                <div>
+                                    <h3 data-i18n="toolGuard.scopeTitle">授权范围</h3>
+                                    <p data-i18n="toolGuard.scopeListHint">列在此处的目标会跳过「政府网站保护」规则；范围外的目标与其他规则完全不受影响。</p>
+                                </div>
+                                <span id="tool-guard-scope-status" class="tool-guard-rule-count"></span>
+                            </div>
+                            <p class="tool-guard-hint" data-i18n="toolGuard.scopeHint">正则仅检查调用中可见的文本；不会解析 IP 归属、重定向目标或工具读取的文件内容。域名规则不能保证覆盖所有间接访问。</p>
+                            <div class="tool-guard-scope-auth">
+                                <label for="tool-guard-scope-auth" data-i18n="toolGuard.scopeAuthorizationLabel">书面授权依据</label>
+                                <input type="text" id="tool-guard-scope-auth" maxlength="200" autocomplete="off" spellcheck="false" hidden placeholder="案号或授权书文件名" data-i18n="toolGuard.scopeAuthorizationPlaceholder" data-i18n-attr="placeholder">
+                                <p class="tool-guard-field-hint" data-i18n="toolGuard.scopeAuthorizationHint">加入 .gov.tw 这类根后缀前必须填写：该后缀会放行整个 TLD 底下的政府网域。</p>
+                            </div>
+                            <div id="tool-guard-scope" class="tool-guard-scope"></div>
+                            <details class="tool-guard-help">
+                                <summary>
+                                    <span data-i18n="toolGuard.scopeSyntaxTitle">授权范围写法</span>
+                                    <span class="tool-guard-chevron" aria-hidden="true">›</span>
+                                </summary>
+                                <div class="tool-guard-help-body">
+                                    <p data-i18n="toolGuard.scopeSyntaxHint">四种写法可混用。每一项加入前都会先试匹配：确认它确实被放行，且范围外的政府网域仍被拦截，才会写入。</p>
+                                </div>
+                            </details>
+                        </section>
+
+                        <section class="tool-guard-card">
+                            <div class="tool-guard-section-header">
+                                <div>
+                                    <h3 data-i18n="toolGuard.rulesTitle">拦截规则</h3>
+                                    <p data-i18n="toolGuard.rulesHint">按顺序匹配已启用的规则，使用首条命中规则的提醒。正则采用 RE2 语法，保存和试运行时由服务端校验。</p>
+                                </div>
+                                <div class="tool-guard-heading-line">
+                                    <span id="tool-guard-rule-count" class="tool-guard-rule-count"></span>
+                                    <button type="button" class="btn-primary tool-guard-add" id="tool-guard-add" onclick="addToolGuardRule()">
+                                        <span aria-hidden="true">+</span>
+                                        <span data-i18n="toolGuard.addRule">添加规则</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="tool-guard-rules" class="tool-guard-rules"></div>
+                            <p class="tool-guard-hint" data-i18n="toolGuard.listHint">点击规则查看和编辑，按列表顺序匹配。</p>
+                            <details class="tool-guard-help">
+                                <summary>
+                                    <span data-i18n="toolGuard.helpTitle">规则说明与匹配范围</span>
+                                    <span class="tool-guard-chevron" aria-hidden="true">›</span>
+                                </summary>
+                                <div class="tool-guard-help-body">
+                                    <p data-i18n="toolGuard.scopeHint">正则仅检查调用中可见的文本；不会解析 IP 归属、重定向目标或工具读取的文件内容。域名规则不能保证覆盖所有间接访问。</p>
+                                </div>
+                            </details>
+                        </section>
+
+                        <details id="tool-guard-test-panel" class="tool-guard-card tool-guard-test-panel">
+                            <summary>
+                                <span class="tool-guard-test-icon" aria-hidden="true">
+                                    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                                </span>
+                                <span class="tool-guard-disclosure-copy">
+                                    <strong data-i18n="toolGuard.testTitle">全部规则验证</strong>
+                                    <span data-i18n="toolGuard.testSummary">按规则顺序和启停状态，检查整体拦截效果</span>
+                                </span>
+                                <span class="tool-guard-chevron" aria-hidden="true">›</span>
+                            </summary>
+                            <div class="tool-guard-test-body">
+                                <p class="tool-guard-test-hint" data-i18n="toolGuard.testHint">使用页面上的当前配置（包括未保存修改），仅检查匹配结果，不执行任何工具。</p>
+                                <div class="tool-guard-field">
+                                    <label for="tool-guard-test-tool" data-i18n="toolGuard.testTool">工具名称</label>
+                                    <input type="text" id="tool-guard-test-tool" value="http_request" spellcheck="false" autocomplete="off" oninput="invalidateToolGuardTest()">
+                                </div>
+                                <div class="tool-guard-field">
+                                    <label for="tool-guard-test-arguments" data-i18n="toolGuard.testArguments">工具参数（JSON 对象）</label>
+                                    <textarea id="tool-guard-test-arguments" rows="4" spellcheck="false" oninput="invalidateToolGuardTest()">{"target": "https://example.gov.cn"}</textarea>
+                                </div>
+                                <div class="tool-guard-test-actions">
+                                    <button type="button" class="btn-secondary tool-guard-test-run" id="tool-guard-test" onclick="testToolGuardConfig()" data-i18n="toolGuard.testAll">验证全部规则</button>
+                                </div>
+                                <div id="tool-guard-test-result" class="tool-guard-test-result" role="status" hidden></div>
+                            </div>
+                        </details>
+
+                        <div id="tool-guard-feedback" class="tool-guard-feedback" role="status" hidden></div>
+                    </div>
+
+                    <dialog id="tool-guard-add-dialog" class="tool-guard-add-dialog">
+                        <form method="dialog">
+                            <div class="tool-guard-add-header">
+                                <div>
+                                    <h3 data-i18n="toolGuard.addDialogTitle">添加拦截规则</h3>
+                                    <p class="tool-guard-hint" data-i18n="toolGuard.addDialogHint">先配置规则，再用示例参数验证效果，确认后添加到列表。</p>
+                                </div>
+                                <button type="button" class="tool-guard-dialog-close" onclick="closeToolGuardRuleDialog()" aria-label="关闭添加规则" data-i18n="toolGuard.closeDialog" data-i18n-attr="aria-label">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+                                </button>
+                            </div>
+                            <div class="tool-guard-add-body" id="tool-guard-add-body">
+                                <div id="tool-guard-add-fields" class="tool-guard-add-fields"></div>
+                                <div id="tool-guard-add-test" class="tool-guard-add-test"></div>
+                                <div id="tool-guard-add-feedback" class="tool-guard-feedback" role="status" hidden></div>
+                            </div>
+                            <div class="tool-guard-add-footer">
+                                <p class="tool-guard-hint" data-i18n="toolGuard.addToListHint">添加到列表后，点击页面顶部「保存并生效」应用规则。</p>
+                                <div class="tool-guard-dialog-actions">
+                                    <button type="button" class="btn-secondary" onclick="closeToolGuardRuleDialog()" data-i18n="toolGuard.cancelAdd">取消</button>
+                                    <button type="button" class="btn-primary" id="tool-guard-add-confirm" onclick="commitToolGuardRule()" data-i18n="toolGuard.addToList">添加到列表</button>
+                                </div>
+                            </div>
+                        </form>
+                    </dialog>
                 </div>
 
                 <!-- 平台权限页面 -->
@@ -6557,12 +7313,12 @@
                 <div class="form-group">
                     <label for="batch-queue-agent-mode" data-i18n="batchImportModal.agentMode">代理模式</label>
                     <select id="batch-queue-agent-mode">
-                        <option value="eino_single" data-i18n="chat.agentModeEinoSingle">Eino 单代理（ADK）</option>
-                        <option value="deep" data-i18n="chat.agentModeDeep">Deep（DeepAgent）</option>
-                        <option value="plan_execute" data-i18n="chat.agentModePlanExecuteLabel">Plan-Execute</option>
-                        <option value="supervisor" data-i18n="chat.agentModeSupervisorLabel">Supervisor</option>
+                        <option value="eino_single" data-i18n="chat.agentModeEinoSingle">Jy 红队 · 单代理</option>
+                        <option value="deep" data-i18n="chat.agentModeDeep">Jy 红队 · Deep</option>
+                        <option value="plan_execute" data-i18n="chat.agentModePlanExecuteLabel">Jy 红队 · Plan-Execute</option>
+                        <option value="supervisor" data-i18n="chat.agentModeSupervisorLabel">Jy 红队 · Supervisor</option>
                     </select>
-                    <div class="form-hint" style="margin-top: 4px;" data-i18n="batchImportModal.agentModeHint">与对话页一致：Eino 单代理（ADK），或 Deep / Plan-Execute / Supervisor（后三种需已启用多代理）。</div>
+                    <div class="form-hint" style="margin-top: 4px;" data-i18n="batchImportModal.agentModeHint">与对话页一致：Jy 红队 · 单代理，或 Deep / Plan-Execute / Supervisor（后三种需已启用多代理）。</div>
                 </div>
                 <div class="form-group">
                     <label for="batch-queue-concurrency" data-i18n="batchImportModal.concurrency">并发数</label>
@@ -6945,7 +7701,7 @@
                 </div>
                 <div class="form-group">
                     <label for="rbac-password" data-i18n="rbac.password">密码</label>
-                    <input type="password" id="rbac-password" class="form-input" autocomplete="new-password" placeholder="编辑时留空表示不修改" data-i18n="rbac.passwordPlaceholder" data-i18n-attr="placeholder">
+                    <form class="credential-form" style="display: contents" onsubmit="return false"><input type="text" name="username" autocomplete="username" hidden aria-hidden="true" tabindex="-1" /><input type="password" id="rbac-password" class="form-input" autocomplete="new-password" placeholder="编辑时留空表示不修改" data-i18n="rbac.passwordPlaceholder" data-i18n-attr="placeholder"></form>
                 </div>
                 <div class="form-group">
                     <label class="checkbox-label">
@@ -7243,7 +7999,7 @@
             </div>
             <div class="modal-footer" style="padding: 14px 20px; border-top: 1px solid var(--border-color, #e5e7eb); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <div style="display: flex; gap: 8px;">
-                    <button type="button" class="btn-primary" onclick="copyPocContent()" id="poc-copy-btn" style="background: #7c3aed; color: #fff;">
+                    <button type="button" class="btn-primary" onclick="copyPocContent()" id="poc-copy-btn" style="background: var(--accent-color); color: #fff;">
                         <span>📋 複製內容</span>
                     </button>
                     <button type="button" class="btn-secondary" onclick="downloadPocMarkdown()" id="poc-dl-btn">
@@ -7255,6 +8011,33 @@
                         <span>💬 帶入 AI 對話驗證</span>
                     </button>
                     <button type="button" class="btn-secondary" onclick="closePocPreviewModal()">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 漏洞待處理分流彈窗 -->
+    <div id="vuln-triage-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="vuln-triage-title" style="display: none;">
+        <div class="modal-content vuln-triage-modal-content" style="max-width: 860px;">
+            <div class="modal-header vuln-triage-modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h3 id="vuln-triage-title" data-i18n="vulnTriage.title">待處理分流</h3>
+                </div>
+                <button type="button" class="modal-close" onclick="closeTriageModal()" aria-label="关闭" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <div class="modal-body vuln-triage-modal-body">
+                <p class="vuln-triage-scope-line"><span data-i18n="vulnTriage.scopeLabel">分流范围</span>：<code id="vuln-triage-scope"></code></p>
+                <p class="vuln-triage-hint" id="vuln-triage-hint"></p>
+                <div class="vuln-triage-status" id="vuln-triage-status" role="status" aria-live="polite"></div>
+                <div class="vuln-triage-run-row">
+                    <button class="btn-primary" type="button" id="vuln-triage-run" onclick="runVulnerabilityTriage()" data-i18n="vulnTriage.run">开始分流</button>
+                </div>
+                <div class="vuln-triage-results" id="vuln-triage-results"></div>
+                <div class="vuln-triage-actions" id="vuln-triage-actions" hidden>
+                    <button class="btn-ghost" type="button" onclick="selectAllTriage()" data-i18n="vulnTriage.selectAll">全选</button>
+                    <button class="btn-ghost" type="button" onclick="selectNoneTriage()" data-i18n="vulnTriage.selectNone">全不选</button>
+                    <span class="vuln-triage-apply-count" id="vuln-triage-apply-count"></span>
+                    <button class="btn-primary" type="button" id="vuln-triage-apply" onclick="applyVulnerabilityTriage()" data-i18n="vulnTriage.apply">套用已勾选</button>
                 </div>
             </div>
         </div>
@@ -7298,30 +8081,32 @@
             </div>
             <div class="modal-footer" style="padding: 12px 20px; border-top: 1px solid var(--border-color, #e5e7eb); display: flex; justify-content: flex-end; gap: 10px;">
                 <button type="button" class="btn-secondary" onclick="closeBatchPocModal()">取消</button>
-                <button type="button" class="btn-primary" onclick="runBatchGeneratePoc()" id="batch-poc-run-btn" style="background: #7c3aed; color: #fff;">開始批量生成</button>
+                <button type="button" class="btn-primary" onclick="runBatchGeneratePoc()" id="batch-poc-run-btn" style="background: var(--accent-color); color: #fff;">開始批量生成</button>
             </div>
         </div>
     </div>
 
     <script src="/static/vendor/i18next.min.js"></script>
     <script src="/static/js/i18n.js"></script>
-    <script src="/static/js/theme.js"></script>
+    <script src="/static/js/theme.js?v=20261027-jyrt3"></script>
     <script src="/static/js/builtin-tools.js"></script>
-    <script src="/static/js/auth.js?v=20260813-1"></script>
+    <script src="/static/js/auth.js?v=20261101-4"></script>
     <script src="/static/js/modal.js"></script>
     <script src="/static/js/notifications.js"></script>
-    <script src="/static/js/info-collect.js?v=20260717-1"></script>
-    <script src="/static/js/assets.js?v=20260717-7"></script>
-    <script src="/static/js/recon.js?v=20260910-1"></script>
+    <script src="/static/js/info-collect.js?v=20261021-1"></script>
+    <script src="/static/js/asset-intel.js?v=20261020-1"></script>
+    <script src="/static/js/assets.js?v=20261021-1"></script>
+    <script src="/static/js/recon.js?v=20261022-report"></script>
 <script src="/static/js/sentinel.js"></script>
     <script src="/static/js/agents.js"></script>
-    <script src="/static/js/dashboard.js"></script>
-    <script src="/static/js/chat-scroll.js?v=20260815-1"></script>
-    <script src="/static/js/monitor.js?v=20260819-3"></script>
-    <script src="/static/js/chat.js?v=20260819-5"></script>
+    <script src="/static/js/dashboard.js?v=20261105-mcpinv"></script>
+    <script src="/static/js/chat-scroll.js?v=20261027-jyrt3"></script>
+    <script src="/static/js/scope-extension.js?v=20261102-1"></script>
+    <script src="/static/js/monitor.js?v=20261105-mcplayout"></script>
+    <script src="/static/js/chat.js?v=20261027-jyrt3"></script>
     <script src="/static/js/chat-plan-progress.js?v=20260815-1"></script>
-    <script src="/static/js/hitl.js?v=20260819-1"></script>
-    <script src="/static/js/settings.js?v=20260907-1"></script>
+    <script src="/static/js/hitl.js?v=20261027-hitloff"></script>
+    <script src="/static/js/settings.js?v=20261105-mcpcard"></script>
     <script src="/static/js/audit-datetime-picker.js"></script>
     <script src="/static/js/audit.js"></script>
     <script src="/static/js/wechat-robot.js"></script>
@@ -7331,18 +8116,24 @@
     <script src="/static/js/knowledge.js"></script>
     <script src="/static/js/skills.js"></script>
     <script src="/static/js/fact-graph.js"></script>
-    <script src="/static/js/projects.js?v=20260819-1"></script>
-    <script src="/static/js/vulnerability.js?v=14"></script>
+    <script src="/static/js/projects.js?v=20261022-report"></script>
+    <script src="/static/js/vulnerability.js?v=20261022-1"></script>
+    <script src="/static/js/vulnerability-triage.js?v=1"></script>
     <script src="/static/js/webshell.js"></script>
     <script src="/static/js/chat-files.js"></script>
     <script src="/static/js/tasks.js"></script>
-    <script src="/static/js/security-ops.js?v=20260907-1"></script>
+    <script src="/static/js/security-ops.js?v=20261022-report"></script>
     <script src="/static/js/workflow-package-client.js"></script>
     <script src="/static/js/workflows.js"></script>
     <script src="/static/js/roles.js"></script>
-    <script src="/static/js/rbac.js"></script>
+    <script src="/static/js/rbac.js?v=20261021-1"></script>
     <script src="/static/js/c2.js"></script>
-    <script src="/static/js/xss.js"></script>
+    <script src="/static/js/xss.js?v=20261020-2"></script>
     <script src="/static/js/rbac-guards.js?v=20260717-1"></script>
+    <script src="/static/js/tool-guard.js?v=20261003-1"></script>
+    <script src="/static/js/redirect-verify.js?v=20261101-1"></script>
+    <script src="/static/js/loan-cases.js?v=20261028-1"></script>
+    <script src="/static/js/databases.js?v=20261105-1"></script>
+    <script src="/static/js/records.js?v=20261106-2"></script>
 </body>
 </html>

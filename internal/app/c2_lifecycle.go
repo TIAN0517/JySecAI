@@ -2,12 +2,15 @@ package app
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"jysecai/internal/c2"
 	"jysecai/internal/config"
 	"jysecai/internal/database"
 	"jysecai/internal/handler"
 
+	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
 
@@ -35,6 +38,23 @@ func setupC2Runtime(
 		DB:     db,
 		Logger: logger,
 		AttackChainRecord: func(session *database.C2Session, phase string, description string) {
+			// 落库 c2_events：implant 上线与 ATT&CK 阶段推进可供攻击链重建与报告聚合
+			if err := db.AppendC2Event(&database.C2Event{
+				ID:        uuid.NewString(),
+				Level:     "info",
+				Category:  "session",
+				SessionID: session.ID,
+				Message:   fmt.Sprintf("attack-chain[%s] %s", phase, description),
+				Data: map[string]interface{}{
+					"attack_phase": phase,
+					"hostname":     session.Hostname,
+					"username":     session.Username,
+				},
+				CreatedAt: time.Now(),
+			}); err != nil {
+				logger.Warn("C2 attack-chain 事件落库失败",
+					zap.String("session_id", session.ID), zap.Error(err))
+			}
 			logger.Info("C2 Attack Chain",
 				zap.String("session_id", session.ID),
 				zap.String("phase", phase),
@@ -42,6 +62,28 @@ func setupC2Runtime(
 			)
 		},
 		VulnRecord: func(session *database.C2Session, title string, severity string) {
+			level := "info"
+			switch severity {
+			case "critical":
+				level = "critical"
+			case "high", "medium":
+				level = "warn"
+			}
+			if err := db.AppendC2Event(&database.C2Event{
+				ID:        uuid.NewString(),
+				Level:     level,
+				Category:  "session",
+				SessionID: session.ID,
+				Message:   fmt.Sprintf("vuln[%s] %s", severity, title),
+				Data: map[string]interface{}{
+					"severity": severity,
+					"hostname": session.Hostname,
+				},
+				CreatedAt: time.Now(),
+			}); err != nil {
+				logger.Warn("C2 vuln 事件落库失败",
+					zap.String("session_id", session.ID), zap.Error(err))
+			}
 			logger.Info("C2 Vulnerability",
 				zap.String("session_id", session.ID),
 				zap.String("title", title),

@@ -3,7 +3,12 @@ name: Linux Build
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build-linux:
@@ -20,15 +25,31 @@ jobs:
       - name: Install CGO dependencies
         run: sudo apt-get update && sudo apt-get install -y build-essential
 
-      - name: Test
-        run: go test ./internal/multiagent/...
+      - name: Vet
+        run: go vet ./...
 
+      - name: Build all packages
+        run: go build ./...
+
+      # 這裡刻意測整棵樹，不只 ./internal/multiagent/...。
+      # 舊設定只測一個套件，連其他套件能不能編譯都沒檢查——internal/handler 缺一個
+      # 套件時 CI 還是綠的，前端 i18n 語言包缺鍵（畫面切英文時顯示內部鍵名）也
+      # 完全沒有測試能擋。新增的 internal/app 守門測試就是靠這一步才有意義。
+      - name: Test
+        run: go test ./...
+
+      - name: Test with race detector
+        run: go test -race ./internal/handler/... ./internal/app/... ./internal/mcp/...
+
+      # -s -w 去掉符號表與 DWARF，體積從約 140MB 降到約 70MB。
+      # 代價是 panic stack trace 沒有行號；要用行號除錯時改用
+      # -ldflags "-s -w" 之外的建置，或查 logs/ 下的結構化日誌。
       - name: Build Linux production binary
         env:
           CGO_ENABLED: 1
           GOOS: linux
           GOARCH: amd64
-        run: go build -o jysec-core-linux ./cmd/server
+        run: go build -ldflags "-s -w -buildid=" -o jysec-core-linux ./cmd/server
 
       - name: Verify binary
         run: |
@@ -40,3 +61,83 @@ jobs:
         with:
           name: jysec-core-linux-amd64
           path: jysec-core-linux
+
+  # 靜態安全掃描。這些是預警線，不是取代人工審查：gosec 會對 C2/webshell 這類
+  # 「按設計就是要執行指令」的程式碼報出大量誤報，所以只做報告不擋建置；
+  # 真正阻斷合併的是下面 security-regression 那個 job。
+  security-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.x'
+
+      # gosec G101-G115：硬編碼憑證、命令注入、SSRF、zip slip、弱隨機數。
+      # 這是本次修掉的多數漏洞的同一類別。
+      - name: gosec
+        uses: securego/gosec@master
+        with:
+          args: -no-fail -fmt sarif -out gosec.sarif ./...
+        continue-on-error: true
+
+      # govulncheck 走 vulnerability database，只報「實際呼叫到」有 CVE 的程式碼，
+      # 噪音比 gosec 低很多。
+      - name: govulncheck
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          govulncheck ./...
+
+      - name: staticcheck
+        run: |
+          go install honnef.co/go/tools/cmd/staticcheck@latest
+          staticcheck ./internal/... 2>&1 | tee staticcheck.txt
+          # 專案已有大量歷史告警，只輸出報告不阻斷。
+          exit 0
+
+      - name: Upload gosec report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gosec-report
+          path: gosec.sarif
+
+  # 專案自訂的授權檢查。這個專案的授權邊界很明確：滲透測試工具本身就可以對
+  # 指定目標執行掃描與驗證，但「掃描器」和「掃描別人的電腦」是不同的東西。
+  # 這些測試把該界線寫成可執行的斷言。
+  authorization-boundaries:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.x'
+
+      - name: Run authorization boundary tests
+        run: go test -v -run 'TestResolveWithinPromptBase|TestMaskProviderSecrets|TestMergeProviderSecrets|TestGetConfigResponseCarries|TestBeaconTemplate|TestQuoteTemplateData|TestValidateBeaconHost|TestResolveBeaconDialHost|TestRedactMCP|TestMergeExternalMCP|TestExternalMCPConfigForResponse|TestEscapeCSVCell|TestMaskTerminalCommand|TestIsBlockedIP|TestValidateOutboundURL|TestWebshell.*|TestOperator|TestRBAC' ./internal/...
+
+  # 前端安全回歸測試（node --test）。C2 控制台 XSS、XSS 採集 UI 注入面等
+  # 斷言目前只存在於 web/static/js/*.test.cjs；此前沒有任何 CI 執行它們。
+  # 只納入安全相關檔案並設為 blocking——UI 行為測試另欠修補，不在此攔。
+  frontend-security-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run frontend security tests
+        run: node --test web/static/js/c2-security.test.cjs web/static/js/xss-safety.test.cjs

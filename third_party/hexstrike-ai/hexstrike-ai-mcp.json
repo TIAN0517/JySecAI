@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "hexstrike-ai": {
+      "command": "/usr/bin/python3",
+      "args": [
+        "/usr/share/hexstrike-ai/hexstrike_mcp.py",
+        "--server",
+        "http://127.0.0.1:8888"
+      ],
+      "description": "HexStrike AI v6.0 - local loopback API. alwaysAllow stays empty.",
+      "timeout": 300,
+      "alwaysAllow": []
+    }
+  }
+}

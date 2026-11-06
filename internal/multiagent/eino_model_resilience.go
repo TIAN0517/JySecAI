@@ -292,7 +292,7 @@ func newEinoModelFailoverConfig(
 				return false
 			}
 			err = unwrapEinoRetryExhausted(err)
-			return isEinoTransientRunError(err)
+			return isEinoTransientRunError(err) || isEinoShouldRetryOutputRejected(err)
 		},
 		GetFailoverModel: func(ctx context.Context, failoverCtx *adk.FailoverContext[*schema.Message]) (model.BaseModel[*schema.Message], []*schema.Message, error) {
 			if failoverCtx == nil || failoverCtx.FailoverAttempt == 0 {
@@ -374,7 +374,7 @@ func newEinoAgenticModelFailoverConfig(
 				return false
 			}
 			err = unwrapEinoRetryExhausted(err)
-			return isEinoTransientRunError(err)
+			return isEinoTransientRunError(err) || isEinoShouldRetryOutputRejected(err)
 		},
 		GetFailoverModel: func(ctx context.Context, failoverCtx *adk.FailoverContext[*schema.AgenticMessage]) (model.BaseModel[*schema.AgenticMessage], []*schema.AgenticMessage, error) {
 			if failoverCtx == nil || failoverCtx.FailoverAttempt == 0 {

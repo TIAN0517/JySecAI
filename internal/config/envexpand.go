@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -49,6 +50,40 @@ func expandEnvVar(s string) string {
 	return b.String()
 }
 
+// LoadDotEnv 讀取與設定檔同目錄的 .env，只補上程序裡還沒有的變數。
+// 已存在的環境變數與檔內其他列都保持原樣，避免蓋掉另外載入的密鑰。
+func LoadDotEnv(configPath string) {
+	path := filepath.Join(filepath.Dir(configPath), ".env")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return
+	}
+	for _, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		if strings.HasPrefix(line, "export ") {
+			line = strings.TrimSpace(strings.TrimPrefix(line, "export "))
+		}
+		key, val, ok := strings.Cut(line, "=")
+		if !ok {
+			continue
+		}
+		key = strings.TrimSpace(key)
+		if key == "" || os.Getenv(key) != "" {
+			continue
+		}
+		val = strings.TrimSpace(val)
+		if len(val) >= 2 {
+			if (val[0] == '\'' && val[len(val)-1] == '\'') || (val[0] == '"' && val[len(val)-1] == '"') {
+				val = val[1 : len(val)-1]
+			}
+		}
+		_ = os.Setenv(key, val)
+	}
+}
+
 // ExpandConfigEnv 展开 ExternalMCPServerConfig 中所有支持环境变量的字段。
 // 展开范围：Command、Args、Env values、URL、Headers values。
 func ExpandConfigEnv(cfg *ExternalMCPServerConfig) {
@@ -63,4 +98,17 @@ func ExpandConfigEnv(cfg *ExternalMCPServerConfig) {
 	for k, v := range cfg.Headers {
 		cfg.Headers[k] = expandEnvVar(v)
 	}
+}
+
+// ExpandExternalMySQLEnv 展开外部 MySQL 接收端设定中的环境变量引用。
+// 展开范围：Host、User、Password、Database、TablePrefix。
+//
+// 密码最该走环境变量：它是最不想落在磁盘上的字段，而 config.yaml 会跟着
+// 仓库一起走（虽然被 .gitignore 排除，但备份、同步、贴聊天记录都会漏出去）。
+func ExpandExternalMySQLEnv(cfg *ExternalMySQLConfig) {
+	cfg.Host = expandEnvVar(cfg.Host)
+	cfg.User = expandEnvVar(cfg.User)
+	cfg.Password = expandEnvVar(cfg.Password)
+	cfg.Database = expandEnvVar(cfg.Database)
+	cfg.TablePrefix = expandEnvVar(cfg.TablePrefix)
 }

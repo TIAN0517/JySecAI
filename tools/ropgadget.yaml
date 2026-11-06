@@ -1,6 +1,7 @@
 name: "ropgadget"
 command: "ROPgadget"
 enabled: true
+action_class: "local_analysis"
 short_description: "ROP gadget搜索工具"
 description: |
   ROPgadget是一个用于在二进制文件中搜索ROP gadget的工具。

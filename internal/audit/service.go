@@ -81,7 +81,7 @@ func (s *Service) Record(c *gin.Context, e Entry) {
 	}
 	clientIPVal := e.ClientIP
 	if clientIPVal == "" {
-		clientIPVal = clientIP(c)
+		clientIPVal = s.clientIP(c)
 	}
 
 	row := &database.AuditLog{
@@ -154,15 +154,24 @@ func (s *Service) allowFailureAudit(c *gin.Context, e Entry) bool {
 		return true
 	}
 	cooldown := time.Duration(s.cfg.Audit.AuthFailureCooldownEffective()) * time.Second
-	key := authFailureThrottleKey(e.Category, e.Action, clientIP(c))
+	key := authFailureThrottleKey(e.Category, e.Action, s.clientIP(c))
 	return s.failThrottle.allow(key, cooldown)
 }
 
-func clientIP(c *gin.Context) string {
+// clientIP 回傳這筆稽核紀錄應記錄的客戶端 IP。
+//
+// 採用平台的安全層解析（見 security.EffectiveClientIP）：當設定開啟
+// trust_cf_connecting_ip 時，這條路徑進來的請求會記到真實客戶端 IP，而不是
+// 一律 127.0.0.1——否則外部所有使用者的稽核會混在同一個 IP 欄位裡，
+// 既看不出是誰，也讓「同一 IP 的失敗冷卻」變成全站共用一個桶。
+func (s *Service) clientIP(c *gin.Context) string {
 	if c == nil {
 		return ""
 	}
-	return c.ClientIP()
+	if s == nil || s.cfg == nil {
+		return security.EffectiveClientIP(c, false)
+	}
+	return security.EffectiveClientIP(c, s.cfg.Server.TrustCFConnectingIP)
 }
 
 func userAgent(c *gin.Context) string {

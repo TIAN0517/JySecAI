@@ -1,12 +1,33 @@
 (function () {
     'use strict';
 
-    const state = { config: null, saved: null, busy: false, testing: false, revision: 0, openRuleId: null, addDraft: null };
+    const state = { config: null, saved: null, busy: false, testing: false, revision: 0, openRuleId: null, addDraft: null, scopeVerifying: false };
     const ruleViews = new Map();
+    const scopeViews = new Map();
     const el = (id) => document.getElementById('tool-guard-' + id);
     const canRead = () => typeof hasPermission !== 'function' || hasPermission('config:read');
     const canWrite = () => typeof hasPermission !== 'function' || hasPermission('config:write');
     const copy = (value) => JSON.parse(JSON.stringify(value));
+
+    // 授權範圍的四種寫法，順序與後端 toolguard.Scope 的欄位一致。
+    // 上限取自 internal/toolguard 的 MaxScope* 常數：超過的設定根本編譯不了，
+    // 這裡先擋掉，使用者才不會填完才看到伺服器回錯。
+    const SCOPE_GROUPS = [
+        { key: 'domains', label: 'scopeDomains', hint: 'scopeDomainsHint', placeholder: 'scopeDomainPlaceholder', max: 2000 },
+        { key: 'domain_suffixes', label: 'scopeSuffixes', hint: 'scopeSuffixesHint', placeholder: 'scopeSuffixPlaceholder', max: 200 },
+        { key: 'wildcards', label: 'scopeWildcards', hint: 'scopeWildcardsHint', placeholder: 'scopeWildcardPlaceholder', max: 500 },
+        { key: 'cidrs', label: 'scopeCidrs', hint: 'scopeCidrsHint', placeholder: 'scopeCidrPlaceholder', max: 500 }
+    ];
+    const SCOPE_ENTRY_MAX = 512;
+
+    // 這些後綴一加進去，該 TLD 底下的所有政府網域都會放行，等同關閉整條保護在
+    // 該 TLD 上的作用。與 scripts/grant-scope-target.py 的 ROOT_GOV_SUFFIXES
+    // 保持一致：預設拒絕，必須附書面授權依據。
+    const ROOT_GOV_SUFFIXES = ['.gov', '.gov.tw', '.gov.cn', '.gov.hk', '.gov.uk', '.gov.au',
+        '.gov.jp', '.gov.sg', '.gov.in', '.gov.us', '.gov.*'];
+
+    // 負向控制組。刻意用 .gov.example，避免指涉任何真實目標。
+    const SCOPE_CONTROL_HOST = 'portal.agency.gov.example';
 
     function tr(key, params) {
         const fullKey = 'toolGuard.' + key;
@@ -64,6 +85,7 @@
             el('add-confirm').textContent = tr(draft.adding ? 'addingRule' : 'addToList');
             updateLocalTestControls(draft.tester);
         }
+        updateScopeControls();
     }
 
     function invalidateTest() {
@@ -275,9 +297,247 @@
         updateControls();
     }
 
+    // ---------------------------------------------------------------- 授權範圍
+    //
+    // 範圍是唯一能讓 government-domains 規則失效的欄位，所以這一區的每個值
+    // 都必須經過與 scripts/grant-scope-target.py 相同的雙向控制測試才會寫入：
+    //   正向：新值本身必須被放行 —— 否則使用者以為解除了限制，實際上沒有
+    //   負向：範圍外的政府網域必須仍然被擋 —— 否則「全綠」只是因為規則整個沒了
+    // 控制測試只做 policy 比對，不會發出任何請求，所以探針主機可以放心用假名。
+
+    function scopeEntries(key) {
+        if (!state.config.scope) state.config.scope = {};
+        if (!Array.isArray(state.config.scope[key])) state.config.scope[key] = [];
+        return state.config.scope[key];
+    }
+
+    // 產生必然落在這個範圍值底下、但不可能真實存在的主機名。
+    // 後端 /tool-guard/test 只做規則比對、不執行工具，所以探針不會打到網路上。
+    function scopeProbeHost(key, value) {
+        if (key === 'domain_suffixes') return 'scope-check' + value;
+        // 網段位址本身就在自己的 CIDR 內，用它當探針最省事，也不用在前端算首個可用位址。
+        if (key === 'cidrs') return value.split('/')[0];
+        if (key === 'wildcards') return value.replace(/\*/g, 'scope-check').replace(/\?/g, 'a');
+        return value;
+    }
+
+    function validateScopeEntry(key, value) {
+        if (!value) return tr('scopeEntryRequired');
+        if (value.length > SCOPE_ENTRY_MAX) return tr('scopeEntryTooLong');
+        if (/\s/.test(value)) return tr('scopeEntryInvalid');
+        if (key === 'cidrs') {
+            const parts = value.split('/');
+            if (parts.length !== 2 || !parts[1] || !/^\d+$/.test(parts[1])) return tr('scopeCidrInvalid');
+            return '';
+        }
+        // 後綴本來就要以 . 開頭，所以「不能以 . 開頭」那條只適用於完整主機名。
+        // 混在一起寫會讓所有後綴都被自己的規則擋掉，一筆都加不進來。
+        if (key === 'domain_suffixes') {
+            if (/[@:/?#]/.test(value)) return tr('scopeEntryInvalid');
+            if (!value.startsWith('.')) return tr('scopeSuffixInvalid');
+            if (value.endsWith('.')) return tr('scopeEntryInvalid');
+            return '';
+        }
+        // domains / wildcards 都是完整主機名或 glob，不能帶 scheme、userinfo 或路徑。
+        if (/[@:/?#]/.test(value)) return tr('scopeEntryInvalid');
+        if (value.startsWith('.') || value.endsWith('.')) return tr('scopeEntryInvalid');
+        if (key === 'domains' && !value.includes('.')) return tr('scopeEntryInvalid');
+        return '';
+    }
+
+    function scopeListFor(key) {
+        if (!state.config) return [];
+        const values = state.config.scope && state.config.scope[key];
+        return Array.isArray(values) ? values : [];
+    }
+
+    function renderScope() {
+        const target = el('scope');
+        if (!target || !state.config) return;
+        target.replaceChildren();
+        scopeViews.clear();
+
+        for (const group of SCOPE_GROUPS) {
+            const values = scopeListFor(group.key);
+            const section = document.createElement('div');
+            section.className = 'tool-guard-scope-group';
+            const head = document.createElement('div');
+            head.className = 'tool-guard-scope-group-head';
+            const title = textElement('h4', tr(group.label));
+            title.id = 'tool-guard-scope-title-' + group.key;
+            head.append(title);
+            head.setAttribute('aria-labelledby', title.id);
+            section.setAttribute('aria-labelledby', title.id);
+
+            const list = document.createElement('ul');
+            list.className = 'tool-guard-scope-list';
+            list.id = 'tool-guard-scope-list-' + group.key;
+            if (!values.length) {
+                const empty = textElement('li', tr('scopeEmpty'), 'tool-guard-scope-empty');
+                list.append(empty);
+            }
+            values.forEach((value, index) => {
+                const item = document.createElement('li');
+                item.className = 'tool-guard-scope-item';
+                const code = textElement('code', value);
+                code.id = 'tool-guard-scope-item-' + group.key + '-' + index;
+                const remove = textElement('button', tr('scopeRemove'), 'btn-secondary tool-guard-scope-remove');
+                remove.type = 'button';
+                remove.setAttribute('aria-label', tr('scopeRemoveNamed', { value: value }));
+                remove.addEventListener('click', () => removeScopeEntry(group.key, index));
+                item.append(code, remove);
+                list.append(item);
+            });
+            section.append(head, list);
+
+            const add = document.createElement('div');
+            add.className = 'tool-guard-scope-add';
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = 'tool-guard-scope-input-' + group.key;
+            input.placeholder = tr(group.placeholder);
+            input.maxLength = SCOPE_ENTRY_MAX;
+            input.spellcheck = false;
+            input.autocomplete = 'off';
+            input.setAttribute('aria-label', tr(group.label));
+            const button = textElement('button', tr('scopeAdd'), 'btn-secondary tool-guard-scope-add-btn');
+            button.type = 'button';
+            button.id = 'tool-guard-scope-btn-' + group.key;
+            button.addEventListener('click', () => addScopeEntry(group.key));
+            input.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') { event.preventDefault(); addScopeEntry(group.key); }
+            });
+            input.addEventListener('input', () => { input.removeAttribute('aria-invalid'); });
+            add.append(input, button);
+            section.append(add, textElement('p', tr(group.hint), 'tool-guard-field-hint'));
+            target.append(section);
+            scopeViews.set(group.key, { section, input, button, removeButtons: Array.from(list.querySelectorAll('.tool-guard-scope-remove')) });
+        }
+        renderScopeStatus();
+    }
+
+    function renderScopeStatus() {
+        const status = el('scope-status');
+        if (!status) return;
+        const total = SCOPE_GROUPS.reduce((sum, group) => sum + scopeListFor(group.key).length, 0);
+        status.textContent = tr(state.scopeVerifying ? 'scopeVerifying' : 'scopeCount', { total: total });
+        status.classList.toggle('is-dirty', !!dirty());
+    }
+
+    function updateScopeControls() {
+        renderScopeStatus();
+        const writable = canWrite() && !!state.config && !state.busy && !state.scopeVerifying;
+        scopeViews.forEach((view, key) => {
+            const group = SCOPE_GROUPS.find((item) => item.key === key);
+            const full = scopeListFor(key).length >= group.max;
+            view.input.disabled = !writable;
+            view.button.disabled = !writable || full;
+            view.button.textContent = tr(full ? 'scopeListFull' : 'scopeAdd');
+            view.removeButtons.forEach((button) => { button.disabled = !writable; });
+        });
+        const auth = el('scope-auth');
+        if (auth) auth.disabled = !writable;
+    }
+
+    function removeScopeEntry(key, index) {
+        if (!canWrite() || state.busy || state.scopeVerifying || !state.config) return;
+        const values = scopeListFor(key);
+        if (index < 0 || index >= values.length) return;
+        // 移除只會讓保護變嚴格，不會放行任何東西，所以不需要雙向控制測試。
+        values.splice(index, 1);
+        // 清空後把欄位整個拿掉，否則 config 會多出 saved 沒有的空陣列，
+        // dirty() 用 JSON 字串比對，那會讓「加過又刪掉」永遠顯示成有未保存修改。
+        if (!values.length) delete state.config.scope[key];
+        if (state.config.scope && !Object.keys(state.config.scope).length) delete state.config.scope;
+        renderScope();
+        changed();
+    }
+
+    async function addScopeEntry(key) {
+        if (!canWrite() || state.busy || state.scopeVerifying || !canRead() || !state.config) return;
+        const view = scopeViews.get(key);
+        if (!view) return;
+        const group = SCOPE_GROUPS.find((item) => item.key === key);
+        if (!group) return;
+        const raw = view.input.value.trim();
+        const value = key === 'cidrs' ? raw : raw.toLowerCase();
+
+        const invalid = validateScopeEntry(key, value);
+        if (invalid) {
+            view.input.setAttribute('aria-invalid', 'true');
+            if (!view.input.disabled) view.input.focus();
+            feedback(invalid, true);
+            return;
+        }
+        if (scopeListFor(key).indexOf(value) !== -1) {
+            view.input.setAttribute('aria-invalid', 'true');
+            feedback(tr('scopeDuplicate'), true);
+            return;
+        }
+        if (scopeListFor(key).length >= group.max) {
+            feedback(tr('scopeTooMany', { label: tr(group.label) }), true);
+            return;
+        }
+        // 前置閘必須在碰伺服器之前就擋，否則讀不到設定的人根本看不到這道限制。
+        if (key === 'domain_suffixes' && ROOT_GOV_SUFFIXES.indexOf(value) !== -1) {
+            const auth = el('scope-auth');
+            const ref = auth ? auth.value.trim() : '';
+            if (!ref) {
+                feedback(tr('scopeAuthorizationRequired', { value: value }), true);
+                if (auth) {
+                    auth.hidden = false;
+                    auth.setAttribute('aria-invalid', 'true');
+                    if (!auth.disabled) auth.focus();
+                }
+                return;
+            }
+        }
+
+        const candidate = copy(state.config);
+        if (!candidate.scope) candidate.scope = {};
+        if (!Array.isArray(candidate.scope[key])) candidate.scope[key] = [];
+        candidate.scope[key].push(value);
+        candidate.scope[key].sort();
+
+        state.scopeVerifying = true;
+        feedback('');
+        updateControls();
+        try {
+            // 正向：新值本身必須放行。
+            const probe = scopeProbeHost(key, value);
+            const positive = await request('/api/tool-guard/test', 'POST',
+                { config: candidate, toolName: 'http_request', arguments: { target: 'https://' + probe + '/' } });
+            validateTestResult(positive);
+            if (positive.blocked) throw new Error(tr('scopePositiveFailed', { value: value }));
+            // 負向：範圍外的政府網域必須仍然被擋。
+            const negative = await request('/api/tool-guard/test', 'POST',
+                { config: candidate, toolName: 'http_request', arguments: { target: 'https://' + SCOPE_CONTROL_HOST + '/' } });
+            validateTestResult(negative);
+            if (!negative.blocked) throw new Error(tr('scopeNegativeFailed'));
+        } catch (error) {
+            feedback(tr('scopeAddFailed') + ': ' + error.message, true);
+            return;
+        } finally {
+            state.scopeVerifying = false;
+            renderScopeStatus();
+            updateControls();
+        }
+
+        scopeEntries(key).push(value);
+        scopeEntries(key).sort();
+        renderScope();
+        changed();
+        const auth = el('scope-auth');
+        if (auth) { auth.value = ''; auth.hidden = true; auth.removeAttribute('aria-invalid'); }
+        feedback(tr('scopeAdded', { value: value }));
+    }
+
     function render() {
         if (state.config && el('enabled')) el('enabled').checked = !!state.config.enabled;
+        const auth = el('scope-auth');
+        if (auth) { auth.value = ''; auth.hidden = true; auth.removeAttribute('aria-invalid'); }
         renderRules();
+        renderScope();
         updateControls();
     }
 
@@ -297,10 +557,23 @@
         if (!config || typeof config.enabled !== 'boolean' || (config.rules != null && !Array.isArray(config.rules))) {
             throw new Error(tr('invalidResponse'));
         }
-        return { enabled: config.enabled, rules: (config.rules || []).map((rule) => ({
+        const normalized = { enabled: config.enabled, rules: (config.rules || []).map((rule) => ({
             id: String(rule.id || ''), name: String(rule.name || ''), enabled: !!rule.enabled,
             pattern: String(rule.pattern || ''), message: String(rule.message || '')
         })) };
+        if (config.scope !== undefined && config.scope !== null) {
+            if (typeof config.scope !== 'object' || Array.isArray(config.scope)) throw new Error(tr('invalidResponse'));
+            normalized.scope = {};
+            for (const key of ['domains', 'domain_suffixes', 'wildcards', 'cidrs']) {
+                const values = config.scope[key];
+                if (values === undefined || values === null) continue;
+                if (!Array.isArray(values) || values.some((value) => typeof value !== 'string')) {
+                    throw new Error(tr('invalidResponse'));
+                }
+                normalized.scope[key] = values.slice();
+            }
+        }
+        return normalized;
     }
 
     async function loadConfig() {
@@ -326,7 +599,10 @@
 
     function configForRequest(selected = null) {
         if (!state.config) throw new Error(tr('loadFirst'));
-        const config = selected ? { enabled: true, rules: [{ ...copy(selected), enabled: true }] } : copy(state.config);
+        const config = selected
+            ? { enabled: true, rules: [{ ...copy(selected), enabled: true }],
+                ...(state.config.scope === undefined ? {} : { scope: copy(state.config.scope) }) }
+            : copy(state.config);
         const utf8 = new TextEncoder();
         for (const [index, rule] of config.rules.entries()) {
             for (const key of ['name', 'pattern', 'message']) {
@@ -724,6 +1000,8 @@
     window.openToolGuardTest = openTest;
     window.testToolGuardConfig = testConfig;
     window.invalidateToolGuardTest = invalidateTest;
+    window.addToolGuardScopeEntry = addScopeEntry;
+    window.removeToolGuardScopeEntry = removeScopeEntry;
     document.addEventListener('languagechange', () => {
         render();
         invalidateTest();

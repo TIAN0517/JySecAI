@@ -198,7 +198,7 @@ func SlugID(name string) string {
 	return s
 }
 
-// sanitizeEinoAgentID 规范化 Deep 主代理在 Eino 中的 Name：小写 ASCII、数字、连字符，与默认 cyberstrike-deep 一致。
+// sanitizeEinoAgentID 规范化主代理 Eino Name（小写 ASCII/数字/连字符）；旧 cyberstrike-* 别名到 jy-*。
 func sanitizeEinoAgentID(s string) string {
 	s = strings.TrimSpace(strings.ToLower(s))
 	var b strings.Builder
@@ -211,10 +211,18 @@ func sanitizeEinoAgentID(s string) string {
 		}
 	}
 	out := strings.Trim(b.String(), "-")
-	if out == "" {
-		return "cyberstrike-deep"
+	switch out {
+	case "", "cyberstrike-deep":
+		return "jy-deep"
+	case "cyberstrike-plan-execute":
+		return "jy-plan-execute"
+	case "cyberstrike-supervisor":
+		return "jy-supervisor"
+	case "cyberstrike-eino-single":
+		return "jy-eino-single"
+	default:
+		return out
 	}
-	return out
 }
 
 func parseMarkdownAgentRaw(filename string, content string) (FrontMatter, string, error) {
