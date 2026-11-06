@@ -54,7 +54,7 @@ INSERT INTO loan_cases VALUES ('1'),('2'),('3');
 		t.Fatalf("ok=%v", out["ok"])
 	}
 	dbs, _ := out["databases"].([]any)
-	if len(dbs) != 4 {
+	if len(dbs) != 5 {
 		t.Fatalf("databases len=%d", len(dbs))
 	}
 	features, _ := out["features"].([]any)

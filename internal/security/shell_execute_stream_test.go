@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"io"
+	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"testing"
@@ -55,6 +57,13 @@ func TestEinoStreamingShell_StreamsStderrBeforeStdoutEOF(t *testing.T) {
 
 func TestEinoStreamingShell_SudoFailsFast(t *testing.T) {
 	requirePOSIXShell(t)
+	fakeBin := t.TempDir()
+	fakeSudo := filepath.Join(fakeBin, "sudo")
+	if err := os.WriteFile(fakeSudo, []byte("#!/bin/sh\nprintf '%s\\n' 'sudo: a password is required' >&2\nexit 1\n"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("PATH", fakeBin+string(os.PathListSeparator)+os.Getenv("PATH"))
+
 	shell := NewEinoStreamingShell()
 	cmd := PrepareNonInteractiveShellCommand("sudo whoami && sudo cat /etc/os-release")
 	sr, err := shell.ExecuteStreaming(context.Background(), &filesystem.ExecuteRequest{Command: cmd})
