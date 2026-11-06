@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# .githooks/pre-commit — commit 前的凭据/语法闸门
+#
+# 为什么需要这支
+# ----------------
+# core.hooksPath 已经指向 .githooks，但 .githooks/ 底下没有名为 pre-commit
+# 的执行档 —— git 找不到就直接跳过，凭据扫描形同虚设
+# （2026-11-06 发佈复查时发现：.pre-commit-config.yaml 描述得很完整，但没有
+# pre-commit 框架、.githooks/pre-commit 也不存在，等于两道 P0 闸门从未生效）。
+#
+# 这里把三个只读闸门接起来：
+#   P0 block_secret_filenames.py  阻止凭据档名进版控
+#   P0 scan_secret_content.py     阻止凭据内容进版控
+#   P1 check_python_syntax.py     阻止 Python 语法错误/BOM
+# 不自动执行 fix_trailing_whitespace.py —— 它会改档位，改档应该在编辑器里做，
+# 不该在 commit 钩子里偷偷重写 staged 内容。
+set -uo pipefail
+
+mapfile -t STAGED < <(git diff --cached --name-only --diff-filter=ACM)
+if [ ${#STAGED[@]} -eq 0 ]; then
+  exit 0
+fi
+
+ARGS=()
+for f in "${STAGED[@]}"; do
+  [ -f "$f" ] && ARGS+=("$f")
+done
+if [ ${#ARGS[@]} -eq 0 ]; then
+  exit 0
+fi
+
+fail=0
+python3 .githooks/block_secret_filenames.py "${ARGS[@]}" || fail=1
+python3 .githooks/scan_secret_content.py "${ARGS[@]}" || fail=1
+python3 .githooks/check_python_syntax.py "${ARGS[@]}" || fail=1
+
+if [ "$fail" -ne 0 ]; then
+  printf '\n[P0] pre-commit 检查未通过 → 拒绝 commit\n' >&2
+  exit 1
+fi
+printf '[P0] pre-commit 闸门通过（%d 个档案）\n' "${#ARGS[@]}"
+exit 0

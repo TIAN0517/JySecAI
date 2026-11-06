@@ -12,6 +12,10 @@ chat_uploads/
 config.yaml
 config.local.yaml
 config.yaml.backup
+# 帶時間戳的設定備份（scripts/insert_production_channels_20261003.py 會產生
+# config.yaml.bak-<時間戳>）。這些備份含設定裡的全部憑證，必須一起忽略 ——
+# 否則一次 `git add .` 就把資料庫密碼、機器人 token 一起帶進倉庫。
+config.yaml.bak-*
 *.backup
 .env
 .env.*
@@ -19,6 +23,18 @@ config.yaml.backup
 *.pem
 *.key
 *.crt
+*.pub.pem
+*.priv.pem
+# 任何檔名內含 token / secret / credential / password 的憑證檔（保險用）
+*token*.json
+*cookie*.json
+*credential*
+# Documentation contains metadata only, never credential values.
+!/CREDENTIAL_ROTATION_CHECKLIST.md
+*password*
+# 根目錄暫存金鑰（歷史上曾誤提交 .tmp-ds.key）
+/.tmp-*.key
+/data/.jy-gateway.key
 
 # Upgrade / settings backups
 .upgrade-backup/
@@ -72,11 +88,40 @@ desktop.ini
 # Local tool state / credentials (never commit)
 .codex/
 
+# 本機 MCP 設定：含絕對路徑與本機執行環境，禁止進版控
+.mcp.json
+
 # Pentest evidence dumps / local scratch workspaces (local only)
 evidence/
 tpe119_evidence/
 erpc/
 _archive/
+
+# ===== 個案研究工作區：含第三方憑證、session token、個資，禁止進版控 =====
+# 說明：以下目錄為特定滲透測試個案的執行產物，含真實帳密、JWT、
+# session cookie、下載之第三方資料與截圖。屬於「本機工作檔」性質，
+# 不應隨專案發布。若需保留，請改用加密保管或獨立私有儲存庫。
+tpe_broadcast/
+okbank_evidence/
+herun_evidence/
+poc_scripts/
+zoomeye_results/
+broadcast_gui_core_20261001/
+skills/cyberstrike-eino-demo/scripts/
+# 掃描輸出與根目錄 phase*/probe 腳本（個案腳本，會寫死目標與憑證）
+/*_output.txt
+/entities.txt
+/headers.txt
+/cj_test.txt
+/sydney_*.txt
+/phase[0-9]*.py
+/phase67_final_report.py
+/fofa_*.py
+/login_*.py
+/tpe119_carpet*.py
+/tocp_tpe_broadcast.py
+# 下載取得之第三方資料樣本
+**/samples/*.png
 
 # Local logs
 /logs/
@@ -87,3 +132,125 @@ _archive/
 # Scratch scripts at repo root
 /_*.py
 /.tmp-*
+
+# 2026-10 盘点补漏：env 通配、产物压缩包、pyc、codex sandbox
+*.env
+!*.env.example
+!*.env.sample
+*.zip
+*.tar.gz
+*.pyc
+/.codex/
+/tmp/
+/_archive/
+/PDF/
+
+# 掃描產物與驗證腳本：含真實目標的漏洞細節，不進公開倉庫
+/poc_drafts/
+*_dirb.txt
+/verify_epcr.sh
+
+# 建置備份(140MB,不進倉庫)
+*.exe.bak-*
+
+# ===== 逆向分析工作產物（IDA）=====
+# IDA 資料庫體積大（單檔 200MB–1.4GB），且重建要跑好幾小時的分析。
+# 它們是本機工作檔，不是原始碼 —— 一律留在本機，不進版控。
+*.i64
+*.idb
+*.id0
+*.id1
+*.nam
+*.til
+ida_gui/
+
+# 根目錄的 Linux 建置產物（無 .exe 副檔名那批）
+/jysec-core
+/jysecai
+/server
+
+# ===== 2026-11-02 推播前補漏：根目錄的憑證、個資與個案產物 =====
+# 說明：下列項目是「本機工作檔」，不是專案原始碼，且多數含真實憑證或第三方
+# 資料。`git add -A` 會把它們一起帶進倉庫，因此逐項列出來排除。
+# 已存在的 /evidence/、/tpe*_evidence/ 等規則繼續有效。
+
+# ── 憑證（絕對不能進版控）──
+/.sqlmap_ai_key
+/.sqlmap_ai_first_run
+/token.txt
+/*_key
+/*_token
+/.t2s.py
+
+# ── 個人資料 / 學生資料（no_pii 原則：不落地、不外傳）──
+/student_records_sensitive.txt
+/student_urls.txt
+/active_student_endpoints.txt
+/DesktopDB/
+
+# ── 個案執行產物（含目標、掃描結果、資料庫內容）──
+/output/
+/sqlmap_output_ok/
+/reports/
+/remediation/
+/patches/
+/poc_drafts/
+/subdomains.txt
+/real_ips_probe.json
+/dns_resolution.json
+/canvas_*.json
+/sits_vision_probe.json
+/active_*.json
+/body1.json
+/hdr-root.txt
+/winlist.txt
+/wordlist2.txt
+/portproxy-before-wsl-restart.txt
+/poc_coveo_*.py
+/okbank_*.py
+/*.html
+/*.htmlgrep
+/*.js
+/JYSECAI_SCAN_TRIAGE_*.md
+/penetration_report.md
+
+# ── 第三方 vendored 專案與工具（各自有授權，不應塞進本倉庫）──
+/hack-skills-main/
+/burpbridge/
+/appsync-test/
+/platform/
+
+# ── 本機工具狀態與臨時檔 ──
+/.claude/
+/.superpowers/
+/*.lnk
+/*.id2
+/*.id0
+/*.id1
+/*.nam
+/*.til
+/*.bak-*
+/bossjy.sh
+/dump_ida_*.ps1
+/ida_survey.py
+/launch_*.ps1
+/list_windows.ps1
+/open_jysec_core.bat
+/run_survey.bat
+/tls_policy.py
+/jysec-core-linux.sha256
+/---resolve
+/11
+/3
+
+# 真實客戶資料（絕不進版控）
+# 2026-11-06 發佈複查時發現：scripts/chailease_seeds*.json 是中租/Chailease
+# 的真實會員資料 —— 4,353 筆會員（含手機）、4,161 筆電話、22 筆簽約紀錄
+# （含身分證字號 id_number、姓名、車牌 plate、簽約時間）。這些是營運資料，
+# 不是程式碼，`git add -A` 會直接把它們送進 GitHub。
+scripts/chailease_seeds*.json
+scripts/*member_payloads*.json
+scripts/*seed_export*.json
+
+# web/ 內的版本備份：純雜訊，而且會被 sync_web_assets.sh 一起部署到 /opt。
+web/**/*.bak-*
