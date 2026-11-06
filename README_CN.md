@@ -6,11 +6,11 @@
 
 [中文](README_CN.md) | [English](README.md)
 
-**JySecAI 是 AI 原生网络安全的智能执行中枢——让意图转化为受治理的行动，让证据沉淀为运营记忆，并让每次行动优化下一次行动。**
+**AI 原生资安作战台——让意图成为受治理的执行，让证据成为可重播的运营记忆，并让每一次行动优化下一次。**
 
-JySecAI 将规划、执行、人工监督、证据与复盘连接在同一个可审计工作空间中。项目基于 Go 构建，融合 Eino 智能体、MCP 原生工具、RAG 知识、可视化工作流以及攻击链建模与分析能力，面向已获得明确授权的安全任务。
+JySecAI 把规划、执行、人机协同监督、证据与复盘收拢在同一个可审计的工作空间中。项目以 Go 编写，融合 Eino 智能体、MCP 原生工具、RAG 知识、可视化工作流编排与攻击链建模能力，专供已获得明确授权的安全任务。本次版本新增 developer mode 与共用拒绝侦测模块、部署收据化，以及可重复执行的发布前闸门。
 
-**从这里开始：** [快速上手](#快速上手一条命令部署) · [中文文档](docs/zh-CN/README.md) · [安全加固](docs/zh-CN/security-hardening.md)
+**从这里开始：** [快速上手](#快速上手一条命令部署) · [中文文档](docs/zh-CN/README.md) · [安全加固](docs/zh-CN/security-hardening.md) · [开发者模式评测](docs/dev-mode-eval.md)
 
 > [!IMPORTANT]
 > 仅可对自有系统或已获得明确授权的目标使用 JySecAI。在共享或生产环境启用高风险工具、WebShell 或 C2 前，请先阅读[安全模型](docs/zh-CN/security-model.md)和[安全加固指南](docs/zh-CN/security-hardening.md)。

@@ -7,11 +7,11 @@
 
 [中文](README_CN.md) | [English](README.md)
 
-**The system of action for AI-native cybersecurity—where intent becomes governed execution, evidence becomes operational memory, and every operation improves the next.**
+**AI-native security operations console — where intent becomes governed execution, evidence becomes operational memory, and every operation sharpens the next.**
 
-JySecAI connects planning, execution, human oversight, evidence, and replay in one auditable workspace. Built in Go, it combines Eino-powered agents, MCP-native tools, RAG knowledge, visual workflows, and attack-chain modeling and analysis for authorized security operations.
+JySecAI unifies planning, execution, human-in-the-loop oversight, evidence, and replay inside one auditable workspace. Written in Go, it combines Eino-powered agents, MCP-native tools, RAG knowledge, visual workflow orchestration, and attack-chain modeling for authorized security operations. This release adds developer mode with shared refusal detection, receipt-based deployment, and a repeatable pre-release gate.
 
-**Start here:** [Quick start](#quick-start-one-command-deployment) · [Documentation](docs/en-US/README.md) · [Security hardening](docs/en-US/security-hardening.md)
+**Start here:** [Quick start](#quick-start-one-command-deployment) · [Documentation](docs/en-US/README.md) · [Security hardening](docs/en-US/security-hardening.md) · [Developer mode evaluation](docs/dev-mode-eval.md)
 
 > [!IMPORTANT]
 > Use JySecAI only on systems you own or are explicitly authorized to test. For shared or production environments, review the [security model](docs/en-US/security-model.md) and [hardening guide](docs/en-US/security-hardening.md) before enabling high-risk tools, WebShell, or C2 capabilities.
