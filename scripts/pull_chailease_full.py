@@ -164,8 +164,8 @@ def pull_member(m, proxy, delay, all_pt, timeout):
     errors = []
     for pt in PT_ORDER:
         body = {"memberNo": mno, "productType": pt, "countryNo": "TW"}
-        c, t = curl(DEV_FRONT + "/Member/UserDataDetail", "POST", body, h,
-                    proxy=proxy, timeout=timeout)
+        c, t = curl(DEV_FRONT + "/Member/UserDataDetail", "POST", body,
+                    proxy=proxy, headers=h, timeout=timeout)
         jj = jload(t)
         if c == 200 and isinstance(jj.get("data"), list):
             got = [r for r in jj["data"] if isinstance(r, dict)]
@@ -196,8 +196,8 @@ def pull_member(m, proxy, delay, all_pt, timeout):
     idno = merged.get("idno") or merged.get("taxIDNumber") or ""
     fl_body = {"countryNo": "TW", "memberNo": mno, "memberId": idno,
                "memberPhone": ph, "userIdentities": uis, "productType": "1"}
-    c, t = curl(DEV_FRONT + "/Vehicle/FinancingList", "POST", fl_body, h,
-                proxy=proxy, timeout=timeout)
+    c, t = curl(DEV_FRONT + "/Vehicle/FinancingList", "POST", fl_body,
+                proxy=proxy, headers=h, timeout=timeout)
     jj = jload(t)
     fins = []
     if c == 200 and isinstance(jj.get("data"), list):
