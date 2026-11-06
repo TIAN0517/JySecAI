@@ -326,7 +326,8 @@
         const total = state.total || 0;
         const pages = Math.max(1, Math.ceil(total / state.pageSize));
         $('records-total').textContent = t('records.totalPrefix', '共 ') + fmtNum(total) +
-            t('records.unitRecordsPage', ' 筆（第 ') + state.page + t('records.unitPageClose', ' 頁／共 ') + pages + ' 頁）';
+            t('records.unitRecordsPage', ' 筆（第 ') + state.page + t('records.unitPageClose', ' 頁／共 ') + pages +
+            t('records.unitPageEnd', ' 頁）');
         if (pages <= 1) {
             box.innerHTML = '';
             return;
